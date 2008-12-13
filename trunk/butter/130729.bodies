@@ -1,0 +1,25 @@
+class basic_jamfile
+!!!140329.cpp!!!	section(in a_section : string, in a_desc : string) : string
+static const QCString l_START ("${");
+const QCString l_phrase (l_START + a_section + "}");
+QCString Result;
+int l_start (a_desc.find (l_phrase));
+if (-1 != l_start)
+{
+  // Found a_section start, search from here to end for next section
+  int l_end (a_desc.find (l_START, l_start + l_phrase.size ()));
+  if (-1 != l_end)
+  {
+    Result = a_desc.mid (l_start + l_phrase.size (), l_end - (l_start + l_phrase.size ()));
+  }
+  else
+  {
+    Result = a_desc.mid (l_start + l_phrase.size ());
+  }
+}
+else if (-1 == a_desc.find (l_START))
+{
+  // Found no section titles, use desc
+  Result = a_desc;
+}
+return Result;

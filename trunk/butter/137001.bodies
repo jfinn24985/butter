@@ -1,0 +1,49 @@
+class item_traits
+!!!133545.cpp!!!	kind_to_string(in a_val : uint) : QCString
+static const char *l_kind[] = {
+"relation"
+, "attribute"
+, "operation"
+, "extra class member"
+, "class"
+, "use case"
+, "component"
+, "node"
+, "artifact"
+, "NC relation"
+, "class diagram"
+, "use case diagram"
+, "sequence diagram"
+, "collaboration diagram"
+, "component diagram"
+, "deployment diagram"
+, "class view"
+, "use case view"
+, "component view"
+, "deployment view"
+, "package"
+, "unknown"
+};
+const unsigned int l_size (sizeof(l_kind)/sizeof(char*));
+if (a_val < 0U or l_size <= a_val)
+{
+  a_val = l_size - 1;
+}
+return l_kind[a_val];
+!!!135081.cpp!!!	property_search(out a_item : UmlItem, in a_key : string, inout a_value : string) : bool
+UmlItem *l_tmp (const_cast< UmlItem* >(&a_item));
+bool Result (false);
+Result = l_tmp->propertyValue (a_key, a_value);
+if (not Result)
+{
+  while (UmlBasePackage::getProject () != l_tmp)
+  {
+    l_tmp = l_tmp->parent ();
+    if (NULL == l_tmp)
+    {
+      break;
+    }
+    Result = l_tmp->propertyValue (a_key, a_value);
+  }
+}
+return Result;

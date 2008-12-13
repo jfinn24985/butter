@@ -1,0 +1,13 @@
+window_sizes 886 624 277 603 390 157
+diagrams
+  active  classdiagram_ref 128041 // butter overview
+    603 390 100 4 0 0
+end
+show_stereotypes
+selected artifact_ref 141737 // README.t2t
+open
+  artifact_ref 141737 // README.t2t
+  
+  package_ref 128041 // butter
+end
+end

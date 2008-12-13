@@ -1,0 +1,3618 @@
+format 61
+"butter" // butter
+  revision 47
+  modified_by 41 "finnerty"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  cpp_h_dir "butter"
+  cpp_src_dir "../src/butter"
+  cpp_namespace "butter"
+  ncouples 1
+  key "test" value "test properties"
+  comment "Butter is a plug-out that goes well with jam. (standard or boost)
+
+At the top-most project level the following optional property determines
+which type of jamfile to write:
+ @butter style= boost|standard, the default is boost!
+
+For both library and executable artifacts there are the following optional properties.
+Note, however, that these are better set in the Jambase file that is not created by the
+butter plug-out:
+ @butter link = extra libraries to link against
+ @butter flag = extra compiler flags
+ @butter include = extra include directories
+
+For library we have the optional property:
+ @butter type = static,dynamic (default dynamic) [can be set globally and inherited]
+ @butter other => specify another target type eg. \"python-extension\"
+
+For both libs and exes, associated artifacts lists are inspected.
+
+If you create an artifact object called Jamrules with a type that is not source,
+executable or library then the description from the object will be written into the
+Jamrules file.
+
+If you create an artifact object called Jamfile (or Jamroot) with a type that is not 
+source, executable or library then the description from the object will be written 
+into the corresponding Jamfile (or Jamroot) file. If there
+is the line ${butter_boost} or ${butter_standard} then all text following this line (until 
+another tag line (${butter_boost} or ${butter_standard}) will be
+included in corresponding build file.
+
+Packages that contain only \"external\" classes can also have an artifact with the 
+name Jamfile. 
+
+For boost: The artifact can have the property @butter jamfile=\"xml2.jam\".  If there is no 
+content in the description field then this is taken to be an existing Jamfile that is to 
+be included. If their is content in the description field then the field is written 
+into the given file at the project base directory. Both types will be included into 
+Jamroot with a using statement.
+
+For standard: Standard doesn't have the concept of including other Jamfiles
+therefore the content of the description field in included in the Jamrules file.
+
+If the artifact has the property @boost project then it is assumed to be a library
+from an external project that should be added to the top-level construction system 
+
+For automatically referencing external classes you create a library artifact in the
+external package with a jamfile artifact or with the @jamfile property containing the 
+name of the 'using' jamfile. This library can be made a direct dependency of the target
+library/executable or as an indirect dependency by creating a dummy artifact associated 
+with library which contains the external classes.
+
+Notes:
+* All references to 'jamfile' should be taken to mean the name of the relevant project
+construction document, ie jamfile, makefile, jamroot etc."
+  classview 128041 "butter"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    associated_deployment_view deploymentview_ref 128041 // butter
+    classdiagram 128041 "butter overview"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    class 137001 "item_traits"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Helper Uml(*) functions and static strings for the butter project.
+
+no_install_value"
+      classrelation 145449 // <dependency>
+	relation 144681 -_->
+	  a package
+	    cpp default "#include in header"
+	    classrelation_ref 145449 // <dependency>
+	  b parent class_ref 1280 // CppSettings
+      end
+
+      attribute 150569 "bindir_value"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"BINDIR\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Then label of the install target binary directory."
+      end
+
+      attribute 141353 "buildfile_value"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"buildfile\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Artifacts with the document stereotype that contain this
+string are considered to be templates"
+      end
+
+      attribute 141225 "butter_base_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter base\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates the relationship between the package and the root directory set in C++ settings.
+* only used if present on the top-level project"
+      end
+
+      attribute 144041 "butter_build_dir_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter build-dir\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates where the project should be compiled.  This is not supported
+on all build platforms.
+* only useful on the project package."
+      end
+
+      attribute 142377 "butter_buildfile_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter buildfile\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates the name of a buildfile to include for the current library.
+* used with 'library' artifacts which also have butter_project_name property to indicate
+they are external projects."
+      end
+
+      attribute 143401 "butter_flags_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter flags\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates c++flags to use for the current target artifact. This property is automatically 
+inherited from parent objects if not overriden
+* only used on target artifacts (library or executable artifacts)"
+      end
+
+      attribute 150441 "butter_install_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter install\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the install property"
+      end
+
+      attribute 143273 "butter_ldflags_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter ldflags\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates ldflags to use for the current target artifact (\\see link_label). This property is 
+automatically inherited from parent objects if not overriden
+* only used on target artifacts (library or executable artifacts)"
+      end
+
+      attribute 143913 "butter_lib_type_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter type\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates whether the library artifact is static or dynamic. will have value 
+shared_value or static_value. This property is automatically inherited from 
+parent objects if not overriden.
+* only used on library target artifacts."
+      end
+
+      attribute 143529 "butter_other_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter other\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name
+* Indicates that a library artifact should be built as another target type. 
+For jam based builds this is used directly as the target-type name, for make
+based builds the buidl rule will replace \"$(CCC)\" with \"$(VALUE)\" (in 
+uppercase)
+* For document artifacts if the property value is 'nowrite' then the document is not written
+to the filesystem.
+* This property only used on library artifact targets."
+      end
+
+      attribute 143145 "butter_include_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter include\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates extra include directories for the current target artifact. The value should be 
+a a list of directory names (\\see header_label)
+* only used on target artifacts (library or executable artifacts)"
+      end
+
+      attribute 141481 "butter_project_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter project\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates the artifact represents an object from an external project. The property value is the name of the external project.
+* only used if present on artifacts with the library stereotype
+
+\\see butter_buildfile_name"
+      end
+
+      attribute 142761 "butter_style_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter style\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "User property name:
+* indicates the style of build system/files to create, defaults to 'boost'
+* only used if present on the top-level project"
+      end
+
+      attribute 150825 "butter_version_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter version\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Property name for the project version."
+      end
+
+      attribute 139945 "document_stereotype"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"document\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The stereotype name for document artifacts."
+      end
+
+      operation 138921 "dirname"
+	class_operation public explicit_return_type "path"
+	nparams 1
+	  param in name "a_pack" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  return QDir::cleanDirPath (CppSettings::rootDir () + \"/\" + const_cast< ${t0} &> (${p0}).cppSrcDir ());
+}"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create the absolute path to the source directory for this package"
+      end
+
+      attribute 141737 "executable_stereotype"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"executable\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The stereotype name for executable artifacts."
+      end
+
+      attribute 148905 "flag_label"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"FLAGS\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The  label of a line of std flags in a 'generic' description section. 
+eg:
+
+FLAGS = -DHAVE_ALLOCA"
+      end
+
+      attribute 141993 "generic_section"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"generic\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The label of a 'generic' section of an artifact description."
+      end
+
+      attribute 142121 "header_label"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"HDR\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The label of a line of include directories in a 'generic' description section. This
+list should contain directorie names without the \"-I\" include flag. The \"-I' will be
+added when necessary. eg:
+
+HDR=/dir1 /dir2"
+      end
+
+      operation 133545 "kind_to_string"
+	class_operation public explicit_return_type "QCString"
+	nparams 1
+	  param in name "a_val" explicit_type "uint"
+	cpp_decl "#ifndef NO_LOG
+    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+#endif"
+	cpp_def "#ifndef NO_LOG
+${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Convert a 'kind' into a string
+
+(Only in non NO_LOG builds)"
+      end
+
+      attribute 150313 "libdir_value"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"LIBDIR\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The label of the install target library directory var."
+      end
+
+      attribute 141609 "library_stereotype"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"library\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The stereotype name for library artifacts."
+      end
+
+      attribute 142249 "link_label"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"LINK\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The  label of a line of link flags in a 'generic' description section. 
+eg:
+
+LINK = -L/my/path -lmylib"
+      end
+
+      operation 158889 "hdrname"
+	class_operation cpp_inline public explicit_return_type "path"
+	nparams 1
+	  param inout name "a_pack" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  return QDir::cleanDirPath (CppSettings::rootDir () + \"/\" + const_cast< ${t0} &> (${p0}).cppHDir ());
+}"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create the absolute path to the header directory for this package"
+      end
+
+      operation 157737 "location"
+	class_operation cpp_inline public explicit_return_type "string"
+	nparams 1
+	  param in name "a_pack" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  return ${type} (QDir (const_cast< ${t0} &> (${p0}).cppSrcDir ()).dirName ());
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The (leaf) name of the directory this package is in."
+      end
+
+      operation 157609 "location"
+	class_operation cpp_inline public explicit_return_type "string"
+	nparams 1
+	  param inout name "a_art" type class_ref 6913 // UmlArtifact
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  UmlPackage *l_parent = dynamic_cast< UmlPackage* >(const_cast< ${t0} & >(${p0}).parent ()->parent ());
+  @{PROJECT}_REQUIRE (NULL != l_parent, \"Invalid heirarchy, grandparent of artifact is not a package\");
+  return location (*l_parent);
+}
+
+
+"
+	
+	
+	
+	
+	comment "The leaf directory name.
+
+\\pre a_art.parent.parent /= UmlPackage"
+      end
+
+      attribute 150697 "no_install_value"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"NONE\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Value of he \"butter install\" property to indicate that the target 
+should not be installed."
+      end
+
+      operation 135081 "property_search"
+	class_operation public explicit_return_type "bool"
+	nparams 3
+	  param out name "a_item" type class_ref 7553 // UmlItem
+	  param in name "a_key" explicit_type "string"
+	  param inout name "a_value" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
+@{PROJECT}_REQUIRE (not ${p1}.isEmpty (), \"Can not search for an empty key.\");
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Search from a_item to the Project object for the property with a_key. Sets
+a_value and returns if such a property is found.
+
+\\pre not a_key.empty"
+      end
+
+      attribute 142633 "section_prefix"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"butter_\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The prefix for the beginning of section labels that
+might be found in artifact descriptions."
+      end
+
+      attribute 143785 "shared_value"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"shared\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Property value for \"butter_lib_type\" property. Indicates that
+library targets will be shared."
+      end
+
+      attribute 141865 "source_stereotype"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"source\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The stereotype name for source artifacts."
+      end
+
+      attribute 143657 "static_value"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"static\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Property value for \"butter_lib_type\" property. Indicates that
+library targets will be static."
+      end
+
+      attribute 150953 "version_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"version\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Generic property name for the project version."
+      end
+    end
+
+    class 128041 "uml_visitor"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "A parser for the UmlItem tree.  This parser walks the tree of UmlItems and
+creates a corresponding tree of locations that contain the build targets."
+      classrelation 145065 // <dependency>
+	relation 144297 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 145065 // <dependency>
+	  b parent class_ref 137001 // item_traits
+      end
+
+      classrelation 139305 // <dependency>
+	relation 138537 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 139305 // <dependency>
+	  b parent class_ref 129577 // writer
+      end
+
+      classrelation 146985 // <dependency>
+	relation 146217 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 146985 // <dependency>
+	  b parent class_ref 5248 // UmlCom
+      end
+
+      classrelation 135849 // m_top (<directional composition>)
+	relation 135209 *-->
+	  stereotype "auto_ptr"
+	  a role_name "m_top" multiplicity "*" private
+	    comment "The Singleton top location. (lazy construction)"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 135849 // m_top (<directional composition>)
+	  b parent class_ref 132393 // location
+      end
+
+      operation 163241 "empty"
+	const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return NULL == m_top.get ();
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Do we have a top-level location object?"
+      end
+
+      operation 132393 "operator="
+	private return_type class_ref 128041 // uml_visitor
+	nparams 1
+	  param in name "source" type class_ref 128041 // uml_visitor
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 131881 "print_item"
+	private explicit_return_type "void"
+	nparams 3
+	  param in name "a_item" type class_ref 7553 // UmlItem
+	  param in name "a_depth" explicit_type "uint"
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "#ifndef NO_LOG
+    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
+#endif"
+	cpp_def "#ifndef NO_LOG
+${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Print information about a_item.
+
+(Only in non NO_LOG  builds)"
+      end
+
+      operation 170537 "top"
+	const public return_type class_ref 132393 // location
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  @{PROJECT}_REQUIRE (NULL != m_top.get (), \"Can not get top location from an empty visitor\");
+  return *(m_top.get ());
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Get the top-level location.
+
+\\pre not is_empty"
+      end
+
+      operation 170665 "top"
+	public return_type class_ref 132393 // location
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type}& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  @{PROJECT}_REQUIRE (NULL != m_top.get (), \"Can not get top location from an empty visitor\");
+  return *(m_top.get ());
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Get the top-level location.
+
+\\pre not is_empty"
+      end
+
+      operation 132009 "uml_visitor"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}${volatile}
+${body}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "The default constructor."
+      end
+
+      operation 132137 "~uml_visitor"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw ();
+"
+	cpp_def "${inline}${class}::${name}${(}${)}${volatile} throw ()
+{}
+"
+	
+	
+	
+	
+      end
+
+      operation 132265 "uml_visitor"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 128041 // uml_visitor
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 133929 "visit"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_item" type class_ref 7553 // UmlItem
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "This visits all the UmlItems starting at (a_item) and proceding
+through all of the descendent items.
+
+\\pre a_item = UmlPackage and nul = a_item.parent [ie = project]
+\\pre empty
+\\post empty == no non-empty locations after visiting the project."
+      end
+    end
+
+    class 132393 "location"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "This class manages a build location in the project. It has a one-to-one
+correspondence with a filesystem directory and contains documents,
+packages, build targets and build templates."
+      classrelation 138025 // <dependency>
+	relation 137257 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 138025 // <dependency>
+	  b parent class_ref 129577 // writer
+      end
+
+      classrelation 145193 // <dependency>
+	relation 144425 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 145193 // <dependency>
+	  b parent class_ref 137001 // item_traits
+      end
+
+      classrelation 137769 // <dependency>
+	relation 137001 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 137769 // <dependency>
+	  b parent class_ref 5248 // UmlCom
+      end
+
+      attribute 132649 "s_ext_targets"
+	class_attribute private type class_ref 6913 // UmlArtifact
+	stereotype "dict"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< QPtrVector < ${type} > > ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The dictionary of external targets organised by 'project'."
+      end
+
+      classrelation 135977 // m_children (<composition>)
+	relation 135337 *---
+	  stereotype "ptr_vector"
+	  a role_name "m_children" multiplicity "*" private
+	    comment "The child nodes (managed)"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	    classrelation_ref 135977 // m_children (<composition>)
+	  b role_name "m_parent" multiplicity "1" private
+	    comment "The parent"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 136489 // m_parent (<composition>)
+      end
+
+      classrelation 136617 // m_documents (<directional composition>)
+	relation 135849 *-->
+	  stereotype "ptr_vector"
+	  a role_name "m_documents" multiplicity "*" private
+	    comment "Any documents associated with this location."
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 136617 // m_documents (<directional composition>)
+	  b parent class_ref 6913 // UmlArtifact
+      end
+
+      classrelation 136233 // m_packages (<directional composition>)
+	relation 135593 *-->
+	  stereotype "ptr_vector"
+	  a role_name "m_packages" multiplicity "*" private
+	    comment "The packages associated with this location,"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 136233 // m_packages (<directional composition>)
+	  b parent class_ref 7937 // UmlPackage
+      end
+
+      classrelation 136489 // m_parent (<composition>)
+	relation_ref 135337 // <composition>
+      end
+
+      attribute 134057 "m_path"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The current path."
+      end
+
+      classrelation 136105 // m_targets (<directional composition>)
+	relation 135465 *-->
+	  stereotype "ptr_vector"
+	  a role_name "m_targets" multiplicity "*" private
+	    comment "The targets at this location."
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 136105 // m_targets (<directional composition>)
+	  b parent class_ref 6913 // UmlArtifact
+      end
+
+      classrelation 136361 // m_templates (<directional composition>)
+	relation 135721 *-->
+	  stereotype "ptr_vector"
+	  a role_name "m_templates" multiplicity "*" private
+	    comment "Any templates associated with this location"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	    java "  ${comment}${visibility}${static}${final}${transient}${volatile}${type}${multiplicity} ${name}${value};
+"
+	    classrelation_ref 136361 // m_templates (<directional composition>)
+	  b parent class_ref 6913 // UmlArtifact
+      end
+
+      operation 146217 "add_artifact"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_path" explicit_type "path"
+	  param in name "a_artifact" type class_ref 6913 // UmlArtifact
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract}
+{
+  find_create (${p0})->${name} (${p1});
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Add a_artifact to the location at a_path.
+
+\\pre a_path is descendent of full_path"
+      end
+
+      operation 143273 "add_artifact"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "a_art" type class_ref 6913 // UmlArtifact
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Add an artifact target for this location.  This check the type of target
+and adds the file to the correct list."
+      end
+
+      operation 146345 "add_package"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_path" explicit_type "path"
+	  param in name "a_art" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract}
+{
+  find_create (${p0})->${name} (${p1});
+}
+"
+	
+	
+	
+	
+	comment "Add a_package to the location at a_path.
+
+\\pre a_path is descendent of full_path"
+      end
+
+      operation 143145 "add_package"
+	private explicit_return_type "void"
+	nparams 1
+	  param inout name "a_package" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Add the package as a client of the location."
+      end
+
+      operation 167081 "children"
+	stereotype "ptr_vector"
+	const public return_type class_ref 132393 // location
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const QPtrVector< ${type} >& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return m_children;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Get the children!"
+      end
+
+      operation 164521 "create_document"
+	public return_type class_ref 6913 // UmlArtifact
+	nparams 1
+	  param in name "a_name" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create a document at the current location with  a_name. This 
+scans the project(s) for a deployment view and uses the first one 
+found.  If none are found then it creates a deployment view in
+the first project.  Then it creates an artifact with a_name in the
+selected deployment view.
+
+\\pre not has_document(a_name)"
+      end
+
+      operation 167209 "documents"
+	stereotype "ptr_vector"
+	const public return_type class_ref 6913 // UmlArtifact
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const QPtrVector< ${type} >& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return m_documents;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The documents at this location"
+      end
+
+      operation 167721 "external_targets"
+	stereotype "ptr_vector"
+	class_operation public return_type class_ref 6913 // UmlArtifact
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const QDict< QPtrVector< ${type} > >& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return s_ext_targets;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Get the external 'targets'"
+      end
+
+      operation 138793 "find_create"
+	private return_type class_ref 132393 // location
+	nparams 1
+	  param in name "a_path" explicit_type "path"
+	cpp_decl "	    ${comment}${static}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Find a location object for the given path, creating any location objects if necessary.
+
+(a_path is pass-by-value because we use/modify a_path in the function)
+\\pre a_path is descendent of full_path (data error)"
+      end
+
+      operation 145577 "full_path"
+	const public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  ${type} Result;
+  if (NULL != m_parent)
+  {
+    Result.append (m_parent->${name} ());
+    Result.append (\"/\");
+  }
+  Result.append (m_path);
+  return Result;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "This gives the fully qualifed path of the location."
+      end
+
+      operation 164393 "has_document"
+	const public explicit_return_type "bool"
+	nparams 1
+	  param in name "a_name" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Is there a document of the given name at the current location.
+
+\\pre not a_name.empty"
+      end
+
+      operation 159017 "has_targets"
+	const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return not m_targets.isEmpty ();
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Does this location have local targets?"
+      end
+
+      operation 145833 "is_external_target"
+	class_operation private explicit_return_type "bool"
+	nparams 1
+	  param inout name "a_art" type class_ref 6913 // UmlArtifact
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Test if the artifact is for an external target. If it is then it is will be added to 
+the external targets list."
+      end
+
+      operation 142633 "location"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "a_path" explicit_type "path"
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}
+${body}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "Ctor for base/top-level location.  May only be called once.
+
+\\pre writer::root_directory.empty
+\\post writer::root_directory = a_path"
+      end
+
+      operation 144425 "location"
+	private explicit_return_type ""
+	nparams 2
+	  param in name "a_path" explicit_type "string"
+	  param inout name "a_parent" type class_ref 132393 // location
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${volatile}
+${body}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "Ctor for base location"
+      end
+
+      operation 142761 "~location"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw ();
+"
+	cpp_def "${inline}${class}::${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
+      operation 142889 "location"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 132393 // location
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 143017 "operator="
+	private return_type class_ref 132393 // location
+	nparams 1
+	  param in name "source" type class_ref 132393 // location
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 167337 "packages"
+	stereotype "ptr_vector"
+	const public return_type class_ref 7937 // UmlPackage
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const QPtrVector< ${type} > ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return m_packages;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The packages associated with this location"
+      end
+
+      operation 145193 "parent"
+	const public return_type class_ref 132393 // location
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} *const ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return m_${name};
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The parent location, this is nul for top-level locations"
+      end
+
+      operation 144553 "path"
+	const public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return m_path;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The leaf node of sub-locs and the base-path for top-level locs"
+      end
+
+      operation 145705 "prune"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "This method descends the build tree and removes locations with no
+local targets or descendents with targets. False indicates there 
+are no descendent targets.  This should be called before calling
+serialize or write to eliminate redundant build files."
+      end
+
+      operation 146601 "serialize"
+	const public explicit_return_type "void"
+	nparams 1
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "#ifndef NO_LOG
+    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
+#endif"
+	cpp_def "#ifndef NO_LOG
+${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+#endif
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "This descends the location tree writing debug information to
+a_os as it goes.
+
+(Only in DEBUG builds)"
+      end
+
+      operation 167465 "targets"
+	stereotype "ptr_vector"
+	const public return_type class_ref 6913 // UmlArtifact
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const QPtrVector< ${type} >& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return m_targets;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The set of targets at this location."
+      end
+
+      operation 167593 "templates"
+	stereotype "ptr_vector"
+	const public return_type class_ref 6913 // UmlArtifact
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const QPtrVector< ${type} >& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return m_templates;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The set of templates for this location."
+      end
+    end
+
+    class 129577 "writer"
+      abstract visibility public 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "This is the (base) class for build-system writers. Classes of this type
+parse the locations converting Documents/Artifacts/Packages etc
+into the build file."
+      classrelation 146857 // <dependency>
+	relation 146089 -_->
+	  a package
+	    cpp default "#include in source"
+	    classrelation_ref 146857 // <dependency>
+	  b parent class_ref 137001 // item_traits
+      end
+
+      classrelation 150569 // <dependency>
+	relation 149801 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 150569 // <dependency>
+	  b parent class_ref 5248 // UmlCom
+      end
+
+      operation 145321 "build_system"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "a_top_loc" type class_ref 132393 // location
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create the build system starting at a_top_loc and all the descendent locations.
+
+\\pre a_top_loc.parent = nul (location is at the top of the build tree)"
+      end
+
+      operation 151977 "compare_file_to_string"
+	class_operation protected explicit_return_type "bool"
+	nparams 2
+	  param in name "a_path" explicit_type "string"
+	  param in name "a_str" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Are the contents of the file a_path and a_str are identical? If they are not then
+write a_str to a_path and return false. Throws an exception if it cannot open a file
+at a_path."
+      end
+
+      operation 161449 "find_hdr_link"
+	class_operation protected explicit_return_type "void"
+	nparams 4
+	  param in name "a_desc" explicit_type "string"
+	  param inout name "a_hdr" explicit_type "string"
+	  param inout name "a_link" explicit_type "string"
+	  param inout name "a_flag" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} & ${p1}${v1}, ${t2} & ${p2}${v2}, ${t3} & ${p3}${v3}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}${)}${const}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Parse a_desc looking for include directories and linker options. Append
+what is found to a_hdr, a_link and a_flag."
+      end
+
+      operation 150313 "build_system"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "a_top_loc" type class_ref 132393 // location
+	  param in name "a_project" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+@{PROJECT}_REQUIRE (NULL == ${p0}.parent (), \"Must start build from top-most location.\");
+@{PROJECT}_REQUIRE (NULL == const_cast< UmlPackage& >(${p1}).parent (), \"Must start build from project package.\");
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Instantiate a writer derived object and use it to write the build system for the
+given location and project.
+
+\\pre a_top_loc.parent = nul and a_project.parent = nul"
+      end
+
+      operation 140329 "section"
+	class_operation public explicit_return_type "string"
+	nparams 2
+	  param in name "a_section" explicit_type "string"
+	  param in name "a_desc" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "This method finds the substring in a_desc between \"${\"a_section\"}\"
+and the next \"${\".  If no \"${\" is found then a_desc is returned."
+      end
+
+      operation 173097 "write_documents"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "a_top_loc" type class_ref 132393 // location
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+@{PROJECT}_REQUIRE (not a_top_loc.documents ().isEmpty (), \"Cannot write empty set of documents\");
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write the documents of a_top_loc"
+      end
+
+      operation 146729 "writer"
+	protected explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile} throw () {}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 146857 "~writer"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 133545 "bjam_writer"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Build file writer for boost-jam"
+      classrelation 140457 // <generalisation>
+	relation 139689 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 140457 // <generalisation>
+	  b parent class_ref 129577 // writer
+      end
+
+      classrelation 145577 // <dependency>
+	relation 144809 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 145577 // <dependency>
+	  b parent class_ref 137001 // item_traits
+      end
+
+      classrelation 148137 // <dependency>
+	relation 147369 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 148137 // <dependency>
+	  b parent class_ref 5248 // UmlCom
+      end
+
+      attribute 142505 "section_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"boost\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The label for description 'sections' and the value of 
+the style for this buildfile type."
+      end
+
+      attribute 150185 "s_default_rules"
+	class_attribute const_attribute private explicit_type "string"
+	init_value "(\"#\\n# local.jam\\n#\\n# Set constants for installation paths\\npath-constant VERSIONDIR : \\\"@@project@@-@@version@@\\\" ;\\npath-constant PREFIX : installdir ;\\npath-constant EXEC_PREFIX : $(PREFIX) ;\\npath-constant BINDIR : $(EXEC_PREFIX)/bin ;\\npath-constant SBINDIR : $(EXEC_PREFIX)/sbin ;\\npath-constant LIBEXECDIR : $(EXEC_PREFIX)/libexec ;\\npath-constant LIBDIR : $(EXEC_PREFIX)/lib ;\\npath-constant DATAROOTDIR : $(PREFIX)/share ;\\npath-constant DATADIR : $(PREFIX)/share ;\\npath-constant SYSCONFDIR : /etc ;\\npath-constant SHAREDSTATEDIR : $(PREFIX)/com ;\\npath-constant LOCALSTATEDIR : $(PREFIX)/var ;\\npath-constant INCLUDEDIR : $(PREFIX)/include ;\\npath-constant LOCALEDIR : $(DATAROOTDIR)/locale ;\\npath-constant DOCDIR : $(DATAROOTDIR)/doc/$(VERSIONDIR) ;\\npath-constant INFODIR : $(DATAROOTDIR)/info ;\\npath-constant MANDIR : $(DATAROOTDIR)/man ;\\npath-constant HTMLDIR : $(DOCDIR) ;\\npath-constant DVIDIR : $(DOCDIR) ;\\npath-constant PDFDIR : $(DOCDIR) ;\\npath-constant PSDIR : $(DOCDIR) ;\\npath-constant MAN1DIR : $(MANDIR)/man1 ;\\npath-constant MAN2DIR : $(MANDIR)/man2 ;\\npath-constant MAN3DIR : $(MANDIR)/man3 ;\\npath-constant MAN4DIR : $(MANDIR)/man4 ;\\npath-constant MAN5DIR : $(MANDIR)/man5 ;\\npath-constant MAN6DIR : $(MANDIR)/man6 ;\\npath-constant MAN7DIR : $(MANDIR)/man7 ;\\npath-constant MAN8DIR : $(MANDIR)/man8 ;\\npath-constant MANNDIR : $(MANDIR)/mann ;\\n###############\\n## Editor sugar\\n###############\\n# Local Variables:\\n# mode: makefile\\n# End:\\n\\n\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This is the default contents of a the rules file (makefile.sys) If a 
+document artifact with name 'makefile.sys' is not present when 
+butter is executed with @style='make' then one will be created
+using this string.
+"
+      end
+
+      attribute 150057 "s_rules_name"
+	class_attribute const_attribute private explicit_type "string"
+	init_value "(\"local.jam\");"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the project rules file."
+      end
+
+      attribute 147753 "m_project"
+	const_attribute private type class_ref 7937 // UmlPackage
+	multiplicity "0..1"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}${type} & ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the project."
+      end
+
+      attribute 135337 "m_project_buffer"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This buffer contains stuff that child objects want to put in the
+top-level build file."
+      end
+
+      operation 153385 "bjam_writer"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "a_project" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}
+: m_project (${p0})
+, m_project_buffer ()
+{}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 153513 "~bjam_writer"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
+      operation 153257 "bjam_writer"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 133545 // bjam_writer
+	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 167977 "build_system"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_top_loc" type class_ref 132393 // location
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+@{PROJECT}_REQUIRE (not ${p0}.full_path().isEmpty (), \"The root directory of the top location is not defined.\");
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create the build system starting at a_top_loc and all the descendent locations.
+
+\\pre a_top_loc.parent = nul (location is at the top of the build tree)"
+      end
+
+      operation 152105 "comment"
+	class_operation private explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return QCString (\"#\");
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The comment marker for this style"
+      end
+
+      operation 152233 "default_name"
+	class_operation private explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return \"Jamfile\";
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The default leaf filename for the current style"
+      end
+
+      operation 152361 "external_target"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "a_project" explicit_type "string"
+	  param inout name "a_target" type class_ref 6913 // UmlArtifact
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, QPtrVector< ${t1} > & ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, QPtrVector< ${t1} > & ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write the vector of a_targets for a_project to a_os as references to
+external objects.  This should be used at the top-level build only."
+      end
+
+      operation 158505 "initialise"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_location" type class_ref 132393 // location
+	  param inout name "a_buffer" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} &${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} &${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Set up any links between this file and the root. This writes \"use-project\" lines
+for a_location into the jamroot file (via s_project_buffer)."
+      end
+
+      operation 174249 "install_target"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	  param in name "a_loc_var" explicit_type "string"
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} & ${p2}${v2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${staticnl}{
+ @{PROJECT}_REQUIRE (not ${p1}.isEmpty (), \"Can not create install target with empty location.\");
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create an install target."
+      end
+
+      operation 153129 "operator="
+	private return_type class_ref 133545 // bjam_writer
+	nparams 1
+	  param in name "source" type class_ref 133545 // bjam_writer
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 169385 "project_name"
+	const public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+  return const_cast< UmlPackage& >(m_project).name ();
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 149161 "requirements"
+	class_operation private explicit_return_type "bool"
+	nparams 2
+	  param in name "a_item" type class_ref 7553 // UmlItem
+	  param inout name "a_reqs" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Scan a_item for any requirements, add these to a_req and
+return true if found."
+      end
+
+      operation 152489 "root_name"
+	class_operation private explicit_return_type "string"
+	nparams 0
+	cpp_visibility private cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return \"Jamroot\";
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The default leaf filename for the current style"
+      end
+
+      operation 153001 "sublocation"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_location" type class_ref 132393 // location
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write the Jamfile descent links for a_location to a_os"
+      end
+
+      operation 152873 "target"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "This method scans a_target for its direct sources and
+direct and indirect dependencies. "
+      end
+
+      operation 152745 "top_level"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_loc" type class_ref 132393 // location
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} &${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} &${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write extra details to the top-level build file.
+
+"
+      end
+
+      operation 152617 "use_template"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_art" type class_ref 6913 // UmlArtifact
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Set the writer to use the given template."
+      end
+    end
+
+    class 134697 "jam_writer"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Build file writer for standard jam"
+      classrelation 141865 // <generalisation>
+	relation 141097 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 141865 // <generalisation>
+	  b parent class_ref 129577 // writer
+      end
+
+      classrelation 145705 // <dependency>
+	relation 144937 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 145705 // <dependency>
+	  b parent class_ref 137001 // item_traits
+      end
+
+      class 138153 "install_type"
+	visibility private stereotype "enum"
+	cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+	java_decl "${comment}${public}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl "${comment}${visibility}final class ${name} {
+${items}}
+"
+	python_2_2 python_decl "class ${name}:
+${docstring}${members}
+"
+	idl_decl "${comment}enum ${name} {
+${items}};
+"
+	explicit_switch_type ""
+	
+	comment "Indicate what sort of object is being installed."
+	attribute 152105 "bin"
+	  public type class_ref 138153 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "File is a binary file."
+	end
+
+	attribute 152233 "file"
+	  public type class_ref 138153 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "File is a non-specific type."
+	end
+
+	attribute 152489 "generic"
+	  public type class_ref 138153 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "File is a generic file"
+	end
+
+	attribute 152361 "lib"
+	  public type class_ref 138153 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "Item is a library"
+	end
+
+	attribute 152617 "man"
+	  public type class_ref 138153 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "File is a man page"
+	end
+      end
+
+      attribute 142889 "section_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"standard\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The label for description 'sections' and the value of 
+the style for this buildfile type."
+      end
+
+      attribute 140073 "s_default_rules"
+	class_attribute const_attribute private explicit_type "string"
+	init_value "(\"#\\n# Default Jamrules\\n#\\n\\nif $(UNIX)      { SUFSHR ?= .so ; }\\nelse if $(NT)   { SUFSHR ?= .dll ; }\\n\\nCOMP ?= GNU ;\\n\\n#############################\\n##\\n##  Default install locations\\n## \\n#############################\\nVERSIONDIR = \\\"@@project@@-@@version@@\\\" ;\\nPREFIX = installdir ;\\nEXEC_PREFIX = $(PREFIX) ;\\nBINDIR = $(EXEC_PREFIX)/bin ;\\nSBINDIR = $(EXEC_PREFIX)/sbin ;\\nLIBEXECDIR = $(EXEC_PREFIX)/libexec ;\\nLIBDIR = $(EXEC_PREFIX)/lib ;\\nDATAROOTDIR = $(PREFIX)/share ;\\nDATADIR = $(PREFIX)/share ;\\nSYSCONFDIR = /etc ;\\nSHAREDSTATEDIR = $(PREFIX)/com ;\\nLOCALSTATEDIR = $(PREFIX)/var ;\\nINCLUDEDIR = $(PREFIX)/include ;\\nLOCALEDIR = $(DATAROOTDIR)/locale ;\\nDOCDIR = $(DATAROOTDIR)/doc/$(VERSIONDIR) ;\\nINFODIR = $(DATAROOTDIR)/info ;\\nMANDIR = $(DATAROOTDIR)/man ;\\nHTMLDIR = $(DOCDIR) ;\\nDVIDIR = $(DOCDIR) ;\\nPDFDIR = $(DOCDIR) ;\\nPSDIR = $(DOCDIR) ;\\nMAN1DIR = $(MANDIR)/man1 ;\\nMAN2DIR = $(MANDIR)/man2 ;\\nMAN3DIR = $(MANDIR)/man3 ;\\nMAN4DIR = $(MANDIR)/man4 ;\\nMAN5DIR = $(MANDIR)/man5 ;\\nMAN6DIR = $(MANDIR)/man6 ;\\nMAN7DIR = $(MANDIR)/man7 ;\\nMAN8DIR = $(MANDIR)/man8 ;\\nMANNDIR = $(MANDIR)/mann ;\\n\\n######################################################\\n##\\n##  Example definitions for compiler suite (TOOLSETS)\\n## \\n######################################################\\nswitch $(COMP)\\n{\\ncase GNU :\\nCC = gcc ;\\nC++ = g++ ;\\nCCSTD = -std=c99 -D_POSIX_SOURCE ; # -pedantic\\nC++STD = -std=c++98 -D_POSIX_SOURCE ; # -Weffc++\\nCCCPP = -DHAVE_ALLOCA -DHAVE_BACKTRACE ;\\nC++CPP = -DHAVE_SNPRINTF -DHAVE_STRERROR_R -DHAVE_ALLOCA -DHAVE_BACKTRACE ;\\nSHRFLAGS = -fpic ;\\nSHRLINKLIBS = -shared -rdynamic -ldl ;\\nARCH = -m32 -march=pentium4 ;\\nCCOPTIMCOMP = -O2 $(ARCH) ;\\nC++OPTIMCOMP = -O2 $(ARCH) ;\\nCCDEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;\\nC++DEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;\\nCCCOMP = -Wall $(CCSTD) $(CCCPP) ;\\nC++COMP = -Wall $(C++STD) $(C++CPP) ;\\nLINKCOMP = ;\\n}\\n\\n################################################\\n##\\n##  Define the \\\"standard\\\" GUI flags\\n## \\n################################################\\n\\nCCGUI = ;\\nC++GUI = ;\\nLINKGUI = ;\\n\\nswitch $(GUILIB)\\n{\\ncase GTKMM :\\nCCGUI = `pkg-config gtkmm-2.4 --cflags` ;\\nC++GUI = `pkg-config gtkmm-2.4 --cflags` ;\\nLINKGUI = `pkg-config gtkmm-2.4 --libs` ;\\n\\ncase MOTIF :\\nCCGUI = -I/usr/include ;\\nC++GUI = -I/usr/include ;\\nLINKGUI = -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;\\n\\ncase QT3 :\\nCCGUI = -I$(QTDIR)/include ;\\nC++GUI = -I$(QTDIR)/include ;\\nLINKGUI = -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;\\n\\ncase * :\\nCCGUI = ;\\nC++GUI = ;\\nLINKGUI = ;\\n\\n}\\n\\n#################################\\n##\\n##  Define the \\\"standard\\\" flags\\n## \\n#################################\\n\\nCCFLAGS += $(CCCOMP) $(CCGUI) ;\\nC++FLAGS += $(C++COMP) $(C++GUI) ;\\nLINKLIBS += $(LINKCOMP) $(LINKGUI) ;\\n\\nOPTIM = $(CCDEBUGCOMP) ;\\nOPTIM = $(C++DEBUGCOMP) ;\\n\\nswitch $(VARIANT)\\n{\\ncase RELEASE :\\nOPTIM = $(CCOPTIMCOMP) ;\\nOPTIM = $(C++OPTIMCOMP) ;\\n\\n}\\n\\nLINKFLAGS = $(C++FLAGS) -lz ;\\nLINK = $(C++) ;\\n\\n# Local Variables:\\n# mode: makefile\\n# End: \\n\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "A template Jamrules."
+      end
+
+      attribute 144169 "s_rules_name"
+	class_attribute const_attribute private explicit_type "string"
+	init_value "(\"Jamrules\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the jam rules document."
+      end
+
+      attribute 155561 "m_flags"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The set of flags for the currently processing location"
+      end
+
+      attribute 155433 "m_headers"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The set of headers for the currently processing directory."
+      end
+
+      attribute 146601 "m_project"
+	const_attribute private type class_ref 7937 // UmlPackage
+	multiplicity "0..1"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}${type} & ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the project."
+      end
+
+      attribute 136489 "m_project_buffer"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This buffer contains stuff that child objects want to put in the
+top-level build file."
+      end
+
+      operation 171817 "build_system"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_top_loc" type class_ref 132393 // location
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+@{PROJECT}_REQUIRE (not ${p0}.full_path().isEmpty (), \"The root directory of the top location is not defined.\");
+@{PROJECT}_CHECK (m_headers.isEmpty () and m_flags.isEmpty (), \"Invalid jam_writer object with non-empty header and flag strings.\");
+${body}
+@{PROJECT}_CHECK (m_headers.isEmpty () and m_flags.isEmpty (), \"Invalid jam_writer object with non-empty header and flag strings.\");
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create the build system starting at a_top_loc and all the descendent locations.
+
+\\pre a_top_loc.parent = nul (location is at the top of the build tree)
+\\pre(internal) m_headers.empty and m_flags.empty
+\\post(internal) m_headers.empty and m_flags.empty"
+      end
+
+      operation 154921 "jam_writer"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "a_project" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}${)}
+: m_flags ()
+, m_headers ()
+, m_project (${p0})
+, m_project_buffer ()
+{}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "Main ctor, takes top-level a_project.
+
+\\pre a_project.parent = nul"
+      end
+
+      operation 155049 "~jam_writer"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
+      operation 155177 "jam_writer"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 134697 // jam_writer
+	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 155305 "comment"
+	class_operation private explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return QCString (\"#\");
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The comment marker for this style"
+      end
+
+      operation 155433 "default_name"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return \"Jamfile\";
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The default leaf filename for the current style"
+      end
+
+      operation 158121 "initialise"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_loc" type class_ref 132393 // location
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write the build-file initialisation section."
+      end
+
+      operation 174377 "install_target"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "a_target_name" explicit_type "string"
+	  param in name "a_loc_var" explicit_type "string"
+	  param inout name "a_os" explicit_type "ostream"
+	  param in name "a_install_type" explicit_type "uint"
+	    defaultvalue "generic"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}, ${t3} ${p3}${)}${const}${staticnl}{
+ @{PROJECT}_REQUIRE (not ${p0}.isEmpty (), \"Can not install no target.\");
+ @{PROJECT}_REQUIRE (not ${p1}.isEmpty (), \"Can not create install target with empty location.\");
+ @{PROJECT}_REQUIRE (bin <= ${p3} and ${p3}<= man, \"Given install type is unknown\");
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create an install target.
+
+\\pre not a_loc_var.empty
+\\pre a_install_type in (enum install_type)"
+      end
+
+      operation 176937 "merge_flags"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "a_flags" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract}
+{
+  merge_string_list (m_flags, a_flags);
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The effect of this method is to convert the contents of a_flags 
+into a list of tokens.  This list is merged into the list of
+flags for the current directory, removing duplicate items. The 
+list may not be empty.
+
+\\pre not a_includes.empty"
+      end
+
+      operation 176809 "merge_headers"
+	private explicit_return_type "void"
+	nparams 1
+	  param in name "a_headers" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract}
+{
+  merge_string_list (m_headers, a_headers);
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The effect of this method is to convert the contents of a_includes 
+into a list of tokens.  These lists are merged into the list of
+includes for the current directory, removing duplicate items. The 
+list may not be empty.
+
+\\pre not a_includes.empty"
+      end
+
+      operation 176681 "merge_string_list"
+	class_operation private explicit_return_type "void"
+	nparams 2
+	  param inout name "a_list" explicit_type "string"
+	  param in name "a_addition" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The effect of this method is to convert the contents of a_list and a_addition
+into lists of tokens.  These lists are merged, removing duplicate items, and
+the new list is assigned back to a_list. Either list may be empty."
+      end
+
+      operation 155689 "operator="
+	private return_type class_ref 134697 // jam_writer
+	nparams 1
+	  param in name "source" type class_ref 134697 // jam_writer
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 155817 "requirements"
+	class_operation private explicit_return_type "bool"
+	nparams 2
+	  param in name "a_item" type class_ref 7553 // UmlItem
+	  param inout name "a_reqs" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Scan a_item for any requirements, add these to a_req and
+return true if found."
+      end
+
+      operation 155945 "root_name"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return \"Jamfile\";
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The default leaf filename for the current style"
+      end
+
+      operation 156073 "sublocation"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_location" type class_ref 132393 // location
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write the Jamfile descent links for a_location to a_os"
+      end
+
+      operation 156201 "target"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "This method scans a_target for its direct sources and
+direct and indirect dependencies. "
+      end
+
+      operation 156329 "top_level"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_loc" type class_ref 132393 // location
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write extra details to the top-level build file."
+      end
+
+      operation 156457 "use_template"
+	const public explicit_return_type "void"
+	nparams 2
+	  param in name "a_art" type class_ref 6913 // UmlArtifact
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Set the writer to use the given template."
+      end
+
+      classrelation 149289 // <dependency>
+	relation 148521 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 149289 // <dependency>
+	  b parent class_ref 5248 // UmlCom
+      end
+    end
+
+    class 135849 "gmake_writer"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+
+${inlines}
+"
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Build file writer for gnu make
+
+Requires;
+:=
+include"
+      classrelation 143273 // <generalisation>
+	relation 142505 ---|>
+	  a public
+	    cpp default "${type}"
+	    java "${type}"
+	    classrelation_ref 143273 // <generalisation>
+	  b parent class_ref 129577 // writer
+      end
+
+      classrelation 145321 // <dependency>
+	relation 144553 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 145321 // <dependency>
+	  b parent class_ref 137001 // item_traits
+      end
+
+      class 139305 "install_type"
+	visibility private stereotype "enum"
+	cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+	java_decl "${comment}${public}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl "${comment}${visibility}final class ${name} {
+${items}}
+"
+	python_2_2 python_decl "class ${name}:
+${docstring}${members}
+"
+	idl_decl "${comment}enum ${name} {
+${items}};
+"
+	explicit_switch_type ""
+	
+	comment "Indicate what sort of object is being installed."
+	attribute 153769 "bin"
+	  public type class_ref 139305 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "File is a binary file."
+	end
+
+	attribute 154025 "generic"
+	  public type class_ref 139305 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "File is a generic file"
+	end
+
+	attribute 154153 "lib"
+	  public type class_ref 139305 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "Item is a library"
+	end
+
+	attribute 154281 "man"
+	  public type class_ref 139305 // install_type
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl "  ${name}${value},${comment}"
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "File is a man page"
+	end
+      end
+
+      attribute 143017 "section_name"
+	class_attribute const_attribute public explicit_type "string"
+	init_value "(\"make\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The label for description 'sections' and the value of 
+the style for this buildfile type."
+      end
+
+      attribute 138793 "s_default_rules"
+	class_attribute const_attribute private explicit_type "string"
+	init_value "(\"#\\n# Makefile.sys\\n#\\n##################################\\n# Settings for current environment\\n##################################\\n\\nOS ?= LINUX\\nCOMP ?= GNU\\nVARIANT ?= DEBUG\\nXMLLIB ?=\\n\\n#############################\\n##\\n##  Default install locations\\n## \\n#############################\\nVERSIONDIR:=\\\"@@project@@-@@version@@\\\"\\nPREFIX=$(ROOTDIR)/installdir\\nEXEC_PREFIX=$(PREFIX)\\nBINDIR=$(EXEC_PREFIX)/bin\\nSBINDIR=$(EXEC_PREFIX)/sbin\\nLIBEXECDIR=$(EXEC_PREFIX)/libexec\\nLIBDIR=$(EXEC_PREFIX)/lib\\nDATAROOTDIR=$(PREFIX)/share\\nDATADIR=$(PREFIX)/share\\nSYSCONFDIR=/etc\\nSHAREDSTATEDIR=$(PREFIX)/com\\nLOCALSTATEDIR=$(PREFIX)/var\\nINCLUDEDIR=$(PREFIX)/include\\nLOCALEDIR=$(DATAROOTDIR)/locale\\nDOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)\\nINFODIR=$(DATAROOTDIR)/info\\nMANDIR=$(DATAROOTDIR)/man\\nHTMLDIR=$(DOCDIR)\\nDVIDIR=$(DOCDIR)\\nPDFDIR=$(DOCDIR)\\nPSDIR=$(DOCDIR)\\nMAN1DIR=$(MANDIR)/man1\\nMAN2DIR=$(MANDIR)/man2\\nMAN3DIR=$(MANDIR)/man3\\nMAN4DIR=$(MANDIR)/man4\\nMAN5DIR=$(MANDIR)/man5\\nMAN6DIR=$(MANDIR)/man6\\nMAN7DIR=$(MANDIR)/man7\\nMAN8DIR=$(MANDIR)/man8\\nMANNDIR=$(MANDIR)/mann\\n# Flags for the install targets.\\nINSTALL:=install\\nBINIFLAGS:=-m 755\\nFILEIFLAGS:=-m 644\\nLIBIFLAGS:=-m 644 \\nMANIFLAGS:=-m 644\\n###########################\\n##\\n## Generic setup below here\\n##\\n###########################\\n\\n####################\\n## OS SPECIFIC STUFF\\n####################\\nifeq ($(OS),WIN32)\\nSUFEXE:=.exe\\nSUFLIB:=.dll\\nendif\\n\\nifeq ($(OS),LINUX)\\nSUFEXE:=\\nSUFLIB:=.so.0\\nendif\\n\\n###############################################\\n##  Definitions for GNU g++ compiler for unices\\n###############################################\\n\\nifeq ($(COMP),GNU)\\n## For linux\\nCC:=gcc\\nCCC:=g++\\nSTDCFLAGS:=-Wall -std=c99 -D_POSIX_SOURCE -DHAVE_ALLOCA -DHAVE_BACKTRACE\\nSTDCXXFLAGS:=-Wall -std=c++98 -D_POSIX_SOURCE -DHAVE_SNPRINTF -DHAVE_STRERROR_R -DHAVE_ALLOCA -DHAVE_BACKTRACE\\n# -Weffc++\\nSTDOPTFLAGS:=-O2 -march=pentium4\\nSTDDEBUGFLAGS:=-O1 -Wall -DDEBUG=1\\nSTDLDFLAGS:=-lz\\nSTDSHRLIBS:=-rdynamic -ldl\\nSTDSHRFLAG:=-fPIC\\nSTDSHRXFLAGS:=-shared -Wl,-soname,\\nendif\\n\\n######################################################\\n##  Example library setup definition for XML libraries\\n######################################################\\n\\nifeq ($(XMLLIB),EXPAT)\\nDOMFLAGS:=-DEXPAT\\nDOMLIBS:=-lexpat\\nendif\\n\\nifeq ($(XMLLIB),XML2)\\nDOMFLAGS:=-DXML2 `xml2-config --cflags`\\nDOMLIBS:=`xml2-config --libs`\\nendif\\n\\n######################\\n##  Combine flags sets\\n######################\\n\\nifeq ($(VARIANT),DEBUG)\\nVARIANTFLAGS=$(STDDEBUGFLAGS) $(DEBUGFLAGS)\\nelse\\nVARIANTFLAGS=$(STDOPTFLAGS)\\nendif\\n\\nCFLAGS=$(VARIANTFLAGS) $(STDCFLAGS) $(DOMFLAGS) $(USERFLAGS)\\nCXXFLAGS=$(VARIANTFLAGS) $(STDCXXFLAGS) $(DOMFLAGS) $(USERFLAGS)\\nLDFLAGS=$(VARIANTFLAGS) $(STDLDFLAGS) $(DOMLIBS) $(USERLDFLAGS)\\n\\n#############################################\\n##  Define standard directory descent targets\\n#############################################\\n\\nall:: dopart\\n\\ninstall:: doinstall\\n\\ndoit:\\n\\tfor WORKDIR in $(DIRS); do \\\\\\n\\techo Working on $$WORKDIR; \\\\\\n\\tpushd $$WORKDIR;\\\\\\n\\tOS=$(OS) USERHDRS=\\\"$(USERHDRS)\\\" USERFLAGS=\\\"$(USERFLAGS)\\\" ROOTDIR=\\\"$(ROOTDIR)\\\" COMP=\\\"$(COMP)\\\" VARIANT=\\\"$(VARIANT)\\\"  make $(WHAT); \\\\\\n\\tpopd;\\\\\\n\\tdone\\n\\ndopart:\\n\\tWHAT=\\\"all\\\" make doit\\n\\ndoinstall:\\n\\tWHAT=\\\"install\\\" make doit\\n\\ndistclean: clean\\n\\trm -f core core.* $(TARGETS) *~ *.d\\n\\tWHAT=\\\"distclean\\\" make doit\\n\\nclean: \\n\\trm -f $(USEROBJ)\\n\\tWHAT=\\\"clean\\\" make doit\\n\\n##############\\n## Build rules\\n##############\\n\\n.cc.o: \\n\\t$(CCC) $(USERHDRS) $(CXXFLAGS) -c $<\\n\\n.cpp.o: \\n\\t$(CCC) $(USERHDRS) $(CXXFLAGS) -c $<\\n\\n%.d: %.cc\\n\\tset -e; $(CCC) -MM $(USERHDRS) $(CXXFLAGS) $< \\\\\\n\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\\t[ -s $@ ] || rm -f $@\\n\\n%.d: %.cpp\\n\\tset -e; $(CCC) -MM $(USERHDRS) $(CXXFLAGS) $< \\\\\\n\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\\t[ -s $@ ] || rm -f $@\\n\\n###############\\n## Editor sugar\\n###############\\n# Local Variables:\\n# mode: makefile\\n# End:\\n\\n\") 
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This is the default contents of a the rules file (makefile.sys) If a 
+document artifact with name 'makefile.sys' is not present when 
+butter is executed with @style='make' then one will be created
+using this string.
+"
+      end
+
+      attribute 144297 "s_rules_name"
+	class_attribute const_attribute private explicit_type "string"
+	init_value "(\"makefile.sys\");"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the rules file."
+      end
+
+      attribute 135209 "m_project"
+	const_attribute private type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The global project (this is the first package encountered.)"
+      end
+
+      attribute 137641 "m_project_buffer"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This buffer contains stuff that child objects want to put in the
+top-level build file."
+      end
+
+      attribute 145449 "m_rootdir"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The root directory of the project."
+      end
+
+      operation 171945 "build_system"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_top_loc" type class_ref 132393 // location
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+@{PROJECT}_REQUIRE (not ${p0}.full_path().isEmpty (), \"The root directory of the top location is not defined.\");
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create the build system starting at a_top_loc and all the descendent locations.
+
+\\pre a_top_loc.parent = nul (location is at the top of the build tree)"
+      end
+
+      operation 161961 "comment"
+	class_operation private explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return QCString (\"#\");
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The comment marker for this style"
+      end
+
+      operation 161833 "default_name"
+	class_operation private explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return \"makefile\";
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The default leaf filename for the current style"
+      end
+
+      operation 161577 "initialise"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_loc" type class_ref 132393 // location
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write the build-file initialisation section."
+      end
+
+      operation 175529 "install_target"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "a_target_name" explicit_type "string"
+	  param in name "a_loc_var" explicit_type "string"
+	  param inout name "a_os" explicit_type "ostream"
+	  param in name "a_install_type" explicit_type "uint"
+	    defaultvalue "generic"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}, ${t3} ${p3}${)}${const}${staticnl}{
+ @{PROJECT}_REQUIRE (not ${p0}.isEmpty (), \"Can not install no target.\");
+ @{PROJECT}_REQUIRE (not ${p1}.isEmpty (), \"Can not create install target with empty location.\");
+ @{PROJECT}_REQUIRE (bin <= ${p3} and ${p3}<= man, \"Given install type is unknown\");
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Create an install target.
+
+\\pre not a_loc_var.empty
+\\pre a_install_type in (enum install_type)"
+      end
+
+      operation 160553 "gmake_writer"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "a_project" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}${)}
+: m_project (${p0})
+, m_project_buffer ()
+, m_rootdir ()
+{}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "Create a writer from the top-level a_project
+
+\\pre a_project.parent = nul"
+      end
+
+      operation 160425 "~gmake_writer"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
+      operation 160297 "gmake_writer"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 135849 // gmake_writer
+	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 160169 "operator="
+	private return_type class_ref 135849 // gmake_writer
+	nparams 1
+	  param in name "source" type class_ref 135849 // gmake_writer
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 162089 "process_hdrs"
+	class_operation private explicit_return_type "string"
+	nparams 1
+	  param in name "a_inc_list" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Transform a space separated list of include dirs into a
+list with -I..."
+      end
+
+      operation 161193 "requirements"
+	class_operation private explicit_return_type "bool"
+	nparams 2
+	  param in name "a_item" type class_ref 7553 // UmlItem
+	  param inout name "a_reqs" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Scan a_item for any requirements, add these to a_req and
+return true if found."
+      end
+
+      operation 165801 "root_directory"
+	public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return m_rootdir;
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Get the root directory"
+      end
+
+      operation 161321 "root_name"
+	class_operation private explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return \"makefile\";
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The default leaf filename for the current style"
+      end
+
+      operation 161065 "sublocation"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_location" type class_ref 132393 // location
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write the Jamfile descent links for a_location to a_os"
+      end
+
+      operation 160937 "target"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "This method scans a_target for its direct sources and
+direct and indirect dependencies. "
+      end
+
+      operation 160809 "top_level"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_loc" type class_ref 132393 // location
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write extra details to the top-level build file. 
+
+TODO Also creates the makefile.sys?"
+      end
+
+      operation 160681 "use_template"
+	const public explicit_return_type "void"
+	nparams 2
+	  param in name "a_art" type class_ref 6913 // UmlArtifact
+	  param inout name "a_os" explicit_type "ostream"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Set the writer to use the given template."
+      end
+
+      classrelation 149417 // <dependency>
+	relation 148649 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 149417 // <dependency>
+	  b parent class_ref 5248 // UmlCom
+      end
+    end
+  end
+
+  deploymentview 128041 "butter"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    deploymentdiagram 129193 "hello world"
+      package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+      draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+      size A4
+    end
+
+    artifact 4865 "Main"
+      stereotype "source"
+      cpp_src "#include <qapplication.h>
+ 
+#include \"UmlCom.h\"
+#include \"UmlItem.h\"
+#include \"UmlPackage.h\"
+#include \"UmlArtifact.h\"
+#include \"butter/uml_visitor.h\"
+#include \"butter/writer.h\"
+#include \"butter/location.h\"
+
+// the program is called with the socket port number in argument
+
+int main(int argc, char ** argv)
+{
+  if (argc != 2)
+    return 0;
+  
+  QApplication a(argc, argv);
+  
+  if (UmlCom::connect(QString(argv[1]).toUInt())) {
+    try {
+      UmlCom::trace(\"<b><i>jamfile/makefile</i> generator</b> release 1<br>\");
+
+      butter::uml_visitor l_parser;
+      BUTTER_CHECK (NULL != UmlPackage::getProject (), \"Error: no project defined!<br>\");
+      l_parser.visit (*UmlPackage::getProject ());
+      if (not l_parser.empty ())
+      {
+        // Write the build-system files.
+        butter::writer::build_system (l_parser.top (), dynamic_cast< UmlPackage & >(*UmlPackage::getProject ()));
+      }
+      else
+      {
+        UmlCom::trace(\"<p>No build targets or documents found.</p>\");
+      }
+    }
+    catch (const std::exception &a_err)
+    {
+      UmlCom::trace(a_err.what ());
+    }
+    catch (const char * a_what) {
+      UmlCom::trace(a_what);
+    }
+    catch (...) {
+      UmlCom::trace(\"Caught unknown exception.\");
+    }
+
+    UmlCom::trace(\"<b><i>jamfile/makefile</i> generator</b> complete<br>\");
+   // must be called to cleanly inform that all is done
+    UmlCom::bye();
+  }
+  
+  UmlCom::close();
+  return 0;
+}
+"
+      associated_classes
+      end
+      comment "  The main function, you have to modify at least the line containing
+
+  UmlCom::targetItem()->???();
+
+  it if you want your program does something !"
+    end
+
+    artifact 4737 "butter"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 128041 // uml_visitor
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 132521 // location
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 4865 // Main
+	artifact_ref 142889 // bouml
+	artifact_ref 138793 // item_traits
+	artifact_ref 134057 // qt
+	artifact_ref 132649 // writer
+	artifact_ref 136361 // jam_writer
+      end
+      ncouples 10
+      key "genpro pro" value "/home/finnerty/Office/Projects/butter/build/butter.pro"
+      key "genpro path" value "/tmp/gpro/"
+      key "genpro target" value "/home/finnerty/Office/Projects/butter/build/butter"
+      key "genpro tmplt" value "app"
+      key "genpro config" value "debug warn_on qt"
+      key "genpro defines" value "WITHCPP"
+      key "genpro includepath" value "../include/bouml/ ../include/butter/ ../include/ihm/ ../include/"
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value "/home/finnerty/Office/Projects/butter/build"
+      key "genpro footer" value "# LIBS += -lboost_filesystem"
+      comment "Version of butter plugout used by 'butter' to build itself."
+    end
+
+    artifact 148393 "butter.plugout"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 128041 // uml_visitor
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 7297 // UmlNode
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 4480 // UmlCom
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 4864 // aDirection
+	artifact_ref 132521 // location
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 7169 // UmlItem
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 4865 // Main
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 4992 // aVisibility
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 768 // CppSettings
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 5120 // anItemKind
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 5633 // UmlClass
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 138793 // item_traits
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 136361 // jam_writer
+	artifact_ref 132649 // writer
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 3072 // UmlBaseDiagram
+      end
+      ncouples 10
+      key "genpro pro" value "/tmp/build/butter.pro"
+      key "genpro path" value "/tmp/butter/src/butter"
+      key "genpro target" value "/tmp/butter/installdir/bin/butter"
+      key "genpro tmplt" value "app"
+      key "genpro config" value "release warn_off qt"
+      key "genpro defines" value "WITHCPP NO_LOG NO_DBC"
+      key "genpro includepath" value "../include/bouml/ ../include/butter/ ../include/"
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value "/tmp/butter/build"
+      key "genpro footer" value ""
+      comment "Version of the butter plugout buildable using genpro
+
+After generating the project file set the stereotype to 'source' 
+to avoid butter treating it as a target.
+"
+    end
+
+    artifact 135209 "bjam_writer"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+#include \"butter/config.h\"
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// Manual source includes
+#include <qstringlist.h>
+// -
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 133545 // bjam_writer
+      end
+    end
+
+    artifact 141609 "config"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_CONFIG_H
+#define @{PROJECT}_CONFIG_H 1
+
+#define @{PROJECT}_ALWAYS(X,Y) do { if (not (X)) { throw Y; } } while (false)
+
+#ifdef NO_DBC
+#define @{PROJECT}_REQUIRE(X,Y)
+#define @{PROJECT}_CHECK(X,Y)
+#define @{PROJECT}_ENSURE(X,Y)
+#else
+#define @{PROJECT}_REQUIRE @{PROJECT}_ALWAYS
+#define @{PROJECT}_CHECK @{PROJECT}_ALWAYS
+#define @{PROJECT}_ENSURE @{PROJECT}_ALWAYS
+#endif
+
+
+#endif
+"
+      associated_classes
+      end
+      comment "Configuration information."
+    end
+
+    artifact 138793 "item_traits"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+#include \"butter/config.h\"
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 137001 // item_traits
+      end
+    end
+
+    artifact 136361 "jam_writer"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+#include \"butter/config.h\"
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// Manual source includes
+#include <qstringlist.h>
+#include <qregexp.h>
+// -
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 134697 // jam_writer
+      end
+    end
+
+    artifact 132521 "location"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+#include \"butter/config.h\"
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// Manual source includes
+#include <qvaluestack.h>
+#include \"UmlDeploymentView.h\"
+// -
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 132393 // location
+      end
+    end
+
+    artifact 137641 "gmake_writer"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// Manual source includes
+#include <qstringlist.h>
+// -
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 135849 // gmake_writer
+      end
+    end
+
+    artifact 128041 "uml_visitor"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+#include \"butter/config.h\"
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// Manual source includes
+#include <qptrstack.h>
+#include <stdexcept>
+// -
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 128041 // uml_visitor
+      end
+    end
+
+    artifact 132649 "writer"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+#include \"butter/config.h\"
+#include <new>
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// Manual source includes
+#include \"butter/bjam_writer.h\"
+#include \"butter/jam_writer.h\"
+#include \"butter/gmake_writer.h\"
+#include <qregexp.h>
+#include <stdexcept>
+// -
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 129577 // writer
+      end
+    end
+  end
+end

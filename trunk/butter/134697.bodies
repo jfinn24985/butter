@@ -1,0 +1,433 @@
+class jam_writer
+!!!171817.cpp!!!	build_system(in a_top_loc : location) : void
+#line 101
+// Perform the write in a depth-first manner.
+if (a_top_loc.children().count () > 0)
+{
+  for (unsigned int l_i (0); l_i < a_top_loc.children().count (); ++l_i)
+  {
+    build_system (*(a_top_loc.children().at (l_i)));
+  }
+}
+
+// Check that the directroy exists
+QDir l_target_dir (a_top_loc.full_path ());
+if (not l_target_dir.exists ())
+{
+  l_target_dir.mkdir (a_top_loc.full_path ());
+}
+// Create the pathname for the current location.
+QCString l_full_path (a_top_loc.full_path ());
+l_full_path += QDir::separator ();
+l_full_path += (NULL == a_top_loc.parent () ? root_name () : default_name ());
+QString l_buffer;
+unsigned int l_subdir_flag_insert_position (0);
+{
+  // Scope for l_os
+  QTextOStream l_os (&l_buffer);
+#ifndef NO_LOG
+  l_os << comment () << " BEGIN jamfile [" << l_full_path << "]\n";
+#endif
+  if (a_top_loc.templates().count () > 0)
+  {
+#ifndef NO_LOG
+    l_os << comment () << " This build files uses the following templates:\n";
+#endif
+    for (unsigned int l_i (0); l_i < a_top_loc.templates().count (); ++l_i)
+    {
+#ifndef NO_LOG
+      l_os << comment () << " [" << l_i << "] = " << a_top_loc.templates().at (l_i)->name () << "\n";
+#endif
+      use_template (*(a_top_loc.templates().at (l_i)), l_os);
+    }
+  }
+// Write some header documentation
+#ifndef NO_LOG
+  if (a_top_loc.packages().count () > 0)
+  {
+    l_os << comment () << " This build file contains the following packages:\n";
+    for (unsigned int l_i (0); l_i < a_top_loc.packages().count (); ++l_i)
+    {
+      l_os << comment () << " [" << l_i << "] = " << a_top_loc.packages().at (l_i)->name () << "\n";
+    }
+    l_os << "\n";
+  }
+#endif
+// Write any initialisation stuff
+  initialise (a_top_loc, l_os);
+
+// Write top-level stuff
+  if (NULL == a_top_loc.parent ())
+  {
+    top_level (a_top_loc, l_os);
+  }
+
+// Standard targets
+  if (a_top_loc.targets().count () > 0)
+  {
+    // We need to insert the sub dir flags later, get current string size
+    l_subdir_flag_insert_position = l_buffer.length ();
+#ifndef NO_LOG
+    l_os << comment () << " Targets:\n";
+#endif
+    for (unsigned int l_i (0); l_i < a_top_loc.targets().count (); ++l_i)
+    {
+#ifndef NO_LOG
+      l_os << comment () << " [" << l_i << "] = " << a_top_loc.targets().at (l_i)->name () << "\n";
+#endif
+      target (*(a_top_loc.targets().at (l_i)), l_os);
+    }
+    l_os << "\n";
+  }
+
+// Sub locations.
+  if (a_top_loc.children().count () > 0)
+  {
+#ifndef NO_LOG
+    l_os << comment () << " Children:\n";
+#endif
+    for (unsigned int l_i (0); l_i < a_top_loc.children().count (); ++l_i)
+    {
+#ifndef NO_LOG
+      l_os << comment () << " [" << l_i << "] = " << a_top_loc.children().at (l_i)->path () << "\n";
+#endif
+      sublocation (*(a_top_loc.children().at (l_i)), l_os);
+    }
+    l_os << "\n";
+  }
+
+#ifndef NO_LOG
+  l_os << "# END jamfile [" << l_full_path << "]\n";
+#endif
+  // Now check for installable documents.
+  if (not a_top_loc.documents ().isEmpty ())
+  {
+    for (unsigned int l_i (0); l_i < a_top_loc.documents ().count (); ++l_i)
+    {
+      QCString l_install_dir;
+      if (a_top_loc.documents ().at (l_i)->propertyValue (item_traits::butter_install_name, l_install_dir))
+      {
+        unsigned int l_install_type ((0 < l_install_dir.contains ("MAN", true) ? man : generic));
+        install_target (a_top_loc.documents ().at (l_i)->name (), l_install_dir, l_os, l_install_type);
+      }
+    }
+  }
+}
+// Insert the subdir flags into l_buffer. This must be done 
+// after finishing with l_os
+if (not m_flags.isEmpty ())
+{
+  l_buffer.insert (l_subdir_flag_insert_position, "\nSUBDIRC++FLAGS += " + m_flags + " ;\n");
+  m_flags.resize (0);
+}
+if (not m_headers.isEmpty ())
+{
+  l_buffer.insert (l_subdir_flag_insert_position, "\nSUBDIRHDRS += " + m_headers + " ;\n");
+  m_headers.resize (0);
+}
+
+
+// We have created the contents of the file in l_buffer
+// Check that the file has changed..
+if (not compare_file_to_string (l_full_path, QCString(l_buffer)))
+{
+  UmlCom::trace ("<p>Writing build file : " + l_full_path + "</p>");
+}
+else
+{
+  UmlCom::trace ("<p>Skipping unchanged build file : " + l_full_path + "</p>");
+}
+
+// Now write any documents.
+if (not a_top_loc.documents ().isEmpty ())
+{
+  write_documents (a_top_loc);
+}
+!!!158121.cpp!!!	initialise(in a_loc : location, inout a_os : ostream) : void
+// Need to write the TOP line.
+a_os << "SubDir TOP";
+if (NULL != a_loc.parent ())
+{
+  const location *l_cursor = &a_loc;
+  QString l_phrase;
+  while (NULL != l_cursor->parent ())
+  {
+    l_phrase.insert (0, l_cursor->path ());
+    l_phrase.insert (0, " ");
+    l_cursor = l_cursor->parent ();
+  }
+  a_os << l_phrase;
+  a_os << " ;\n";
+}
+else
+{
+  a_os << " ;\n";
+  QCString l_tmp;
+  if (requirements (m_project, l_tmp))
+  {
+    a_os << l_tmp;
+  }
+}
+!!!174377.cpp!!!	install_target(in a_target_name : string, in a_loc_var : string, inout a_os : ostream, in a_install_type : uint = generic) : void
+if (a_loc_var != item_traits::no_install_value)
+{
+  static const char * l_install_cmd[] =
+  {
+    "InstallBin"
+  , "InstallFile"
+  , "InstallInto"
+  , "InstallLib"
+  , "InstallMan"
+  };
+  a_os << l_install_cmd [a_install_type] << " $("  << a_loc_var;
+  a_os << ") : " << a_target_name << " ;\n";
+}
+!!!176681.cpp!!!	merge_string_list(inout a_list : string, in a_addition : string) : void
+if (a_list.isEmpty ())
+{
+  a_list = a_addition;
+}
+else if (not a_list.contains (a_addition))
+{
+  // a_addition is not a subset of a_list
+  if (a_addition.contains (a_list))
+  {
+    // a_list is a subset of a_addition, swap.
+    a_list = a_addition;
+  }
+  else
+  {
+    // contents do not overlap, split and compare
+    QRegExp l_splitter ("(\\S*\"[^\"]+\"\\S*|\\S+)");
+    QStringList l_list1, l_list2;
+    int l_counter (0);
+    for (int l_pos (0); l_pos >= 0; ++l_counter)
+    {
+      l_pos = l_splitter.search(a_list, l_pos);
+      if (l_pos > -1)
+      {
+        l_list1 += l_splitter.cap (1);
+        l_pos += l_splitter.matchedLength();
+      }
+      if (l_counter >= 100) throw "merge_string_list loop 1 > 100";
+    }
+    l_counter = 0;
+    for (int l_pos (0); l_pos >= 0; ++l_counter)
+    {
+      l_pos = l_splitter.search(a_addition, l_pos);
+      if (l_pos > -1)
+      {
+        l_list2 += l_splitter.cap (1);
+        l_pos += l_splitter.matchedLength();
+      }
+      if (l_counter >= 100) throw "merge_string_list loop 2 > 100";
+    }
+    l_counter = 0;
+    for (QStringList::Iterator l_cursor = l_list2.begin(); l_cursor != l_list2.end(); ++l_cursor,  ++l_counter)
+    {
+      if (0 == l_list1.contains (*l_cursor))
+      {
+         l_list1 += *l_cursor;
+      }
+      if (l_counter >= 100) throw "merge_string_list loop 3 > 100";
+    }
+    a_list = l_list1.join (" ");
+  }
+}
+!!!155817.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : string) : bool
+bool Result (false);
+QCString l_tmp;
+QString l_section;
+QTextOStream l_os (&l_section);
+if (const_cast< UmlItem& >(a_item).propertyValue (item_traits::butter_include_name, l_tmp))
+{
+  Result = true;
+  l_os << "HDRS += ";
+  QStringList l_list (QStringList::split (" ", l_tmp));
+  for (unsigned int l_i (0); l_i < l_list.count (); ++l_i)
+  {
+    l_os << "\"" << (*l_list.at (l_i)).stripWhiteSpace () << "\" ";
+  }
+  l_os << ";\n";
+}
+if (item_traits::property_search (a_item, item_traits::butter_ldflags_name, l_tmp))
+{
+  Result = true;
+  l_os << "LINKLIBS += \"" << l_tmp << "\" ;\n";
+}
+if (item_traits::property_search (a_item, item_traits::butter_flags_name, l_tmp))
+{
+  Result = true;
+  l_os << "C++FLAGS += \"" << l_tmp << "\" ;\n";
+}
+if (Result)
+{
+  a_reqs = l_section;
+}
+return Result;
+!!!156073.cpp!!!	sublocation(in a_location : location, inout a_os : ostream) : void
+const location *l_cursor = &a_location;
+QString l_phrase;
+while (NULL != l_cursor->parent ())
+{
+  l_phrase.insert (0, l_cursor->path ());
+  l_phrase.insert (0, " ");
+  l_cursor = l_cursor->parent ();
+}
+if (not l_phrase.isEmpty ())
+{
+  a_os << "SubInclude TOP" << l_phrase << " ;\n";
+}
+!!!156201.cpp!!!	target(in a_target : UmlArtifact, inout a_os : ostream) : void
+#line 300
+QVector < UmlArtifact > l_assoc0 (const_cast< UmlArtifact& >(a_target).associatedArtifacts ());
+if (not l_assoc0.isEmpty ())
+{
+  bool Result (true);
+// a_target must be execution or library stereotype
+  QCString l_here ("<" + item_traits::location (a_target) + ">");
+  QCString l_lib_type;
+  QCString l_install_dir;
+  unsigned int l_install_type (generic);
+  if (const_cast< UmlArtifact& >(a_target).stereotype () == item_traits::library_stereotype)
+  {
+    QCString l_other;
+    l_install_type = lib;
+    if (const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_other_name, l_other))
+    {
+      a_os << l_other << " ";
+    }
+    else
+    {
+      l_here.append ("lib" + const_cast< UmlArtifact& >(a_target).name () + "$(SUFLIB)");
+      a_os << "Library " << l_here  << " :\n\t";
+    }
+    if (not item_traits::property_search (a_target, item_traits::butter_lib_type_name, l_lib_type))
+    {
+      l_lib_type = item_traits::static_value;
+    }
+    if (not const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_install_name, l_install_dir))
+    {
+      l_install_dir = item_traits::libdir_value;
+    }
+    else
+    {
+      if (l_install_dir != item_traits::libdir_value)
+      {
+        l_install_type = generic; // Reset to generic.
+      }
+    }
+  }
+  else if (const_cast< UmlArtifact& >(a_target).stereotype () == item_traits::executable_stereotype)
+  {
+    l_install_type = bin;
+    l_here.append (const_cast< UmlArtifact& >(a_target).name () + "$(SUFEXE)");
+    a_os << "Main " << l_here << " :\n\t";
+    if (not const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_install_name, l_install_dir))
+    {
+      l_install_dir = item_traits::bindir_value;
+    }
+    else
+    {
+      if (l_install_dir != item_traits::bindir_value)
+      {
+        l_install_type = generic; // Reset to generic.
+      }
+    }
+  }
+  else
+  {
+    Result = false;
+  }
+  if (Result)
+  {
+    QString l_libs;
+    QTextOStream l_libos (&l_libs);
+    QCString l_links;
+    QCString l_hdrs;
+    QCString l_flags;
+    for (unsigned int l_i (0); l_i < l_assoc0.size (); ++l_i)
+    {
+      UmlArtifact *l_tmp (l_assoc0.at (l_i));
+      if (l_tmp->stereotype () == item_traits::library_stereotype)
+      {
+        QCString l_linker;
+        if (l_tmp->propertyValue (item_traits::butter_project_name, l_linker))
+        {
+          // Is an externally linked library, look for HDR and LINKLIB lines.
+          find_hdr_link (l_tmp->description (), l_hdrs, l_links, l_flags);
+        }
+        else
+        {
+          l_libos << "<" << item_traits::location (*l_tmp) << ">lib" << l_tmp->name () << "$(SUFLIB)\n\t";
+        }
+      }
+      else if (l_tmp->stereotype () == item_traits::source_stereotype)
+      {
+        a_os << "<" << item_traits::location (*l_tmp) << ">" << l_tmp->name () << "." << CppSettings::sourceExtension () << "\n\t";
+      }
+    }
+    a_os << ";\n\n";
+
+    if (not l_libs.isEmpty ())
+    {
+      a_os << "LinkLibraries " << l_here << " :\n\t" << l_libs << ";\n\n";
+    }
+    if (not l_hdrs.isEmpty ())
+    {
+      merge_headers (l_hdrs);
+    }
+    if (not l_flags.isEmpty ())
+    {
+      merge_flags (l_flags);
+    }
+    if (not l_links.isEmpty ())
+    {
+      a_os << "LINKLIBS on " << l_here << " += " << l_links << " ;\n\n";
+    }
+
+//    if (not l_lib_type.isEmpty ())
+//    {
+//      a_os << "<link>" << l_lib_type << "\n\t";
+//    }
+//    QCString l_tmp;
+//    if (requirements (a_target, l_tmp))
+//    {
+//      a_os << l_tmp;
+//    }
+//    a_os << ";\n\n";
+    if (not l_install_dir.isEmpty ())
+    {
+      install_target (l_here, l_install_dir, a_os, l_install_type);
+    }
+  }
+}
+!!!156329.cpp!!!	top_level(in a_loc : location, inout a_os : ostream) : void
+// The include dir is the difference between the current fullpath and the
+// top-projects hdrDir
+QString l_top_hdr (item_traits::hdrname (m_project).path ());
+if (0 == l_top_hdr.find (QString (a_loc.full_path ())))
+{
+  a_os << "HDRS += " << l_top_hdr.mid (a_loc.full_path ().length () + 1) << " ;\n\n";
+}
+else
+{
+  a_os << "HDRS += " << l_top_hdr << " ;\n\n";
+}
+// If no makefile docs...
+if (not a_loc.has_document (s_rules_name))
+{
+  QCString l_ver;
+  if (not const_cast< UmlPackage & > (m_project).propertyValue (item_traits::butter_version_name, l_ver))
+  {
+    if (not const_cast< UmlPackage & > (m_project).propertyValue (item_traits::version_name, l_ver))
+    {
+      l_ver = "1.0";
+    }
+  }
+  QCString l_default_rules (s_default_rules);
+  l_default_rules.replace ("@@project@@", const_cast< UmlPackage & > (m_project).name ()).replace ("@@version@@", l_ver);
+  const_cast<location&>(a_loc).create_document (s_rules_name)->set_Description (l_default_rules);
+}
+!!!156457.cpp!!!	use_template(in a_art : UmlArtifact, inout a_os : ostream) : void
+a_os << section (section_name, const_cast< UmlArtifact& >(a_art).description ());

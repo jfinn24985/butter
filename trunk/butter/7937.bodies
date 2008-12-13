@@ -1,0 +1,4 @@
+class UmlPackage
+!!!158889.cpp!!!	hdrname() : path
+// Set filename
+return QDir::cleanDirPath (CppSettings::rootDir () + "/" + cppHDir ());
