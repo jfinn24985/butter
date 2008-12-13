@@ -1,6 +1,6 @@
 format 61
 "Build" // Build
-  revision 29
+  revision 30
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -102,6 +102,7 @@ the jam style. This means that when using a jam style all leaf directories must 
 - **Documents**: The description from UML artifacts with the **document** stereotype can be
 written to the filesystem by //butter//.  Documents with names ``buildfile``, ``makefile.sys``,
 ``local.jam`` or ``Jamrules`` have special meaning.
+
 
 ===Jam standard limitations===
 
@@ -703,6 +704,16 @@ needs.  Because //butter// will use artifacts with these names it is
 possible to add these artifacts to a template bouml project with your 
 other tailered settings.
 
+"
+    end
+
+    artifact 149673 "buildfile"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "${butter_boost}
+# Define which compiler to use,
+using gcc ;
 "
     end
   end

@@ -209,7 +209,7 @@ return const_cast< UmlArtifact& >(a_art).propertyValue (item_traits::butter_proj
 !!!142761.cpp!!!	~location()
 if (not m_children.isEmpty ())
 {
-  for (int l_i (0); l_i < m_children.count (); ++l_i)
+  for (unsigned int l_i (0); l_i < m_children.count (); ++l_i)
   {
     delete m_children[l_i];
   }

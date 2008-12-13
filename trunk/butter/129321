@@ -1,6 +1,6 @@
 format 61
 "Qt" // External::Qt
-  revision 12
+  revision 13
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -43,6 +43,7 @@ FLAGS=-DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT
 LINK=-L${QTDIR}/lib -lqt-mt -lm
 ${butter_boost}
 # Example for using pkg-config information in boost jam
+import string ;
 .qtcompileflags = [ string.join [ string.words [ SHELL \"pkg-config qt-mt --cflags-only-other\" ] ] : \" \" ] ;
 .qtincprefix = [ MATCH \"-I\\(.*\\)\" : [ string.words [ SHELL \"pkg-config qt-mt --cflags-only-I\" ] ] ] ;
 .qtlibprefix = [ MATCH \"-L\\(.*\\)\" : string.join [ string.words [ SHELL \"pkg-config qt-mt --libs-only-L\" ] ] ] ;
