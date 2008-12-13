@@ -29,3 +29,5 @@
 
 "QPtrDict" "#include <qptrdict.h>"
 
+"std::auto_ptr" "#include <memory>"
+

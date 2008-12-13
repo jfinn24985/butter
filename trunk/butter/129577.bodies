@@ -47,33 +47,34 @@ if (not Result)
 return Result;
 !!!161449.cpp!!!	find_hdr_link(in a_desc : string, inout a_hdr : string, inout a_link : string, inout a_flag : string) : void
 // Get the section.
-const QString l_sec (section (item_traits::generic_section, a_desc));
-QRegExp l_hdr_re ("^ *" + item_traits::header_label + " *= *(.*)");
-QRegExp l_link_re ("^ *" + item_traits::link_label + " *= *(.*)");
-QRegExp l_flag_re ("^ *" + item_traits::flag_label + " *= *(.*)");
+QString l_sec (section (item_traits::generic_section, a_desc));
+QRegExp l_hdr_re ("^ *" + item_traits::header_label + " *= *");
+QRegExp l_link_re ("^ *" + item_traits::link_label + " *= *");
+QRegExp l_flag_re ("^ *" + item_traits::flag_label + " *= *");
 if (not l_sec.isEmpty ())
 {
   QTextIStream l_sec_is (&l_sec);
   while (not l_sec_is.atEnd ())
   {
     const QString l_line (l_sec_is.readLine ());
-    if (-1 != l_hdr_re.search (l_line))
+    int l_length;
+    if (-1 != l_hdr_re.match (l_line, 0, &l_length))
     {
       if (not a_hdr.isEmpty ()) { a_hdr.append (" "); }
-      a_hdr.append (l_hdr_re.cap (1));
+      a_hdr.append (l_line.mid (l_length));
     }
-    else if (-1 != l_link_re.search (l_line))
+    else if (-1 != l_link_re.match (l_line, 0, &l_length))
     {
       if (not a_link.isEmpty ()) { a_link.append (" "); }
-      a_link.append (l_link_re.cap (1));
+      a_link.append (l_line.mid (l_length));
     }
-    else if (-1 != l_flag_re.search (l_line))
+    else if (-1 != l_flag_re.match (l_line, 0, &l_length))
     {
       if (not a_flag.isEmpty ()) { a_flag.append (" "); }
-      a_flag.append (l_flag_re.cap (1));
+      a_flag.append (l_line.mid (l_length));
     }
   }
-} 
+}
 !!!150313.cpp!!!	build_system(in a_top_loc : location, in a_project : UmlPackage) : void
 std::auto_ptr< writer > l_builder;
 QCString l_style;

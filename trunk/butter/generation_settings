@@ -1,5 +1,5 @@
 
-  cpp_default_defs java_default_defs 
+  cpp_default_defs 
   cpp_h_extension "h" cpp_src_extension "cpp" java_extension "java" php_extension "php" python_extension "py" idl_extension "idl"
   cpp_include_with_path
   cpp_root_relative_path
@@ -30,18 +30,16 @@
     "stringstream" "std::stringstream" "IOStream" "IOStream" "${type}" "${type} &" "${type} &" "${type}"
     "path" "QDir" "Path" "Path" "${type}" "${type} &" "${type} &" "${type}"
   
-  relations_stereotypes 11 // uml cpp java pythonidl
+  relations_stereotypes 9 // uml cpp java pythonidl
     "sequence" "QVector" "Vector" "list" "sequence"
     "vector" "QVector" "Vector" "list" "sequence"
     "list" "QList" "Vector" "list" "sequence"
     "set" "QSet" "Vector" "set" "sequence"
     "dict" "QDict" "Vector" "list" "sequence"
-    "ptrDict" "QPtrDIct" "Vector" "list" "sequence"
     "valuelist" "QValueList" "Vector" "list" "sequence"
-    "ptr_vector" "QPtrVector" "Vector" "list" "sequence"
-    "stack" "QPtrStack" "Vector" "list" "sequence"
+    "vector" "QVector" "Vector" "list" "sequence"
+    "stack" "QStack" "Vector" "list" "sequence"
     "auto_ptr" "std::auto_ptr" "Vector" "list" "sequence"
-    "ptr_dict" "QPtrDict" "Vector" "list" "sequence"
   
   classes_stereotypes 11 // uml cpp java php python idl
     "class" "class" "class" "class" "class" "valuetype"

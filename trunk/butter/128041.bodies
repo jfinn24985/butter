@@ -83,7 +83,7 @@ QTextStream l_os (&l_log_file);
 #endif
 ///////////////////////////////////
 // Walk through the UmlItems.
-QPtrStack < UmlItem > l_stack;
+QStack < UmlItem > l_stack;
 // Push items onto stack
 l_stack.push (&a_item);
 while (not l_stack.isEmpty ())
@@ -163,7 +163,6 @@ if (not empty ())
   if (m_top->prune ())
   {
 #ifndef NO_LOG
-    // Output debugging information.
     // Output debugging information.
     m_top->serialize (l_os);
 #endif

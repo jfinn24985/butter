@@ -333,18 +333,18 @@ a_os << "project " << project_name ();
 a_os << "\n\t: requirements ";
 if (requirements (m_project, l_tmp))
 {
-   a_os << l_tmp ;
+   a_os << l_tmp;
 }
 a_os << "<include>\"" << item_traits::hdrname (m_project).path ().mid (a_loc.full_path ().count ()) << "\" :\n\t";
 if (const_cast< UmlPackage & > (m_project).propertyValue (item_traits::butter_build_dir_name, l_tmp))
 {
- a_os << " : build-dir " << l_tmp <<"\n\t";
+ a_os << ": build-dir " << l_tmp <<"\n\t";
 }
-a_os << " ;\n#\n# Define sub-projects.\n#\n" << m_project_buffer;
+a_os << ";\n#\n# Define sub-projects.\n#\n" << m_project_buffer;
 // Write external projects
 if (not location::external_targets().isEmpty ())
 {
-  for (QDictIterator < QPtrVector < UmlArtifact > > l_i (location::external_targets ()); l_i.current (); ++l_i)
+  for (QDictIterator < QVector < UmlArtifact > > l_i (location::external_targets ()); l_i.current (); ++l_i)
   {
     external_target (QCString (l_i.currentKey ()), *(l_i.current ()), a_os);
   }
@@ -362,7 +362,17 @@ if (not a_loc.has_document (s_rules_name))
     }
   }
   QCString l_default_rules (s_default_rules);
-  l_default_rules.replace ("@@project@@", project_name ()).replace ("@@version@@", l_ver);
+  int l_i (0);
+  const QCString l_project ("@@project@@");
+  const QCString l_version ("@@version@@");
+  if (-1 != (l_i = l_default_rules.find (l_project)))
+  {
+    l_default_rules.replace (l_i, l_project.length (), const_cast< UmlPackage & > (m_project).name ());
+  }
+  if (-1 != (l_i = l_default_rules.find (l_version)))
+  {
+    l_default_rules.replace (l_i, l_version.length (), l_ver);
+  };
   const_cast<location&>(a_loc).create_document (s_rules_name)->set_Description (l_default_rules);
 }
 !!!152617.cpp!!!	use_template(in a_art : UmlArtifact, inout a_os : ostream) : void

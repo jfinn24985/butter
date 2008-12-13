@@ -1,6 +1,6 @@
 format 61
 "butter"
-  revision 30
+  revision 31
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/butter/include/"
   java_root_dir "/tmp/pr/java/"
@@ -47,7 +47,7 @@ format 61
   key "butter include" value "include/bouml"
   key "butter base" value ".."
   key "butter build-dir" value "build"
-  key "butter style" value "standard"
+  key "butter style" value "smake"
   key "butter flags" value "-DWITHCPP"
   comment "To create the plug-out use 'genpro' on the following artifact, changing paths
 as desired.
@@ -67,4 +67,5 @@ will write this document into the project's base directory.
   package_ref 128041 // butter
 
   package_ref 129193 // External
+
 end

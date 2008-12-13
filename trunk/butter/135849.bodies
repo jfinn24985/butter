@@ -364,7 +364,9 @@ if (not l_assoc0.isEmpty ())
     {
       if (not l_other.isEmpty ())
       {
-        const QCString l_OTHER (l_other.upper ().replace('-', '_'));
+        QCString l_OTHER (l_other.upper ());
+        int l_i (0); 
+        while (-1 != (l_i = l_OTHER.find ('-'))) { l_OTHER[l_i] = '_'; }
         a_os << "\t$(" << l_OTHER << ") " << l_name << " $(" << l_TARG << "SRC:." << l_CPP << "=.o)\n\n\n";
       }
       else if (l_is_static)
@@ -420,7 +422,17 @@ if (not a_loc.has_document (s_rules_name))
     }
   }
   QCString l_default_rules (s_default_rules);
-  l_default_rules.replace ("@@project@@", const_cast< UmlPackage & > (m_project).name ()).replace ("@@version@@", l_ver);
+  int l_i (0);
+  const QCString l_project ("@@project@@");
+  const QCString l_version ("@@version@@");
+  if (-1 != (l_i = l_default_rules.find (l_project)))
+  {
+    l_default_rules.replace (l_i, l_project.length (), const_cast< UmlPackage & > (m_project).name ());
+  }
+  if (-1 != (l_i = l_default_rules.find (l_version)))
+  {
+    l_default_rules.replace (l_i, l_version.length (), l_ver);
+  };
   const_cast<location&>(a_loc).create_document (s_rules_name)->set_Description (l_default_rules);
 }
 !!!160681.cpp!!!	use_template(in a_art : UmlArtifact, inout a_os : ostream) : void

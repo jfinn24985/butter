@@ -199,37 +199,16 @@ else if (not a_list.contains (a_addition))
   {
     // contents do not overlap, split and compare
     QRegExp l_splitter ("(\\S*\"[^\"]+\"\\S*|\\S+)");
-    QStringList l_list1, l_list2;
-    int l_counter (0);
-    for (int l_pos (0); l_pos >= 0; ++l_counter)
-    {
-      l_pos = l_splitter.search(a_list, l_pos);
-      if (l_pos > -1)
-      {
-        l_list1 += l_splitter.cap (1);
-        l_pos += l_splitter.matchedLength();
-      }
-      if (l_counter >= 100) throw "merge_string_list loop 1 > 100";
-    }
-    l_counter = 0;
-    for (int l_pos (0); l_pos >= 0; ++l_counter)
-    {
-      l_pos = l_splitter.search(a_addition, l_pos);
-      if (l_pos > -1)
-      {
-        l_list2 += l_splitter.cap (1);
-        l_pos += l_splitter.matchedLength();
-      }
-      if (l_counter >= 100) throw "merge_string_list loop 2 > 100";
-    }
-    l_counter = 0;
+    QStringList l_list1 (QStringList::split (l_splitter, a_list, false));
+    QStringList l_list2 (QStringList::split (l_splitter, a_addition, false));
+    int l_counter (0); // Guard counter.
     for (QStringList::Iterator l_cursor = l_list2.begin(); l_cursor != l_list2.end(); ++l_cursor,  ++l_counter)
     {
       if (0 == l_list1.contains (*l_cursor))
       {
          l_list1 += *l_cursor;
       }
-      if (l_counter >= 100) throw "merge_string_list loop 3 > 100";
+      if (l_counter >= 100) throw "merge_string_list loop counter > 100";
     }
     a_list = l_list1.join (" ");
   }
@@ -426,7 +405,17 @@ if (not a_loc.has_document (s_rules_name))
     }
   }
   QCString l_default_rules (s_default_rules);
-  l_default_rules.replace ("@@project@@", const_cast< UmlPackage & > (m_project).name ()).replace ("@@version@@", l_ver);
+  int l_i (0);
+  const QCString l_project ("@@project@@");
+  const QCString l_version ("@@version@@");
+  if (-1 != (l_i = l_default_rules.find (l_project)))
+  {
+    l_default_rules.replace (l_i, l_project.length (), const_cast< UmlPackage & > (m_project).name ());
+  }
+  if (-1 != (l_i = l_default_rules.find (l_version)))
+  {
+    l_default_rules.replace (l_i, l_version.length (), l_ver);
+  };
   const_cast<location&>(a_loc).create_document (s_rules_name)->set_Description (l_default_rules);
 }
 !!!156457.cpp!!!	use_template(in a_art : UmlArtifact, inout a_os : ostream) : void
