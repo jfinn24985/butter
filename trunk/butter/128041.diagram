@@ -2,77 +2,89 @@ format 61
 
 classcanvas 128041 class_ref 128041 // uml_visitor
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 437 15 2000
+  xyz 360 23 2000
 end
 classcanvas 128937 class_ref 7937 // UmlPackage
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 16 28 2000
+  xyz 42 38 2000
 end
 classcanvas 129449 class_ref 1280 // CppSettings
   draw_all_relations default hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 696 9 2005
+  xyz 51 250 2005
 end
 classcanvas 134825 class_ref 132393 // location
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 178 20 2000
+  xyz 219 23 2000
 end
 classcanvas 135209 class_ref 6913 // UmlArtifact
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 0 242 2000
+  xyz 39 140 2000
 end
 classcanvas 136745 class_ref 129577 // writer
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 412 273 2000
+  xyz 382 123 2000
 end
 classcanvas 137385 class_ref 133545 // bjam_writer
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 392 563 2000
+  xyz 365 232 2000
 end
 classcanvas 137897 class_ref 135849 // gmake_writer
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 244 566 2000
+  xyz 271 233 2000
 end
 classcanvas 138921 class_ref 137001 // item_traits
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 678 77 2000
+  xyz 248 164 2000
 end
 classcanvas 139561 class_ref 134697 // jam_writer
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_infonote default shadow default show_stereotype_properties default
-  xyz 530 559 2004
+  xyz 453 232 2004
+end
+packagecanvas 140457 
+  package_ref 385 // API USER
+    xyzwh 13 3 2000 141 193
+end
+packagecanvas 140713 
+  package_ref 256 // API BASE
+    xyzwh 15 205 2010 146 101
 end
 relationcanvas 135081 relation_ref 135209 // <directional composition>
-  from ref 128041 z 1999 stereotype "<<auto_ptr>>" xyz 328 182 3000 to ref 134825
-  role_a_pos 306 206 3000 no_role_b
-  multiplicity_a_pos 306 235 3000 no_multiplicity_b
+  from ref 128041 z 1999 stereotype "<<auto_ptr>>" xyz 247 -106 3000 to ref 134825
+  role_a_pos 285 22 3000 no_role_b
+  multiplicity_a_pos 285 51 3000 no_multiplicity_b
 end
 relationcanvas 135337 relation_ref 135337 // <composition>
-  from ref 134825 z 1999 stereotype "<<vector>>" xyz 286 82 3000 to point 335 34
-  line 135465 z 1999 to point 334 109
+  from ref 134825 z 1999 stereotype "<<vector>>" xyz 270 105 3000 to point 326 118
+  line 135465 z 1999 to point 280 119
   line 135593 z 1999 to ref 134825
-  role_a_pos 311 153 3000 role_b_pos 309 108 3000
-  multiplicity_a_pos 286 153 3000 multiplicity_b_pos 282 108 3000
+  role_a_pos 245 92 3000 role_b_pos 289 63 3000
+  multiplicity_a_pos 239 95 3000 multiplicity_b_pos 281 62 3000
 end
 relationcanvas 135721 relation_ref 135465 // <directional composition>
-  from ref 134825 z 1999 stereotype "<<vector>>" xyz 97 271 3000 to ref 135209
-  role_a_pos 88 248 3000 no_role_b
-  multiplicity_a_pos 88 277 3000 no_multiplicity_b
+  decenter_end 782
+  from ref 134825 z 1999 stereotype "<<vector>>" xyz 190 110 3000 to point 214 208
+  line 140329 z 1999 to point 119 209
+  line 140585 z 1999 to ref 135209
+  role_a_pos 115 188 3000 no_role_b
+  multiplicity_a_pos 90 188 3000 no_multiplicity_b
 end
 relationcanvas 135849 relation_ref 135593 // <directional composition>
-  from ref 134825 z 1999 stereotype "<<vector>>" xyz 98 140 3000 to ref 128937
-  role_a_pos 97 88 3000 no_role_b
-  multiplicity_a_pos 72 88 3000 no_multiplicity_b
+  from ref 134825 z 1999 stereotype "<<vector>>" xyz 153 -55 3000 to ref 128937
+  role_a_pos 136 31 3000 no_role_b
+  multiplicity_a_pos 136 60 3000 no_multiplicity_b
 end
 relationcanvas 135977 relation_ref 135721 // <directional composition>
-  from ref 134825 z 1999 stereotype "<<vector>>" xyz 134 237 3000 to point 149 228
-  line 136105 z 1999 to ref 135209
-  role_a_pos 88 229 3000 no_role_b
-  multiplicity_a_pos 88 258 3000 no_multiplicity_b
+  decenter_begin 157
+  from ref 134825 z 1999 stereotype "<<vector>>" xyz 118 -33 3000 to ref 135209
+  role_a_pos 108 109 3000 no_role_b
+  multiplicity_a_pos 108 138 3000 no_multiplicity_b
 end
 relationcanvas 136233 relation_ref 135849 // <directional composition>
-  from ref 134825 z 1999 stereotype "<<vector>>" xyz 127 313 3000 to point 136 322
+  decenter_begin 244
+  from ref 134825 z 1999 stereotype "<<vector>>" xyz 187 82 3000 to point 205 158
   line 136361 z 1999 to ref 135209
-  role_a_pos 88 274 3000 no_role_b
-  multiplicity_a_pos 88 303 3000 no_multiplicity_b
+  role_a_pos 127 139 3000 no_role_b
+  multiplicity_a_pos 127 168 3000 no_multiplicity_b
 end
 relationcanvas 136873 relation_ref 137257 // <dependency>
   from ref 134825 z 1999 to ref 136745

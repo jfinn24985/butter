@@ -1,7 +1,7 @@
-window_sizes 886 624 317 563 360 187
+window_sizes 921 659 317 598 395 187
 diagrams
   active  classdiagram_ref 128041 // butter overview
-    563 360 100 4 0 297
+    598 395 100 4 0 0
 end
 show_stereotypes
 selected artifact_ref 148393 // butter.plugout

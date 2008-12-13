@@ -191,15 +191,14 @@ if (NULL != a_location.parent () and a_location.has_targets ())
   QString l_tmp;
   QTextOStream l_os (&l_tmp);
   // use-project /compchem/chemistry : src/chemistry ;
-  l_os << "use-project /" << project_name () << "/";
-  // Build path from parent locations.
+  l_os << "use-project /" << project_name () << "/" << a_location.path () << " : ";
   QCString l_path (a_location.path ());
   for (location * l_top (a_location.parent ()); l_top->parent () != NULL; l_top = l_top->parent ())
   {
     l_path.insert (0, QDir::separator ());
     l_path.insert (0, l_top->path ());
   }
-  l_os << l_path << " : " << l_path << " ;\n";
+  l_os << l_path << " ;\n";
   m_project_buffer.append (l_tmp);
 }
 !!!174249.cpp!!!	install_target(in a_target : UmlArtifact, in a_loc_var : string, inout a_os : ostream) : void

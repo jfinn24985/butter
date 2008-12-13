@@ -1,6 +1,6 @@
 format 61
 "Build" // Build
-  revision 30
+  revision 31
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -59,16 +59,18 @@ goes well with jam!).
 After writing the tool for boost jam files it was extended to create standard jam and gnu 
 make files.  One of my original goals for adding make files was to allow me to build tarballs 
 for projects, possibly with autoconf ``configure`` scripts that could be built by people 
-that did not have boost jam.  The current make style requires a make program that allows 
-immediately assigned variables allowing constructs such as ``A:=$(A) -B -C``, which result in
-a cyclic dependency in standard make.  Perhaps someone more intelligent can come up with a 
-make writer that doesn't have this limitation.  I am also hoping that some Java user may like
-to contribute a writer class for an ``ant`` style.
+that did not have boost jam.
 
 This is the first beta release of the //butter// project. It is fully functional and a very 
 useful tool, however not every situation has been tested. This could lead to complete failures
 of the tool (the plugout starts then \"disappears\") or any errors that are reported may not make 
 sense.  Please let me know your experiences of using this tool and any suggestions or feedback.
+
+==Generated build systems==
+
+The generated build systems should produce equivalent targets. These are not necessarily 
+identical and will not necessarily be located in the same place. Additionally, you can use
+target types that are specific to a particular build system style.
 
 ==Important concepts, features and limitations==
 
@@ -96,12 +98,39 @@ target UML artifacts that use/reference it.
 targets types supported by the underlying build system, for example the extensive 
 target types available with the Boost jam system. However, if users do not limit themselves to 
 the default target types it becomes more difficult to switch between the different build styles
-(see documentation on [artifact properties #art.prop])
+(see documentation on [artifact properties #art_prop])
 - **Directory Names**: The name of a target's directory is used as its \"sub-project-name\" in 
 the jam style. This means that when using a jam style all leaf directories must have unique names.
 - **Documents**: The description from UML artifacts with the **document** stereotype can be
 written to the filesystem by //butter//.  Documents with names ``buildfile``, ``makefile.sys``,
 ``local.jam`` or ``Jamrules`` have special meaning.
+
+
+===Boost jam limitations===[boost_limit]
+
+The description field of external libraries can be used to give
+detailed instructions for the build system ([see Artifact Description #desc_enc]).
+Unlike the //make// and //standard// style, this text is not searched for encoded 
+flags and also //butter// sees a description with no labelled sections as if
+it was a style's special labelled section.  This means that a description
+trying to pass generic arguments with no section labels will not work. This
+is resolved by using the generic section label.
+
+For example if we want to use the boost filesystem library and use a
+generic argument and we want to get the following in ``Jamroot``.
+```
+alias filesystem : : : : <linkflags>\"-lboost_filesystem\" ;
+```
+Using just the following results in exactly the following text
+being placed in ''Jamroot'' and an error when we try to compile.
+```
+LINK=-lboost_filesystem
+```
+Instead using the generic section label gets us what we want.
+```
+${boost_generic}
+LINK=-lboost_filesystem
+```
 
 
 ===Jam standard limitations===
@@ -116,47 +145,53 @@ limitation is not true for the linker flags which are always target
 specific. The plugout does attempt to merge the information from each 
 target to remove duplicate information.
 
-===Make limitations===[make.limit]
+===Make limitations===[make_limit]
 
-The ``jam`` program manages dependencies for the entire project and correctly 
-rebuilds all affected targets in the correct order.  The ``make`` program can manage
-dependencies for targets in a single directory but not across directories. 
-Also, the way //butter// plugout writes makefiles means the targets will be
-build in an arbitrary order.  This means that you may need to 
-run ``make`` several times before all targets are updated correctly.
+(1)  The current make style requires a make program (eg GNU make) that allows 
+immediately assigned variables allowing constructs such as ``A:=$(A) -B -C``, 
+which result in a cyclic dependency in standard make.  Currently a //cmake//
+style is under development which may produce more portable makefiles.
+
+(2) The ``jam`` program manages dependencies for the entire project and correctly 
+rebuilds all affected targets in the correct order.  The ``make`` style creates
+makefiles that automatically manage dependencies only for sources.  Also, targets 
+will be built in an arbitrary order.  This means that targets that depend on
+other targets (eg a source archive library) may not be updated correctly.  This
+means that you may need to run ``make`` several times before all targets 
+are updated correctly even if no errors are reported.
 
 For example, take the case of target //A// being dependent on target //B// 
-in different directories and where //B// is build after //A//. The first ``make``
+in different directories and where //B// is build after //A//. The first ``make -k``
 run will have an error for building //A// as it cannot find //B//. This is good 
-as you can see that you must run ``make`` again.  However, if you make a change 
+as you can see that you must run ``make`` again.  So you call ``make -k`` again and
+all is now updated correctly.  However, when you later make a change 
 to //B// the next ``make`` run will rebuild //B// but not //A// as the old 
 version of //B// will be seen when ``make`` checks target //A//.  Furthermore 
-there will be no error message.  The only sure indication that all targets are 
+there will be no error message!  The only sure indication that all targets are 
 updated is when a ``make`` run performs no actions.
-
-==Generated build systems==
-
-The generated build systems should produce equivalent targets. These are not necessarily 
-identical and will not necessarily be located in the same place. Additionally, you can use
-target types that are specific to a particular build system style.
 
 ==Future directions==
 
-In this initial release of //butter// there is no //install// target type. It is intended that
-future releases will add this capability with particular emphasis on producing systems designed
-for easy integration with the //autoconf// system. 
+In this initial release of //butter// there is a simple //install// target type. It is intended that
+future releases will improve this capability with particular emphasis on producing systems designed
+for easy integration with the //autoconf// system.
 
 People are free to contribute additional build system styles and make comments to improve the
 existing styles.
 
-Current development.
-+ Text replacement (optional?) : The plugout copies description text that it uses verbatim.
+- Current development.
+ + A style for ```cmake``` or another similar program that generates portable makefiles.
+ + Text replacement (optional?) : The plugout copies description text that it uses verbatim.
 However, it might be useful to add a text replacement system similar to the rest of bouml.
-+ Base dir detection (optional?) : Currently you need to set the base directory manually or
+ + Base dir detection (optional?) : Currently you need to set the base directory manually or
 it defaults to the C++ root directory.  This is not necessary as we could detect the 
 lowest-common root directory on-the-fly.
-+ Target ordering (optional?) : redesign make style to compile all libraries before executables and
+ + Target ordering (optional?) : redesign make style to compile all libraries before executables and
 possibly reorder libraries in cases of dependencies.
+
+- Possible development.
+ + I am also hoping that some Java user may like to contribute a writer class for an ``ant`` style.
+
 
 
 =Building butter=
@@ -409,7 +444,7 @@ previous version (that work!).
 All the created build systems attempt to ensure dependencies are met. In this regard jam and 
 boost jam are much better as they parse the entire build project and order builds to ensure
 dependencies are satisfied. The make system handles this on a directory-by-directory basis, but 
-across directories is not handled (see make [limitations #make.limit]).  Therefore to build 
+across directories is not handled (see make [limitations #make_limit]).  Therefore to build 
 the project we can use ``jam`` or ``bjam`` once, but must run ``make -k`` several times.
 
 ==Conclusion==
@@ -566,7 +601,7 @@ Indicate a directory where the build files will be created. This is currently on
 used by the ``boost`` style.
 
 
-===Artifact properties===[art.prop]
+===Artifact properties===[art_prop]
 
 Those properties with an (*) may be inherited from parent objects up to
 and including the project, with //local// definitions overriding more
@@ -716,5 +751,6 @@ other tailered settings.
 using gcc ;
 "
     end
+
   end
 end
