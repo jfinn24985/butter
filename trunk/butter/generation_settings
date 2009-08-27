@@ -5,7 +5,7 @@
   cpp_root_relative_path
   cpp_javadoc_comment
 
-  type_forms 23 // uml cpp java idl cpp_in cpp_out cpp_inout cpp_return
+  type_forms 24 // uml cpp java idl cpp_in cpp_out cpp_inout cpp_return
     "void" "void" "void" "void" "${type}" "${type} &" "${type} &" "${type}"
     "any" "void *" "Object" "any" "const ${type}" "${type}" "${type}" "${type}"
     "bool" "bool" "boolean" "boolean" "${type}" "${type} &" "${type} &" "${type}"
@@ -29,8 +29,9 @@
     "ostream" "QTextStream" "Ostream" "OStream" "${type}" "${type} &" "${type} &" "${type}"
     "stringstream" "std::stringstream" "IOStream" "IOStream" "${type}" "${type} &" "${type} &" "${type}"
     "path" "QDir" "Path" "Path" "${type}" "${type} &" "${type} &" "${type}"
+    "istream" "QTextIStream" "IStream" "IStream" "${type}" "${type} &" "${type} &" "${type}"
   
-  relations_stereotypes 9 // uml cpp java pythonidl
+  relations_stereotypes 10 // uml cpp java pythonidl
     "sequence" "QVector" "Vector" "list" "sequence"
     "vector" "QVector" "Vector" "list" "sequence"
     "list" "QList" "Vector" "list" "sequence"
@@ -40,6 +41,7 @@
     "vector" "QVector" "Vector" "list" "sequence"
     "stack" "QStack" "Vector" "list" "sequence"
     "auto_ptr" "std::auto_ptr" "Vector" "list" "sequence"
+    "shared_ptr" "std::tr1::shared_ptr" "ignored" "ignored" "ignored"
   
   classes_stereotypes 11 // uml cpp java php python idl
     "class" "class" "class" "class" "class" "valuetype"
@@ -73,25 +75,32 @@ ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
-  cpp_default_class_decl "${comment}${template}class ${name}${inherit} {
-${members}};
+  cpp_default_class_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
 
 ${inlines}
 "
   cpp_default_external_class_decl "${name}
 #include <${name}.h>
 "
-  cpp_default_struct_decl "${comment}${template}struct ${name}${inherit} {
-${members}};
+  cpp_default_struct_decl "${comment}${template}struct ${name}${inherit}
+{
+${members}
+};
 
 ${inlines}
 "
-  cpp_default_union_decl "${comment}${template}union ${name} {
-${members}};
+  cpp_default_union_decl "${comment}${template}union ${name}
+{
+${members}
+};
 
 ${inlines}
 "
-  cpp_default_enum_decl "${comment}enum ${name} {
+  cpp_default_enum_decl "${comment}enum ${name}
+{
 ${items}
 };
 "
@@ -122,8 +131,10 @@ ${items}
   cpp_set "set_${name}" public
   cpp_default_operation_declaration "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
 "
-  cpp_default_operation_definition "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
-${body}}
+  cpp_default_operation_definition "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
 "
   java_default_src_content "${comment}
 ${package}
@@ -236,6 +247,10 @@ ${docstring}${members}
 " // multiplicity != 1
   python_default_operation_definition "${@}${static}${abstract}def ${name}${(}${)}:
 ${docstring}${body}
+"
+  python_default_initoperation_definition "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}super(${class}, ${p0}).__init__()
+${body}
 "
   python_get "get${Name}"
   python_set "set${Name}"

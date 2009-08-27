@@ -31,3 +31,9 @@
 
 "std::auto_ptr" "#include <memory>"
 
+"std::tr1::shared_ptr" "#include <tr1/memory>"
+
+"QTextOStream" "#include <qtextstream.h>"
+
+"QTextIStream" "#include <qtextstream.h>"
+

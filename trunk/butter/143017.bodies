@@ -1,42 +1,11 @@
-class uml_visitor
-!!!131881.cpp!!!	print_item(in a_item : UmlItem, in a_depth : uint, inout a_os : ostream) : void
-static const QCString title_lbl__ ("[TT] ");
-static const QCString watch_lbl__ ("[**] ");
-QCString indent__;
-indent__.fill (' ', a_depth);
-a_os << indent__ << title_lbl__ << "Base information\n";
-a_os << indent__ << watch_lbl__ << "name = \"" << const_cast< UmlItem& >(a_item).name () << "\"\n";
-a_os << indent__ << watch_lbl__ << "depth = \"" << a_depth << "\"\n";
-a_os << indent__ << watch_lbl__ << "stereotype = \"" << const_cast< UmlItem& >(a_item).stereotype () << "\"\n";
-int l_kind (const_cast< UmlItem& >(a_item).kind ());
-a_os << indent__ << watch_lbl__ << "kind = \"" << item_traits::kind_to_string (l_kind) << "\" [" << l_kind << "]\n";
-a_os << indent__ << watch_lbl__ << "description = \"" << const_cast< UmlItem& >(a_item).description () << "\"\n";
-QDict< QCString > l_properties (const_cast< UmlItem& >(a_item).properties ());
-QDictIterator < QCString > l_props (l_properties);
-if (l_props.isEmpty ())
-{
-  a_os << indent__ << title_lbl__ << "No Properties\n";
-}
-else
-{
-  a_os << indent__ << title_lbl__ << "Properties (# = " << l_props.count () << ")\n";
-  for (; l_props.current (); ++l_props)
-  {
-    a_os << indent__ << watch_lbl__ << "[" << l_props.currentKey () << "] = \"" << *(l_props.current ()) << "\"\n";
-  }
-  a_os << indent__ << title_lbl__ << "End Properties\n";
-}
-!!!132009.cpp!!!	uml_visitor()
-: tree_ ()
-{}
-!!!133929.cpp!!!	visit(in a_item : UmlItem) : location
+class Tree_builder
+!!!181289.cpp!!!	parse_project(in a_item : UmlItem) : Tree_builder
 #line 101
 ///////////////////////
 // Test preconditions
-BUTTER_REQUIRE (empty (), "uml_visitor::visit called multiple times.");
 BUTTER_REQUIRE (aPackage == const_cast< UmlItem& >(a_item).kind (), "Argument is not a UmlPackage item.");
-// Use pointer case to avoid bad_cast throw, even though
-// we throw in the next step..
+// Use pointer cast to avoid bad_cast throw, even though
+// we may throw in the next step..
 const UmlPackage * item__ = dynamic_cast < const UmlPackage * >(&a_item);
 BUTTER_REQUIRE (NULL != item__ and NULL == const_cast< UmlItem& >(a_item).parent ()
                 , "Item is not a package or is not the top-level package.");
@@ -45,11 +14,14 @@ if (not QFile::exists (CppSettings::rootDir ()))
   throw std::runtime_error ("<p><b>The project root directory does not exist</b>, please generate the project source code before creating the build system.</p>");
 }
 /////////////////////
-// ** Initialise the top object. **
+// Initialisation
 // Build basic tree.
-location::find_or_create (CppSettings::rootDir (), tree_, base_dir_, cache_);
-// Move cache_ to base package.
-location::find_or_create (item_traits::dirname (*item__), tree_, base_dir_, cache_);
+location *cache__; // Pointer to the last used location
+location *cpp_root_dir_location__; // Pointer to the location of CppSettings::rootDir ()
+std::auto_ptr<location> tree__; // Root of location tree.
+location::find_or_create (CppSettings::rootDir (), tree__, cpp_root_dir_location__, cache__);
+// Move cache__ to base package.
+location::find_or_create (item_traits::dirname (*item__), tree__, cpp_root_dir_location__, cache__);
 
 UmlCom::trace ("<p><b>Please wait:</b> building target list for project <i>" + const_cast< UmlItem& >(a_item).name () + "</i>.</p>");
 #ifndef NO_LOG
@@ -59,11 +31,7 @@ class helper__ // Automatically close the log file.
 public:
   helper__ (QFile & a_file, int a_flag): file_ (a_file)
   {
-    if (not file_.open (a_flag))
-    {
-      QString l_msg ("Unable to open log file for read/writing: " + file_.name ());
-      throw std::runtime_error (static_cast<const char*>(l_msg));
-    }
+    BUTTER_REQUIRE (file_.open (a_flag), "Unable to open log file for read/writing: " + file_.name ());
   }
   ~helper__ ()
   {
@@ -117,11 +85,11 @@ while (not item_stack_.isEmpty ())
       UmlPackage *pack_item__ = dynamic_cast < UmlPackage * >(top__->parent ()->parent ());
       BUTTER_CHECK (NULL != pack_item__, "Artifact grandparent is not a Package.");
       const QDir pack_path__ (item_traits::dirname (*pack_item__));
-      if (not cache_->location_for_path (pack_path__))
+      if (not cache__->location_for_path (pack_path__))
       {
-        location::find_or_create (pack_path__, tree_, base_dir_, cache_);
+        location::find_or_create (pack_path__, tree__, cpp_root_dir_location__, cache__);
       }
-      cache_->add_artifact (*art_item__);
+      cache__->add_artifact (*art_item__);
     }
     break;
   case aPackage:               // UmlPackages
@@ -129,14 +97,14 @@ while (not item_stack_.isEmpty ())
       UmlPackage *pack_item__ = dynamic_cast < UmlPackage * >(top__);
       BUTTER_CHECK (NULL != pack_item__, "Item type and class type do not match.");
       const QDir pack_path__ (item_traits::dirname (*pack_item__));
-      if (not cache_->location_for_path (pack_path__))
+      if (not cache__->location_for_path (pack_path__))
       {
-        location::find_or_create (pack_path__, tree_, base_dir_, cache_);
+        location::find_or_create (pack_path__, tree__, cpp_root_dir_location__, cache__);
       }
-      cache_->add_package (*pack_item__);
+      cache__->add_package (*pack_item__);
     }
     break;
-  default:                     // is to do nothing
+  default:                     // everything else do nothing
     break;
   }
 #ifndef NO_LOG
@@ -158,10 +126,7 @@ while (not item_stack_.isEmpty ())
     item_stack_.push (kids__.at (i__));
   }
 }
-// Reset cache_ and base_dir_
-cache_ = NULL;
-base_dir_ = NULL;
-if (not empty ())
+if (not tree__->empty ())
 {
   // Remove any empty locations, and attempt to make root equal to
   // any base path property (if set)
@@ -170,18 +135,64 @@ if (not empty ())
   {
     BUTTER_CHECK (user_base_path__.is_empty (), "Property value _not_ set but string is non-empty");
   }
-  if (location::prune (tree_, user_base_path__, error_message__))
+  if (location::prune (tree__, user_base_path__, error_message__))
   {
 #ifndef NO_LOG
     // Output debugging information.
-    tree_->serialize (log_stream__);
+    tree__->serialize (log_stream__);
 #endif
   }
   else
   {
     UmlCom::trace (error_message__);
     // Problem occured, reset tree to create empty state
-    tree_.reset ();
+    tree__.reset ();
   }
 }
-return tree_; // Pass ownership of location tree.
+return tree__; // Pass ownership of location tree.
+!!!181161.cpp!!!	prune(in a_root : Tree_builder, in a_base_path : string, inout a_error_message : string) : bool
+// Return true if we have no targets or children (documents and
+// templates are not considered).
+if (not m_children.isEmpty ())
+{
+  unsigned int l_newsize (m_children.count ());
+  for (unsigned int l_i (0); l_i < l_newsize;)
+  {
+    location *l_item (m_children.at (l_i));
+    if (l_item->prune ())
+    {
+      // Child can not be pruned
+      ++l_i;
+    }
+    else
+    {
+      // Child can be pruned (remove and swap last ptr to here), do not increment l_i
+#ifdef BUTTER_TRACE
+      UmlCom::trace ("<p>Removing directory with no targets: " + m_children.at (l_i)->path () + "</p>");
+#endif
+      m_children.remove (l_i);
+      if (l_newsize - 1 > l_i)
+      {
+        m_children.insert (l_i, m_children.take (l_newsize - 1));
+      }
+      --l_newsize;
+    }
+  }
+}
+return not m_children.isEmpty () or not m_targets.isEmpty ();
+!!!181033.cpp!!!	build(in a_project : UmlPackage) : Location
+
+// Search for location.
+current_root_
+Location * root_ = current_root_.get ();
+{
+  std::string l_(current_pkg.cppSrcDir ());
+  std::string r_(current_root_.dir ());
+  if (l_.size () > r_.size ())
+  {
+    // Package may be child of current_root
+    if (std::equal (r_.begin (), r_.end (), l_.begin ()))
+    {
+      // Is a child.
+      
+}

@@ -1,0 +1,81 @@
+class style
+!!!195625.cpp!!!	comment_text(in a_text : string) : string
+QString Result;
+QTextOStream os_ (&Result);
+int s_ = 0; // start position
+for (int e_ = a_text.find ('\n', s_); e_ > 0; e_ = a_text.find ('\n', s_))
+{
+  os_ << comment_string;
+  os_ << a_text.mid (s_, e_ - s_);
+  s_ = e_ + 1;
+}
+if (a_text.at (a_text.count () - 1) != '\n')
+{
+  os_ << comment_string;
+  os_ << a_text.mid (s_);
+}
+os_ << '\n';
+return QCString (Result);
+!!!196649.cpp!!!	get_style() : style
+BUTTER_REQUIRE (NULL != style_.get (), "Programming error, attempt to get style before it was set.");
+return *style_.get ();
+!!!196777.cpp!!!	set_style(in a_style : string = QCString()) : void
+if (a_style == butter::jam_writer::section_name)
+{
+  style_.reset (new style (butter::jam_writer::build_file_name
+                     , butter::jam_writer::build_file_sysname
+                     , butter::jam_writer::comment_string
+                     , butter::jam_writer::end_phrase
+                     , butter::jam_writer::start_phrase
+                     , &butter::jam_writer::create));
+  UmlCom::trace ("<p>Using style <b>Standard Jam</b></p>");
+}
+else if (a_style == butter::gmake_writer::section_name)
+{
+  style_.reset (new style (butter::gmake_writer::build_file_name
+                     , butter::gmake_writer::build_file_sysname
+                     , butter::gmake_writer::comment_string
+                     , butter::gmake_writer::end_phrase
+                     , butter::gmake_writer::start_phrase
+                     , &butter::gmake_writer::create));
+}
+else
+{
+  if (a_style != butter::bjam_writer::section_name)
+  {
+    QString msg_;
+    QTextOStream msg_os_ (&msg_);
+    if (a_style.isEmpty ())
+    {
+      msg_os_ << "<p>No style set out of (";
+    }
+    else
+    {
+      msg_os_ << "<p><b>Warning</b> Style \"<b>" << a_style << "</b>\" does not match unrecognised (";
+    }
+    msg_os_ << butter::bjam_writer::section_name;
+    msg_os_ << "|" << butter::jam_writer::section_name;
+    msg_os_ << "|" << butter::gmake_writer::section_name;
+    msg_os_ << "), using <i>boost jam</i> as default</p>";
+    UmlCom::trace (msg_);
+  }
+  else
+  {
+    UmlCom::trace ("<p>Using style <b>Boost Jam</b></p>");
+  }
+  style_.reset (new style (butter::bjam_writer::build_file_name
+                     , butter::bjam_writer::build_file_sysname
+                     , butter::bjam_writer::comment_string
+                     , butter::bjam_writer::end_phrase
+                     , butter::bjam_writer::start_phrase
+                     , &butter::bjam_writer::create));
+}
+BUTTER_ENSURE (NULL != style_.get (), "<p><b>Fatal error </b>Set style failed.</p>");
+!!!198185.cpp!!!	style(in a_fname1 : string, in a_fname2 : string, in a_comment : string, in a_end : string, in a_start : string, in a_factory : write_factory_fn_t)
+: build_file_name (a_fname1)
+, build_file_sysname (a_fname2)
+, comment_string (a_comment)
+, end_phrase (a_end)
+, start_phrase (a_start)
+, factory_ (a_factory)
+{}

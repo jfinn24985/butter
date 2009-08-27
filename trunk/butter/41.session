@@ -1,12 +1,15 @@
-window_sizes 1024 745 317 701 481 187
+window_sizes 1350 787 342 1002 486 220
 diagrams
   active  classdiagram_ref 128041 // butter overview
-    701 481 100 4 0 0
+    1002 486 100 4 0 0
 end
 show_stereotypes
-selected class_ref 132393 // location
+selected 
+  package_ref 129 // butter
 open
-  classview_ref 128041 // butter
+  deploymentview_ref 130345 // config
   deploymentview_ref 128041 // butter
+  
+  package_ref 129193 // External
 end
 end

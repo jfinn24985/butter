@@ -1,0 +1,112 @@
+class pathcmp
+!!!185257.cpp!!!	at(in a_count : uint) : string
+int s_ = 0, e_ = 0; // start, end and counter
+while (true)
+{
+  e_ = path_.find (QDir::separator (), s_);
+  if (e_ < 0) // End of path string, check at last item
+  {
+    if (a_count != 0)
+    {
+      throw std::runtime_error ("Attempt to go beyond end of path.");
+    }
+    e_ = path_.size ();
+  }
+  if (a_count == 0)
+  {
+    return path_.mid (s_, e_ - s_);
+  }
+  s_ = e_ + 1;
+  --a_count;
+}
+!!!186025.cpp!!!	common(in a_other : pathcmp) : string
+QCString Result;
+char sep_[2];
+sep_[0] = QDir::separator ();
+sep_[1] = '\0';
+const int sz_ = std::min(size (), a_other.size ());
+for (int c_ = 0; c_ < sz_ and at(c_) == a_other.at(c_); ++c_)
+{
+  Result.append (at(c_));
+  Result.append (sep_);
+}
+Result.resize (Result.length ());
+return Result;
+!!!185769.cpp!!!	equality(in a_rhs : pathcmp) : bool
+bool Result (path_ == a_rhs.path_);
+if (not Result)
+{
+  if (size () == a_rhs.size ())
+  {
+    Result = true;
+    for (unsigned int i = 0; Result and i < size (); ++i)
+    {
+      Result = (at(i) == a_rhs.at (i));
+    }
+  }
+}
+return Result;
+!!!184617.cpp!!!	pathcmp(in a_path : string)
+if (pointer() == child_)
+{
+  child_ = new tree_node (*this, a_key, a_value);
+  return std::make_pair (iterator (child_), true);
+}
+else
+{
+  // Search for last child, checking for matching keys
+  tree_node * left__;
+  for (left__ = child_
+      ; pointer() != left__->sibling_ and left__->value.first != a_key
+      ; left__ = left__->sibling_); // empty loop
+  if (left__->value.first == a_key) // exit for matching key
+  {
+    return std::make_pair (iterator (left__), false);
+  }
+  else
+  {
+    std::auto_ptr< tree_node > new_child__ (new tree_node (*this, a_key, a_value));
+    return std::make_pair (insert_after (*left__, *(new_child__.release ())), true);
+  }
+}
+!!!186281.cpp!!!	relative(in a_target : pathcmp) : string
+QCString Result;
+char sep_[4];
+sep_[0] = '.';
+sep_[1] = '.';
+sep_[2] = QDir::separator ();
+sep_[3] = '\0';
+const int sz1_ (size ());
+const int sz2_ (a_target.size ());
+const int sz_ (std::min (sz1_, sz2_));
+// Determine the parent dirs in common.
+int common_ = 0;
+for (; common_ < sz_ and at(common_) == a_target.at(common_); ++common_)
+{}
+// Add up dirs from here to common.
+for (int i_ = sz1_ - common_; i_ > 0; --i_)
+{
+  Result.append (&sep_[0]);
+}
+// Add down elements from common to a_target
+for (int i_ = common_; i_ < sz2_; ++i_)
+{
+  Result.append (a_target.at (i_));
+  Result.append (&sep_[2]);
+}
+Result.resize (Result.length ());
+return Result;
+!!!185897.cpp!!!	subpath(in a_rhs : pathcmp) : bool
+// simple test that a subdirs path string must have longer pathname
+bool Result (path_.size () < a_rhs.path_.size ());
+if (Result)
+{
+  const unsigned int sz_ = size ();
+  // Simple test that subdirs have more elements than this
+  Result = (sz_ <= a_rhs.size ());
+  for (unsigned int c_ = 0; Result and c_ < sz_; ++c_)
+  {
+    Result = (at(c_) == a_rhs.at (c_));
+  }
+}
+return Result;
