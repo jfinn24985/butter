@@ -1,5 +1,5 @@
 class jam_writer
-!!!158121.cpp!!!	descendent_link(inout a_art : compound_artifact, in a_loc : location) : void
+!!!158121.cpp!!!	descendent_link(inout a_art : compound_artifact, inout a_sys : compound_artifact, in a_loc : location) : void
 // Need to write the TOP line.
 if (NULL != a_loc.parent ())
 {
@@ -17,36 +17,37 @@ if (NULL != a_loc.parent ())
   if (not m_flags.isEmpty ())
   {
     subdir_line_.append ("\nSUBDIRC++FLAGS += " + m_flags + " ;\n");
-    m_flags.resize (0);
+    m_flags.truncate (0);
   }
   if (not m_headers.isEmpty ())
   {
     subdir_line_.append ("\nSUBDIRHDRS += " + m_headers + " ;\n");
-    m_headers.resize (0);
+    m_headers.truncate (0);
   }
 
   a_art.preamble.second.insert (0, subdir_line_);
   // Add definition to top-level
   if (not dir_line_.isEmpty ())
   {
-    system_artifact_->close.second.append ("SubInclude TOP" + dir_line_ + " ;\n\n");
+    // Find out project
+    a_sys.target (dir_line_).second = ("SubInclude TOP" + dir_line_ + " ;\n\n");
   }
 }
-!!!156329.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem) : void
+!!!156329.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void
 BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
 QString content_;
 QTextOStream os_ (&content_);
 // The include dir is the difference between the current fullpath and the
 // top-projects hdrDir
 os_ << "SubDir TOP ;\n";
-const QCString base_path_ (a_base.full_path ());
-QCString requirement_text_;
+const QString base_path_ (a_base.full_path ());
+QString requirement_text_;
 if (requirements (a_project, requirement_text_))
 {
   os_ << requirement_text_;
 }
 
-QCString toplevel_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
+QString toplevel_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
 if (not toplevel_include_.isEmpty () and toplevel_include_ != base_path_)
 {
   if (0 == toplevel_include_.find (base_path_))
@@ -58,34 +59,8 @@ if (not toplevel_include_.isEmpty () and toplevel_include_ != base_path_)
     os_ << "HDRS += \"" << toplevel_include_ << "\" ;\n\n";
   }
 }
-system_artifact_->preamble.second = content_;
-
-// If no makefile docs...
-if (a_base.find_uml_document (s_rules_name).isEmpty ())
-{
-  QCString l_ver;
-  if (not const_cast< UmlItem & > (a_project).propertyValue (item_traits::butter_version_name, l_ver))
-  {
-    if (not const_cast< UmlItem & > (a_project).propertyValue (item_traits::version_name, l_ver))
-    {
-      l_ver = "1.0";
-    }
-  }
-  QCString l_default_rules (s_default_rules);
-  int l_i (0);
-  const QCString l_project ("@@project@@");
-  const QCString l_version ("@@version@@");
-  if (-1 != (l_i = l_default_rules.find (l_project)))
-  {
-    l_default_rules.replace (l_i, l_project.length (), const_cast< UmlItem & > (a_project).name ());
-  }
-  if (-1 != (l_i = l_default_rules.find (l_version)))
-  {
-    l_default_rules.replace (l_i, l_version.length (), l_ver);
-  };
-  a_base.create_uml_document (s_rules_name)->set_Description (l_default_rules);
-}
-!!!174377.cpp!!!	install_target(in a_target_name : string, in a_loc_var : string, inout a_os : ostream, in a_install_type : uint = generic) : void
+a_sys.preamble.second = content_;
+!!!174377.cpp!!!	install_target(in a_target_name : unistr, in a_loc_var : unistr, inout a_os : ostream, in a_install_type : uint = generic) : void
 if (a_loc_var != item_traits::no_install_value)
 {
   static const char * l_install_cmd[] =
@@ -107,16 +82,19 @@ if (not assoc_arts_.isEmpty ())
   bool Result (true);
   QString tmp_;
   QTextOStream os_ (&tmp_);
+  QString source_extras_;
+  QTextOStream source_os_ (&source_extras_);
   // a_target must be execution or library stereotype
-  QCString here_ ("<" + item_traits::location (a_target) + ">");
-  QCString lib_stat_or_shar_;
-  QCString install_dir_;
+  QString here_ ("<" + item_traits::location (a_target) + ">");
+  QString lib_stat_or_shar_;
+  QString install_dir_;
   unsigned int install_type_ (generic);
-  if (const_cast< UmlArtifact& >(a_target).stereotype () == item_traits::library_stereotype)
+  const QString target_stereo_ (const_cast< UmlArtifact& >(a_target).stereotype ().data ());
+  if (target_stereo_ == item_traits::library_stereotype)
   {
-    QCString other_target_type_;
+    QString other_target_type_;
     install_type_ = lib;
-    if (const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_other_name, other_target_type_))
+    if (item_traits::property_value (a_target, item_traits::butter_other_name, other_target_type_))
     {
       os_ << other_target_type_ << " ";
     }
@@ -129,7 +107,7 @@ if (not assoc_arts_.isEmpty ())
     {
       lib_stat_or_shar_ = item_traits::static_value;
     }
-    if (not const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_install_name, install_dir_))
+    if (not item_traits::property_value (a_target, item_traits::butter_install_name, install_dir_))
     {
       install_dir_ = item_traits::libdir_value;
     }
@@ -141,12 +119,12 @@ if (not assoc_arts_.isEmpty ())
       }
     }
   }
-  else if (const_cast< UmlArtifact& >(a_target).stereotype () == item_traits::executable_stereotype)
+  else if (target_stereo_ == item_traits::executable_stereotype)
   {
     install_type_ = bin;
     here_.append (const_cast< UmlArtifact& >(a_target).name () + "$(SUFEXE)");
     os_ << "Main " << here_ << " :\n\t";
-    if (not const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_install_name, install_dir_))
+    if (not item_traits::property_value (a_target, item_traits::butter_install_name, install_dir_))
     {
       install_dir_ = item_traits::bindir_value;
     }
@@ -166,28 +144,70 @@ if (not assoc_arts_.isEmpty ())
   {
     QString lib_defn_;
     QTextOStream lib_defn_os_ (&lib_defn_);
-    QCString link_flags_;
-    QCString includes_;
-    QCString cflags_;
+    QString link_flags_;
+    QString includes_;
+    QString cflags_;
+    find_hdr_link (a_target, includes_, link_flags_, cflags_);
     for (unsigned int i_ (0); i_ < assoc_arts_.size (); ++i_)
     {
       UmlArtifact *const current_art_ (assoc_arts_.at (i_));
-      if (current_art_->stereotype () == item_traits::library_stereotype)
+      const QString stereotype_ (current_art_->stereotype ().data ());
+      if (stereotype_ == item_traits::library_stereotype)
       {
-        QCString l_linker;
-        if (current_art_->propertyValue (item_traits::butter_project_name, l_linker))
+        QString l_linker;
+        if (item_traits::property_value (*current_art_, item_traits::butter_project_name, l_linker))
         {
           // Is an externally linked library, look for HDR and LINKLIB lines.
-          find_hdr_link (current_art_->description (), includes_, link_flags_, cflags_);
+          find_hdr_link (*current_art_, includes_, link_flags_, cflags_);
         }
         else
         {
           lib_defn_os_ << "<" << item_traits::location (*current_art_) << ">lib" << current_art_->name () << "$(SUFLIB)\n\t";
         }
       }
-      else if (current_art_->stereotype () == item_traits::source_stereotype)
+      else if (stereotype_ == item_traits::source_stereotype)
       {
+        QString src_inc_, src_flags_;
+        find_hdr_link (*current_art_, src_inc_, link_flags_, src_flags_); // Pass link flags to target
+        if (not src_inc_.isEmpty ())
+        {
+          source_os_ << "HDR on <" << item_traits::location (*current_art_) << ">"
+                     << current_art_->name () << "$(SUFOBJ) += " << src_inc_ << " ;\n";
+        }
+        if (not src_flags_.isEmpty ())
+        {
+          source_os_ << "C++FLAGS on <" << item_traits::location (*current_art_) << ">"
+                     << current_art_->name () << "$(SUFOBJ) += " << src_flags_ << " ;\n";
+        }
         os_ << "<" << item_traits::location (*current_art_) << ">" << current_art_->name () << "." << CppSettings::sourceExtension () << "\n\t";
+      }
+      else if (stereotype_ == item_traits::document_stereotype)
+      {
+        QString src_inc_, src_flags_;
+        find_hdr_link (*current_art_, src_inc_, link_flags_, src_flags_); // Pass link flags to target
+        if (not src_inc_.isEmpty ())
+        {
+          const int dot_ (current_art_->name ().findRev ('.'));
+          source_os_ << "HDR on <" << item_traits::location (*current_art_) << ">";
+          if (-1 == dot_)
+            source_os_ << current_art_->name () << "$(SUFOBJ) += " << src_inc_ << " ;\n";
+          else
+            source_os_ << current_art_->name ().left (dot_ - 1) << "$(SUFOBJ) += " << src_inc_ << " ;\n";
+        }
+        if (not src_flags_.isEmpty ())
+        {
+          QString comp_;
+          BUTTER_ALWAYS(item_traits::property_value (*current_art_, item_traits::butter_compiler_name, comp_)
+                        , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
+                                       + "' property on " + QString (current_art_->name ())).ascii ()));
+          const int dot_ (current_art_->name ().findRev ('.'));
+          source_os_ << comp_ << "FLAGS on <" << item_traits::location (*current_art_) << ">";
+          if (-1 == dot_)
+            source_os_ << current_art_->name () << "$(SUFOBJ) += " << src_flags_ << " ;\n\t";
+          else
+            source_os_ << current_art_->name ().left (dot_ - 1) << "$(SUFOBJ) += " << src_flags_ << " ;\n\t";
+        }
+        os_ << "<" << item_traits::location (*current_art_) << ">" << current_art_->name () << "\n\t";
       }
     }
     os_ << ";\n\n";
@@ -213,7 +233,7 @@ if (not assoc_arts_.isEmpty ())
 //    {
 //      os_ << "<link>" << lib_stat_or_shar_ << "\n\t";
 //    }
-//    QCString current_art_;
+//    QString current_art_;
 //    if (requirements (a_target, current_art_))
 //    {
 //      os_ << current_art_;
@@ -223,10 +243,18 @@ if (not assoc_arts_.isEmpty ())
     {
       install_target (here_, install_dir_, os_, install_type_);
     }
-    a_localdoc.target (const_cast< UmlArtifact& >(a_target).name ()).second = tmp_;
+    if (not source_extras_.isEmpty ())
+    {
+      source_os_ << "\n" << tmp_;
+      a_localdoc.target (const_cast< UmlArtifact& >(a_target).name ()).second = source_extras_;
+    }
+    else
+    {
+      a_localdoc.target (const_cast< UmlArtifact& >(a_target).name ()).second = tmp_;
+    }
   }
 }
-!!!176681.cpp!!!	merge_string_list(inout a_list : string, in a_addition : string) : void
+!!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
 if (a_list.isEmpty ())
 {
   a_list = a_addition;
@@ -257,12 +285,12 @@ else if (not a_list.contains (a_addition))
     a_list = l_list1.join (" ");
   }
 }
-!!!155817.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : string) : bool
+!!!155817.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr) : bool
 bool Result (false);
-QCString l_tmp;
+QString l_tmp;
 QString l_section;
 QTextOStream l_os (&l_section);
-if (const_cast< UmlItem& >(a_item).propertyValue (item_traits::butter_include_name, l_tmp))
+if (item_traits::property_value (a_item, item_traits::butter_include_name, l_tmp))
 {
   Result = true;
   l_os << "HDRS += ";

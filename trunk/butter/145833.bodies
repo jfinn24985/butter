@@ -1,6 +1,6 @@
 class pathcmp
-!!!185257.cpp!!!	at(in a_count : uint) : string
-int s_ = 0, e_ = 0; // start, end and counter
+!!!185257.cpp!!!	at(in a_count : uint) : unistr
+int s_ = 0, e_ = 0; // start, end counter
 while (true)
 {
   e_ = path_.find (QDir::separator (), s_);
@@ -10,7 +10,7 @@ while (true)
     {
       throw std::runtime_error ("Attempt to go beyond end of path.");
     }
-    e_ = path_.size ();
+    e_ = path_.length ();
   }
   if (a_count == 0)
   {
@@ -19,8 +19,8 @@ while (true)
   s_ = e_ + 1;
   --a_count;
 }
-!!!186025.cpp!!!	common(in a_other : pathcmp) : string
-QCString Result;
+!!!186025.cpp!!!	common(in a_other : pathcmp) : unistr
+QString Result;
 char sep_[2];
 sep_[0] = QDir::separator ();
 sep_[1] = '\0';
@@ -30,7 +30,8 @@ for (int c_ = 0; c_ < sz_ and at(c_) == a_other.at(c_); ++c_)
   Result.append (at(c_));
   Result.append (sep_);
 }
-Result.resize (Result.length ());
+// Remove trailing separator
+Result.truncate (Result.length ());
 return Result;
 !!!185769.cpp!!!	equality(in a_rhs : pathcmp) : bool
 bool Result (path_ == a_rhs.path_);
@@ -46,31 +47,8 @@ if (not Result)
   }
 }
 return Result;
-!!!184617.cpp!!!	pathcmp(in a_path : string)
-if (pointer() == child_)
-{
-  child_ = new tree_node (*this, a_key, a_value);
-  return std::make_pair (iterator (child_), true);
-}
-else
-{
-  // Search for last child, checking for matching keys
-  tree_node * left__;
-  for (left__ = child_
-      ; pointer() != left__->sibling_ and left__->value.first != a_key
-      ; left__ = left__->sibling_); // empty loop
-  if (left__->value.first == a_key) // exit for matching key
-  {
-    return std::make_pair (iterator (left__), false);
-  }
-  else
-  {
-    std::auto_ptr< tree_node > new_child__ (new tree_node (*this, a_key, a_value));
-    return std::make_pair (insert_after (*left__, *(new_child__.release ())), true);
-  }
-}
-!!!186281.cpp!!!	relative(in a_target : pathcmp) : string
-QCString Result;
+!!!186281.cpp!!!	relative(in a_target : pathcmp) : unistr
+QString Result;
 char sep_[4];
 sep_[0] = '.';
 sep_[1] = '.';
@@ -94,11 +72,12 @@ for (int i_ = common_; i_ < sz2_; ++i_)
   Result.append (a_target.at (i_));
   Result.append (&sep_[2]);
 }
-Result.resize (Result.length ());
+// Remove trailing separator
+Result.truncate (Result.length ());
 return Result;
 !!!185897.cpp!!!	subpath(in a_rhs : pathcmp) : bool
 // simple test that a subdirs path string must have longer pathname
-bool Result (path_.size () < a_rhs.path_.size ());
+bool Result (path_.length () < a_rhs.path_.length ());
 if (Result)
 {
   const unsigned int sz_ = size ();

@@ -1,124 +1,55 @@
 class build_writer
-!!!191785.cpp!!!	create_system(inout a_base : location, in a_project : UmlItem) : void
-// Start building system
-QPtrStack< location > location_stack_;
-
-if (NULL == system_artifact_.get ())
+!!!200233.cpp!!!	find_hdr_link(in a_artifact : UmlArtifact, inout a_hdr : unistr, inout a_link : unistr, inout a_flag : unistr) : void
+// Process any data from properties.
+QString value_;
+if (item_traits::property_value (a_artifact, item_traits::butter_flags_name, value_))
 {
-  system_artifact_ = get_artifact (a_base, butter::style::get_style().build_file_sysname);
+  if (not a_flag.isEmpty ()) { a_flag.append (" "); }
+  a_flag.append (value_);
 }
-
-initialise (a_base, a_project);
-
-location_stack_.push (&a_base);
-while (not location_stack_.isEmpty ())
+if (item_traits::property_value (a_artifact, item_traits::butter_ldflags_name, value_))
 {
-  location * top_ (location_stack_.pop ());
-  // Push children onto stack
-  for (unsigned int i_ = 0; i_ < top_->children ().count (); ++i_)
+  if (not a_link.isEmpty ()) { a_link.append (" "); }
+  a_link.append (value_);
+}
+if (item_traits::property_value (a_artifact, item_traits::butter_include_name, value_))
+{
+  if (not a_hdr.isEmpty ()) { a_hdr.append (" "); }
+  a_hdr.append (value_);
+}
+// Process any data from the description.
+QString section_ (section (item_traits::generic_section, const_cast< UmlArtifact& >(a_artifact).description ()));
+if (not section_.isEmpty ())
+{
+  QRegExp l_hdr_re ("^ *" + item_traits::header_label + " *= *");
+  QRegExp l_link_re ("^ *" + item_traits::link_label + " *= *");
+  QRegExp l_flag_re ("^ *" + item_traits::flag_label + " *= *");
+  if (not section_.isEmpty ())
   {
-    location_stack_.push (top_->children ().at (i_));
-  }
-
-  std::auto_ptr< compound_artifact > current_;
-  // Get deployment views from current location's packages
-  for (unsigned int i_ = 0; i_ < top_->packages ().count (); ++i_)
-  {
-    UmlPackage * I_ = top_->packages ().at (i_);
-    for (unsigned int j_ = 0; j_ < I_->children ().count (); ++j_)
+    QTextIStream section__is (&section_);
+    while (not section__is.atEnd ())
     {
-      UmlItem * J_ = I_->children ().at (j_);
-      if (aDeploymentView == J_->kind ())
+      const QString l_line (section__is.readLine ());
+      int l_length;
+      if (-1 != l_hdr_re.match (l_line, 0, &l_length))
       {
-        // Scan for deployment views targets.
-        for (unsigned int k_ = 0; k_ < J_->children ().count (); ++ k_)
-        {
-          UmlItem * item_ = J_->children ().at (k_);
-          if (anArtifact == item_->kind ())             // UmlArtifacts.
-          {
-            UmlArtifact *art_item_ = dynamic_cast < UmlArtifact * >(item_);
-            BUTTER_CHECK (NULL != art_item_, "<p><b>Program error:</b> Item type and class type do not match.</p>");
-            QCString value_;
-            if (const_cast< UmlArtifact& >(*art_item_).propertyValue (item_traits::butter_project_name, value_))
-            {
-              //////////////////////////////////////////////////
-              // Is an external target for project 'value_'.
-              external_target (*top_, *art_item_);
-            }
-            else
-            {
-              const QCString stereotype_label_ (const_cast< UmlArtifact& >(*art_item_).stereotype ());
-              if (stereotype_label_.contains (item_traits::executable_stereotype, false)
-                  or stereotype_label_.contains (item_traits::library_stereotype, false))
-              {
-                //////////////
-                // Is a local target
-                if (NULL == top_->parent ()) // Is local at base, use system_artifact_
-                {
-                  local_target (*top_, *art_item_, *system_artifact_.get ());
-                }
-                else
-                {
-                  if (NULL == current_.get ())
-                  {
-                    current_ = get_artifact (*top_, butter::style::get_style().build_file_name);
-                  }
-                  local_target (*top_, *art_item_, *current_.get ());
-                }
-              }
-            }
-          }
-        }
+        if (not a_hdr.isEmpty ()) { a_hdr.append (" "); }
+        a_hdr.append (l_line.mid (l_length));
+      }
+      else if (-1 != l_link_re.match (l_line, 0, &l_length))
+      {
+        if (not a_link.isEmpty ()) { a_link.append (" "); }
+        a_link.append (l_line.mid (l_length));
+      }
+      else if (-1 != l_flag_re.match (l_line, 0, &l_length))
+      {
+        if (not a_flag.isEmpty ()) { a_flag.append (" "); }
+        a_flag.append (l_line.mid (l_length));
       }
     }
   }
-
-  // End of current location
-  if (NULL != current_.get ())
-  {
-    // add the inter-file link
-    descendent_link (*current_.get (), *top_);
-    current_.reset ();
-  }
 }
-
-finalise ();
-!!!193961.cpp!!!	finalise() : void
-if (NULL != system_artifact_.get ())
-{
-  system_artifact_.reset ();
-}
-!!!200233.cpp!!!	find_hdr_link(in a_desc : string, inout a_hdr : string, inout a_link : string, inout a_flag : string) : void
-// Get the section.
-QString l_sec (section (item_traits::generic_section, a_desc));
-QRegExp l_hdr_re ("^ *" + item_traits::header_label + " *= *");
-QRegExp l_link_re ("^ *" + item_traits::link_label + " *= *");
-QRegExp l_flag_re ("^ *" + item_traits::flag_label + " *= *");
-if (not l_sec.isEmpty ())
-{
-  QTextIStream l_sec_is (&l_sec);
-  while (not l_sec_is.atEnd ())
-  {
-    const QString l_line (l_sec_is.readLine ());
-    int l_length;
-    if (-1 != l_hdr_re.match (l_line, 0, &l_length))
-    {
-      if (not a_hdr.isEmpty ()) { a_hdr.append (" "); }
-      a_hdr.append (l_line.mid (l_length));
-    }
-    else if (-1 != l_link_re.match (l_line, 0, &l_length))
-    {
-      if (not a_link.isEmpty ()) { a_link.append (" "); }
-      a_link.append (l_line.mid (l_length));
-    }
-    else if (-1 != l_flag_re.match (l_line, 0, &l_length))
-    {
-      if (not a_flag.isEmpty ()) { a_flag.append (" "); }
-      a_flag.append (l_line.mid (l_length));
-    }
-  }
-}
-!!!194089.cpp!!!	get_artifact(inout a_loc : location, in a_name : string) : compound_artifact
+!!!194089.cpp!!!	get_artifact(inout a_loc : location, in a_name : unistr) : compound_artifact
 // Get deployment views from current location's packages
 std::auto_ptr< compound_artifact > Result;
 if (a_loc.packages ().count () > 0)
@@ -132,9 +63,9 @@ if (a_loc.packages ().count () > 0)
     {
       UmlItem * item_ = docs_.at (k_);
       Result->merge (dynamic_cast< UmlArtifact& >(*item_));
-      UmlCom::trace ("<p><b>Warning:</b> Removing duplicated build file from Package " + item_->parent ()->name () + "</p>\n");
+      log::com.trace (log::info, "<p><b>Note:</b> Removing duplicated build file from Package " + item_->parent ()->name () + "</p>\n");
       // item_->parent ()->children ().remove (item_->parent ()->children ().findRef (item_));
-      item_->set_Name ("OLD_" + a_name);
+      item_->set_Name (("OLD_" + a_name).utf8 ());
     }
     // Reset the artifact (keeps section labels but empties content)
     Result->reset ();
@@ -146,22 +77,22 @@ if (NULL == Result.get ())
   Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
 }
 return Result;
-!!!192425.cpp!!!	section(in a_section : string, in a_desc : string) : string
-static const QCString l_START ("${" + item_traits::section_prefix);
-const QCString l_phrase (l_START + a_section + "}");
-QCString Result;
+!!!192425.cpp!!!	section(in a_section : unistr, in a_desc : unistr) : unistr
+static const QString l_START ("${" + item_traits::section_prefix);
+const QString l_phrase (l_START + a_section + "}");
+QString Result;
 int l_start (a_desc.find (l_phrase));
 if (-1 != l_start)
 {
   // Found a_section start, search from here to end for next section
-  int l_end (a_desc.find (l_START, l_start + l_phrase.size ()));
+  int l_end (a_desc.find (l_START, l_start + l_phrase.length ()));
   if (-1 != l_end)
   {
-    Result = a_desc.mid (l_start + l_phrase.size (), l_end - (l_start + l_phrase.size ()));
+    Result = a_desc.mid (l_start + l_phrase.length (), l_end - (l_start + l_phrase.length ()));
   }
   else
   {
-    Result = a_desc.mid (l_start + l_phrase.size ());
+    Result = a_desc.mid (l_start + l_phrase.length ());
   }
 }
 else if (-1 == a_desc.find (l_START))

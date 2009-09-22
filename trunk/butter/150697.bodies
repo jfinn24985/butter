@@ -1,0 +1,112 @@
+class writer
+!!!205609.cpp!!!	create_system(inout a_base : location, in a_project : UmlItem) : void
+// Start building system
+std::auto_ptr< compound_artifact > system_artifact_ = get_artifact (a_base, static_cast< derived* >(this)->build_file_sysname);
+
+// Perform style specific initialisation
+static_cast< derived* >(this)->initialise (a_base, a_project, *system_artifact_);
+
+// If no top-level system build-file document, create it from template.
+if (a_base.find_uml_document (static_cast< derived* >(this)->rules_name).isEmpty ())
+{
+  QString version_;
+  if (not item_traits::property_value (a_project, item_traits::butter_version_name, version_))
+  {
+    if (not item_traits::property_value (a_project, item_traits::version_name, version_))
+    {
+      version_ = "1.0";
+    }
+  }
+  int index_ (0);
+  const QString project_placeholder_ ("@@project@@");
+  const QString version_placeholder_ ("@@version@@");
+  QString a_default (static_cast< derived* >(this)->default_rules);
+  if (-1 != (index_ = a_default.find (project_placeholder_)))
+  {
+    a_default.replace (index_, project_placeholder_.length (), const_cast< UmlItem & > (a_project).name ());
+  }
+  if (-1 != (index_ = a_default.find (version_placeholder_)))
+  {
+    a_default.replace (index_, version_placeholder_.length (), version_);
+  };
+  a_base.create_uml_document (static_cast< derived* >(this)->rules_name)->set_Description (a_default.utf8 ());
+}
+
+//////////////
+// Process the project, handling items as we go.
+//
+
+QPtrStack< location > location_stack_;
+location_stack_.push (&a_base); // Use a stack to eliminate recursion
+while (not location_stack_.isEmpty ())
+{
+  location * top_ (location_stack_.pop ());
+  // Push children onto stack
+  for (unsigned int i_ = 0; i_ < top_->children ().count (); ++i_)
+  {
+    location_stack_.push (top_->children ().at (i_));
+  }
+
+  std::auto_ptr< compound_artifact > current_; // The current build file.
+  // Get deployment views from current location's packages
+  for (unsigned int i_ = 0; i_ < top_->packages ().count (); ++i_)
+  {
+    UmlPackage * I_ = top_->packages ().at (i_);
+    for (unsigned int j_ = 0; j_ < I_->children ().count (); ++j_)
+    {
+      UmlItem * J_ = I_->children ().at (j_);
+      if (aDeploymentView == J_->kind ())
+      {
+        // Scan for deployment views targets.
+        for (unsigned int k_ = 0; k_ < J_->children ().count (); ++ k_)
+        {
+          UmlItem * item_ = J_->children ().at (k_);
+          if (anArtifact == item_->kind ())             // UmlArtifacts.
+          {
+            UmlArtifact *art_item_ = dynamic_cast < UmlArtifact * >(item_);
+            BUTTER_CHECK (NULL != art_item_, "<p><b>Program error:</b> Item type and class type do not match.</p>");
+            QString value_;
+            if (item_traits::property_value (*art_item_, item_traits::butter_project_name, value_))
+            {
+              //////////////////////////////////////////////////
+              // Is an external target for project 'value_'.
+              static_cast< derived* >(this)->external_target (*top_, *art_item_, *system_artifact_);
+            }
+            else
+            {
+              const QString stereotype_label_ (const_cast< UmlArtifact& >(*art_item_).stereotype ());
+              if (stereotype_label_.contains (item_traits::executable_stereotype, false)
+                  or stereotype_label_.contains (item_traits::library_stereotype, false))
+              {
+                //////////////
+                // Is a local target
+                if (NULL == top_->parent ()) // Is local at base, use system_artifact_
+                {
+                  static_cast< derived* >(this)->local_target (*top_, *art_item_, *system_artifact_.get ());
+                }
+                else
+                {
+                  if (NULL == current_.get ())
+                  {
+                    current_ = get_artifact (*top_, static_cast< derived* >(this)->build_file_name);
+                  }
+                  static_cast< derived* >(this)->local_target (*top_, *art_item_, *current_.get ());
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // End of current location
+  if (NULL != current_.get ())
+  {
+    // add the inter-file link
+    static_cast< derived* >(this)->descendent_link (*current_.get (), *system_artifact_, *top_);
+    // Close the build file
+    current_.reset ();
+  }
+}
+

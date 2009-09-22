@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 40
+  revision 44
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -43,39 +43,353 @@ October 2009
 
 =Introduction=
 
-Butter is a plug-out for generating a build system for (at the moment) C++ projects. It can 
-produce build systems in three styles: Boost jam, standard jam and gnu make. (For people who 
-have not used jam before, //butter// allows you to try it out before learning a new build-file 
-syntax!)
+Butter is a bouml plug-out for generating a build system for (at the moment) C++ projects. It can 
+produce build systems in three styles: Boost jam, standard jam and gnu make. The generated build 
+systems should produce nearly equivalent results. Optionally you can use target types that are 
+specific to a particular build system style.
 
-The genpro tool is okay for single-target projects which use Qt, but limited if you have a medium
-sized project with several dynamic libraries and executables.  I myself use bouml for a project
-that has (currently) 8 or so libraries, 8 executables and 10 or so plugins.  Thankfully I found 
-the boost jam build tool which makes building such a project easy.  However I found it 
-frustrating that I could define all the build target information into bouml but could not 
-write/convert that to anything.  Hence the //butter// project was conceived (because //butter//
-goes well with jam!).
+== Motivation ==
 
-After writing the tool for boost jam files it was extended to create standard jam and gnu 
-make files.  One of my original goals for adding make files was to allow me to build tarballs 
-for projects, possibly with autoconf ``configure`` scripts that could be built by people 
-that did not have boost jam.
+You can define the build system information within //bouml// but it is difficult to write/convert 
+this into anything.  The genpro tool allows one build-target at a time to be created.  The 
+//butter// project takes all the build targets and creates a build system in one go.
+
+== Quick Example ==
+
+Create a //bouml// project as usual.
++ Create project.
++ Add classes and associated artifacts.
++ Define project properties, such as generation directory, as normal.
++ Generate source code.
+
+
+The minimal extra steps to create build system are.
++ Create executable artifact and associate source artifacts.
++ Set property ``butter style`` on project package to ``make``
++ Run //butter//.
++ Use ``make`` to build executable.
+
+
+==Target Variants==
+
+The build systems can have several global targets.  The default target is
+a ``debug`` variant.  Optimised output uses the ``release`` variant.
+An ``install`` variant is also available (included with the ``release``
+variant //for boost jam//).  Additionally the ``clean`` target will remove
+files created by the build process.
+
+Example invocations are:
+```
+make # default = debug
+make release
+make install
+make clean
+jam # default = debug
+jam -sVARIANT=RELEASE
+jam install
+jam clean
+bjam # default = debug
+bjam release # includes installation
+bjam clean
+```
+
+==Version and license information==
 
 This is the second beta release of the //butter// project. It is fully functional and a very 
 useful tool, however not every situation has been tested. This could lead to complete failures
 of the tool (the plugout starts then \"disappears\") or any errors that are reported may not make 
 sense.  Please let me know your experiences of using this tool and any suggestions or feedback.
 
+The source code, documentation and associated bouml project files are released under the GNU 
+Public License.
+
+==Future directions==
+
+In this release of //butter// there is a simple //install// target type. It 
+is intended that future releases will improve this capability with particular 
+emphasis on producing systems designed for easy integration with the //autoconf// system.
+
+People are free to contribute additional build system styles and make comments to improve the
+existing styles.
+
+=Building butter=
+
+The //butter// project contains the //butter// files and properties needed to create a 
+build system for building //butter// itself.  However, to create your first butter version
+you use the //genpro// tool on the ``butter.plugout`` artifact to create a ``qmake`` //pro//
+file.
+
 When built on unix systems in debug mode //butter// pauses with a dialog box at the start to allow
 you to optionally attach a debugger.
 
-==Generated build systems==
+=Adding butter to bouml=
 
-The generated build systems should produce equivalent targets. These are not necessarily 
-identical and will not necessarily be located in the same place. Additionally, you can use
-target types that are specific to a particular build system style.
+The //butter// plugout always operates on the entire project so it does not care where 
+it is started.  You can therefore set it to apply at any location you want. To use the 
+//butter// tool, place the executable in the //bouml// directory containing 
+the other tools.  Then in the //Tools//->//tools settings// dialog select the //Others//
+tab and add something like the following:
 
-==Important concepts, features and limitations==
+|| Executable | display | Prj | 
+| butter | Create build system | X | ...
+
+=Including build information in bouml=
+
+The basic purpose of the //butter// project is to write non-source information
+from the bouml project into the filesystem.  The major operation is combining
+the target artifact objects into a single set of build artifacts for creating 
+every target in the project.  The second major operation is to write //document// 
+artifacts into the filesystem. These two operations combine to allow most aspects 
+of a project to be saved within the bouml project.
+
+//Butter// has a goal of being easy to use in simple cases and flexible enough
+to handle complex cases.  The basic operation is to define the project's 
+executable and library artifacts.  Running //butter// will then insert a set
+of artifacts into the project that contain the build system, which are also written
+to the source directories. In the case you have a project with no external dependencies 
+simply defining executable and library artifacts may be all that need be done.
+
+Adding extra build information is done firstly using [properties #properties].  The main places
+for these are the project package and the individual artifacts.  For example when 
+working with an external library you create a library artifact for it and add the 
+library's include, compile and linker flags as properties.
+
+When build information is not common to all build styles, properties will not work.
+In these rare cases the build style specific information goes into the
+artifact's [description field #desc_enc].  Additionally the [build file #buildfile] 
+artifacts that //butter// creates in the //bouml// project can also be edited to 
+add information.
+
+Documentation and non C++ source files can be included by creating an document artifact 
+in //bouml// and placing the text or source code into the description field. //Butter//
+writes the description field of all document artifacts into a file with the artifact's
+name.
+
+==Properties==[properties]
+
+The following table gives an overview of the available properties, the //bouml//
+object that they can be applied to the reason for the property.  Note that
+all //butter// properties are the word ``butter`` followed by a keyword.  The
+``project`` in the table is the top project package; ``executable``, ``library``,
+``source``, ``document`` refer to artifacts of the given stereotype.
+
+
+|| Property name    | bouml object(s)     | Reason           |
+| butter build-dir  | project             | Directory for object files, etc.
+| butter base       | project             | Hint for the base directory of the build tree
+| butter buildfile  | library             | (External library) Name of a file to use for settings
+| butter compiler   | document            | Variable name as used in the build system for a compiler (eg. CC for C). Required when you need to set compile flags for a document or when the source type will not be deduced from the document name.
+| butter flags      | project             | Define project wide compile flags.
+|                   | executable, library | Compile flags for associated sources
+|                   | source              | Source specific flags
+|                   | document            | Source specific flags (see compiler property)
+| butter include    | project             | Define project wide include diretories.
+|                   | executable, library | Include directories for associated sources
+|                   | source              | Source specific includes
+|                   | document            | Source specific includes (see compiler property)
+| butter install    | executable, library | Specify one of the predefined install locations
+| butter ldflags    | project             | Define project wide link flags.
+|                   | executable, library | Link flags for associated sources
+|                   | source, document    | Link flags to added to associated executables or libraries
+| butter log-level  | project             | Trace output verboseness (0 = warn (defualt), 1 = information, 2 = debug)
+| butter other      | library             | Change build target type
+|                   | document            | 'nowrite' means ignore document
+| butter project    | library             | Indicate library is an external target
+| butter style      | project             | Which build style? boost, standard or make.
+| butter type       | library             | Set library as shared or static
+|                   | project, package    | Set default library type for contents of package
+| butter version    | project             | Initial setting of VERSIONDIR in build system
+
+
+
+===Project package specific properties===
+
+: butter style = boost | standard | jam
+This names the style of build system you want to use. The **default** value is
+``boost``. The other alternatives are ``standard`` (for standard jam) and 
+``make``. If the name of the style is not recognised you get an error message
+and the **default** style is used.
+: butter base = [dir]
+Indicates the relationship of the //desired// project root directory and the root directory 
+set in C++ settings. For example I set the C++ root directory to be ``[real-root]/include`` and
+set //butter base// to ``..`` (I also set the src directories to \"``../src/[name]``\").
+This will be ignored if the directory is not a parent of all the source directories.
+: butter build-dir = [dir]
+Indicate a directory where the build files will be created. This is currently only
+used by the ``boost`` style.
+
+
+===Artifact properties===[art_prop]
+
+Those properties with an (*) may be inherited from parent objects up to
+and including the project, with //local// definitions overriding more
+distant definitions. Properties with an (@) when
+used on the project package are added to every build target, the project
+level properties are combined with that of the target.  Properties
+with an (#) may also be set in the target's description 
+[see Artifact Descriptions #desc_enc].
+
+: butter include = dir1 dir2 (@)(#)
+A list of header directories to search for included files.  The list is
+the bare directory name, ``-I`` will be prepended for those systems
+that require it.
+: butter flags = ... (@)(#)
+A list of compiler options for building the object files. This is
+used as-is.
+: butter ldflags = ... (@)(#)
+A list of linker options for building the target. This is
+used as-is.
+: butter install = ...
+**Library** and **executable** targets are by default installed into the
+``BINDIR`` and ``LIBDIR`` install locations. To install in a different location
+set this property to one of the other install directory names. If
+you do not want the target installed set it to ``NONE``.
+: butter type = static | shared (*)
+Indicate whether a library target is to be build as a static code archive
+or a dynamic library.
+
+: butter project = [name]
+For **library** stereotype artifacts only. This indicates that the artifact
+represents an //external// library that will not be build but associated
+with other targets.  In this target the //include//, //flag// and //link//
+definitions are those for the //external// library and are automatically
+added to //internal// targets that reference this //external// target.
+
+For the ``boost`` style, ``[name]`` is used to group external projects which
+have the same external project name.
+: butter other = [name]
+For **library** stereotype artifacts only. This indicates that the artifact
+represents an alternate build target. These are build style specific:
+ - boost | standard : Used as-is as the jam rule name.
+ - make : ``$(NAME_IN_UPPERCASE)`` used as the target build tool.
+The definition for what these do must be defined by the user or 
+must be already present in the build systems.
+: butter buildfile = [name]
+For **library** stereotype artifacts with //butter other// property only.
+This indicates an external file that contains definitions to use
+for this //external// library.
+ - boost : Adds ``using [name] ;``
+ - standard : Adds ``include [name].jam ;``
+ - make : Adds ``include [name].make``
+
+
+: butter document : nowrite
+For **document** stereotype artifacts only. This indicates that the document
+should not be written to disk. By default //butter// will write all
+documents to disk.
+
+
+
+==Artifact Descriptions==[desc_enc]
+
+The //butter// plugout can use the description from target artifacts 
+to store generic or style-specific build information. It uses section
+markers that look like the replacement markers used in bouml, namely
+``${butter_generic}`` for the section containing generic information.
+Each style has a section marker defined as ``${butter_`` + style name + ``}``.
+
++ no section marker = use entire description content
++ style specific marker = use marked section
++ generic marker = if no specific section and generic marker is
+ present, use the generic section.
++ markers present but not generic or for this style = empty section.
+
+
+Once a section has been discovered it is searched for lines containing
+the following definition labels.
+```
+HDR=
+FLAGS=
+LINK=
+```
+which are converted to //include//, //flag// and //link// definitions. These
+are used in exactly the same way as the corresponding properties above. If no
+labels are present then the section is written as-is into the build file.
+
+
+==Artifacts named Jamfile/Jamroot/makefile==[buildfile]
+
+These artifacts will contain sections of text between start/end markers
+that were generated by //butter//.  Any text outside these markers will
+not be changed when //butter// is rerun and will be writen with the rest
+of the file.  The markers look as below with '['label']' replaced be
+the section label.
+
+```
+##START:[label]
+...
+##END:[label]
+```
+
+==Build style special artifacts==[specialfile]
+
+Each styles uses an artifact containing global definitions at the 
+top-level project directory.  Once created these artifacts are not changed
+by //butter//. The names of these build files are:
+
+|| style | filename
+| ``make`` | //makefile.sys//
+| ``standard`` | //Jamrules//
+| ``boost`` | //local.jam//
+
+
+**NOTE** The content of these files, particularly //makefile.sys//, is essential
+for the correct operation of the generated build system.  Therefore, care
+should be taken when editing these artifacts in bouml. If something does
+go wrong simply renaming the artifact in bouml will cause a fresh
+default version to be created.
+
+**HINT** You can save these artifacts into your //bouml// template project.
+
+=Advanced usage=[advanced]
+
+==Installation feature==
+
+All build targets are added to the default invocation of the build tool. In
+addition an //install// target is supported.  Currently how the install target 
+is invoked varies with each build style.  For the ``make`` style an //install//
+target is added and must be called manually, for ``boost`` the installation 
+occurs automatically for //release// variant builds.
+
+One goal of the //butter// plugout is to facilitate project delivery as well
+as building.  We assume that the project packaging is likely to be managed
+by the GNU autoconf or similar tool.  To facilitate using such a tool each
+style contains a set of variables for each installation target directory used 
+by autoconf.  The names of these variables can be found by looking at one of 
+the [special build files #specialfile]. For example the default variable used
+for a **library** target is ``LIBDIR`` and for an **executable** target it
+is ``BINDIR``.  The install location can be changed by setting the 
+``butter install`` property of the target to the name of one of the other 
+variables.
+
+==Documentation/man pages==
+
+Let us assume that you have the text for a man page written in txt2tags markup
+in **document** artifact ``butter.t2t`` and also you have a ``man`` build rule 
+for converting the document to a man page.  To convert the artifact to a man 
+page and have it installed we create a **library** artifact ``butter.1`` and 
+associate ``butter.t2t`` to it. We then set the following properties on the new
+**library** artifact:
+| butter other: | man
+| butter install: | MAN1
+
+
+
+
+==Multi-language programming==[multi]
+
+//Butter// allows the easy inclusion of source files from other programming 
+languages.
+
+- Create a artifact with the //document// stereotype and the source filename,
+eg \"c_interface.c\", \"c_interface.h\" or \"matrix_ops.F\".
+- Write the source code directly into the document's description field.
+- Include the document in a //library// or //executable// artifact as
+if it was a normal source file.
+- Optionally define link, include, compiler and or link flags on the document.
+
+
+=Important concepts, features and limitations=
 
 - **build options**: The //butter// plugout creates a build system that has three basic 
 build-system options (//default// (librarys/executables), //clean// and //install//) 
@@ -115,7 +429,7 @@ in bouml which can also be associated with some relevant target.
 
 
 
-===Boost jam limitations===[boost_limit]
+==Boost jam limitations==[boost_limit]
 
 The description field of external libraries can be used to give
 detailed instructions for the build system ([see Artifact Description #desc_enc]).
@@ -141,7 +455,7 @@ LINK=-lboost_filesystem
 ```
 
 
-===Jam standard limitations===
+==Jam standard limitations==
 
 The ``standard`` ``jam`` program has the limitation that include 
 directories and compilation flags are set globally for each compilation
@@ -153,7 +467,7 @@ limitation is not true for the linker flags which are always target
 specific. The plugout does attempt to merge the information from each 
 target to remove duplicate information.
 
-===Make limitations===[make_limit]
+==Make limitations==[make_limit]
 
 (1)  The current make style requires a make program (eg GNU make) that allows 
 immediately assigned variables allowing constructs such as ``A:=$(A) -B -C``, 
@@ -176,54 +490,7 @@ version of //B// will be seen when ``make`` checks target //A//.  Furthermore
 there will be no error message!  The only sure indication that all targets are 
 updated is when a ``make`` run performs no actions.
 
-==Future directions==
-
-In this release of //butter// there is a simple //install// target type. It 
-is intended that future releases will improve this capability with particular 
-emphasis on producing systems designed for easy integration with the //autoconf// system.
-
-People are free to contribute additional build system styles and make comments to improve the
-existing styles.
-
-- Possible future development.
- + A style for ```cmake``` or another similar program that generates portable makefiles.
- + Text replacement (optional?) : The plugout copies description text that it uses verbatim.
-However, it might be useful to add a text replacement system similar to the rest of bouml.
- + Have a ``butter install`` property on a **document** artifact that will add the document
-to the install target.
-The //butter// plugout also does not directly support installation of files
-generated by the documentation plugout.  This is because these files are
-primarily developer documentation rather than user documentation. It might
-be supported indirectly by defining a **document** artifact with the name
-of the root-directory of the generated documentation and setting the 
-``butter document`` property to ``nowrite`` and the ``butter install`` 
-location to somewhere, such as ``DOCDIR``.
-
-
-
-=Building butter=
-
-The //butter// project contains the //butter// files and properties needed to create a 
-build system for building //butter// itself.  However, to create your first butter version
-you use the //genpro// tool on the ``butter.plugout`` artifact to create a ``qmake`` //pro//
-file.
-
-=Adding butter to bouml=
-
-To use the //butter// tool, place the executable in the //bouml// directory containing 
-the other tools.  Then in the //Tools//->//tools settings// dialog select the //Others//
-tab and add something like the following:
-
-|| Executable | display | Prj | 
-| butter | Create build system | X | 
-
-
-The //butter// plugout always operates on the entire project so it does not care where 
-it is started. You can therefore add it to virtually any location. I activate it for the Prj as 
-shown above as well as the next five columns (all the yellow folder icons) and under 
-the artifact column.
-
-=Quick Tutorial=
+=In-depth Tutorial=
 
 ==Build Project==
 
@@ -470,319 +737,332 @@ to provide enough flexibility that you can encapsulate all build information int
 project.  This should be a great help when sharing the project with other users and allows
 you to version (CVS, subversion etc) everything in the project using only the data in the bouml 
 project directory.
-
-=User Documentation=
-
-The basic purpose of the //butter// project is to write non-source information
-from the bouml project into the filesystem. The major operation is transforming
-the target artifact objects into some sort of build file, in a similar way to the
-//genpro// plugout. Additionally it combines all the targets to
-generate a single set of build files for creating every target in the project.
-
-The second major operation is to write //document// artifacts into the 
-filesystem.  This is required by the ``standard`` and ``make`` styles so they
-can write their global definition files into the bouml project, where the user
-can subsequently edit them if necessary.  It also has the advantage that text 
-files, such as ``README``, can be stored in the bouml project.
-
-These two operations combine to allow every aspect of a project to be saved
-within the bouml project.
-
-==Project name and version==
-
-The //butter// plugout uses the top-level package name as the project name. It 
-also uses the optional user property \"butter version\" or \"version\" as the version number.
-However, the most significant place this is used is the ``VERSIONDIR`` variable
-in the [build settings file #specialfile] that will appear as document artifacts
-in the bouml project.  Once created these files are not altered by the //butter//
-project.  This allows you to add extra information to these files but will
-not reflect changes to the version number of project name.  Therefore the
-``VERSIONDIR`` may need to be manually changed when you change the version number.
-
-==Locations==[location]
-
-In bouml you can have several different packages specify the same filesystem directory 
-for source files. The //butter// system uses the concept of a ``location`` to
-associate a set of packages to a filesystem directory.
-
-What this means for users
-+ Packages with the same source filesystem location will be assigned to the
-same location.  This means that only one of the packages will have a 
-[``buildfile`` artifact #buildfile] which will include targets for all packages
-at that location.  Additionally if ``buildfile``s exists in more than one of
-the packages at a location then they will be merged and all but one deleted.
-+ Source code for a single target must be at the same location as the target.
-This is an intentional limitation of the design as it greatly simplifies the
-generation of the ``buildfile``s. Furthermore I feel that a UML package
-should be represented by at least one library or executable target. Targets
-can be referenced across locations however.
-
-
-
-==Build targets==
-
-A central concept used in //butter// is that of a build target.  These are
-defined to be UML artifact objects with the **library** or **executable**
-stereotype and are translated into the obvious build targets.  Alternative
-build targets (egboost jam`s **python-extension**) are supported by setting 
-a property on a **library** artifact.
-
-The source code and optionally dependent targets of a target are defined using 
-the //Associated artifacts// of the target artifact.
-Users should note the following considerations:
-- Source artifacts for a target must be at the same [location #location] as
-the target.  This is not checked by //butter// but will cause the build
-process to fail with ``cannot find source file: XXXX`` errors.
-- Associated library and executable artifacts need not be at the same location.
-- Class dependencies are not checked (in this version). This means that the
-user must manually add all artifacts to satisfy all dependencies.
-
-
-===External libraries/targets===
-
-In an analogous way to using //external// classes, you can create an artifact
-for an //external// library. The //include//, //link// and //flags// definitions
-for this artifact are then automatically added to //internal// targets that 
-reference the //external// target.
-
-==Installation feature==
-
-All build targets are added to the default invocation of the build tool. In
-addition an //install// target is supported.  Currently how the install target 
-is invoked varies with each build style.  For the ``make`` style an //install//
-target is added and must be called manually, for ``boost`` the installation 
-occurs automatically for //release// variant builds.
-
-One goal of the //butter// plugout is to facilitate project delivery as well
-as building.  We assume that the project packaging is likely to be managed
-by the GNU autoconf or similar tool.  To facilitate using such a tool each
-style contains a set of variables for each installation target directory used 
-by autoconf.  The names of these variables can be found by looking at one of 
-the [special build files #specialfile]. For example the default variable used
-for a **library** target is ``LIBDIR`` and for an **executable** target it
-is ``BINDIR``.  The install location can be changed by setting the 
-``butter install`` property of the target to the name of one of the other 
-variables.
-
-
-==Storing build information in bouml==
-
-The //butter// plug-out uses three main mechanisms for encoding build
-information into the the bouml project: user-defined Properties, Descriptions
-and the description of specially named Artifacts. In general properties are used
-for information that is used regardless of the build style.  Descriptions are
-used for information that may need to be different for different styles but is
-generally present in each style. Specially named artifacts are used to include
-information specific to each style.
-
-===Project package specific properties===
-
-: butter style = boost | standard | jam
-This names the style of build system you want to use. The **default** value is
-``boost``. The other alternatives are ``standard`` (for standard jam) and 
-``make``. If the name of the style is not recognised you get an error message
-and the **default** style is used.
-: butter base = [dir]
-Indicates the relationship of the //desired// project root directory and the root directory 
-set in C++ settings. For example I set the C++ root directory to be ``[real-root]/include`` and
-set //butter base// to ``..`` (I also set the src directories to \"``../src/[name]``\").
-This will be ignored if the directory is not a parent of all the source directories.
-: butter build-dir = [dir]
-Indicate a directory where the build files will be created. This is currently only
-used by the ``boost`` style.
-
-
-===Artifact properties===[art_prop]
-
-Those properties with an (*) may be inherited from parent objects up to
-and including the project, with //local// definitions overriding more
-distant definitions. Properties with an (@) when
-used on the project package are added to every build target, the project
-level properties are combined with that of the target.  Properties
-with an (#) may also be set in the target's description 
-[see Artifact Descriptions #desc_enc].
-
-: butter include = dir1 dir2 (@)(#)
-A list of header directories to search for included files.  The list is
-the bare directory name, ``-I`` will be prepended for those systems
-that require it.
-: butter flags = ... (@)(#)
-A list of compiler options for building the object files. This is
-used as-is.
-: butter ldflags = ... (@)(#)
-A list of linker options for building the target. This is
-used as-is.
-: butter install = ...
-**Library** and **executable** targets are by default installed into the
-``BINDIR`` and ``LIBDIR`` install locations. To install in a different location
-set this property to one of the other install directory names. If
-you do not want the target installed set it to ``NONE``.
-: butter type = static | shared (*)
-Indicate whether a library target is to be build as a static code archive
-or a dynamic library.
-
-
-: butter project = [name]
-For **library** stereotype artifacts only. This indicates that the artifact
-represents an //external// library that will not be build but associated
-with other targets.  In this target the //include//, //flag// and //link//
-definitions are those for the //external// library and are automatically
-added to //internal// targets that reference this //external// target.
-
-For the ``boost`` style, ``[name]`` is used to group external projects which
-have the same external project name.
-: butter other = [name]
-For **library** stereotype artifacts only. This indicates that the artifact
-represents an alternate build target. These are build style specific:
- - boost | standard : Used as-is as the jam rule name.
- - make : ``$(NAME_IN_UPPERCASE)`` used as the target build tool.
-The definition for what these do must be defined by the user or 
-must be already present in the build systems.
-: butter buildfile = [name]
-For **library** stereotype artifacts with //butter other// property only.
-This indicates an external file that contains definitions to use
-for this //external// library.
- - boost : Adds ``using [name] ;``
- - standard : Adds ``include [name].jam ;``
- - make : Adds ``include [name].make``
-
-
-: butter document : nowrite
-For **document** stereotype artifacts only. This indicates that the document
-should not be written to disk. By default //butter// will write all
-documents to disk.
-
-
-
-===Artifact Descriptions===[desc_enc]
-
-The //butter// plugout can use the description from target artifacts 
-to store generic or style-specific build information. It uses section
-markers that look like the replacement markers used in bouml, namely
-``${butter_generic}`` for the section containing generic information.
-Each style has a section marker defined as ``${butter_`` + style name + ``}``.
-
-Firstly the description is divided into sections by the markers and 
-the active section is defined by the following rules:
-
-+ no section marker = use entire description content
-+ style specific marker = use marked section
-+ generic marker = if no specific section and generic marker is
- present, use the generic section.
-+ markers present but not generic or for this style = empty section.
-
-
-Once a section has been discovered it is searched for lines containing
-the following definition labels.
-```
-HDR=
-FLAGS=
-LINK=
-```
-which are converted to //include//, //flag// and //link// definitions. These
-are used in exactly the same way as the corresponding properties above.
-
-For //external// library targets if the definition labels are present then 
-the rest of the section is ignored. If none of the 
-labels are present then the section is written as-is into the build file.
-
-
-===Artifacts named Jamfile/Jamroot/makefile===[buildfile]
-
-Artifacts with the **document** stereotype and with the 
-style specific build file name are considered to contain header 
-text in their //descriptions// for the build file at the current 
-location the first time //butter// is run. If such documents are 
-present in several packages for the same location then they are
-merged and all but one is delete. Once //butter// has been run
-these artifacts will contain sections of text between start/end markers
-that were generated by //butter//. Text outside these section markers will
-not be changed when //butter// is rerun, unlike the text within the
-sections.
-
-Any text outside the section markers is associated with 
-the following section by //butter//.  This makes it possible to add target
-specific information without worrying about the order that targets appear.
-However, it does mean that text preceding a target will be deleted if
-the target is deleted.
-
-
-==Build style special artifacts==[specialfile]
-
-Each styles uses a file containing global definitions located at the 
-top-level project directory. An artifact with the content of such a
-file is created in the bouml project in a package set to that directroy
-the first time //butter// is run 
-for that styles. Once created these named artifacts will be reused on 
-later //butter// runs, allowing the user to edit the content if desired.
-
-**Note** that if one of these files exist in the project directory already 
-it will be overwritten by the //butter// plugout.
-
-The names of these build files are:
-
-|| style | filename
-| ``make`` | //makefile.sys//
-| ``standard`` | //Jamrules//
-| ``boost`` | //local.jam//
-
-
-The content of these files, particularly //makefile.sys//, is essential
-for the correct operation of the generated build system.  Therefore, care
-should be taken when editing these artifacts in bouml. If something does
-go wrong then simply renaming the artifact in bouml will cause a fresh
-default version to be created.
-
-The default contents of these files (as generated by //butter//) are intended
-only as starting points.  It is recommended that you edit these to match your 
-needs.  Because //butter// will use artifacts with these names it is 
-possible to add these artifacts to a template bouml project with your 
-other tailered settings.
-
-=Advanced usage=[advanced]
-
-==Documentation/man pages==
-
-Let us assume that you have the text for a man page written in txt2tags markup
-in **document** artifact ``butter.t2t`` and also you have a ``man`` build rule 
-for converting the document to a man page.  To convert the artifact to a man 
-page and have it installed we create a **library** artifact ``butter.1`` and 
-associate ``butter.t2t`` to it. We then set the following properties on the new
-**library** artifact:
-| butter other: | man
-| butter install: | MAN1
-
-
-
-
-==Multi-language programming==[multi]
-
-Tools other than //bouml// are probably better for writing in procedural
-languages like C and Fortran.  It is sometimes useful to use these
-languages in a predominantly C++ program: to better utilise libraries
-written in these languages, or to provide an interface to your C++ project
-in these languages, or to provide (possibly) better performance for
-maths-intensive operations. While, //bouml// does not directly support this,
-it is can now be done easily with the help of //butter//.
-
-* Create a artifact with the //document// stereotype and the source filename,
-eg \"c_interface.c\", \"c_interface.h\" or \"matrix_ops.F\".
-* Write the source code directly into the document's description field.
-* Include the document in a //library// or //executable// artifact as
-if it was a normal source file.
-* (Also ensure that the needed compilation settings are in the [global buildfile #specialfile]!)
-
-
-When //butter// is run, the documents containing the unsupported langauge will
-be written to disk and can then be compiled along with the C++ source.  Special
-build instructions can also be included using a [//buildfile// document #buildfile].
-
 "
     end
 
     artifact 128042 "todo"
       comment "List of TODOs
 "
+    end
+
+    artifact 155305 "Jamfile"
+      stereotype "document"
+      comment "##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Tue Sep 22 12:48:23 2009
+##END:date
+##START:preamble
+SubDir TOP ;
+HDRS += \"include/bouml\" ;
+LINKLIBS += \"\" ;
+C++FLAGS += \"-DWITHCPP\" ;
+HDRS += \"include\" ;
+
+##END:preamble
+##START:target  src butter
+SubInclude TOP src butter ;
+
+##END:target  src butter
+##START:target  src bouml
+SubInclude TOP src bouml ;
+
+##END:target  src bouml
+"
+    end
+
+    artifact 155433 "Jamrules"
+      stereotype "document"
+      comment "#
+# Default Jamrules
+#
+
+if $(UNIX)      { SUFSHR ?= .so ; }
+else if $(NT)   { SUFSHR ?= .dll ; }
+
+COMP ?= GNU ;
+
+#############################
+##
+##  Default install locations
+## 
+#############################
+VERSIONDIR = \"butter-1.0\" ;
+PREFIX = installdir ;
+EXEC_PREFIX = $(PREFIX) ;
+BINDIR = $(EXEC_PREFIX)/bin ;
+SBINDIR = $(EXEC_PREFIX)/sbin ;
+LIBEXECDIR = $(EXEC_PREFIX)/libexec ;
+LIBDIR = $(EXEC_PREFIX)/lib ;
+DATAROOTDIR = $(PREFIX)/share ;
+DATADIR = $(PREFIX)/share ;
+SYSCONFDIR = /etc ;
+SHAREDSTATEDIR = $(PREFIX)/com ;
+LOCALSTATEDIR = $(PREFIX)/var ;
+INCLUDEDIR = $(PREFIX)/include ;
+LOCALEDIR = $(DATAROOTDIR)/locale ;
+DOCDIR = $(DATAROOTDIR)/doc/$(VERSIONDIR) ;
+INFODIR = $(DATAROOTDIR)/info ;
+MANDIR = $(DATAROOTDIR)/man ;
+HTMLDIR = $(DOCDIR) ;
+DVIDIR = $(DOCDIR) ;
+PDFDIR = $(DOCDIR) ;
+PSDIR = $(DOCDIR) ;
+MAN1DIR = $(MANDIR)/man1 ;
+MAN2DIR = $(MANDIR)/man2 ;
+MAN3DIR = $(MANDIR)/man3 ;
+MAN4DIR = $(MANDIR)/man4 ;
+MAN5DIR = $(MANDIR)/man5 ;
+MAN6DIR = $(MANDIR)/man6 ;
+MAN7DIR = $(MANDIR)/man7 ;
+MAN8DIR = $(MANDIR)/man8 ;
+MANNDIR = $(MANDIR)/mann ;
+
+######################################################
+##
+##  Example definitions for compiler suite (TOOLSETS)
+## 
+######################################################
+switch $(COMP)
+{
+case GNU :
+CC = gcc ;
+C++ = g++ ;
+CCSTD = -std=c99 -D_POSIX_SOURCE ; # -pedantic
+C++STD = -std=c++98 -D_POSIX_SOURCE ; # -Weffc++
+CCCPP = -DHAVE_ALLOCA -DHAVE_BACKTRACE ;
+C++CPP = -DHAVE_SNPRINTF -DHAVE_STRERROR_R -DHAVE_ALLOCA -DHAVE_BACKTRACE ;
+SHRFLAGS = -fpic ;
+SHRLINKLIBS = -shared -rdynamic -ldl ;
+ARCH = -march=native ;
+CCOPTIMCOMP = -O2 $(ARCH) ;
+C++OPTIMCOMP = -O2 $(ARCH) ;
+CCDEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;
+C++DEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;
+CCCOMP = -Wall $(CCSTD) $(CCCPP) ;
+C++COMP = -Wall $(C++STD) $(C++CPP) ;
+LINKCOMP = ;
+}
+
+################################################
+##
+##  Define the \"standard\" GUI flags
+## 
+################################################
+
+CCGUI = ;
+C++GUI = ;
+LINKGUI = ;
+
+switch $(GUILIB)
+{
+case GTKMM :
+CCGUI = `pkg-config gtkmm-2.4 --cflags` ;
+C++GUI = `pkg-config gtkmm-2.4 --cflags` ;
+LINKGUI = `pkg-config gtkmm-2.4 --libs` ;
+
+case MOTIF :
+CCGUI = -I/usr/include ;
+C++GUI = -I/usr/include ;
+LINKGUI = -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;
+
+case QT3 :
+CCGUI = -I$(QTDIR)/include ;
+C++GUI = -I$(QTDIR)/include ;
+LINKGUI = -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;
+
+case * :
+CCGUI = ;
+C++GUI = ;
+LINKGUI = ;
+
+}
+
+#################################
+##
+##  Define the \"standard\" flags
+## 
+#################################
+
+CCFLAGS += $(CCCOMP) $(CCGUI) ;
+C++FLAGS += $(C++COMP) $(C++GUI) ;
+LINKLIBS += $(LINKCOMP) $(LINKGUI) ;
+
+OPTIM = $(CCDEBUGCOMP) ;
+OPTIM = $(C++DEBUGCOMP) ;
+
+switch $(VARIANT)
+{
+case RELEASE :
+OPTIM = $(CCOPTIMCOMP) ;
+OPTIM = $(C++OPTIMCOMP) ;
+
+}
+
+LINKFLAGS = $(C++FLAGS) -lz ;
+LINK = $(C++) ;
+
+# Local Variables:
+# mode: makefile
+# End: 
+"
+    end
+
+    artifact 155817 "Jamroot"
+      stereotype "document"
+      comment "##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Mon Sep 21 17:13:35 2009
+##END:date
+##START:preamble
+# Include local constants
+include local.jam ;
+
+project butter
+	: requirements <include>\"include/bouml\" 
+	<cxxflags>\"-DWITHCPP\"
+	<include>\"include\" :
+	: build-dir build ;
+##END:preamble
+##START:target qt3
+#
+# Section for project: qt3
+#
+project qt3 ;
+
+# Example for using pkg-config information in boost jam
+import string ;
+.qtcompileflags = [ string.join [ string.words [ SHELL \"pkg-config qt-mt --cflags-only-other\" ] ] : \" \" ] ;
+.qtincprefix = [ MATCH \"-I\\(.*\\)\" : [ string.words [ SHELL \"pkg-config qt-mt --cflags-only-I\" ] ] ] ;
+.qtlibprefix = [ MATCH \"-L\\(.*\\)\" : string.join [ string.words [ SHELL \"pkg-config qt-mt --libs-only-L\" ] ] ] ;
+.qtlinkflags = [ string.join [ MATCH \"(.*)\" : [ string.words [ SHELL \"pkg-config qt-mt --libs-only-l\" ] ] ] : \" \" ] ;
+alias qt : : : : <include>$(.qtincprefix) 
+   <library-path>$(.qtlibprefix)
+   <cflags>$(.qtcompileflags)
+   <cxxflags>$(.qtcompileflags)
+   <cflags>\"-DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT\"
+   <linkflags>$(.qtlinkflags)
+   <allow>qt-mt ;
+##END:target qt3
+##START:close
+use-project /butter/bouml : src/bouml ;
+build-project src/bouml ;
+
+use-project /butter/butter : src/butter ;
+build-project src/butter ;
+
+##END:close
+"
+    end
+
+    artifact 155945 "local.jam"
+      stereotype "document"
+      comment "#
+# local.jam
+#
+# Set constants for installation paths
+path-constant VERSIONDIR : \"butter-1.0\" ;
+path-constant PREFIX : installdir ;
+path-constant EXEC_PREFIX : $(PREFIX) ;
+path-constant BINDIR : $(EXEC_PREFIX)/bin ;
+path-constant SBINDIR : $(EXEC_PREFIX)/sbin ;
+path-constant LIBEXECDIR : $(EXEC_PREFIX)/libexec ;
+path-constant LIBDIR : $(EXEC_PREFIX)/lib ;
+path-constant DATAROOTDIR : $(PREFIX)/share ;
+path-constant DATADIR : $(PREFIX)/share ;
+path-constant SYSCONFDIR : /etc ;
+path-constant SHAREDSTATEDIR : $(PREFIX)/com ;
+path-constant LOCALSTATEDIR : $(PREFIX)/var ;
+path-constant INCLUDEDIR : $(PREFIX)/include ;
+path-constant LOCALEDIR : $(DATAROOTDIR)/locale ;
+path-constant DOCDIR : $(DATAROOTDIR)/doc/$(VERSIONDIR) ;
+path-constant INFODIR : $(DATAROOTDIR)/info ;
+path-constant MANDIR : $(DATAROOTDIR)/man ;
+path-constant HTMLDIR : $(DOCDIR) ;
+path-constant DVIDIR : $(DOCDIR) ;
+path-constant PDFDIR : $(DOCDIR) ;
+path-constant PSDIR : $(DOCDIR) ;
+path-constant MAN1DIR : $(MANDIR)/man1 ;
+path-constant MAN2DIR : $(MANDIR)/man2 ;
+path-constant MAN3DIR : $(MANDIR)/man3 ;
+path-constant MAN4DIR : $(MANDIR)/man4 ;
+path-constant MAN5DIR : $(MANDIR)/man5 ;
+path-constant MAN6DIR : $(MANDIR)/man6 ;
+path-constant MAN7DIR : $(MANDIR)/man7 ;
+path-constant MAN8DIR : $(MANDIR)/man8 ;
+path-constant MANNDIR : $(MANDIR)/mann ;
+###############
+## Editor sugar
+###############
+# Local Variables:
+# mode: makefile
+# End:
+
+"
+    end
+
+    artifact 157097 "check-list.t2t"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "Acceptance checklist
+
+
+| Acceptance tests                    | boost | standard | make |
+| Build system creation |||
+| Single directory, single target project   |     |     |       |
+| Single directory, multiple target project |     |     |       |
+| Multiple directory, single target project |     |     |       |
+| Multiple directory and target project     |     |     |       |
+| Target inclusion |||
+| Basic executable                          |     |     |       |
+| Basic static library                      |     |     |       |
+| Basic shared library                      |     |     |       |
+| External library                          |     |     |       |
+| Non-standard target                       |     |     |       |
+| UML object property inclusion |||
+| butter build-dir  : project               |     |     |       |
+| butter base       : project               |     |     |       |
+| butter buildfile  : library               |     |     |       |
+| butter compiler   : document              |     |     |       |
+| butter flags      : project               |     |     |       |
+|                   : executable, library   |     |     |       |
+|                   : source                |     |     |       |
+|                   : document              |     |     |       |
+| butter include    : project               |     |     |       |
+|                   : executable, library   |     |     |       |
+|                   : source                |     |     |       |
+|                   : document              |     |     |       |
+| butter install    : executable, library   |     |     |       |
+| butter ldflags    : project               |     |     |       |
+|                   : executable, library   |     |     |       |
+|                   : source, document      |     |     |       |
+| butter log-level  : project               |     |     |       |
+| butter other      : library               |     |     |       |
+|                   : document              |     |     |       |
+| butter project    : library               |     |     |       |
+| butter style      : project               |     |     |       |
+| butter type       : library               |     |     |       |
+|                   : project, package      |     |     |       |
+| butter version    : project               |     |     |       |
+| ...  |     |     |       |
+| log-level                                 |     |     |       |
+| UML object description inclusion |||
+| ...  |     |     |       |
+| Build file merging |||
+| Existing artifact                         |     |     |       |
+| Multiple artifacts                        |     |     |       |
+
+| Error condition tests               | boost | standard | make |
+| Project read-only                         |     |     |       |
+| Package read-only                         |     |     |       |
+| Build file miss-edit                      |     |     |       |
+| Build file not a document                 |     |     |       |
+| Build file read-only                      |     |     |       |
+| Unrecognised property                     |     |     |       |"
     end
   end
 end

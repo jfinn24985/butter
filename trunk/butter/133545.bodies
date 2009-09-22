@@ -1,5 +1,5 @@
 class bjam_writer
-!!!153001.cpp!!!	descendent_link(inout a_art : compound_artifact, in a_loc : location) : void
+!!!153001.cpp!!!	descendent_link(inout a_art : compound_artifact, inout a_sys : compound_artifact, in a_loc : location) : void
 // Add ourself to the system artifact (if not the top-level).
 if (NULL != a_loc.parent ())
 {
@@ -22,15 +22,15 @@ if (NULL != a_loc.parent ())
   os_ << "use-project /" << project_name_ << "/" << a_loc.path () << " : " << dir_line_ << " ;\n";
   // build-project src/chemistry ;
   os_ << "build-project " << dir_line_ << " ;\n\n";
-  system_artifact_->close.second.append (tmp_);
+  a_sys.close.second.append (tmp_);
 }
-!!!152361.cpp!!!	external_target(in a_current : location, in a_target : UmlArtifact) : void
+!!!152361.cpp!!!	external_target(in a_current : location, in a_target : UmlArtifact, inout a_sys : compound_artifact) : void
 // Get project name, if present
-QCString value_;
-const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_project_name, value_);
+QString value_;
+item_traits::property_value (a_target, item_traits::butter_project_name, value_);
 BUTTER_CHECK (not value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact.");
 // Get the external target section
-butter::compound_artifact::string_pair_t & proj_ (system_artifact_->target (value_));
+butter::compound_artifact::string_pair_t & proj_ (a_sys.target (value_));
 // Construct a mini-project section.
 if (proj_.second.isEmpty ())
 {
@@ -39,24 +39,24 @@ if (proj_.second.isEmpty ())
 // If this is a using directive - we don't need to do anything
 if (not proj_.second.contains ("using "))
 {
-  QCString tmp_;
-  if (const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_buildfile_name, tmp_))
+  QString tmp_;
+  if (item_traits::property_value (a_target, item_traits::butter_buildfile_name, tmp_))
   {
     // This is a using directive; all definitions are assumed to be in the 
     // given jamfile -> reset string
-    proj_.second = QCString ("#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\nusing " + tmp_ + " ;\n");
+    proj_.second = QString ("#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\nusing " + tmp_ + " ;\n");
   }
   else
   {
-    QCString template_ (section (section_name, const_cast< UmlArtifact& >(a_target).description ()));
+    QString template_ (section (section_name, const_cast< UmlArtifact& >(a_target).description ()));
     if (not template_.isEmpty ())
     {
       proj_.second.append (template_ + "\n");
     }
     else
     {
-      QCString includes_, linkflags_, cflags_;
-      find_hdr_link (const_cast< UmlArtifact& >(a_target).description (), includes_, linkflags_, cflags_);
+      QString includes_, linkflags_, cflags_;
+      find_hdr_link (a_target, includes_, linkflags_, cflags_);
       if (not (includes_.isEmpty ()and linkflags_.isEmpty ()))
       {
         proj_.second.append ("alias " + const_cast< UmlArtifact& >(a_target).name () + " : : : : ");
@@ -77,15 +77,15 @@ if (not proj_.second.contains ("using "))
     }
   }
 }
-!!!152745.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem) : void
+!!!152745.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void
 BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
 project_name_ = const_cast< UmlItem& >(a_project).name ();
-QCString prop_value_;
+QString prop_value_;
 QString content_;
 bool req_set_ (false);
-const QString base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ().mid (a_base.full_path ().count ()));
+const QString base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ().mid (a_base.full_path ().length () + 1));
 QTextOStream os_ (&content_);
-os_ << "# Include local constants\ninclude " << s_rules_name << " ;\n\n";
+os_ << "# Include local constants\ninclude " << rules_name << " ;\n\n";
 os_ << "project " << project_name_;
 os_ << "\n\t: ";
 if (requirements (a_project, prop_value_))
@@ -102,7 +102,7 @@ if (not base_include_.isEmpty ())
   os_ << "<include>\"" << base_include_ << "\" :\n\t";
 }
 
-if (const_cast< UmlItem & > (a_project).propertyValue (item_traits::butter_build_dir_name, prop_value_))
+if (item_traits::property_value (a_project, item_traits::butter_build_dir_name, prop_value_))
 {
  os_ << ": build-dir " << prop_value_ <<" ;\n";
 }
@@ -110,35 +110,9 @@ else
 {
   os_ << ": ;\n";
 }
-system_artifact_->preamble.second = content_;
+a_sys.preamble.second = content_;
 
-// If no local definitions doc...
-if (a_base.find_uml_document (s_rules_name).isEmpty ())
-{
-  // Find deployment view.
-  QCString l_ver;
-  if (not const_cast< UmlItem & > (a_project).propertyValue (item_traits::butter_version_name, l_ver))
-  {
-    if (not const_cast< UmlItem & > (a_project).propertyValue (item_traits::version_name, l_ver))
-    {
-      l_ver = "1.0";
-    }
-  }
-  QCString l_default_rules (s_default_rules);
-  int l_i (0);
-  const QCString l_project ("@@project@@");
-  const QCString l_version ("@@version@@");
-  if (-1 != (l_i = l_default_rules.find (l_project)))
-  {
-    l_default_rules.replace (l_i, l_project.length (), project_name_);
-  }
-  if (-1 != (l_i = l_default_rules.find (l_version)))
-  {
-    l_default_rules.replace (l_i, l_version.length (), l_ver);
-  };
-  a_base.create_uml_document (s_rules_name)->set_Description (l_default_rules);
-}
-!!!174249.cpp!!!	install_target(in a_target : UmlArtifact, in a_loc_var : string, inout a_os : ostream) : void
+!!!174249.cpp!!!	install_target(in a_target : UmlArtifact, in a_loc_var : unistr, inout a_os : ostream) : void
 if (a_loc_var != item_traits::no_install_value)
 {
   a_os << "install install_target : " << const_cast< UmlArtifact& >(a_target).name ();
@@ -153,15 +127,15 @@ if (not assoc_arts_.isEmpty ())
   butter::compound_artifact::string_pair_t & output_ = a_localdoc.target (const_cast< UmlArtifact& >(a_target).name ());
   QString tmp_;
   QTextOStream os_ (&tmp_);
-  const QCString stereotype_ (const_cast< UmlArtifact& >(a_target).stereotype ());
+  const QString stereotype_ (const_cast< UmlArtifact& >(a_target).stereotype ());
   bool Result (true);
 // a_target must be execution or library stereotype
-  QCString lib_stat_or_shar_;
-  QCString install_dir_;
+  QString lib_stat_or_shar_;
+  QString install_dir_;
   if (stereotype_ == item_traits::library_stereotype)
   {
-    QCString other_target_type_;
-    if (const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_other_name, other_target_type_))
+    QString other_target_type_;
+    if (item_traits::property_value (a_target, item_traits::butter_other_name, other_target_type_))
     {
       os_ << other_target_type_ << " ";
     }
@@ -173,7 +147,7 @@ if (not assoc_arts_.isEmpty ())
     {
       lib_stat_or_shar_ = item_traits::static_value;
     }
-    if (not const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_install_name, install_dir_))
+    if (not item_traits::property_value (a_target, item_traits::butter_install_name, install_dir_))
     {
       install_dir_ = item_traits::libdir_value;
     }
@@ -181,7 +155,7 @@ if (not assoc_arts_.isEmpty ())
   else if (stereotype_ == item_traits::executable_stereotype)
   {
     os_ << "exe ";
-    if (not const_cast< UmlArtifact& >(a_target).propertyValue (item_traits::butter_install_name, install_dir_))
+    if (not item_traits::property_value (a_target, item_traits::butter_install_name, install_dir_))
     {
       install_dir_ = item_traits::bindir_value;
     }
@@ -196,10 +170,11 @@ if (not assoc_arts_.isEmpty ())
     for (unsigned int l_i (0); l_i < assoc_arts_.size (); ++l_i)
     {
       UmlArtifact *l_tmp (assoc_arts_.at (l_i));
-      if (l_tmp->stereotype () == item_traits::library_stereotype)
+      const QString current_stereo_ (l_tmp->stereotype ());
+      if (current_stereo_ == item_traits::library_stereotype)
       {
-        QCString l_pack;
-        if (l_tmp->propertyValue (item_traits::butter_project_name, l_pack))
+        QString l_pack;
+        if (item_traits::property_value (*l_tmp, item_traits::butter_project_name, l_pack))
         {
           os_ << "/" << l_pack << "//";
         }
@@ -209,9 +184,13 @@ if (not assoc_arts_.isEmpty ())
         }
         os_ << l_tmp->name () << "\n\t";
       }
-      else if (l_tmp->stereotype () == item_traits::source_stereotype)
+      else if (current_stereo_ == item_traits::source_stereotype)
       {
         os_ << l_tmp->name () << "." << CppSettings::sourceExtension () << "\n\t";
+      }
+      else if (current_stereo_ == item_traits::document_stereotype)
+      {
+        os_ << l_tmp->name () << "\n\t";
       }
     }
     os_ << ":\n\t";
@@ -219,7 +198,7 @@ if (not assoc_arts_.isEmpty ())
     {
       os_ << "<link>" << lib_stat_or_shar_ << "\n\t";
     }
-    QCString l_tmp;
+    QString l_tmp;
     if (requirements (a_target, l_tmp))
     {
       os_ << l_tmp;
@@ -232,12 +211,12 @@ if (not assoc_arts_.isEmpty ())
   }
   output_.second = tmp_;
 }
-!!!149161.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : string) : bool
+!!!149161.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr) : bool
 bool Result (false);
-QCString l_tmp;
+QString l_tmp;
 QString l_section;
 QTextOStream l_os (&l_section);
-if (const_cast< UmlItem& >(a_item).propertyValue (item_traits::butter_include_name, l_tmp))
+if (item_traits::property_value (a_item, item_traits::butter_include_name, l_tmp))
 {
   Result = true;
   QStringList l_list (QStringList::split (" ", l_tmp));
@@ -247,12 +226,12 @@ if (const_cast< UmlItem& >(a_item).propertyValue (item_traits::butter_include_na
   }
   l_os << "\n\t";
 }
-if (const_cast< UmlItem& >(a_item).propertyValue (item_traits::butter_ldflags_name, l_tmp))
+if (item_traits::property_value (a_item, item_traits::butter_ldflags_name, l_tmp))
 {
   Result = true;
   l_os << "<linkflags>\"" << l_tmp << "\"\n\t";
 }
-if (const_cast< UmlItem& >(a_item).propertyValue (item_traits::butter_flags_name, l_tmp))
+if (item_traits::property_value (a_item, item_traits::butter_flags_name, l_tmp))
 {
   Result = true;
   l_os << "<cxxflags>\"" << l_tmp << "\"\n\t";

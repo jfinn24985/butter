@@ -1,6 +1,6 @@
 format 66
 "butter"
-  revision 39
+  revision 41
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/butter/include/"
 
@@ -37,7 +37,7 @@ format 66
 
   mark_for_import
   
-  ncouples 9
+  ncouples 10
   key "gen_doc_with_c++" value ""
   key "html dir" value "/tmp/butter_html/"
   key "PROJECT" value "BUTTER"
@@ -47,6 +47,7 @@ format 66
   key "butter build-dir" value "build"
   key "butter style" value "standard"
   key "butter flags" value "-DWITHCPP"
+  key "butter log-level" value "2"
   comment "To create the plug-out use 'genpro' on the following artifact.
 
 butter/butter/butter.plugout

@@ -29,4 +29,4 @@ tool "Check-out" "file_control co" Project Package
 tool "Deploy classes" "deplcl" ClassView
 tool "Global Change" "global_change" Project Package ClassView DeploymentView
 tool "Build system" "butter" Project Package DeploymentView Artifact
-tool "Build system2" "butter3" Project Package DeploymentView Artifact
+tool "Build system2" "butter2" Project Package DeploymentView Artifact
