@@ -1,5 +1,8 @@
 class log
 !!!207401.cpp!!!	debug_log(in a_fname : str) : void
-debug_file_.reset (new QFile);
-BUTTER_ALWAYS (file_.open (a_flag), "<p>Unable to open log file for read/writing: " + std::string(file_.name ().ascii ()) + "</p>");
-debug_os_.reset (new QTextStream (log_file_.get ()));
+debug_file_.reset (new QFile (a_fname));
+if (not debug_file_->open (IO_WriteOnly))
+{
+  throw std::runtime_error ("<p>Unable to open log file for read/writing: " + std::string(debug_file_->name ().ascii ()) + "</p>");
+}
+debug_os_.reset (new QTextStream (debug_file_.get ()));

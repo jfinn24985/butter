@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 85
+  revision 91
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -453,12 +453,15 @@ direct and indirect dependencies. "
 
       operation 149161 "requirements"
 	class_operation private explicit_return_type "bool"
-	nparams 2
+	nparams 5
 	  param in name "a_item" type class_ref 7553 // UmlItem
 	  param inout name "a_reqs" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+	  param in name "a_includes" explicit_type "unistr"
+	  param in name "a_linkflags" explicit_type "unistr"
+	  param in name "a_cflags" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -548,14 +551,16 @@ artifacts are inserted into a package at each location."
 
       operation 200233 "find_hdr_link"
 	class_operation protected explicit_return_type "void"
-	nparams 4
-	  param in name "a_artifact" type class_ref 6913 // UmlArtifact
+	nparams 5
+	  param in name "a_item" type class_ref 7553 // UmlItem
 	  param inout name "a_hdr" explicit_type "unistr"
 	  param inout name "a_link" explicit_type "unistr"
 	  param inout name "a_flag" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}${)}${const}${volatile}${abstract};
+	  param in name "a_not_doc" explicit_type "bool"
+	    defaultvalue "true"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}, ${t4} ${p4}${v4}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}${)}${const}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} & ${p2}, ${t3} & ${p3}, ${t4} ${p4}${)}${const}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -564,8 +569,9 @@ ${body}}
 	
 	
 	
-	comment "Parse a_artifact's properties and description looking for include directories 
-and linker options. Append what is found to a_hdr, a_link and a_flag."
+	comment "Parse a_artifact's properties and description (iff a_not_doc) looking for 
+include directories  and linker options. Append what is found to a_hdr, 
+a_link and a_flag."
       end
 
       operation 194089 "get_artifact"
@@ -673,6 +679,19 @@ Standard build-file form is a compound_artifact with something like
 	
       end
 
+      class 153129 "value_type"
+	visibility package stereotype "typedef" explicit_base_type "unistr"
+	cpp_decl "${comment}typedef QPair< ${type}, string_pair_t > ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	
+      end
+
       attribute 159401 "artifact"
 	public type class_ref 6913 // UmlArtifact
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
@@ -739,6 +758,19 @@ Standard build-file form is a compound_artifact with something like
 	python_decl ""
 	idl_decl ""
 	comment "The artifact's target parts."
+      end
+
+      attribute 173097 "target_order_"
+	private explicit_type "unistr"
+	multiplicity "*"
+	stereotype "valuelist"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The list of key in encounter-order."
       end
 
       attribute 160937 "version"
@@ -895,7 +927,7 @@ ${body}
       end
 
       operation 192937 "serialise"
-	public explicit_return_type "void"
+	const public explicit_return_type "void"
 	nparams 1
 	  param inout name "a_os" explicit_type "ostream"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -1117,7 +1149,7 @@ the style for this buildfile type."
 
       attribute 138793 "default_rules"
 	class_attribute const_attribute private explicit_type "unistr"
-	init_value "(\"#\\n# Makefile.sys\\n#\\n##################################\\n# Settings for current environment\\n##################################\\n\\nOS ?= LINUX\\nCOMP ?= GNU\\nVARIANT ?= DEBUG\\nXMLLIB ?=\\n\\n#############################\\n##\\n##  Default install locations\\n## \\n#############################\\nVERSIONDIR:=\\\"@@project@@-@@version@@\\\"\\nPREFIX=$(ROOTDIR)/installdir\\nEXEC_PREFIX=$(PREFIX)\\nBINDIR=$(EXEC_PREFIX)/bin\\nSBINDIR=$(EXEC_PREFIX)/sbin\\nLIBEXECDIR=$(EXEC_PREFIX)/libexec\\nLIBDIR=$(EXEC_PREFIX)/lib\\nDATAROOTDIR=$(PREFIX)/share\\nDATADIR=$(PREFIX)/share\\nSYSCONFDIR=/etc\\nSHAREDSTATEDIR=$(PREFIX)/com\\nLOCALSTATEDIR=$(PREFIX)/var\\nINCLUDEDIR=$(PREFIX)/include\\nLOCALEDIR=$(DATAROOTDIR)/locale\\nDOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)\\nINFODIR=$(DATAROOTDIR)/info\\nMANDIR=$(DATAROOTDIR)/man\\nHTMLDIR=$(DOCDIR)\\nDVIDIR=$(DOCDIR)\\nPDFDIR=$(DOCDIR)\\nPSDIR=$(DOCDIR)\\nMAN1DIR=$(MANDIR)/man1\\nMAN2DIR=$(MANDIR)/man2\\nMAN3DIR=$(MANDIR)/man3\\nMAN4DIR=$(MANDIR)/man4\\nMAN5DIR=$(MANDIR)/man5\\nMAN6DIR=$(MANDIR)/man6\\nMAN7DIR=$(MANDIR)/man7\\nMAN8DIR=$(MANDIR)/man8\\nMANNDIR=$(MANDIR)/mann\\n# Flags for the install targets.\\nINSTALL:=install\\nBINIFLAGS:=-m 755\\nFILEIFLAGS:=-m 644\\nLIBIFLAGS:=-m 644 \\nMANIFLAGS:=-m 644\\n###########################\\n##\\n## Generic setup below here\\n##\\n###########################\\n\\n####################\\n## OS SPECIFIC STUFF\\n####################\\nifeq ($(OS),WIN32)\\nSUFEXE:=.exe\\nSUFLIB:=.dll\\nendif\\n\\nifeq ($(OS),LINUX)\\nSUFEXE:=\\nSUFLIB:=.so.0\\nendif\\n\\n###############################################\\n##  Definitions for GNU g++ compiler for unices\\n###############################################\\n\\nifeq ($(COMP),GNU)\\n## For linux\\nCC:=gcc\\nCCC:=g++\\nSTDCFLAGS:=-Wall -std=c99 -D_POSIX_SOURCE -DHAVE_ALLOCA -DHAVE_BACKTRACE\\nSTDCXXFLAGS:=-Wall -std=c++98 -D_POSIX_SOURCE -DHAVE_SNPRINTF -DHAVE_STRERROR_R -DHAVE_ALLOCA -DHAVE_BACKTRACE\\n# -Weffc++\\nSTDOPTFLAGS:=-O2 -march=pentium4\\nSTDDEBUGFLAGS:=-O1 -Wall -DDEBUG=1\\nSTDLDFLAGS:=-lz\\nSTDSHRLIBS:=-rdynamic -ldl\\nSTDSHRFLAG:=-fPIC\\nSTDSHRXFLAGS:=-shared -Wl,-soname,\\nendif\\n\\n######################################################\\n##  Example library setup definition for XML libraries\\n######################################################\\n\\nifeq ($(XMLLIB),EXPAT)\\nDOMFLAGS:=-DEXPAT\\nDOMLIBS:=-lexpat\\nendif\\n\\nifeq ($(XMLLIB),XML2)\\nDOMFLAGS:=-DXML2 `xml2-config --cflags`\\nDOMLIBS:=`xml2-config --libs`\\nendif\\n\\n######################\\n##  Combine flags sets\\n######################\\n\\nifeq ($(VARIANT),DEBUG)\\nVARIANTFLAGS=$(STDDEBUGFLAGS) $(DEBUGFLAGS)\\nelse\\nVARIANTFLAGS=$(STDOPTFLAGS)\\nendif\\n\\nCFLAGS=$(VARIANTFLAGS) $(STDCFLAGS) $(DOMFLAGS) $(USERFLAGS)\\nCXXFLAGS=$(VARIANTFLAGS) $(STDCXXFLAGS) $(DOMFLAGS) $(USERFLAGS)\\nLDFLAGS=$(VARIANTFLAGS) $(STDLDFLAGS) $(DOMLIBS) $(USERLDFLAGS)\\n\\n#############################################\\n##  Define standard directory descent targets\\n#############################################\\n\\nall:: dopart\\n\\ninstall:: doinstall\\n\\ndoit:\\n\\tfor WORKDIR in $(DIRS); do \\\\\\n\\techo Working on $$WORKDIR; \\\\\\n\\tpushd $$WORKDIR;\\\\\\n\\tOS=$(OS) USERHDRS=\\\"$(USERHDRS)\\\" USERFLAGS=\\\"$(USERFLAGS)\\\" ROOTDIR=\\\"$(ROOTDIR)\\\" COMP=\\\"$(COMP)\\\" VARIANT=\\\"$(VARIANT)\\\"  make $(WHAT); \\\\\\n\\tpopd;\\\\\\n\\tdone\\n\\ndopart:\\n\\tWHAT=\\\"all\\\" make doit\\n\\ndoinstall:\\n\\tWHAT=\\\"install\\\" make doit\\n\\ndistclean: clean\\n\\trm -f core core.* $(TARGETS) *~ *.d\\n\\tWHAT=\\\"distclean\\\" make doit\\n\\nclean: \\n\\trm -f $(USEROBJ)\\n\\tWHAT=\\\"clean\\\" make doit\\n\\n##############\\n## Build rules\\n##############\\n\\n.cc.o: \\n\\t$(CCC) $(USERHDRS) $(CXXFLAGS) -c $<\\n\\n.cpp.o: \\n\\t$(CCC) $(USERHDRS) $(CXXFLAGS) -c $<\\n\\n%.d: %.cc\\n\\tset -e; $(CCC) -MM $(USERHDRS) $(CXXFLAGS) $< \\\\\\n\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\\t[ -s $@ ] || rm -f $@\\n\\n%.d: %.cpp\\n\\tset -e; $(CCC) -MM $(USERHDRS) $(CXXFLAGS) $< \\\\\\n\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\\t[ -s $@ ] || rm -f $@\\n\\n###############\\n## Editor sugar\\n###############\\n# Local Variables:\\n# mode: makefile\\n# End:\\n\\n\") 
+	init_value "(\"#\\n# Makefile.sys\\n#\\n##################################\\n# Settings for current environment\\n##################################\\n\\nOS ?= LINUX\\nCOMP ?= GNU\\nVARIANT ?= DEBUG\\nXMLLIB ?=\\n\\n#############################\\n##\\n##  Default install locations\\n## \\n#############################\\nVERSIONDIR:=\\\"@@project@@-@@version@@\\\"\\nPREFIX=$(ROOTDIR)/installdir\\nEXEC_PREFIX=$(PREFIX)\\nBINDIR=$(EXEC_PREFIX)/bin\\nSBINDIR=$(EXEC_PREFIX)/sbin\\nLIBEXECDIR=$(EXEC_PREFIX)/libexec\\nLIBDIR=$(EXEC_PREFIX)/lib\\nDATAROOTDIR=$(PREFIX)/share\\nDATADIR=$(PREFIX)/share\\nSYSCONFDIR=/etc\\nSHAREDSTATEDIR=$(PREFIX)/com\\nLOCALSTATEDIR=$(PREFIX)/var\\nINCLUDEDIR=$(PREFIX)/include\\nLOCALEDIR=$(DATAROOTDIR)/locale\\nDOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)\\nINFODIR=$(DATAROOTDIR)/info\\nMANDIR=$(DATAROOTDIR)/man\\nHTMLDIR=$(DOCDIR)\\nDVIDIR=$(DOCDIR)\\nPDFDIR=$(DOCDIR)\\nPSDIR=$(DOCDIR)\\nMAN1DIR=$(MANDIR)/man1\\nMAN2DIR=$(MANDIR)/man2\\nMAN3DIR=$(MANDIR)/man3\\nMAN4DIR=$(MANDIR)/man4\\nMAN5DIR=$(MANDIR)/man5\\nMAN6DIR=$(MANDIR)/man6\\nMAN7DIR=$(MANDIR)/man7\\nMAN8DIR=$(MANDIR)/man8\\nMANNDIR=$(MANDIR)/mann\\n# Flags for the install targets.\\nINSTALL:=install\\nBINIFLAGS:=-m 755\\nFILEIFLAGS:=-m 644\\nLIBIFLAGS:=-m 644 \\nMANIFLAGS:=-m 644\\n###########################\\n##\\n## Generic setup below here\\n##\\n###########################\\n\\n####################\\n## OS SPECIFIC STUFF\\n####################\\n# Assume unix-like \\nSUFOBJ:=.o\\nSUFEXE:=\\nSUFLIB:=.a\\nSUFSHR:=.so.0\\nifeq ($(OS),WIN32)\\nSUFEXE:=.exe\\nSUFLIB:=.lib\\nSUFSHR:=.dll\\nendif\\n\\n\\n###############################################\\n##  Definitions for GNU g++ compiler for unices\\n###############################################\\n\\nifeq ($(COMP),GNU)\\n## For linux\\nCC:=gcc\\nCCC:=g++\\nFORTRAN:=gfortran\\nSTDCCFLAGS:=-Wall -std=c99\\nSTDCCCFLAGS:=-Wall -std=c++98\\n# -Weffc++\\nSTDOPTFLAGS:=-O2 -march=native\\nSTDDEBUGFLAGS:=-O0 -Wall -DDEBUG=1\\nSTDLDFLAGS:=-lz\\nSTDSHRLIBS:=-rdynamic -ldl\\nSTDSHRFLAGS:=-fPIC\\nSTDSHRXFLAGS:=-shared -Wl,-soname,\\nFORTRANLIBS:=-lgfortran\\nOPENMP:=-fopenmp\\nendif\\n\\n######################################################\\n##  Example library setup definition for XML libraries\\n######################################################\\n\\nifeq ($(XMLLIB),EXPAT)\\nDOMFLAGS:=-DEXPAT\\nDOMLIBS:=-lexpat\\nendif\\n\\nifeq ($(XMLLIB),XML2)\\nDOMFLAGS:=-DXML2 `xml2-config --cflags`\\nDOMLIBS:=`xml2-config --libs`\\nendif\\n\\n######################\\n##  Combine flags sets\\n######################\\n\\nifeq ($(VARIANT),DEBUG)\\nVARIANTFLAGS=$(STDDEBUGFLAGS) $(DEBUGFLAGS)\\nelse\\nVARIANTFLAGS=$(STDOPTFLAGS)\\nendif\\n\\nCCFLAGS=$(VARIANTFLAGS) $(STDCCFLAGS) $(DOMFLAGS) $(USERFLAGS) $(USERHDRS)\\nCCCFLAGS=$(VARIANTFLAGS) $(STDCCCFLAGS) $(DOMFLAGS) $(USERFLAGS) $(USERHDRS)\\nFORTRANFLAGS=$(VARIANTFLAGS) $(DOMFLAGS)\\nLDFLAGS=$(VARIANTFLAGS) $(STDLDFLAGS) $(DOMLIBS) $(USERLDFLAGS)\\nSHRFLAGS:=$(STDSHRFLAGS)\\nSHRXFLAGS:=$(STDSHRXFLAGS)\\n\\n#############################################\\n##  Define standard directory descent targets\\n#############################################\\n\\nall:: dopart\\n\\ninstall:: doinstall\\n\\ndoit:\\n\\tfor WORKDIR in $(DIRS); do \\\\\\n\\techo Working on $$WORKDIR; \\\\\\n\\tpushd $$WORKDIR;\\\\\\n\\tOS=$(OS) USERHDRS=\\\"$(USERHDRS)\\\" USERLDFLAGS=\\\"$(USERLDFLAGS)\\\" USERFLAGS=\\\"$(USERFLAGS)\\\" ROOTDIR=\\\"$(ROOTDIR)\\\" COMP=\\\"$(COMP)\\\" VARIANT=\\\"$(VARIANT)\\\"  make $(WHAT); \\\\\\n\\tpopd;\\\\\\n\\tdone\\n\\ndopart:\\n\\tWHAT=\\\"all\\\" make doit\\n\\ndoinstall:\\n\\tWHAT=\\\"install\\\" make doit\\n\\ndistclean: clean\\n\\trm -f core core.* $(TARGETS) *~ *.d\\n\\tWHAT=\\\"distclean\\\" make doit\\n\\nclean: \\n\\trm -f $(USEROBJ)\\n\\tWHAT=\\\"clean\\\" make doit\\n\\n##############\\n## Build rules\\n##############\\nCFLAGS = $(CCFLAGS)\\nCXXFLAGS = $(CCCFLAGS)\\nFFLAGS = $(FORTANFLAGS)\\nFC = $(FORTRAN)\\n\\n%.d: %.c\\n\\tset -e; $(CC) -MM $(CCFLAGS) $< \\\\\\n\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\\t[ -s $@ ] || rm -f $@\\n\\n%.d: %.cc\\n\\tset -e; $(CCC) -MM $(CCCFLAGS) $< \\\\\\n\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\\t[ -s $@ ] || rm -f $@\\n\\n%.d: %.cpp\\n\\tset -e; $(CCC) -MM $(CCCFLAGS) $< \\\\\\n\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\\t[ -s $@ ] || rm -f $@\\n\\n###############\\n## Editor sugar\\n###############\\n# Local Variables:\\n# mode: makefile\\n# End:\\n\\n\") 
 "
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -2198,6 +2230,7 @@ ${items}};
 	comment "Indicate what sort of object is being installed."
 	attribute 152105 "bin"
 	  public type class_ref 138153 // install_type
+	  init_value "0"
 	  cpp_decl "  ${name}${value},${comment}"
 	  java_decl "  ${name}${value},${comment}"
 	  php_decl ""
@@ -2208,6 +2241,7 @@ ${items}};
 
 	attribute 152233 "file"
 	  public type class_ref 138153 // install_type
+	  init_value "1"
 	  cpp_decl "  ${name}${value},${comment}"
 	  java_decl "  ${name}${value},${comment}"
 	  php_decl ""
@@ -2216,18 +2250,9 @@ ${items}};
 	  comment "File is a non-specific type."
 	end
 
-	attribute 152489 "generic"
-	  public type class_ref 138153 // install_type
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl "  ${name}${value},${comment}"
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  comment "File is a generic file"
-	end
-
 	attribute 152361 "lib"
 	  public type class_ref 138153 // install_type
+	  init_value "2"
 	  cpp_decl "  ${name}${value},${comment}"
 	  java_decl "  ${name}${value},${comment}"
 	  php_decl ""
@@ -2238,6 +2263,7 @@ ${items}};
 
 	attribute 152617 "man"
 	  public type class_ref 138153 // install_type
+	  init_value "3"
 	  cpp_decl "  ${name}${value},${comment}"
 	  java_decl "  ${name}${value},${comment}"
 	  php_decl ""
@@ -2318,7 +2344,7 @@ the style for this buildfile type."
 
       attribute 140073 "default_rules"
 	class_attribute const_attribute private explicit_type "unistr"
-	init_value "(\"#\\n# Default Jamrules\\n#\\n\\nif $(UNIX)      { SUFSHR ?= .so ; }\\nelse if $(NT)   { SUFSHR ?= .dll ; }\\n\\nCOMP ?= GNU ;\\n\\n#############################\\n##\\n##  Default install locations\\n## \\n#############################\\nVERSIONDIR = \\\"@@project@@-@@version@@\\\" ;\\nPREFIX = installdir ;\\nEXEC_PREFIX = $(PREFIX) ;\\nBINDIR = $(EXEC_PREFIX)/bin ;\\nSBINDIR = $(EXEC_PREFIX)/sbin ;\\nLIBEXECDIR = $(EXEC_PREFIX)/libexec ;\\nLIBDIR = $(EXEC_PREFIX)/lib ;\\nDATAROOTDIR = $(PREFIX)/share ;\\nDATADIR = $(PREFIX)/share ;\\nSYSCONFDIR = /etc ;\\nSHAREDSTATEDIR = $(PREFIX)/com ;\\nLOCALSTATEDIR = $(PREFIX)/var ;\\nINCLUDEDIR = $(PREFIX)/include ;\\nLOCALEDIR = $(DATAROOTDIR)/locale ;\\nDOCDIR = $(DATAROOTDIR)/doc/$(VERSIONDIR) ;\\nINFODIR = $(DATAROOTDIR)/info ;\\nMANDIR = $(DATAROOTDIR)/man ;\\nHTMLDIR = $(DOCDIR) ;\\nDVIDIR = $(DOCDIR) ;\\nPDFDIR = $(DOCDIR) ;\\nPSDIR = $(DOCDIR) ;\\nMAN1DIR = $(MANDIR)/man1 ;\\nMAN2DIR = $(MANDIR)/man2 ;\\nMAN3DIR = $(MANDIR)/man3 ;\\nMAN4DIR = $(MANDIR)/man4 ;\\nMAN5DIR = $(MANDIR)/man5 ;\\nMAN6DIR = $(MANDIR)/man6 ;\\nMAN7DIR = $(MANDIR)/man7 ;\\nMAN8DIR = $(MANDIR)/man8 ;\\nMANNDIR = $(MANDIR)/mann ;\\n\\n######################################################\\n##\\n##  Example definitions for compiler suite (TOOLSETS)\\n## \\n######################################################\\nswitch $(COMP)\\n{\\ncase GNU :\\nCC = gcc ;\\nC++ = g++ ;\\nCCSTD = -std=c99 -D_POSIX_SOURCE ; # -pedantic\\nC++STD = -std=c++98 -D_POSIX_SOURCE ; # -Weffc++\\nCCCPP = -DHAVE_ALLOCA -DHAVE_BACKTRACE ;\\nC++CPP = -DHAVE_SNPRINTF -DHAVE_STRERROR_R -DHAVE_ALLOCA -DHAVE_BACKTRACE ;\\nSHRFLAGS = -fpic ;\\nSHRLINKLIBS = -shared -rdynamic -ldl ;\\nARCH = -march=native ;\\nCCOPTIMCOMP = -O2 $(ARCH) ;\\nC++OPTIMCOMP = -O2 $(ARCH) ;\\nCCDEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;\\nC++DEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;\\nCCCOMP = -Wall $(CCSTD) $(CCCPP) ;\\nC++COMP = -Wall $(C++STD) $(C++CPP) ;\\nLINKCOMP = ;\\n}\\n\\n################################################\\n##\\n##  Define the \\\"standard\\\" GUI flags\\n## \\n################################################\\n\\nCCGUI = ;\\nC++GUI = ;\\nLINKGUI = ;\\n\\nswitch $(GUILIB)\\n{\\ncase GTKMM :\\nCCGUI = `pkg-config gtkmm-2.4 --cflags` ;\\nC++GUI = `pkg-config gtkmm-2.4 --cflags` ;\\nLINKGUI = `pkg-config gtkmm-2.4 --libs` ;\\n\\ncase MOTIF :\\nCCGUI = -I/usr/include ;\\nC++GUI = -I/usr/include ;\\nLINKGUI = -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;\\n\\ncase QT3 :\\nCCGUI = -I$(QTDIR)/include ;\\nC++GUI = -I$(QTDIR)/include ;\\nLINKGUI = -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;\\n\\ncase * :\\nCCGUI = ;\\nC++GUI = ;\\nLINKGUI = ;\\n\\n}\\n\\n#################################\\n##\\n##  Define the \\\"standard\\\" flags\\n## \\n#################################\\n\\nCCFLAGS += $(CCCOMP) $(CCGUI) ;\\nC++FLAGS += $(C++COMP) $(C++GUI) ;\\nLINKLIBS += $(LINKCOMP) $(LINKGUI) ;\\n\\nOPTIM = $(CCDEBUGCOMP) ;\\nOPTIM = $(C++DEBUGCOMP) ;\\n\\nswitch $(VARIANT)\\n{\\ncase RELEASE :\\nOPTIM = $(CCOPTIMCOMP) ;\\nOPTIM = $(C++OPTIMCOMP) ;\\n\\n}\\n\\nLINKFLAGS = $(C++FLAGS) -lz ;\\nLINK = $(C++) ;\\n\\n# Local Variables:\\n# mode: makefile\\n# End: \\n\")"
+	init_value "(\"#\\n# Default Jamrules\\n#\\n\\nif $(UNIX)      { SUFSHR ?= .so ; }\\nelse if $(NT)   { SUFSHR ?= .dll ; }\\n\\nCOMP ?= GNU ;\\n\\n#############################\\n##\\n##  Default install locations\\n## \\n#############################\\nVERSIONDIR = \\\"@@project@@-@@version@@\\\" ;\\nPREFIX = installdir ;\\nEXEC_PREFIX = $(PREFIX) ;\\nBINDIR = $(EXEC_PREFIX)/bin ;\\nSBINDIR = $(EXEC_PREFIX)/sbin ;\\nLIBEXECDIR = $(EXEC_PREFIX)/libexec ;\\nLIBDIR = $(EXEC_PREFIX)/lib ;\\nDATAROOTDIR = $(PREFIX)/share ;\\nDATADIR = $(PREFIX)/share ;\\nSYSCONFDIR = /etc ;\\nSHAREDSTATEDIR = $(PREFIX)/com ;\\nLOCALSTATEDIR = $(PREFIX)/var ;\\nINCLUDEDIR = $(PREFIX)/include ;\\nLOCALEDIR = $(DATAROOTDIR)/locale ;\\nDOCDIR = $(DATAROOTDIR)/doc/$(VERSIONDIR) ;\\nINFODIR = $(DATAROOTDIR)/info ;\\nMANDIR = $(DATAROOTDIR)/man ;\\nHTMLDIR = $(DOCDIR) ;\\nDVIDIR = $(DOCDIR) ;\\nPDFDIR = $(DOCDIR) ;\\nPSDIR = $(DOCDIR) ;\\nMAN1DIR = $(MANDIR)/man1 ;\\nMAN2DIR = $(MANDIR)/man2 ;\\nMAN3DIR = $(MANDIR)/man3 ;\\nMAN4DIR = $(MANDIR)/man4 ;\\nMAN5DIR = $(MANDIR)/man5 ;\\nMAN6DIR = $(MANDIR)/man6 ;\\nMAN7DIR = $(MANDIR)/man7 ;\\nMAN8DIR = $(MANDIR)/man8 ;\\nMANNDIR = $(MANDIR)/mann ;\\n\\n######################################################\\n##\\n##  Example definitions for compiler suite (TOOLSETS)\\n## \\n######################################################\\nswitch $(COMP)\\n{\\ncase GNU :\\nCC = gcc ;\\nC++ = g++ ;\\nCCSTD = -std=c99 ;\\nC++STD = -std=c++98 ;\\nCCCPP = ;\\nC++CPP = ;\\nSHRFLAGS = -fpic ;\\nSHRLINKLIBS = -shared -rdynamic -ldl ;\\nARCH = -march=native ;\\nCCOPTIMCOMP = -O2 $(ARCH) ;\\nC++OPTIMCOMP = -O2 $(ARCH) ;\\nCCDEBUGCOMP = -O0 -ggdb -DDEBUG=1 ; # -pedantic\\nC++DEBUGCOMP = -O0 -ggdb -DDEBUG=1 ; # -Weffc++\\nCCCOMP = -Wall $(CCSTD) $(CCCPP) ;\\nC++COMP = -Wall $(C++STD) $(C++CPP) ;\\nLINKCOMP = ;\\n}\\n\\n################################################\\n##\\n##  Define the \\\"standard\\\" GUI flags\\n## \\n################################################\\n\\nCCGUI = ;\\nC++GUI = ;\\nLINKGUI = ;\\n\\nswitch $(GUILIB)\\n{\\ncase GTKMM :\\nCCGUI = `pkg-config gtkmm-2.4 --cflags` ;\\nC++GUI = `pkg-config gtkmm-2.4 --cflags` ;\\nLINKGUI = `pkg-config gtkmm-2.4 --libs` ;\\n\\ncase MOTIF :\\nCCGUI = -I/usr/include ;\\nC++GUI = -I/usr/include ;\\nLINKGUI = -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;\\n\\ncase QT3 :\\nCCGUI = -I$(QTDIR)/include ;\\nC++GUI = -I$(QTDIR)/include ;\\nLINKGUI = -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;\\n\\ncase * :\\nCCGUI = ;\\nC++GUI = ;\\nLINKGUI = ;\\n\\n}\\n\\n#################################\\n##\\n##  Define the \\\"standard\\\" flags\\n## \\n#################################\\n\\nCCFLAGS += $(CCCOMP) $(CCGUI) ;\\nC++FLAGS += $(C++COMP) $(C++GUI) ;\\nLINKLIBS += $(LINKCOMP) $(LINKGUI) ;\\n\\nOPTIM = $(CCDEBUGCOMP) ;\\nOPTIM = $(C++DEBUGCOMP) ;\\n\\nswitch $(VARIANT)\\n{\\ncase RELEASE :\\nOPTIM = $(CCOPTIMCOMP) ;\\nOPTIM = $(C++OPTIMCOMP) ;\\n\\n}\\n\\nLINKFLAGS = $(C++FLAGS) -lz ;\\nLINK = $(C++) ;\\n\\n# Local Variables:\\n# mode: makefile\\n# End: \\n\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -2500,9 +2526,9 @@ ${body}}
 	  param in name "a_target_name" explicit_type "unistr"
 	  param in name "a_loc_var" explicit_type "unistr"
 	  param inout name "a_os" explicit_type "ostream"
-	  param in name "a_install_type" explicit_type "uint"
-	    defaultvalue "generic"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} & ${p2}${v2}, ${t3} ${p3}${v3}${)}${const}${volatile}${abstract};
+	  param in name "a_install_type" type class_ref 138153 // install_type
+	    defaultvalue "file"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} & ${p2}${v2}, ${t3} ${p3}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} & ${p2}, ${t3} ${p3}${)}${const}${staticnl}{
  @{PROJECT}_REQUIRE (not ${p0}.isEmpty (), \"Can not install no target.\");
@@ -4017,7 +4043,7 @@ ${items}};
 	cpp_decl "    ${comment}${name}${(}${)}${volatile}
 : level_(warn)
 #ifdef DEBUG
-, debug_log_ ()
+, debug_file_ ()
 , debug_os_ ()
 #endif
 {}
@@ -4086,7 +4112,7 @@ ${body}
 	comment "Open a_fname file for debug messages. (Only present with debug builds.)"
       end
 
-      operation 207529 "debug"
+      operation 207529 "stream"
 	const public explicit_return_type "ostream"
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${)}${const}${volatile}${abstract}
@@ -4202,111 +4228,112 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 136361 // jam_writer
-	artifact_ref 150825 // utility
-	artifact_ref 152233 // style
-	artifact_ref 132521 // location
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 154025 // main
-	artifact_ref 138793 // item_traits
-	artifact_ref 134057 // qt
-	artifact_ref 137641 // gmake_writer
 	artifact_ref 152489 // build_writer
+	artifact_ref 154025 // main
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 134057 // qt
+	artifact_ref 136361 // jam_writer
+	artifact_ref 135209 // bjam_writer
 	artifact_ref 142889 // bouml
+	artifact_ref 132521 // location
+	artifact_ref 138793 // item_traits
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 152233 // style
+	artifact_ref 150825 // utility
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
 
     artifact 148393 "butter.plugout"
+      stereotype "file"
       associated_artifacts
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 136361 // jam_writer
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 7169 // UmlItem
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 150825 // utility
-	artifact_ref 5120 // anItemKind
-	artifact_ref 152233 // style
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 132521 // location
-	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 5249 // UmlFormalParameter
 	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 1536 // UmlBaseAttribute
 	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 7937 // UmlUseCase
 	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 152489 // build_writer
+	artifact_ref 7809 // UmlSequenceDiagram
 	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 1664 // UmlBaseClass
 	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
 	artifact_ref 2432 // UmlBaseComponentDiagram
 	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 7169 // UmlItem
+	artifact_ref 5633 // UmlClass
 	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 5121 // UmlClassItem
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 4992 // aVisibility
 	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 4480 // UmlCom
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 2048 // UmlBaseClassView
 	artifact_ref 1920 // UmlBaseClassMember
 	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 4480 // UmlCom
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 7553 // UmlPackage
+	artifact_ref 6656 // UmlStereotype
 	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 154025 // main
-	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 6401 // UmlComponentDiagram
 	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 138793 // item_traits
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 154025 // main
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 5761 // UmlClassDiagram
 	artifact_ref 2304 // UmlBaseArtifact
 	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 7425 // UmlOperation
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 152361 // compound_artifact
 	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 768 // CppSettings
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 136361 // jam_writer
+	artifact_ref 5120 // anItemKind
+	artifact_ref 7041 // UmlExtraClassMember
 	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 5889 // UmlClassMember
+	artifact_ref 768 // CppSettings
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 135209 // bjam_writer
 	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 152489 // build_writer
-	artifact_ref 4864 // aDirection
-	artifact_ref 5248 // CmdFamily
+	artifact_ref 128228 // UmlNcRelation
 	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 1152 // JavaSettings
 	artifact_ref 1024 // IdlSettings
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 4864 // aDirection
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 132521 // location
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 138793 // item_traits
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 152233 // style
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 150825 // utility
+	artifact_ref 4993 // UmlActualParameter
 	artifact_ref 7297 // UmlNode
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 4992 // aVisibility
-	artifact_ref 5633 // UmlClass
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 5504 // OnInstanceCmd
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter/butter.pro"
@@ -4522,7 +4549,7 @@ int main(int argc, char ** argv)
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
       UmlCom::trace(\"<b><i>jamfile/makefile</i> generator</b> release 2<br>\");
-#ifndef NO_LOG
+#ifdef DEBUG
       QString msg_;
       QTextOStream mos_ (&msg_);
       mos_ << \"Hit Ok to continue. If you want to debug this application attach to process [pid=\" << getpid () << \"] before continuing.\";
@@ -4577,21 +4604,21 @@ int main (int argc, char** argv)
   butter::pathcmp p1, p2;
   std::cerr << \"Created empty path\\n\";
   p1 = \"/home/is/where/heart/is\";
-  std::cerr << \"Path1 assigned from C string\\n\";
+  std::cerr << \"Path1 assigned from C string \\\"/home/is/where/heart/is\\\"\\n\";
   std::cerr << \"Has \" << p1.size () << \" lvls\\n\";
   for (int i = 0; i < p1.size (); ++i)
   {
     std::cerr << \"path[\" << i + 1 << \"] = \\\"\" << p1[i] << \"\\\"\\n\";
   }
   p2 = \"/home/is/where/heart/is/\";
-  std::cerr << \"Path2 assigned from C string\\n\";
+  std::cerr << \"Path2 assigned from C string \\\"/home/is/where/heart/is/\\\"\\n\";
   std::cerr << \"Has \" << p2.size () << \" lvls\\n\";
   for (int i = 0; i < p2.size (); ++i)
   {
     std::cerr << \"path[\" << i + 1 << \"] = \\\"\" << p2[i] << \"\\\"\\n\";
   }
   butter::pathcmp p3 (\"/home/is/where\");
-  std::cerr << \"Path3 created from C string\\n\";
+  std::cerr << \"Path3 created from C string \\\"/home/is/where\\\"\\n\";
   std::cerr << \"Has \" << p3.size () << \" lvls\\n\";
   for (int i = 0; i < p3.size (); ++i)
   {
@@ -4731,13 +4758,13 @@ ${namespace_end}
       end
     end
 
-    artifact 155689 "Jamfile"
+    artifact 158633 "Jamfile"
       stereotype "document"
       comment "##START:version
 #Butter project version 1.2
 ##END:version
 ##START:date
-#Tue Sep 22 12:46:37 2009
+#Thu Sep 24 11:03:47 2009
 ##END:date
 ##START:preamble
 SubDir TOP src butter ;
@@ -4749,16 +4776,16 @@ SUBDIRHDRS += ${QTDIR}/include ;
 ##END:preamble
 ##START:target butter
 Main <butter>butter$(SUFEXE) :
-	<butter>compound_artifact.cpp
-	<butter>jam_writer.cpp
-	<butter>utility.cpp
 	<butter>style.cpp
-	<butter>location.cpp
 	<butter>bjam_writer.cpp
+	<butter>location.cpp
 	<butter>main.cpp
-	<butter>item_traits.cpp
+	<butter>jam_writer.cpp
+	<butter>compound_artifact.cpp
 	<butter>gmake_writer.cpp
 	<butter>build_writer.cpp
+	<butter>utility.cpp
+	<butter>item_traits.cpp
 	;
 
 LinkLibraries <butter>butter$(SUFEXE) :

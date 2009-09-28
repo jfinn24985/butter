@@ -15,7 +15,7 @@ public:
   {
     if (not m_f.open (a_flag))
     {
-      QString l_msg ("Unable to open file for read/writing: " + m_f.name ());
+      QString l_msg ("<b>Fatal Error:</b> Unable to open file for read/writing: " + m_f.name ());
       throw std::runtime_error (static_cast<const char*>(l_msg));
     }
   }
@@ -37,12 +37,14 @@ if (QFile::exists (a_path))
     const unsigned int l_sz (1024);     // The size of the buffer
     char l_buffer[l_sz];        // Buffer for reading
     const unsigned int l_count (l_dev.readBlock (&l_buffer[0], l_sz));
-    Result = (l_count == 0 or (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, std::min (l_count, a_str.length () - l_cursor))));
-    l_cursor += l_count;
+    if (l_count != 0)
+    {
+      Result = (a_str.length () >= l_cursor + l_count
+             and (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, l_count)));
+      l_cursor += l_count;
+    }
   }
   while (Result and not l_dev.atEnd ());
-  // Read file must not be longer!
-  Result = (l_cursor == a_str.length ());
 }
 if (not Result)
 {
@@ -138,12 +140,21 @@ if (NULL == deployview_)
     }
   }
   // QUERY = fails if create returns nul other than when non-package passed. 
-  BUTTER_ALWAYS (NULL != deployview_, "<p><b>Fatal error:</b> Unable to create a new deployment view, no editiable packages at location " + std::string (full_path ().ascii ()) + ". Make an editable package at this location and try again.</p>");
+  if (NULL == deployview_)
+  {
+    throw std::runtime_error ("<p><b>Fatal error:</b> Unable to create a new deployment view, no editiable packages at location <b>" + std::string (full_path ().ascii ()) + "</b>. Make an editable package at this location and try again.</p>");
+  }
 }
 log::com.trace (log::info, "<p>New UML artifact named " + a_name + " being created in package " + deployview_->parent ()->name ().data () + " (which has source location " + full_path () + ").</p>");
 UmlArtifact * Result = UmlArtifact::create (deployview_, a_name);
 // QUERY = fails if create returns nul other than when non-deployment passed.
-BUTTER_ALWAYS (NULL != Result, "<p><b>Fatal error:</b> Unable to create a new artifact.</p>");
+if (NULL == Result)
+{
+  QString name_ (full_path ());
+  name_.append ("/");
+  name_.append (a_name);
+  throw std::runtime_error ("<p><b>Fatal error:</b> Unable to create a new artifact for <b>" + std::string (name_.ascii ()) + "</b>.</p>");
+}
 Result->set_Stereotype (item_traits::document_stereotype.utf8 ());
 return Result;
 !!!187689.cpp!!!	find(inout a_location : location, in a_path : unistr) : location
@@ -338,13 +349,15 @@ while (not item_stack_.isEmpty ())
             and current_key_ != item_traits::butter_buildfile_name
             and current_key_ != item_traits::butter_compiler_name
             and current_key_ != item_traits::butter_flags_name
+            and current_key_ != item_traits::butter_install_name
             and current_key_ != item_traits::butter_ldflags_name
             and current_key_ != item_traits::butter_lib_type_name
             and current_key_ != item_traits::butter_log_name
             and current_key_ != item_traits::butter_other_name
             and current_key_ != item_traits::butter_include_name
             and current_key_ != item_traits::butter_project_name
-            and current_key_ != item_traits::butter_style_name)
+            and current_key_ != item_traits::butter_style_name
+            and current_key_ != item_traits::butter_version_name)
           {
             log::com.trace (log::warn, "<p><b>Warning:</b> Item \"" + QString (top_->name ().data ()) + "\" has property name \"" + current_key_ + "\" which contains 'butter' but is not a known property name</p>");
           }
@@ -371,20 +384,20 @@ while (not item_stack_.isEmpty ())
     }
     // Find/Create location, reparenting tree if necessary, and add package.
 #ifdef DEBUG
-    log::com.debug () << "## Finding/creating location for Package [" << pack_item_->name ()
+    log::com.stream () << "## Finding/creating location for Package [" << pack_item_->name ()
                  << "] at path [" << pack_path_ << "]\n"
                  << "## Cache path [" << cache_->full_path () << "]\n";
 #endif
     if (not cache_->match_path (pack_path_))
     {
 #ifdef DEBUG
-      log::com.debug () << "## Cache-Package paths do not match\n";
+      log::com.stream () << "## Cache-Package paths do not match\n";
 #endif
       if (not cache_->parent_path (pack_path_))
       {
         cache_ = Result.get ();
 #ifdef DEBUG
-        log::com.debug () << "## Cache reset to base [" << cache_->full_path () << "]\n";
+        log::com.stream () << "## Cache reset to base [" << cache_->full_path () << "]\n";
 #endif
       }
       if (not cache_->match_path (pack_path_))
@@ -392,25 +405,25 @@ while (not item_stack_.isEmpty ())
         if (not cache_->parent_path (pack_path_))
         {
 #ifdef DEBUG
-          log::com.debug () << "## Package below base dir. Reparenting base.\n";
+          log::com.stream () << "## Package below base dir. Reparenting base.\n";
 #endif
           // Reparent
           Result = create_common_parent (Result, pack_path_);
 #ifdef DEBUG
-          log::com.debug () << "## Found common parent [" << Result->full_path () << "]\n";
+          log::com.stream () << "## Found common parent [" << Result->full_path () << "]\n";
 #endif
           // Result is closest parent. Build descendent
           if (Result->match_path (pack_path_))
           {
 #ifdef DEBUG
-            log::com.debug () << "## New base matched package\n";
+            log::com.stream () << "## New base matched package\n";
 #endif
             cache_ = Result.get();
           }
           else
           {
 #ifdef DEBUG
-            log::com.debug () << "## Package was below new base.\n";
+            log::com.stream () << "## Package was below new base.\n";
 #endif
             cache_ = Result->create_as_child (pack_path_);
           }
@@ -418,7 +431,7 @@ while (not item_stack_.isEmpty ())
         else
         {
 #ifdef DEBUG
-          log::com.debug () << "## Package below cache, finding package\n";
+          log::com.stream () << "## Package below cache, finding package\n";
 #endif
           cache_ = find (cache_, pack_path_);
           if (not cache_->match_path (pack_path_))
@@ -428,7 +441,8 @@ while (not item_stack_.isEmpty ())
         }
       }
     }
-    BUTTER_CHECK (cache_->match_path (pack_path_), "<p><b>Program error:</b> Found location object does not match input path</p>");
+    BUTTER_CHECK (cache_->match_path (pack_path_)
+          , std::string ("<p><b>Program error:</b> Location path \"") + cache_->path ().ascii() + "\"(" + cache_->full_path ().ascii() + ") does not match package path \"" + pack_path_.ascii () + "\" </p>");
     cache_->add_package (*pack_item_);
   }
 #ifdef DEBUG
@@ -439,7 +453,7 @@ while (not item_stack_.isEmpty ())
     {
       print_tmp_ = print_tmp_->parent ();
     }
-    item_traits::print_item (*top_, depth_, log::com.debug ());
+    item_traits::print_item (*top_, depth_, log::com.stream ());
   }
 #endif
   // Push any children onto the stack (ensures all objects are checked for keywords)
@@ -452,7 +466,7 @@ while (not item_stack_.isEmpty ())
 }
 #ifdef DEBUG
 // Output debugging information.
-Result->serialize (log::com.debug ());
+Result->serialize (log::com.stream ());
 #endif
 // Perform exit test(s)
 if (not user_base_path_.isEmpty ())

@@ -31,7 +31,7 @@ for (int c_ = 0; c_ < sz_ and at(c_) == a_other.at(c_); ++c_)
   Result.append (sep_);
 }
 // Remove trailing separator
-Result.truncate (Result.length ());
+Result.truncate (Result.length () - 1);
 return Result;
 !!!185769.cpp!!!	equality(in a_rhs : pathcmp) : bool
 bool Result (path_ == a_rhs.path_);
@@ -73,7 +73,7 @@ for (int i_ = common_; i_ < sz2_; ++i_)
   Result.append (&sep_[2]);
 }
 // Remove trailing separator
-Result.truncate (Result.length ());
+Result.truncate (Result.length () - 1);
 return Result;
 !!!185897.cpp!!!	subpath(in a_rhs : pathcmp) : bool
 // simple test that a subdirs path string must have longer pathname

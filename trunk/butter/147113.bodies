@@ -6,6 +6,7 @@ class compound_artifact
 , end ()
 , preamble ()
 , targets_ ()
+, target_order_ ()
 , version ()
 {
   const QString tmp_ (a_art.description ());
@@ -67,7 +68,10 @@ for (QString line_ = a_is.readLine ();
         }
         else
         {
-          throw std::runtime_error ("<p>Badly formed artifact with unknown section label</p>");
+          QString name_ (artifact.parent ()->parent ()->name ());
+          name_.append ("/");
+          name_.append (artifact.name ());
+          throw std::runtime_error ("<p><b>Fatal Error:</b> Error in artifact <b>" + std::string (name_.ascii ()) + "</b>, appears to have an unknown section type.</p>");
         }
         if (not capture_.isEmpty ())
         {
@@ -78,7 +82,10 @@ for (QString line_ = a_is.readLine ();
       }
       else if (line_.startsWith (style_.end_phrase))
       {
-        throw std::runtime_error ("<p>Badly formed artifact with section end outside a section</p>");
+        QString name_ (artifact.parent ()->parent ()->name ());
+        name_.append ("/");
+        name_.append (artifact.name ());
+        throw std::runtime_error ("<p><b>Fatal Error:</b> Error in artifact <b>" + std::string (name_.ascii ()) + "</b>, section end outside a section</p>");
       }
       else
       {
@@ -143,20 +150,24 @@ public:
     }
   }
 };
-butter::compound_artifact tmp_ (a_art);
+const butter::compound_artifact tmp_ (a_art);
 helper_::merge_ (version, tmp_.version);
 helper_::merge_ (date, tmp_.date);
 helper_::merge_ (preamble, tmp_.preamble);
 helper_::merge_ (close, tmp_.close);
-for (QDictIterator< string_pair_t > i_ (tmp_.targets_); NULL != i_.current (); ++i_)
+for (QDictIterator< string_pair_t > i_ (tmp_.targets_);
+     NULL != i_.current ();
+     ++i_)
 {
-  helper_::merge_ (target (QString (i_.currentKey ())), *i_.current ());
+  helper_::merge_ (target (i_.currentKey ()), *i_.current ());
 }
 end.append (tmp_.end);
 !!!196265.cpp!!!	reset() : void
 if (not targets_.isEmpty ())
 {
-  for (QDictIterator< string_pair_t > i_ (targets_); NULL != i_.current (); ++i_)
+  for (QDictIterator< string_pair_t > i_ (targets_);
+      NULL != i_.current ();
+      ++i_)
   {
     i_.current ()->second.truncate (0);
   }
@@ -191,9 +202,13 @@ public:
 helper_::write (a_os, version, butter::item_traits::version_label);
 helper_::write (a_os, date, butter::item_traits::date_label);
 helper_::write (a_os, preamble, butter::item_traits::preamble_label);
-for (QDictIterator< string_pair_t > i_ (targets_); i_.current (); ++i_)
+for (QValueListConstIterator< QString > i_ (target_order_.begin ());
+      target_order_.end () != i_;
+      ++i_)
 {
-  helper_::write (a_os, *i_.current (), butter::item_traits::target_label + " " + QString (i_.currentKey ()));
+  string_pair_t * tmp_ (targets_.find (*i_));
+  BUTTER_CHECK (NULL != tmp_, "Error, key in target_order_ not found in targets.");
+  helper_::write (a_os, *tmp_, butter::item_traits::target_label + " " + *i_);
 }
 helper_::write (a_os, close, butter::item_traits::close_label);
 if (not end.isEmpty ())
@@ -201,11 +216,12 @@ if (not end.isEmpty ())
   a_os << end;
 }
 !!!198057.cpp!!!	target(in a_label : unistr) : string_pair_t
-string_pair_t * Result = targets_.find (a_label);
-if (NULL == Result)
+string_pair_t * existing_ (targets_.find (a_label));
+if (NULL != existing_)
 {
-  std::auto_ptr< string_pair_t > tmp_ (new string_pair_t);
-  targets_.insert (a_label, tmp_.get ());
-  Result = tmp_.release ();
+  return *existing_;
 }
-return *Result;
+std::auto_ptr< string_pair_t > newitem_ (new string_pair_t);
+target_order_.append (a_label);
+targets_.insert (a_label, newitem_.get ());
+return *newitem_.release ();
