@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 50
+  revision 51
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -820,41 +820,42 @@ path-constant MANNDIR : $(MANDIR)/mann ;
 | Single directory, multiple target project |  9  |  9  |   9   |
 | Multiple directory and target project     |  9  |  9  |   9   |
 | Target inclusion |||
-| Basic executable                          |  9  |  9  |   9   |
-| Basic static library                      |  9  |  9  |   9   |
-| Basic shared library                      |  9  | na  |   9   |
-| External library                          |  9  |  9  |   9   |
-| Non-standard target                       |  9  |  9  |   9   |
+| Basic executable                          |  9  |  9  |   9   |*
+| Basic static library                      |  9  |  9  |   9   |*
+| Basic shared library                      |  9  | na  |   9   |*
+| External library                          |  9  |  9  |   9   |*
+| Non-standard target                       |  9  |  9  |   9   |*
 | Document as non-C++ source                |  9  |  9  |   9   |
 | UML object property inclusion |||
-| butter build-dir  : project               |  9  | ni  |  ni   |
-| butter base       : project               |  9  |  9  |   9   |
-| butter buildfile  : library               |  9  |  9  |   9   |
-| butter compiler   : document              |  a  |  a  |   9   |
-|                   : executable            | xx  | xx  |   9   |
-|                   : library               | xx  | xx  |   9   |
-| butter flags      : project               |  9  |  9  |   9   |
-|                   : executable            |  9  |  9  |   9   |
-|                   : library               |  9  |  9  |   9   |
-|                   : source                |  9  |  9  |   9   |
-|                   : document              |  9  |  9  |   9   |
-| butter include    : project               |  9  |  9  |   9   |
-|                   : executable            |  9  |  9  |   9   |
-|                   : library               |  9  |  9  |   9   |
-|                   : source                |  9  |  9  |   9   |
-|                   : document              |  9  |  9  |   9   |
-| butter install    : executable, library   |  9  |  9  |   9   |
-| butter ldflags    : project               |  9  |  9  |   9   |
-|                   : executable, library   |  9  |  9  |   9   |
-|                   : source                |  9  |  9  |   9   |
-|                   : document              |  9  |  9  |   9   |
-| butter log-level  : project               |  9  |  9  |   9   |
-| butter other      : library               |  9  |  9  |   9   |
-| butter project    : library               |  9  |  9  |   9   |
-| butter style      : project               |  9  |  9  |   9   |
-| butter type       : library               |  9  | na  |   9   |
-|                   : project, package      |  9  | na  |   9   |
-| butter version    : project               |  9  |  9  |   9   |
+| butter build-dir  : project               |  9  | ni  |  ni   |*
+| butter base       : project               |  9  |  9  |   9   |*
+| butter buildfile  : library               |  9  |  9  |   9   |*(other,external)
+| butter compiler   : document              |  a  |  a  |   9   |*
+|                   : executable            | xx  | xx  |   9   |*
+|                   : library               | xx  | xx  |   9   |*
+| butter flags      : project               |  9  |  9  |   9   |*
+|                   : executable            |  9  |  9  |   9   |*
+|                   : library               |  9  |  9  |   9   |*
+|                   : source                |  9  |  9  |   9   |*
+|                   : document              |  9  |  9  |   9   |*
+| butter include    : project               |  9  |  9  |   9   |*
+|                   : executable            |  9  |  9  |   9   |*
+|                   : library               |  9  |  9  |   9   |*
+|                   : source                |  9  |  9  |   9   |*
+|                   : document              |  9  |  9  |   9   |*
+| butter install    : executable, library   |  9  |  9  |   9   |*
+|                   : document              |     |     |       |
+| butter ldflags    : project               |  9  |  9  |   9   |*
+|                   : executable, library   |  9  |  9  |   9   |*
+|                   : source                |  9  |  9  |   9   |*
+|                   : document              |  9  |  9  |   9   |*
+| butter log-level  : project               |  9  |  9  |   9   |*
+| butter other      : library               |  9  |  9  |   9   |*
+| butter project    : library               |  9  |  9  |   9   |*
+| butter style      : project               |  9  |  9  |   9   |*
+| butter type       : library               |  9  | na  |   9   |*
+|                   : project, package      |  9  | na  |   9   |*
+| butter version    : project               |  9  |  9  |   9   |*
 
 | UML object description inclusion |||
 | Build file merging |||

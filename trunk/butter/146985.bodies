@@ -1,5 +1,5 @@
 class build_writer
-!!!200233.cpp!!!	find_hdr_link(in a_item : UmlItem, inout a_hdr : unistr, inout a_link : unistr, inout a_flag : unistr, in a_not_doc : bool = true) : void
+!!!200233.cpp!!!	find_hdr_link(in a_item : UmlItem, inout a_hdr : unistr, inout a_link : unistr, inout a_flag : unistr, in a_section_label : unistr, in a_not_doc : bool) : void
 // Process any data from properties.
 QString value_;
 if (item_traits::property_value (a_item, item_traits::butter_flags_name, value_))
@@ -20,33 +20,37 @@ if (item_traits::property_value (a_item, item_traits::butter_include_name, value
 // For non-documents any data from the description.
 if (a_not_doc)
 {
-  QString section_ (section (item_traits::generic_section, const_cast< UmlItem& >(a_item).description ()));
+  QString section_ (section (a_section_label, const_cast< UmlItem& >(a_item).description ()));
+  if (section_.isEmpty ())
+  {
+    section_ = section (item_traits::generic_section, const_cast< UmlItem& >(a_item).description ());
+  }
   if (not section_.isEmpty ())
   {
-    QRegExp l_hdr_re ("^ *" + item_traits::header_label + " *= *");
-    QRegExp l_link_re ("^ *" + item_traits::link_label + " *= *");
-    QRegExp l_flag_re ("^ *" + item_traits::flag_label + " *= *");
+    QRegExp hdr_re_ ("^ *" + item_traits::header_label + " *= *");
+    QRegExp link_re_ ("^ *" + item_traits::link_label + " *= *");
+    QRegExp flag_re_ ("^ *" + item_traits::flag_label + " *= *");
     if (not section_.isEmpty ())
     {
-      QTextIStream section__is (&section_);
-      while (not section__is.atEnd ())
+      QTextIStream section_is_ (&section_);
+      while (not section_is_.atEnd ())
       {
-        const QString l_line (section__is.readLine ());
-        int l_length;
-        if (-1 != l_hdr_re.match (l_line, 0, &l_length))
+        const QString line_ (section_is_.readLine ());
+        int length_;
+        if (-1 != hdr_re_.match (line_, 0, &length_))
         {
           if (not a_hdr.isEmpty ()) { a_hdr.append (" "); }
-          a_hdr.append (l_line.mid (l_length));
+          a_hdr.append (line_.mid (length_));
         }
-        else if (-1 != l_link_re.match (l_line, 0, &l_length))
+        else if (-1 != link_re_.match (line_, 0, &length_))
         {
           if (not a_link.isEmpty ()) { a_link.append (" "); }
-          a_link.append (l_line.mid (l_length));
+          a_link.append (line_.mid (length_));
         }
-        else if (-1 != l_flag_re.match (l_line, 0, &l_length))
+        else if (-1 != flag_re_.match (line_, 0, &length_))
         {
           if (not a_flag.isEmpty ()) { a_flag.append (" "); }
-          a_flag.append (l_line.mid (l_length));
+          a_flag.append (line_.mid (length_));
         }
       }
     }
@@ -81,26 +85,23 @@ if (NULL == Result.get ())
 }
 return Result;
 !!!192425.cpp!!!	section(in a_section : unistr, in a_desc : unistr) : unistr
-static const QString l_START ("${" + item_traits::section_prefix);
-const QString l_phrase (l_START + a_section + "}");
+static const QString marker_start_ ("${" + item_traits::section_prefix);
+const QString marker_phrase_ (marker_start_ + a_section + "}");
 QString Result;
-int l_start (a_desc.find (l_phrase));
+int l_start (a_desc.find (marker_phrase_));
 if (-1 != l_start)
 {
   // Found a_section start, search from here to end for next section
-  int l_end (a_desc.find (l_START, l_start + l_phrase.length ()));
+  int l_end (a_desc.find (marker_start_, l_start + marker_phrase_.length ()));
   if (-1 != l_end)
   {
-    Result = a_desc.mid (l_start + l_phrase.length (), l_end - (l_start + l_phrase.length ()));
+    Result = a_desc.mid (l_start + marker_phrase_.length (), l_end - (l_start + marker_phrase_.length ()));
   }
   else
   {
-    Result = a_desc.mid (l_start + l_phrase.length ());
+    Result = a_desc.mid (l_start + marker_phrase_.length ());
   }
 }
-else if (-1 == a_desc.find (l_START))
-{
-  // Found no section titles, use all of desc
-  Result = a_desc;
-}
+// else ...
+// Found no section titles --> return empty string
 return Result;

@@ -58,7 +58,7 @@ if (not proj_.second.contains ("using "))
     else
     {
       QString includes_, linkflags_, cflags_;
-      find_hdr_link (a_target, includes_, linkflags_, cflags_);
+      find_hdr_link (a_target, includes_, linkflags_, cflags_, section_name, true);
       if (not (includes_.isEmpty ()and linkflags_.isEmpty ()))
       {
         proj_.second.append ("alias " + const_cast< UmlArtifact& >(a_target).name () + " : : : : ");
@@ -84,12 +84,13 @@ BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the 
 project_name_ = const_cast< UmlItem& >(a_project).name ();
 QString prop_value_;
 QString content_;
-const QString base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ().mid (a_base.full_path ().length () + 1));
+QString base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ().mid (a_base.full_path ().length () + 1));
 QTextOStream os_ (&content_);
 os_ << "# Include local constants\ninclude " << rules_name << " ;\n\n";
 os_ << "project " << project_name_;
 os_ << "\n\t:  requirements <debug-symbols>on:<cxxflags>\"-DDEBUG=1\"\n\t";
 QString link_, flag_; // Needed arguments.
+find_hdr_link (a_project, base_include_, link_, flag_, section_name, false);
 if (requirements (a_project, prop_value_, base_include_, link_, flag_))
 {
   os_ << prop_value_;
@@ -114,7 +115,6 @@ if (a_loc_var != item_traits::no_install_value)
         << "install install_" << name_ << " : : <variant>debug ;\n";
 }
 !!!152873.cpp!!!	local_target(in a_current : location, in a_target : UmlArtifact, inout a_localdoc : compound_artifact) : void
-#line 300
 QPtrVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(a_target).associatedArtifacts ());
 if (not assoc_arts_.isEmpty ())
 {
@@ -198,7 +198,7 @@ if (not assoc_arts_.isEmpty ())
         else if (current_stereo_ == item_traits::source_stereotype)
         {
           QString src_inc_, src_flags_;
-          find_hdr_link (*current_art_, src_inc_, link_flags_, src_flags_); // Pass link flags to target
+          find_hdr_link (*current_art_, src_inc_, link_flags_, src_flags_, section_name, true); // Pass link flags to target
           if (not src_inc_.isEmpty () or not src_flags_.isEmpty ())
           {
             // Add obj description
@@ -228,7 +228,7 @@ if (not assoc_arts_.isEmpty ())
         else if (current_stereo_ == item_traits::document_stereotype)
         {
           QString src_inc_, src_flags_;
-          find_hdr_link (*current_art_, src_inc_, link_flags_, src_flags_, false); // Pass link flags to target
+          find_hdr_link (*current_art_, src_inc_, link_flags_, src_flags_, section_name, false); // Pass link flags to target
           if (not src_inc_.isEmpty () or not src_flags_.isEmpty ())
           {
             QString comp_;
@@ -251,8 +251,8 @@ if (not assoc_arts_.isEmpty ())
             }
             if (not src_flags_.isEmpty ())
             {
-              if (comp_ = "CC") comp_ = "C";
-              if (comp_ = "FORTRAN") comp_ = "F";
+              if (comp_ == "CC") comp_ = "C";
+              if (comp_ == "FORTRAN") comp_ = "F";
               source_os_ << "<" << comp_.lower () << "flags>\"" << src_flags_ << "\" ";
             }
             source_os_ << " ;\n";
@@ -283,7 +283,7 @@ if (not assoc_arts_.isEmpty ())
     {
       // Handle flags for non-standard targets.
       os_ << ": ";
-      find_hdr_link (a_target, includes_, link_flags_, cflags_);
+      find_hdr_link (a_target, includes_, link_flags_, cflags_, section_name, true);
       if (not includes_.isEmpty ())
       {
         QStringList list_ (QStringList::split (" ", includes_));
@@ -319,7 +319,6 @@ if (not assoc_arts_.isEmpty ())
 !!!149161.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr, in a_includes : unistr, in a_linkflags : unistr, in a_cflags : unistr) : bool
 bool Result (false);
 QTextOStream os_ (&a_reqs);
-find_hdr_link (a_item, a_includes, a_linkflags, a_cflags, false);
 if (not a_includes.isEmpty ())
 {
   Result = true;
@@ -341,3 +340,141 @@ if (not a_cflags.isEmpty ())
   os_ << "<cxxflags>\"" << a_cflags << "\"\n\t";
 }
 return Result;
+!!!212265.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr) : void
+////////////////////////
+// Reset variables
+this->other_target_type_.truncate (0);
+this->individual_obj_.truncate (0);
+
+///////////////////////
+// Start target definition
+const QString stereotype_ (const_cast< UmlArtifact& >(a_target).stereotype ());
+if (stereotype_ == item_traits::library_stereotype)
+{
+  if (item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_))
+  {
+    if (not a_build_file.isEmpty ())
+    {
+      a_os << "include " << a_build_file << ".bjam ;\n\n";
+    }
+    a_os << this->other_target_type_ << " ";
+  }
+  else
+  {
+    a_os << "lib ";
+  }
+}
+else if (stereotype_ == item_traits::executable_stereotype)
+{
+  a_os << "exe ";
+}
+!!!212649.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+QString project_;
+if (item_traits::property_value (a_target, item_traits::butter_project_name, project_))
+{
+  a_os << "/" << project_ << "//";
+}
+else
+{
+  a_os << "/" << this->project_name_ << "/";
+  const QString loc_ (item_traits::location (a_target));
+  if (loc_ == ".")
+    a_os << "/";
+  else
+    a_os << loc_ << "//";
+}
+a_os << const_cast< UmlArtifact& >(a_target).name () << "\n\t";
+/////////////
+// Note. Header/link information is imported with library in boost jam.
+!!!212777.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+QString individual_;
+if (not a_src_inc.isEmpty () or not a_src_flags.isEmpty ())
+{
+  // Add individual obj description
+  QString compiler_ ("cxx");
+  QTextOStream source_os_ (&individual_);
+  BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, compiler_) or not a_isdoc
+                , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
+                                + "' property on " + QString (a_filename)).ascii ()));
+  if (compiler_ == "CC") compiler_ = "C";
+  if (compiler_ == "FORTRAN") compiler_ = "F";
+  source_os_ << "obj " << a_basename << "_obj : "
+              << a_filename << " : ";
+  if (not a_src_inc.isEmpty ())
+  {
+    QStringList include_list_ (QStringList::split (" ", a_src_inc));
+    for (unsigned int index_ = 0; index_ < include_list_.count (); ++index_)
+    {
+      source_os_ << "<include>\"" << (*include_list_.at (index_)).stripWhiteSpace () << "\" ";
+    }
+  }
+  if (not a_src_flags.isEmpty ())
+  {
+    source_os_ << "<" << compiler_.lower () << "flags>\"" << a_src_flags << "\" ";
+  }
+  source_os_ << " ;\n";
+  // Add obj to target
+  a_os << a_basename << "_obj\n\t";
+}
+else
+{
+  a_os << a_filename << "\n\t";
+}
+
+if (not individual_.isEmpty ())
+{
+  this->individual_obj_.append (individual_);
+}
+!!!212905.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr) : void
+///////////////////////
+// end target definition
+if (this->other_target_type_.isEmpty ())
+{
+  a_os << ":\n\t";
+  if (const_cast< UmlArtifact& >(a_target).stereotype ().data () == item_traits::library_stereotype)
+  {
+    QString lib_stat_or_shar_;
+    if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, lib_stat_or_shar_))
+    {
+      a_os << "<link>" << lib_stat_or_shar_ << "\n\t";
+    }
+  }
+  QString requires_;
+  if (requirements (a_target, requires_, a_include, a_ldflags, a_cflags))
+  {
+    a_os << requires_;
+  }
+}
+else
+{
+  // Handle flags for non-standard targets.
+  a_os << ": ";
+  if (not a_include.isEmpty ())
+  {
+    QStringList list_ (QStringList::split (" ", a_include));
+    for (unsigned int i_ = 0; i_ < list_.count (); ++i_ )
+    {
+      a_os << "<include>\"" << (*list_.at (i_)).stripWhiteSpace () << "\" ";
+    }
+    a_os << "\n\t";
+  }
+  if (not a_ldflags.isEmpty ())
+  {
+    a_os << "<linkflags>\"" << a_ldflags << "\"\n\t";
+  }
+  if (not a_cflags.isEmpty ())
+  {
+    a_os << "<" << this->other_target_type_ << "flags>\"" << a_cflags << "\"\n\t";
+  }
+}
+a_os << ";\n\n";
+// Add any object definitions
+if (not this->individual_obj_.isEmpty ())
+{
+  a_os << this->individual_obj_;
+}
+!!!213033.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
+const QString name_ (const_cast< UmlArtifact& >(a_target).name ());
+a_os << "install install_" << name_ << " : " << name_
+        << " : <variant>release <location>$(" << a_loc_var << ") ;\n"
+      << "install install_" << name_ << " : : <variant>debug ;\n";
