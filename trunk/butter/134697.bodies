@@ -1,385 +1,4 @@
 class jam_writer
-!!!158121.cpp!!!	descendent_link(inout a_art : compound_artifact, inout a_sys : compound_artifact, in a_loc : location) : void
-// Need to write the TOP line.
-if (NULL != a_loc.parent ())
-{
-  // Build SubDir.
-  const location *loc_cursor_ = &a_loc;
-  QString dir_line_;
-  while (NULL != loc_cursor_->parent ())
-  {
-    dir_line_.insert (0, loc_cursor_->path ());
-    dir_line_.insert (0, " ");
-    loc_cursor_ = loc_cursor_->parent ();
-  }
-  QString subdir_line_ ("SubDir TOP" + dir_line_ + " ;\n\n");
-  // Insert the subdir flags into l_buffer. 
-  if (not m_flags.isEmpty ())
-  {
-    subdir_line_.append ("\nSUBDIRC++FLAGS += " + m_flags + " ;\n");
-    m_flags.truncate (0);
-  }
-  if (not m_headers.isEmpty ())
-  {
-    subdir_line_.append ("\nSUBDIRHDRS += " + m_headers + " ;\n");
-    m_headers.truncate (0);
-  }
-
-  a_art.preamble.second.insert (0, subdir_line_);
-  // Add definition to top-level
-  a_sys.close.second.append ("SubInclude TOP" + dir_line_ + " ;\n");
-}
-!!!156329.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void
-BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
-QString content_;
-QTextOStream os_ (&content_);
-// The include dir is the difference between the current fullpath and the
-// top-projects hdrDir
-os_ << "SubDir TOP ;\n";
-const QString base_path_ (a_base.full_path ());
-QString requirement_text_;
-if (requirements (a_project, requirement_text_))
-{
-  os_ << requirement_text_;
-}
-
-QString toplevel_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
-if (not toplevel_include_.isEmpty () and toplevel_include_ != base_path_)
-{
-  if (0 == toplevel_include_.find (base_path_))
-  {
-    os_ << "HDRS += \"" << toplevel_include_.mid (base_path_.length () + 1) << "\" ;\n\n";
-  }
-  else
-  {
-    os_ << "HDRS += \"" << toplevel_include_ << "\" ;\n\n";
-  }
-}
-a_sys.preamble.second = content_;
-!!!174377.cpp!!!	install_target(in a_target_name : unistr, in a_loc_var : unistr, inout a_os : ostream, in a_install_type : install_type = file) : void
-if (a_loc_var != item_traits::no_install_value)
-{
-  static const char * l_install_cmd[] =
-  {
-    "InstallBin"
-  , "InstallFile"
-  , "InstallLib"
-  , "InstallMan"
-  };
-  a_os << l_install_cmd [a_install_type] << " $("  << a_loc_var;
-  a_os << ") : " << a_target_name << " ;\n";
-}
-!!!156201.cpp!!!	local_target(in a_current : location, in a_target : UmlArtifact, inout a_localdoc : compound_artifact) : void
-QPtrVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(a_target).associatedArtifacts ());
-if (not assoc_arts_.isEmpty ())
-{
-  QString target_description_;               // The main description
-  QTextOStream os_ (&target_description_);
-  QString individual_obj_;                    // Extra description when we have individual objects
-  QTextOStream source_os_ (&individual_obj_);
-  QString here_ ("<" + item_traits::location (a_target) + ">"); // Will become the full target name
-  QString lib_stat_or_shar_;
-  QString install_dir_;               // Location for install: DOCDIR,BINDIR etc
-  install_type install_type_ (file);  // How the target should be installed
-  QString other_target_type_;  // Target label for non-standard targets
-  bool is_other_ (false);             // Indicate we are build a non-standard target.
-  const QString target_stereo_ (const_cast< UmlArtifact& >(a_target).stereotype ().data ());
-  if (target_stereo_ == item_traits::library_stereotype)
-  {
-    install_type_ = lib;
-    if (item_traits::property_value (a_target, item_traits::butter_other_name, other_target_type_))
-    {
-      QString build_file_;         // Target specific include file
-      if (item_traits::property_value (a_target, item_traits::butter_buildfile_name, build_file_))
-      {
-        os_ << "include " << build_file_ << ".jam ;\n\n";
-      }
-      here_.append (const_cast< UmlArtifact& >(a_target).name ());
-      os_ << other_target_type_ << " " << here_  << " :\n\t";
-      is_other_ = true;
-    }
-    else
-    {
-      here_.append ("lib" + const_cast< UmlArtifact& >(a_target).name () + "$(SUFLIB)");
-      QString compiler_; // Handle non-default linking
-      if (item_traits::property_value (a_target, item_traits::butter_compiler_name, compiler_))
-      {
-        if (not compiler_.isEmpty ())
-        {
-          os_ << "LINK on " << here_ << " = $(" <<  compiler_ << ") ;\n\n";
-        }
-      }
-      os_ << "Library " << here_  << " :\n\t";
-    }
-    if (not item_traits::property_search (a_target, item_traits::butter_lib_type_name, lib_stat_or_shar_))
-    {
-      lib_stat_or_shar_ = item_traits::static_value;
-    }
-    if (not item_traits::property_value (a_target, item_traits::butter_install_name, install_dir_))
-    {
-      install_dir_ = item_traits::libdir_value;
-    }
-    else
-    {
-      if (install_dir_ != item_traits::libdir_value)
-      {
-        install_type_ = file; // Reset to file.
-      }
-    }
-  }
-  else if (target_stereo_ == item_traits::executable_stereotype)
-  {
-    install_type_ = bin;
-    here_.append (const_cast< UmlArtifact& >(a_target).name () + "$(SUFEXE)");
-    QString compiler_; // Handle non-default linking
-    if (item_traits::property_value (a_target, item_traits::butter_compiler_name, compiler_))
-    {
-      if (not compiler_.isEmpty ())
-      {
-        os_ << "LINK on " << here_ << " = $(" <<  compiler_ << ") ;\n\n";
-      }
-    }
-    os_ << "Main " << here_ << " :\n\t";
-    if (not item_traits::property_value (a_target, item_traits::butter_install_name, install_dir_))
-    {
-      install_dir_ = item_traits::bindir_value;
-    }
-    else
-    {
-      if (install_dir_ != item_traits::bindir_value)
-      {
-        install_type_ = file; // Reset to file.
-      }
-    }
-  }
-  else
-  {
-    // a_target must be execution or library stereotype
-    return;
-  }
-  // Build the source/dependency list for the project
-  QString lib_defn_;
-  QTextOStream lib_defn_os_ (&lib_defn_);
-  QString link_flags_;
-  QString includes_;
-  QString cflags_;
-  find_hdr_link (a_target, includes_, link_flags_, cflags_, section_name, true);
-  for (unsigned int i_ (0); i_ < assoc_arts_.size (); ++i_)
-  {
-    UmlArtifact *const current_art_ (assoc_arts_.at (i_));
-    const QString stereotype_ (current_art_->stereotype ().data ());
-    if (stereotype_ == item_traits::library_stereotype)
-    {
-      QString l_linker;
-      if (item_traits::property_value (*current_art_, item_traits::butter_project_name, l_linker))
-      {
-        // Is an externally linked library, look for HDR and LINKLIB lines.
-        find_hdr_link (*current_art_, includes_, link_flags_, cflags_, section_name, true);
-      }
-      else
-      {
-        lib_defn_os_ << "<" << item_traits::location (*current_art_) << ">lib" << current_art_->name () << "$(SUFLIB)\n\t";
-      }
-    }
-    else if (stereotype_ == item_traits::source_stereotype)
-    {
-      QString src_inc_, src_flags_;
-      find_hdr_link (*current_art_, src_inc_, link_flags_, src_flags_, section_name, true); // Pass link flags to target
-      if (not src_inc_.isEmpty ())
-      {
-        source_os_ << "HDR on <" << item_traits::location (*current_art_) << ">"
-                    << current_art_->name () << "$(SUFOBJ) += " << src_inc_ << " ;\n";
-      }
-      if (not src_flags_.isEmpty ())
-      {
-        source_os_ << "C++FLAGS on <" << item_traits::location (*current_art_) << ">"
-                    << current_art_->name () << "$(SUFOBJ) += " << src_flags_ << " ;\n";
-      }
-      os_ << "<" << item_traits::location (*current_art_) << ">" << current_art_->name () << "." << CppSettings::sourceExtension () << "\n\t";
-    }
-    else if (stereotype_ == item_traits::document_stereotype)
-    {
-      QString src_inc_, src_flags_;
-      // Pass link flags to target (only look at properties)
-      find_hdr_link (*current_art_, src_inc_, link_flags_, src_flags_, section_name, false);
-      if (not src_inc_.isEmpty ())
-      {
-        const int dot_ (current_art_->name ().findRev ('.'));
-        source_os_ << "HDR on <" << item_traits::location (*current_art_) << ">";
-        if (-1 == dot_)
-          source_os_ << current_art_->name () << "$(SUFOBJ) += " << src_inc_ << " ;\n";
-        else
-          source_os_ << current_art_->name ().left (dot_) << "$(SUFOBJ) += " << src_inc_ << " ;\n";
-      }
-      if (not src_flags_.isEmpty ())
-      {
-        QString comp_;
-        BUTTER_ALWAYS(item_traits::property_value (*current_art_, item_traits::butter_compiler_name, comp_)
-                      , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
-                                      + "' property on " + QString (current_art_->name ())).ascii ()));
-        const int dot_ (current_art_->name ().findRev ('.'));
-        source_os_ << comp_ << "FLAGS on <" << item_traits::location (*current_art_) << ">";
-        if (-1 == dot_)
-          source_os_ << current_art_->name () << "$(SUFOBJ) += " << src_flags_ << " ;\n";
-        else
-          source_os_ << current_art_->name ().left (dot_) << "$(SUFOBJ) += " << src_flags_ << " ;\n";
-      }
-      os_ << "<" << item_traits::location (*current_art_) << ">" << current_art_->name () << "\n\t";
-    }
-  }
-  os_ << ";\n\n";
-  if (not is_other_)
-  {
-    if (not lib_defn_.isEmpty ())
-    {
-      os_ << "LinkLibraries " << here_ << " :\n\t" << lib_defn_ << ";\n\n";
-    }
-    if (not includes_.isEmpty ())
-    {
-      merge_headers (includes_);
-    }
-    if (not cflags_.isEmpty ())
-    {
-      merge_flags (cflags_);
-    }
-    if (not link_flags_.isEmpty ())
-    {
-      os_ << "LINKLIBS on " << here_ << " += " << link_flags_ << " ;\n\n";
-    }
-  }
-  else
-  {
-    // We have to handle non-standard targets differently.
-    if (not includes_.isEmpty ())
-    {
-      os_ << "HDRS on " << here_ << " = " << includes_ << " ;\n";
-    }
-    if (not cflags_.isEmpty ())
-    {
-      os_ << other_target_type_.upper () << "FLAGS on " << here_ << " = " << cflags_ << " ;\n";
-    }
-    if (not link_flags_.isEmpty ())
-    {
-      os_ << "LINKLIBS on " << here_ << " += " << link_flags_ << " ;\n";
-    }
-    os_ << "\n";
-  }
-  if (not install_dir_.isEmpty ())
-  {
-    install_target (here_, install_dir_, os_, install_type_);
-  }
-  if (not individual_obj_.isEmpty ())
-  {
-    source_os_ << "\n" << target_description_;
-    a_localdoc.target (const_cast< UmlArtifact& >(a_target).name ()).second = individual_obj_;
-  }
-  else
-  {
-    a_localdoc.target (const_cast< UmlArtifact& >(a_target).name ()).second = target_description_;
-  }
-}
-!!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
-if (a_list.isEmpty ())
-{
-  a_list = a_addition;
-}
-else if (not a_list.contains (a_addition))
-{
-  // a_addition is not a subset of a_list
-  if (a_addition.contains (a_list))
-  {
-    // a_list is a subset of a_addition, swap.
-    a_list = a_addition;
-  }
-  else
-  {
-    // contents do not overlap, split and compare
-    QRegExp l_splitter ("(\\S*\"[^\"]+\"\\S*|\\S+)");
-    QStringList l_list1 (QStringList::split (l_splitter, a_list, false));
-    QStringList l_list2 (QStringList::split (l_splitter, a_addition, false));
-    int l_counter (0); // Guard counter.
-    for (QStringList::Iterator l_cursor = l_list2.begin(); l_cursor != l_list2.end(); ++l_cursor,  ++l_counter)
-    {
-      if (0 == l_list1.contains (*l_cursor))
-      {
-         l_list1 += *l_cursor;
-      }
-      if (l_counter >= 100) throw "merge_string_list loop counter > 100";
-    }
-    a_list = l_list1.join (" ");
-  }
-}
-!!!155817.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr) : bool
-bool Result (false);
-QString l_tmp;
-QString l_section;
-QTextOStream l_os (&l_section);
-if (item_traits::property_value (a_item, item_traits::butter_include_name, l_tmp))
-{
-  Result = true;
-  l_os << "HDRS += ";
-  QStringList l_list (QStringList::split (" ", l_tmp));
-  for (unsigned int l_i (0); l_i < l_list.count (); ++l_i)
-  {
-    l_os << "\"" << (*l_list.at (l_i)).stripWhiteSpace () << "\" ";
-  }
-  l_os << ";\n";
-}
-if (item_traits::property_search (a_item, item_traits::butter_ldflags_name, l_tmp))
-{
-  Result = true;
-  l_os << "LINKLIBS += \"" << l_tmp << "\" ;\n";
-}
-if (item_traits::property_search (a_item, item_traits::butter_flags_name, l_tmp))
-{
-  Result = true;
-  l_os << "C++FLAGS += \"" << l_tmp << "\" ;\n";
-}
-if (Result)
-{
-  a_reqs = l_section;
-}
-return Result;
-!!!208937.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr) : void
-////////////////////////
-// Initialise state for writing a new target entry
-this->lib_defn_.truncate (0);          // Text for the associated targets
-this->qualified_target_name_ = "<" + item_traits::location (a_target) + ">"; // Will become the full target name
-this->other_target_type_.truncate (0); // Target label for non-standard targets
-this->individual_obj_.truncate (0);    // Definitions for individually build sources
-//////////////////////
-// Start entry
-const QString target_stereo_ (const_cast< UmlArtifact& >(a_target).stereotype ().data ());
-if (target_stereo_ == item_traits::library_stereotype)
-{
-  if (item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_))
-  {
-    if (not a_build_file.isEmpty ())
-    {
-      a_os << "include " << a_build_file << ".jam ;\n\n";
-    }
-    this->qualified_target_name_.append (const_cast< UmlArtifact& >(a_target).name ());
-    a_os << this->other_target_type_ << " " << this->qualified_target_name_  << " :\n\t";
-  }
-  else
-  {
-    this->qualified_target_name_.append ("lib" + const_cast< UmlArtifact& >(a_target).name () + "$(SUFLIB)");
-    if (not a_compiler.isEmpty ())
-    {
-      a_os << "LINK on " << this->qualified_target_name_ << " = $(" <<  a_compiler << ") ;\n\n";
-    }
-    a_os << "Library " << this->qualified_target_name_  << " :\n\t";
-  }
-}
-else if (target_stereo_ == item_traits::executable_stereotype)
-{
-  this->qualified_target_name_.append (const_cast< UmlArtifact& >(a_target).name () + "$(SUFEXE)");
-  if (not a_compiler.isEmpty ())
-  {
-    a_os << "LINK on " << this->qualified_target_name_ << " = $(" <<  a_compiler << ") ;\n\n";
-  }
-  a_os << "Main " << this->qualified_target_name_ << " :\n\t";
-}
 !!!209065.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 QString project_;
 if (item_traits::property_value (a_target, item_traits::butter_project_name, project_))
@@ -423,10 +42,54 @@ if (not source_.isEmpty ())
 /////////////
 // Add source to target
 a_os << "<" << item_traits::location (a_target) << ">" << a_filename << "\n\t";
+!!!158121.cpp!!!	descendent_link(inout a_art : compound_artifact, inout a_sys : compound_artifact, in a_loc : location) : void
+// Need to write the TOP line.
+if (NULL != a_loc.parent ())
+{
+  QString subdir_line_;  // The text of the preamble section (mainly SubDir)
+  QString dir_line_;     // The space separated list of folders between here and TOP
+  {
+    QTextOStream subdir_os_ (&subdir_line_);
+    // Build SubDir.
+    const location *loc_cursor_ = &a_loc;
+    QString dir_line2_;
+    while (NULL != loc_cursor_->parent ())
+    {
+      dir_line_.insert (0, loc_cursor_->path ());
+      dir_line_.insert (0, " ");
+      dir_line2_.insert (0, loc_cursor_->path ());
+      dir_line2_.insert (0, "/");
+      loc_cursor_ = loc_cursor_->parent ();
+    }
+    subdir_os_ << "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)" << dir_line2_ << " ;\n\n"
+              << "SubDir TOP" << dir_line_ << " ;\n\n";
+    // Insert the subdir flags into l_buffer. 
+    if (not this->location_flags_.isEmpty ())
+    {
+      subdir_os_ << "\nSUBDIRC++FLAGS += " << location_flags_ << " ;\n";
+      this->location_flags_.truncate (0);
+    }
+    if (not this->location_hdrs_.isEmpty ())
+    {
+      subdir_os_ << "\nSUBDIRHDRS += " << location_hdrs_ << " ;\n";
+      this->location_hdrs_.truncate (0);
+    }
+  }
+  a_art.preamble.second.insert (0, subdir_line_);
+  // Add definition to top-level
+  a_sys.close.second.append ("SubInclude TOP" + dir_line_ + " ;\n");
+}
 !!!209321.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr) : void
 ////////////////
 // End target assoication entry
 a_os << ";\n\n";
+
+///////////////
+// Handle non-std linkers
+if (not a_compiler.isEmpty ())
+{
+  a_os << "LINK on " << this->qualified_target_name_ << " = " << a_compiler << " ;\n";
+}
 
 //////////////
 // Set up includes, libs etc.
@@ -434,13 +97,13 @@ if (not a_ldflags.isEmpty ())
 {
   a_os << "LINKLIBS on " << this->qualified_target_name_ << " += " << a_ldflags << " ;\n";
 }
+if (not this->lib_defn_.isEmpty ())
+{
+  a_os << "LinkLibraries " << this->qualified_target_name_ << " :\n\t" << this->lib_defn_ << ";\n";
+}
 
 if (this->other_target_type_.isEmpty ())
-{ // (Standard target)
-  if (not this->lib_defn_.isEmpty ())
-  {
-    a_os << "LinkLibraries " << this->qualified_target_name_ << " :\n\t" << this->lib_defn_ << ";\n";
-  }
+{
   // Headers and compile flags are set directory wide for standard targets.
   if (not a_include.isEmpty ())
   {
@@ -453,18 +116,14 @@ if (this->other_target_type_.isEmpty ())
 }
 else
 {
-  // Handle non-standard targets differently.
+  // Handle flags on non-standard targets differently.
   if (not a_include.isEmpty ())
   {
-    a_os << "HDRS on " << this->qualified_target_name_ << " = " << a_include << " ;\n";
+    a_os << "HDRS on " << this->qualified_target_name_ << " += " << a_include << " ;\n";
   }
   if (not a_cflags.isEmpty ())
   {
-    a_os << this->other_target_type_.upper () << "FLAGS on " << this->qualified_target_name_ << " = " << a_cflags << " ;\n";
-  }
-  if (not a_ldflags.isEmpty ())
-  {
-    a_os << "LINKLIBS on " << this->qualified_target_name_ << " += " << a_ldflags << " ;\n";
+    a_os << this->other_target_type_.upper () << "FLAGS on " << this->qualified_target_name_ << " += " << a_cflags << " ;\n";
   }
 }
 a_os << "\n";
@@ -474,6 +133,48 @@ if (not this->individual_obj_.isEmpty ())
 {
   a_os << this->individual_obj_ << "\n";
 }
+!!!156329.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void
+BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
+QString content_;
+{
+  QTextOStream os_ (&content_);
+  ////////////
+  // Handle build-directory with no default.
+  //
+  // Note that this needs to be above "SubDir" to be available in Jamrules
+  QString prop_value_;
+  if (item_traits::property_value (a_project, item_traits::butter_build_dir_name, prop_value_))
+  {
+  os_ << "BUILDDIR = " << prop_value_ <<" ;\n\n";
+  }
+  //////////////
+  // Set this as top location and bring in Jamrules.
+  os_ << "SubDir TOP ;\n";
+  //////////////
+  // Handle user-defined project includes and flag properties
+  const QString base_path_ (a_base.full_path ());
+  QString requirement_text_;
+  if (requirements (a_project, requirement_text_))
+  {
+    os_ << requirement_text_;
+  }
+  ////////////
+  // The include dir is the difference between the current fullpath and the
+  // top-projects hdrDir
+  QString toplevel_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
+  if (not toplevel_include_.isEmpty () and toplevel_include_ != base_path_)
+  {
+    if (0 == toplevel_include_.find (base_path_))
+    {
+      os_ << "HDRS += \"" << toplevel_include_.mid (base_path_.length () + 1) << "\" ;\n\n";
+    }
+    else
+    {
+      os_ << "HDRS += \"" << toplevel_include_ << "\" ;\n";
+    }
+  }
+}
+a_sys.preamble.second = content_;
 !!!209449.cpp!!!	install_target(in a_target : UmlArtifact, inout a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
 static const char * install_cmd_[] =
 {
@@ -493,3 +194,105 @@ else
   a_os << this->qualified_target_name_;
 }
 a_os << " ;\n";
+!!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
+if (a_list.isEmpty ())
+{
+  a_list = a_addition;
+}
+else if (not a_list.contains (a_addition))
+{
+  // a_addition is not a subset of a_list
+  if (a_addition.contains (a_list))
+  {
+    // a_list is a subset of a_addition, swap.
+    a_list = a_addition;
+  }
+  else
+  {
+    // contents do not overlap, split and compare
+    QRegExp l_splitter ("(\\S*\"[^\"]+\"\\S*|\\S+)");
+    QStringList l_list1 (QStringList::split (l_splitter, a_list, false));
+    QStringList l_list2 (QStringList::split (l_splitter, a_addition, false));
+    int l_counter (0); // Guard counter.
+    for (QStringList::Iterator l_cursor = l_list2.begin(); l_cursor != l_list2.end(); ++l_cursor,  ++l_counter)
+    {
+      if (0 == l_list1.contains (*l_cursor))
+      {
+         l_list1 += *l_cursor;
+      }
+      if (l_counter >= 100) throw "merge_string_list loop counter > 100";
+    }
+    a_list = l_list1.join (" ");
+  }
+}
+!!!155817.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr) : bool
+bool Result (false);
+QString property_value_;
+QString requirements_value_;
+QTextOStream requirements_os_ (&requirements_value_);
+if (item_traits::property_value (a_item, item_traits::butter_include_name, property_value_))
+{
+  Result = true;
+  requirements_os_ << "HDRS += ";
+  QStringList include_list_ (QStringList::split (" ", property_value_));
+  for (unsigned int i_ (0); i_ < include_list_.count (); ++i_)
+  {
+    requirements_os_ << "\"" << (*include_list_.at (i_)).stripWhiteSpace () << "\" ";
+  }
+  requirements_os_ << ";\n";
+}
+if (item_traits::property_search (a_item, item_traits::butter_ldflags_name, property_value_))
+{
+  Result = true;
+  requirements_os_ << "LINKLIBS += \"" << property_value_ << "\" ;\n";
+}
+if (item_traits::property_search (a_item, item_traits::butter_flags_name, property_value_))
+{
+  Result = true;
+  requirements_os_ << "C++FLAGS += \"" << property_value_ << "\" ;\n";
+}
+if (Result)
+{
+  a_reqs = requirements_value_;
+}
+return Result;
+!!!208937.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr) : void
+////////////////////////
+// Initialise state for writing a new target entry
+this->lib_defn_.truncate (0);          // Text for the associated targets
+this->qualified_target_name_ = "<" + item_traits::location (a_target) + ">"; // Will become the full target name
+this->other_target_type_.truncate (0); // Target label for non-standard targets
+this->individual_obj_.truncate (0);    // Definitions for individually build sources
+//////////////////////
+// Start entry
+const QString target_stereo_ (const_cast< UmlArtifact& >(a_target).stereotype ().data ());
+if (target_stereo_ == item_traits::library_stereotype)
+{
+  if (item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_))
+  {
+    if (not a_build_file.isEmpty ())
+    {
+      a_os << "include " << a_build_file << ".jam ;\n\n";
+    }
+    this->qualified_target_name_.append (const_cast< UmlArtifact& >(a_target).name ());
+    a_os << this->other_target_type_ << " " << this->qualified_target_name_  << " :\n\t";
+  }
+  else
+  {
+    this->qualified_target_name_.append ("lib" + const_cast< UmlArtifact& >(a_target).name () + "$(SUFLIB)");
+    if (not a_compiler.isEmpty ())
+    {
+      a_os << "LINK on " << this->qualified_target_name_ << " = $(" <<  a_compiler << ") ;\n\n";
+    }
+    a_os << "Library " << this->qualified_target_name_  << " :\n\t";
+  }
+}
+else if (target_stereo_ == item_traits::executable_stereotype)
+{
+  this->qualified_target_name_.append (const_cast< UmlArtifact& >(a_target).name () + "$(SUFEXE)");
+  if (not a_compiler.isEmpty ())
+  {
+    a_os << "LINK on " << this->qualified_target_name_ << " = $(" <<  a_compiler << ") ;\n\n";
+  }
+  a_os << "Main " << this->qualified_target_name_ << " :\n\t";
+}

@@ -20,13 +20,13 @@ return Result;
 BUTTER_REQUIRE (NULL != style_.get (), "Programming error, attempt to get style before it was set.");
 return *style_.get ();
 !!!196777.cpp!!!	set_style(in a_style : unistr = QString()) : void
-if (a_style == butter::jam_writer::section_name)
+if (a_style == butter::bjam_writer::section_name)
 {
-  style_.reset (new style (butter::jam_writer::comment_string
-                     , butter::jam_writer::end_phrase
-                     , butter::jam_writer::start_phrase
-                     , &butter::jam_writer::create));
-  log::com.trace (log::info, "<p>Using style <b>Standard Jam</b></p>");
+  style_.reset (new style (butter::bjam_writer::comment_string
+                     , butter::bjam_writer::end_phrase
+                     , butter::bjam_writer::start_phrase
+                     , &butter::bjam_writer::create));
+  log::com.trace (log::info, "<p>Using style <b>Boost Jam</b></p>");
 }
 else if (a_style == butter::gmake_writer::section_name)
 {
@@ -38,34 +38,35 @@ else if (a_style == butter::gmake_writer::section_name)
 }
 else
 {
-  if (a_style != butter::bjam_writer::section_name)
+  if (a_style != butter::jam_writer::section_name)
   {
     QString msg_;
-    QTextOStream msg_os_ (&msg_);
-    if (a_style.isEmpty ())
     {
-      msg_os_ << "<p>No style set out of (";
+      QTextOStream msg_os_ (&msg_);
+      if (a_style.isEmpty ())
+      {
+        msg_os_ << "<p>No style set out of (";
+      }
+      else
+      {
+        msg_os_ << "<p><b>Warning</b> Style \"<b>" << a_style << "</b>\" does not match unrecognised (";
+      }
+      msg_os_ << butter::bjam_writer::section_name;
+      msg_os_ << "|" << butter::jam_writer::section_name;
+      msg_os_ << "|" << butter::gmake_writer::section_name;
+      msg_os_ << "), using <i>standard jam</i> as default</p>";
     }
-    else
-    {
-      msg_os_ << "<p><b>Warning</b> Style \"<b>" << a_style << "</b>\" does not match unrecognised (";
-    }
-    msg_os_ << butter::bjam_writer::section_name;
-    msg_os_ << "|" << butter::jam_writer::section_name;
-    msg_os_ << "|" << butter::gmake_writer::section_name;
-    msg_os_ << "), using <i>boost jam</i> as default</p>";
     log::com.trace (log::warn, msg_);
   }
   else
   {
-    log::com.trace (log::info, "<p>Using style <b>Boost Jam</b></p>");
+    log::com.trace (log::info, "<p>Using style <b>Standard Jam</b></p>");
   }
-  style_.reset (new style (butter::bjam_writer::comment_string
-                     , butter::bjam_writer::end_phrase
-                     , butter::bjam_writer::start_phrase
-                     , &butter::bjam_writer::create));
+  style_.reset (new style (butter::jam_writer::comment_string
+                     , butter::jam_writer::end_phrase
+                     , butter::jam_writer::start_phrase
+                     , &butter::jam_writer::create));
 }
-BUTTER_ENSURE (NULL != style_.get (), "<p><b>Fatal error </b>Set style failed.</p>");
 !!!198185.cpp!!!	style(in a_comment : unistr, in a_end : unistr, in a_start : unistr, in a_factory : write_factory_fn_t)
 : comment_string (a_comment)
 , end_phrase (a_end)

@@ -26,17 +26,17 @@ relationcanvas 129065 relation_ref 162089 // <generalisation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129449 relation_ref 162217 // <realization>
-  from ref 128169 z 2007 label "<derived->bjam_writer>" xyz 126 364 2007 to ref 128937
+  from ref 128169 z 2007 label "<derived->bjam_writer>" xyz 126 343 2007 to ref 128937
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129577 relation_ref 163113 // <realization>
-  from ref 128681 z 2007 label "<derived->jam_writer>" xyz 283 384 2007 to ref 128937
+  from ref 128681 z 2007 label "<derived->jam_writer>" xyz 279 366 2007 to ref 128937
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129705 relation_ref 163241 // <realization>
-  from ref 128425 z 2007 label "<derived->gmake_writer>" xyz 196 313 2007 to ref 128937
+  from ref 128425 z 2007 label "<derived->gmake_writer>" xyz 193 302 2007 to ref 128937
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

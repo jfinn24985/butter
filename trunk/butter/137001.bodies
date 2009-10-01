@@ -70,16 +70,13 @@ if (not item_->propertyValue (key_, value_))
   while (UmlBasePackage::getProject () != item_)
   {
     item_ = item_->parent ();
-    if (NULL == item_)
-    {
-      return false;
-    }
     if (item_->propertyValue (key_, value_))
     {
       a_value = value_;
       return true;
     }
   }
+  return false;
 }
 // Property found
 a_value = value_;

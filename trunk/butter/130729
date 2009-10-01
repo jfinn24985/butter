@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 51
+  revision 55
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -757,8 +757,12 @@ project directory.
     artifact 128042 "todo"
       comment "List of TODOs
 
-* Allow the user to reorder the target sequence, perhaps by moving the sections in a build-file description.
-Currently the sections are reordered to the \"original\" order each time butter is run."
+* Validate new \"create_system\"
+* Document limitations (bjam and linking)
+
+DONE
+
+"
     end
 
     artifact 155945 "local.jam"
@@ -825,14 +829,14 @@ path-constant MANNDIR : $(MANDIR)/mann ;
 | Basic shared library                      |  9  | na  |   9   |*
 | External library                          |  9  |  9  |   9   |*
 | Non-standard target                       |  9  |  9  |   9   |*
-| Document as non-C++ source                |  9  |  9  |   9   |
+| Document as non-C++ source                |  9  |  9  |   9   |*
 | UML object property inclusion |||
-| butter build-dir  : project               |  9  | ni  |  ni   |*
+| butter build-dir  : project               |  9  |  9  |  ni   |*
 | butter base       : project               |  9  |  9  |   9   |*
 | butter buildfile  : library               |  9  |  9  |   9   |*(other,external)
-| butter compiler   : document              |  a  |  a  |   9   |*
-|                   : executable            | xx  | xx  |   9   |*
-|                   : library               | xx  | xx  |   9   |*
+| butter compiler   : document              |  9a |  9a |   9   |*
+|                   : executable            | xx  |  9  |   9   |*
+|                   : library               | xx  |  9  |   9   |*
 | butter flags      : project               |  9  |  9  |   9   |*
 |                   : executable            |  9  |  9  |   9   |*
 |                   : library               |  9  |  9  |   9   |*
