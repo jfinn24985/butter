@@ -136,7 +136,7 @@ while (not location_stack_.isEmpty ())
                         find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, static_cast< derived* >(this)->section_name, true); // Pass link flags to target
                         QString basename_ (current_art_->name ());
                         const int dot_ (basename_.findRev ('.'));
-                        if (-1 == dot_) basename_.truncate (dot_);
+                        if (-1 != dot_) basename_.truncate (dot_);
                         static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
                                             , current_art_->name ()
                                             , basename_

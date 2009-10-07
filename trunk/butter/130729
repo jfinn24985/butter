@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 55
+  revision 56
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -822,44 +822,52 @@ path-constant MANNDIR : $(MANDIR)/mann ;
 | Build system creation |||
 | Single directory, single target project   |  9  |  9  |   9   |
 | Single directory, multiple target project |  9  |  9  |   9   |
-| Multiple directory and target project     |  9  |  9  |   9   |
+| Multiple directory and target project     |  9  | 12  |   9   |
+| Variant default (debug)                   |  9  | 12  |   9   |
+| Variant release (optimised)               |  9  |  9  |   9   |
+| Variant install                           |  9  | 12  |   9   |
 | Target inclusion |||
-| Basic executable                          |  9  |  9  |   9   |*
-| Basic static library                      |  9  |  9  |   9   |*
+| Basic executable                          |  9  | 12  |   9   |*
+| Basic static library                      |  9  | 12  |   9   |*
 | Basic shared library                      |  9  | na  |   9   |*
 | External library                          |  9  |  9  |   9   |*
-| Non-standard target                       |  9  |  9  |   9   |*
-| Document as non-C++ source                |  9  |  9  |   9   |*
+| Non-standard target                       |  9  | 12  |   9   |*
+| Document as non-C++ source                |  9  | 12  |   9   |*
 | UML object property inclusion |||
-| butter build-dir  : project               |  9  |  9  |  ni   |*
-| butter base       : project               |  9  |  9  |   9   |*
-| butter buildfile  : library               |  9  |  9  |   9   |*(other,external)
-| butter compiler   : document              |  9a |  9a |   9   |*
-|                   : executable            | xx  |  9  |   9   |*
+| butter build-dir  : project               |  9  | 12  |  ni   |*
+| butter base       : project               |  9  | 12  |   9   |*
+| butter buildfile  : library               |  9  | 12  |   9   |*(other)
+|                   : library               |  9  |  9  |   9   |*(external)
+| butter compiler   : document              |  9a | 12  |   9   |*
+|                   : executable            | xx  | 12  |   9   |*
 |                   : library               | xx  |  9  |   9   |*
-| butter flags      : project               |  9  |  9  |   9   |*
-|                   : executable            |  9  |  9  |   9   |*
-|                   : library               |  9  |  9  |   9   |*
-|                   : source                |  9  |  9  |   9   |*
-|                   : document              |  9  |  9  |   9   |*
-| butter include    : project               |  9  |  9  |   9   |*
-|                   : executable            |  9  |  9  |   9   |*
-|                   : library               |  9  |  9  |   9   |*
-|                   : source                |  9  |  9  |   9   |*
-|                   : document              |  9  |  9  |   9   |*
-| butter install    : executable, library   |  9  |  9  |   9   |*
+| butter flags      : project               |  9  | 12  |   9   |*
+|                   : executable            |  9  | 12  |   9   |*
+|                   : library               |  9  | 12  |   9   |*
+|                   : source                |  9  | 12  |   9   |*
+|                   : document              |  9  | 12  |   9   |*
+| butter include    : project               |  9  | 12  |   9   |*
+|                   : executable            |  9  | 12  |   9   |*
+|                   : library               |  9  | 12  |   9   |*
+|                   : source                |  9  | 12  |   9   |*
+|                   : document              |  9  | 12  |   9   |*
+| butter install    : executable, library   |  9  | 12  |   9   |*
 |                   : document              |     |     |       |
-| butter ldflags    : project               |  9  |  9  |   9   |*
-|                   : executable, library   |  9  |  9  |   9   |*
-|                   : source                |  9  |  9  |   9   |*
-|                   : document              |  9  |  9  |   9   |*
-| butter log-level  : project               |  9  |  9  |   9   |*
-| butter other      : library               |  9  |  9  |   9   |*
+| butter ldflags    : project               |  9  | 12  |   9   |*
+|                   : executable            |  9  | 12  |   9   |*
+|                   : library               |  9  | 12  |   9   |*
+|                   : source                |  9  | 12  |   9   |*
+|                   : document              |  9  | 12  |   9   |*
+| butter log-level  : project               |  9  | 12  |   9   |*
+| butter other      : library               |  9  | 12  |   9   |*
 | butter project    : library               |  9  |  9  |   9   |*
-| butter style      : project               |  9  |  9  |   9   |*
-| butter type       : library               |  9  | na  |   9   |*
-|                   : project, package      |  9  | na  |   9   |*
-| butter version    : project               |  9  |  9  |   9   |*
+| butter style      : project               |  9  | 12  |   9   |*
+| butter type       : library               |  9  | ni  |   9   |*
+|                   : project, package      |  9  | ni  |   9   |*
+| butter version    : project               |  9  | 12  |   9   |*
+
+ni - not-implemented. A feature that is currently not implemented in a build system
+xx - indicates a feature that was mapped to the build system but was not effective
 
 | UML object description inclusion |||
 | Build file merging |||

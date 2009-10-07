@@ -8,12 +8,26 @@ if (item_traits::property_value (a_target, item_traits::butter_project_name, pro
 }
 else
 {
-  QString defn_;
   {
-    QTextOStream os_ (&defn_);
-    os_ << "<" << item_traits::location (a_target) << ">lib" << const_cast< UmlArtifact& >(a_target).name () << "$(SUFLIB)\n\t";
+    QString defn_;
+    {
+      QTextOStream os_ (&defn_);
+      os_ << " <" << item_traits::location (a_target) << ">lib" << const_cast< UmlArtifact& >(a_target).name () << "$(SUFLIB) \n\t";
+    }
+    this->lib_defn_.append (defn_);
   }
-  this->lib_defn_.append (defn_);
+  QString libtype_; // Add LOC_TARGETLIBS variable for static libraries
+  if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, libtype_)
+      and libtype_ == item_traits::static_value)
+  {
+    QString defn_;
+    {
+      QTextOStream os_ (&defn_);
+      os_ << " $(" << item_traits::location (a_target).upper () << "_"
+          << const_cast< UmlArtifact& >(a_target).name ().upper () << "LIBS) ";
+    }
+    a_ldflags.append (defn_);
+  }
 }
 !!!209193.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 ///////////////////////////
@@ -22,7 +36,7 @@ QString source_;
 QTextOStream source_os_ (&source_);
 if (not a_src_inc.isEmpty ())
 {
-  source_os_ << "HDR on <" << item_traits::location (a_target) << ">"
+  source_os_ << "HDRS on <" << item_traits::location (a_target) << ">"
               << a_basename << "$(SUFOBJ) += " << a_src_inc << " ;\n";
 }
 if (not a_src_flags.isEmpty ())
@@ -30,9 +44,14 @@ if (not a_src_flags.isEmpty ())
   QString comp_ ("C++");
   BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, comp_) or not a_isdoc
                 , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
-                                + "' property on " + QString (a_filename)).ascii ()));
+                                + "' property on " + item_traits::location (a_target) + "/" + a_filename).ascii ()));
   source_os_ << comp_ << "FLAGS on <" << item_traits::location (a_target) << ">"
-              << a_basename << "$(SUFOBJ) += " << a_src_flags << " ;\n";
+              << a_basename << "$(SUFOBJ) ";
+  if (a_isdoc) // Need to handle non-C++ cases differently - this is sort of a bug in jam!
+    source_os_ << "= $("  << comp_ << "FLAGS) ";
+  else
+    source_os_ << "+= ";
+  source_os_ << a_src_flags << " ;\n";
 }
 if (not source_.isEmpty ())
 {
@@ -84,18 +103,24 @@ if (NULL != a_loc.parent ())
 // End target assoication entry
 a_os << ";\n\n";
 
-///////////////
-// Handle non-std linkers
-if (not a_compiler.isEmpty ())
-{
-  a_os << "LINK on " << this->qualified_target_name_ << " = " << a_compiler << " ;\n";
-}
-
 //////////////
 // Set up includes, libs etc.
 if (not a_ldflags.isEmpty ())
 {
-  a_os << "LINKLIBS on " << this->qualified_target_name_ << " += " << a_ldflags << " ;\n";
+  // Create a named variable for static libraries else "LINKLIB on " defn
+  QString libtype_;
+  if (const_cast< UmlArtifact& >(a_target).stereotype ().data () == item_traits::library_stereotype
+      and item_traits::property_search (a_target, item_traits::butter_lib_type_name, libtype_)
+      and libtype_ == item_traits::static_value)
+  {
+    a_os << item_traits::location (a_target).upper () << "_"
+         <<  const_cast< UmlArtifact& >(a_target).name ().upper () << "LIBS = "
+         << a_ldflags << " ;\n";
+  }
+  else
+  {
+    a_os << "LINKLIBS on " << this->qualified_target_name_ << " += " << a_ldflags << " ;\n";
+  }
 }
 if (not this->lib_defn_.isEmpty ())
 {
@@ -244,7 +269,7 @@ if (item_traits::property_value (a_item, item_traits::butter_include_name, prope
 if (item_traits::property_search (a_item, item_traits::butter_ldflags_name, property_value_))
 {
   Result = true;
-  requirements_os_ << "LINKLIBS += \"" << property_value_ << "\" ;\n";
+  requirements_os_ << "LINKFLAGS += \"" << property_value_ << "\" ;\n";
 }
 if (item_traits::property_search (a_item, item_traits::butter_flags_name, property_value_))
 {

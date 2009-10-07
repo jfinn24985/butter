@@ -85,8 +85,9 @@ QString user_extra_;
     user_obj_ << a_basename << ".o: " << a_filename << " ";
     if (not a_isdoc)
     { // Add dependencies for C++ source documents
-      user_obj_ << a_basename << ".d\n";
+      user_obj_ << a_basename << ".d";
     }
+    user_obj_ << "\n";
     user_obj_ << "\t$(" << comp_ << ") $(USERHDRS) ";
     if (not a_src_inc.isEmpty ())
     {
@@ -114,7 +115,7 @@ desc_os_ << "include $(ROOTDIR)/" << rules_name << "\n\n";
 // Keep parent dir definitions.
 if (NULL != a_loc.parent ())
 {
-  desc_os_ << "LOCALFLAGS:=$(USERFLAGS)\nLOCALLDFLAGS:=$(USERLDFLAGS)\n\n";
+  desc_os_ << "LOCALHDRS:=$(USERHDRS)\nLOCALFLAGS:=$(USERFLAGS)\nLOCALLDFLAGS:=$(USERLDFLAGS)\n\n";
 
   // Add us to base makefile
   QString & link_ (a_sys.target (a_loc.path ()).second);
@@ -145,13 +146,9 @@ if (this->other_target_type_.isEmpty ())
     }
   }
   a_os << "\n";
-  if (not a_include.isEmpty () or not a_cflags.isEmpty () or not is_static_)
+  if (not a_cflags.isEmpty () or not is_static_)
   {
     a_os << "USERFLAGS := $(LOCALFLAGS)";
-    if (not a_include.isEmpty ())
-    {
-      a_os << " " << process_hdrs (a_include);
-    }
     if (not a_cflags.isEmpty ())
     {
       a_os << " " << a_cflags;
@@ -161,6 +158,10 @@ if (this->other_target_type_.isEmpty ())
       a_os << " $(SHRFLAGS)";
     }
     a_os << "\n";
+  }
+  if (not a_include.isEmpty ())
+  {
+    a_os << "USERHDRS := $(LOCALHDRS) " << process_hdrs (a_include) << "\n";
   }
   // Add dependency information
   a_os << target_NAME_ << "_DINC := $(filter %.d, $(" << target_NAME_ << "SRC:." << CppSettings::sourceExtension () << "=.d))"
