@@ -4,18 +4,15 @@ class build_writer
 QString value_;
 if (item_traits::property_value (a_item, item_traits::butter_flags_name, value_))
 {
-  if (not a_flag.isEmpty ()) { a_flag.append (" "); }
-  a_flag.append (value_);
+  merge_string_list (a_flag, value_);
 }
 if (item_traits::property_value (a_item, item_traits::butter_ldflags_name, value_))
 {
-  if (not a_link.isEmpty ()) { a_link.append (" "); }
-  a_link.append (value_);
+  merge_string_list (a_link, value_);
 }
 if (item_traits::property_value (a_item, item_traits::butter_include_name, value_))
 {
-  if (not a_hdr.isEmpty ()) { a_hdr.append (" "); }
-  a_hdr.append (value_);
+  merge_string_list (a_hdr, value_);
 }
 // For non-documents any data from the description.
 if (a_not_doc)
@@ -39,18 +36,15 @@ if (a_not_doc)
         int length_;
         if (-1 != hdr_re_.match (line_, 0, &length_))
         {
-          if (not a_hdr.isEmpty ()) { a_hdr.append (" "); }
-          a_hdr.append (line_.mid (length_));
+          merge_string_list (a_hdr, line_.mid (length_));
         }
         else if (-1 != link_re_.match (line_, 0, &length_))
         {
-          if (not a_link.isEmpty ()) { a_link.append (" "); }
-          a_link.append (line_.mid (length_));
+          merge_string_list (a_link, line_.mid (length_));
         }
         else if (-1 != flag_re_.match (line_, 0, &length_))
         {
-          if (not a_flag.isEmpty ()) { a_flag.append (" "); }
-          a_flag.append (line_.mid (length_));
+          merge_string_list (a_flag, line_.mid (length_));
         }
       }
     }
@@ -84,6 +78,37 @@ if (NULL == Result.get ())
   Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
 }
 return Result;
+!!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
+if (a_list.isEmpty ())
+{
+  a_list = a_addition;
+}
+else if (not a_list.contains (a_addition))
+{
+  // a_addition is not a subset of a_list
+  if (a_addition.contains (a_list))
+  {
+    // a_list is a subset of a_addition, swap.
+    a_list = a_addition;
+  }
+  else
+  {
+    // contents do not overlap, split and compare
+    QRegExp split_re_ ("(\\s+)");
+    QStringList list_1_ (QStringList::split (split_re_, a_list, false));
+    QStringList list_2_ (QStringList::split (split_re_, a_addition, false));
+    int l_counter (0); // Guard counter.
+    for (QStringList::Iterator cursor_ = list_2_.begin(); cursor_ != list_2_.end(); ++cursor_,  ++l_counter)
+    {
+      if (0 == list_1_.contains (*cursor_))
+      {
+         list_1_ += *cursor_;
+      }
+      if (l_counter >= 100) throw std::runtime_error ("merge_string_list loop counter > 100");
+    }
+    a_list = list_1_.join (" ");
+  }
+}
 !!!192425.cpp!!!	section(in a_section : unistr, in a_desc : unistr) : unistr
 static const QString marker_start_ ("${" + item_traits::section_prefix);
 const QString marker_phrase_ (marker_start_ + a_section + "}");

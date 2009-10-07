@@ -45,6 +45,22 @@ else
     // Is a static library
     //
     lib_os_ << "$(SUFLIB) ";
+    //////////////////////
+    // We need to get ldflags from static library's sources
+    QPtrVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(a_target).associatedArtifacts ());
+    for (unsigned int i_ = 0; i_ < assoc_arts_.size (); ++i_)
+    {
+      const QString stereotype_ (assoc_arts_[i_]->stereotype ().data ());
+      if (stereotype_ == item_traits::library_stereotype
+          or stereotype_ == item_traits::source_stereotype)
+      {
+        QString ldflags_;
+        if (item_traits::property_value (*assoc_arts_[i_], item_traits::butter_ldflags_name, ldflags_))
+        {
+          merge_string_list (a_ldflags, ldflags_);
+        }
+      }
+    }
   }
   // Both static/shared add include and link flags, ignore cflags
   QString src_flags_;
@@ -125,12 +141,34 @@ if (NULL != a_loc.parent ())
 }
 a_art.preamble.second.append (tmp_);
 
-!!!210985.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr) : void
+!!!210985.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////////////////////
 // Finalise target build instructions
 //
 a_os << "\n";
-if (this->other_target_type_.isEmpty ())
+if (a_type == other)
+{
+  ////////////////
+  // Handle "other" library types specially.
+  QString other_type_ (this->other_target_type_.upper ());
+  other_type_.replace ('-', "_");
+  a_os << this->qualified_target_name_ << " : $(" << this->target_NAME_ << "SRC) " << this->lib_set_ << "\n"
+        << "\t$(" << other_type_ << ") ";
+  if (not a_include.isEmpty ())
+  {
+    a_os << process_hdrs (a_include) << " ";
+  }
+  if (not a_cflags.isEmpty ())
+  {
+    a_os << a_cflags << " ";
+  }
+  if (not a_ldflags.isEmpty ())
+  {
+    a_os << a_ldflags << " ";
+  }
+  a_os << "$(" << other_type_ << "FLAGS) " << this->qualified_target_name_ << " $(" << this->target_NAME_ << "SRC)\n\n";
+}
+else
 {
   // Create linker and compiler flagsets
   a_os << target_NAME_ << "LDFLAGS := $(LOCALLDFLAGS)";
@@ -146,14 +184,14 @@ if (this->other_target_type_.isEmpty ())
     }
   }
   a_os << "\n";
-  if (not a_cflags.isEmpty () or not is_static_)
+  if (not a_cflags.isEmpty () or a_type != static_library)
   {
     a_os << "USERFLAGS := $(LOCALFLAGS)";
     if (not a_cflags.isEmpty ())
     {
       a_os << " " << a_cflags;
     }
-    if (not is_static_)
+    if (a_type != static_library)
     {
       a_os << " $(SHRFLAGS)";
     }
@@ -180,29 +218,29 @@ if (this->other_target_type_.isEmpty ())
   {
     a_compiler = "CCC";
   }
-  if (const_cast< UmlArtifact& >(a_target).stereotype ().data () == item_traits::executable_stereotype)
+  switch (a_type)
   {
-    a_os << this->qualified_target_name_
-            << " : $(" << this->target_NAME_ << "_OBJ) $("
-                        << this->target_NAME_ << "_DINC) "
-            << this->lib_set_ << "\n"
-            << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) -o " << this->qualified_target_name_
-              << " $(" << this->target_NAME_ << "_OBJ)"
-              << " $(" << this->target_NAME_ << "LDFLAGS) $(LDFLAGS)\n\n";
-  }
-  else
-  {
-    if (is_static_)
+  case executable:
     {
       a_os << this->qualified_target_name_
               << " : $(" << this->target_NAME_ << "_OBJ) $("
                           << this->target_NAME_ << "_DINC) "
-              << this->lib_set_ << "\n";
-      a_os << "\t$(AR) $(ARFLAGS) " << this->qualified_target_name_
+                          << this->lib_set_ << "\n"
+              << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) -o " << this->qualified_target_name_
                 << " $(" << this->target_NAME_ << "_OBJ)"
-                << " $(" << this->target_NAME_ << "LDFLAGS)\n\n";
+                << " $(" << this->target_NAME_ << "LDFLAGS) $(LDFLAGS)\n";
     }
-    else
+    break;
+  case static_library:
+    {
+      a_os << this->qualified_target_name_
+              << " : $(" << this->target_NAME_ << "_OBJ) $("
+                          << this->target_NAME_ << "_DINC)\n";
+      a_os << "\t$(AR) $(ARFLAGS) " << this->qualified_target_name_
+                << " $(" << this->target_NAME_ << "_OBJ)\n";
+    }
+    break;
+  case shared_library:
     {
       a_os << this->qualified_target_name_
               << " : $(" << this->target_NAME_ << "_OBJ) $("
@@ -211,34 +249,15 @@ if (this->other_target_type_.isEmpty ())
       a_os << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) $(SHRXFLAGS)" << this->qualified_target_name_
                 << " -o " << this->qualified_target_name_
                 << " $(" << this->target_NAME_ << "_OBJ)"
-                << " $(" << this->target_NAME_ << "LDFLAGS) $(LDFLAGS)\n\n";
+                << " $(" << this->target_NAME_ << "LDFLAGS) $(LDFLAGS)\n";
     }
+    break;
+  case other: // Can not get here.
+    break;
   }
-}
-else
-{
-  ////////////////
-  // Handle "other" library types specially.
-  QString other_type_ (this->other_target_type_.upper ());
-  other_type_.replace ('-', "_");
-  a_os << this->qualified_target_name_ << " : $(" << this->target_NAME_ << "SRC) " << this->lib_set_ << "\n"
-        << "\t$(" << other_type_ << ") ";
-  if (not a_include.isEmpty ())
-  {
-    a_os << process_hdrs (a_include) << " ";
-  }
-  if (not a_cflags.isEmpty ())
-  {
-    a_os << a_cflags << " ";
-  }
-  if (not a_ldflags.isEmpty ())
-  {
-    a_os << a_ldflags << " ";
-  }
-  a_os << "$(" << other_type_ << "FLAGS) " << this->qualified_target_name_ << " $(" << this->target_NAME_ << "SRC)\n\n";
 }
 
-a_os << "all :: " << this->qualified_target_name_ << "\n";
+a_os << "\nall :: " << this->qualified_target_name_ << "\n";
 a_os << "TARGETS := $(TARGETS) " << this->qualified_target_name_ << "\n\n";
 !!!160809.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void
 // The include dir is the difference between the current fullpath and the
@@ -324,12 +343,11 @@ if (Result)
   a_reqs = l_section;
 }
 return Result;
-!!!210601.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr) : void
+!!!210601.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = const_cast< UmlArtifact& >(a_target).name ();
 this->target_NAME_ = this->qualified_target_name_.upper ().remove ('.');
-this->is_static_ = true;
 this->other_target_type_.truncate (0);    // An "other" target type.
 this->lib_set_.truncate (0);              // Set of included libraries
 this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled
@@ -338,32 +356,35 @@ this->individual_obj_.truncate (0);       // Set of sources that need to be indi
 //
 // a_target must be executable or library stereotype!
 //
-if (const_cast< UmlArtifact& >(a_target).stereotype ().data () == item_traits::library_stereotype)
+switch (a_type)
 {
-  // Handle target specific include file
+case executable:
+  {
+    this->qualified_target_name_.append ("$(SUFEXE)");
+  }
+  break;
+case static_library:
+  this->qualified_target_name_.prepend ("lib");
+  this->qualified_target_name_.append ("$(SUFLIB)");
+  break;
+case shared_library:
+  this->qualified_target_name_.prepend ("lib");
+  this->qualified_target_name_.append ("$(SUFSHR)");
+  break;
+case other:
+  item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_);
+  break;
+}
+
+// Handle target specific include file for library types only
+if (a_type != executable)
+{
   if (not a_build_file.isEmpty ())
   {
     a_os << "include $(ROOTDIR)/" << a_build_file << ".make\n\n";
   }
-  QString lib_stat_or_shar_;
-  if (not item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_))
-  {
-    this->qualified_target_name_.prepend ("lib");
-    if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, lib_stat_or_shar_) and item_traits::shared_value == lib_stat_or_shar_)
-    {
-      this->qualified_target_name_.append ("$(SUFSHR)");
-      this->is_static_ = false;
-    }
-    else
-    {
-      this->qualified_target_name_.append ("$(SUFLIB)");
-    }
-  }
 }
-else
-{
-  this->qualified_target_name_.append ("$(SUFEXE)");
-}
+
 //////////////////
 // Start the source file associations
 a_os << this->target_NAME_ << "SRC := ";

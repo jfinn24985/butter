@@ -98,7 +98,7 @@ if (NULL != a_loc.parent ())
   // Add definition to top-level
   a_sys.close.second.append ("SubInclude TOP" + dir_line_ + " ;\n");
 }
-!!!209321.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr) : void
+!!!209321.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////
 // End target assoication entry
 a_os << ";\n\n";
@@ -109,9 +109,7 @@ if (not a_ldflags.isEmpty ())
 {
   // Create a named variable for static libraries else "LINKLIB on " defn
   QString libtype_;
-  if (const_cast< UmlArtifact& >(a_target).stereotype ().data () == item_traits::library_stereotype
-      and item_traits::property_search (a_target, item_traits::butter_lib_type_name, libtype_)
-      and libtype_ == item_traits::static_value)
+  if (a_type == static_library)
   {
     a_os << item_traits::location (a_target).upper () << "_"
          <<  const_cast< UmlArtifact& >(a_target).name ().upper () << "LIBS = "
@@ -122,24 +120,13 @@ if (not a_ldflags.isEmpty ())
     a_os << "LINKLIBS on " << this->qualified_target_name_ << " += " << a_ldflags << " ;\n";
   }
 }
+
 if (not this->lib_defn_.isEmpty ())
 {
   a_os << "LinkLibraries " << this->qualified_target_name_ << " :\n\t" << this->lib_defn_ << ";\n";
 }
 
-if (this->other_target_type_.isEmpty ())
-{
-  // Headers and compile flags are set directory wide for standard targets.
-  if (not a_include.isEmpty ())
-  {
-    merge_headers (a_include);
-  }
-  if (not a_cflags.isEmpty ())
-  {
-    merge_flags (a_cflags);
-  }
-}
-else
+if (a_type == other)
 {
   // Handle flags on non-standard targets differently.
   if (not a_include.isEmpty ())
@@ -149,6 +136,18 @@ else
   if (not a_cflags.isEmpty ())
   {
     a_os << this->other_target_type_.upper () << "FLAGS on " << this->qualified_target_name_ << " += " << a_cflags << " ;\n";
+  }
+}
+else
+{
+  // Headers and compile flags are set directory wide for standard targets.
+  if (not a_include.isEmpty ())
+  {
+    merge_headers (a_include);
+  }
+  if (not a_cflags.isEmpty ())
+  {
+    merge_flags (a_cflags);
   }
 }
 a_os << "\n";
@@ -219,37 +218,6 @@ else
   a_os << this->qualified_target_name_;
 }
 a_os << " ;\n";
-!!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
-if (a_list.isEmpty ())
-{
-  a_list = a_addition;
-}
-else if (not a_list.contains (a_addition))
-{
-  // a_addition is not a subset of a_list
-  if (a_addition.contains (a_list))
-  {
-    // a_list is a subset of a_addition, swap.
-    a_list = a_addition;
-  }
-  else
-  {
-    // contents do not overlap, split and compare
-    QRegExp l_splitter ("(\\S*\"[^\"]+\"\\S*|\\S+)");
-    QStringList l_list1 (QStringList::split (l_splitter, a_list, false));
-    QStringList l_list2 (QStringList::split (l_splitter, a_addition, false));
-    int l_counter (0); // Guard counter.
-    for (QStringList::Iterator l_cursor = l_list2.begin(); l_cursor != l_list2.end(); ++l_cursor,  ++l_counter)
-    {
-      if (0 == l_list1.contains (*l_cursor))
-      {
-         l_list1 += *l_cursor;
-      }
-      if (l_counter >= 100) throw "merge_string_list loop counter > 100";
-    }
-    a_list = l_list1.join (" ");
-  }
-}
 !!!155817.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr) : bool
 bool Result (false);
 QString property_value_;
@@ -281,7 +249,7 @@ if (Result)
   a_reqs = requirements_value_;
 }
 return Result;
-!!!208937.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr) : void
+!!!208937.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////////////
 // Initialise state for writing a new target entry
 this->lib_defn_.truncate (0);          // Text for the associated targets
@@ -290,11 +258,21 @@ this->other_target_type_.truncate (0); // Target label for non-standard targets
 this->individual_obj_.truncate (0);    // Definitions for individually build sources
 //////////////////////
 // Start entry
-const QString target_stereo_ (const_cast< UmlArtifact& >(a_target).stereotype ().data ());
-if (target_stereo_ == item_traits::library_stereotype)
+switch (a_type)
 {
-  if (item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_))
+case executable:
   {
+    this->qualified_target_name_.append (const_cast< UmlArtifact& >(a_target).name () + "$(SUFEXE)");
+    if (not a_compiler.isEmpty ())
+    {
+      a_os << "LINK on " << this->qualified_target_name_ << " = $(" <<  a_compiler << ") ;\n\n";
+    }
+    a_os << "Main " << this->qualified_target_name_ << " :\n\t";
+  }
+  break;
+case other:
+  {
+    item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_);
     if (not a_build_file.isEmpty ())
     {
       a_os << "include " << a_build_file << ".jam ;\n\n";
@@ -302,7 +280,8 @@ if (target_stereo_ == item_traits::library_stereotype)
     this->qualified_target_name_.append (const_cast< UmlArtifact& >(a_target).name ());
     a_os << this->other_target_type_ << " " << this->qualified_target_name_  << " :\n\t";
   }
-  else
+  break;
+default: // cases static_library (and shared library)
   {
     this->qualified_target_name_.append ("lib" + const_cast< UmlArtifact& >(a_target).name () + "$(SUFLIB)");
     if (not a_compiler.isEmpty ())
@@ -311,13 +290,5 @@ if (target_stereo_ == item_traits::library_stereotype)
     }
     a_os << "Library " << this->qualified_target_name_  << " :\n\t";
   }
-}
-else if (target_stereo_ == item_traits::executable_stereotype)
-{
-  this->qualified_target_name_.append (const_cast< UmlArtifact& >(a_target).name () + "$(SUFEXE)");
-  if (not a_compiler.isEmpty ())
-  {
-    a_os << "LINK on " << this->qualified_target_name_ << " = $(" <<  a_compiler << ") ;\n\n";
-  }
-  a_os << "Main " << this->qualified_target_name_ << " :\n\t";
+  break;
 }

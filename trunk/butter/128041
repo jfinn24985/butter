@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 99
+  revision 100
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -311,17 +311,6 @@ using this string.
 	comment "Set of sources that need to be individually compiled"
       end
 
-      attribute 177577 "other_target_type_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "An \"other\" target library type."
-      end
-
       attribute 135337 "project_name_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -387,7 +376,6 @@ direct and indirect dependencies. "
 	nparams 0
 	cpp_decl "    ${comment}${name}${(}${)}${volatile}
 : individual_obj_ ()
-, other_target_type_ ()
 , project_name_ ()
 {}
 "
@@ -467,16 +455,17 @@ ${body}}
 
       operation 212905 "end_target"
 	private explicit_return_type "void"
-	nparams 6
+	nparams 7
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" explicit_type "ostream"
 	  param in name "a_include" explicit_type "unistr"
 	  param in name "a_ldflags" explicit_type "unistr"
 	  param in name "a_cflags" explicit_type "unistr"
 	  param in name "a_compiler" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${const}${volatile}${abstract};
+	  param in name "a_type" type class_ref 154281 // target_type
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${v6}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -595,14 +584,15 @@ return true if found."
 
       operation 212265 "start_target"
 	private explicit_return_type "void"
-	nparams 4
+	nparams 5
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" explicit_type "ostream"
 	  param in name "a_build_file" explicit_type "unistr"
 	  param in name "a_compiler" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${abstract};
+	  param in name "a_type" type class_ref 154281 // target_type
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${v4}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -740,6 +730,85 @@ ${items}};
 	end
       end
 
+      class 154281 "target_type"
+	visibility protected stereotype "enum"
+	cpp_decl "${comment}enum ${name}
+{
+${items}
+};
+"
+	java_decl "${comment}${public}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl "${comment}${visibility}final class ${name} {
+${items}}
+"
+	python_2_2 python_decl "class ${name}:
+${docstring}${members}
+"
+	idl_decl "${comment}enum ${name} {
+${items}};
+"
+	explicit_switch_type ""
+	
+	comment "Enum of target types"
+	attribute 178857 "executable"
+	  public type class_ref 154281 // target_type
+	  init_value "0"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "Target is an executable"
+	end
+
+	attribute 178985 "static_library"
+	  public type class_ref 154281 // target_type
+	  init_value "1"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "Target is a static library"
+	end
+
+	attribute 179113 "shared_library"
+	  public type class_ref 154281 // target_type
+	  init_value "2"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "Target is a shared library"
+	end
+
+	attribute 179241 "other"
+	  public type class_ref 154281 // target_type
+	  init_value "3"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "Target is an \"other\" library type."
+	end
+      end
+
+      attribute 177577 "other_target_type_"
+	protected explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "An \"other\" target library type."
+      end
+
       operation 191785 "create_system"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 2
@@ -803,6 +872,27 @@ ${body}
 initialise the document.
 
 !!Warning!! returns nul iff a_loc.packages.empty"
+      end
+
+      operation 176681 "merge_string_list"
+	class_operation protected explicit_return_type "void"
+	nparams 2
+	  param inout name "a_list" explicit_type "unistr"
+	  param in name "a_addition" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "The effect of this method is to convert the contents of a_list and a_addition
+into lists of tokens.  These lists are merged, removing duplicate items, and
+the new list is assigned back to a_list. Either list may be empty."
       end
 
       operation 192425 "section"
@@ -1210,6 +1300,14 @@ include"
 	  b parent class_ref 137001 // item_traits
       end
 
+      classrelation 166697 // <dependency>
+	relation 165929 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 166697 // <dependency>
+	  b parent class_ref 151849 // log
+      end
+
       extra_member 130473 "friend writer"
 	
 	cpp "// Make out parent a friend.
@@ -1519,17 +1617,6 @@ using this string.
 	comment "Set of sources that need to be individually compiled"
       end
 
-      attribute 176041 "is_static_"
-	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Indicate if target is a static library."
-      end
-
       attribute 176297 "lib_set_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1539,17 +1626,6 @@ using this string.
 	python_decl ""
 	idl_decl ""
 	comment "Set of included libraries"
-      end
-
-      attribute 176169 "other_target_type_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "An \"other\" target type."
       end
 
       attribute 175785 "qualified_target_name_"
@@ -1687,16 +1763,17 @@ ${body}}
 
       operation 210985 "end_target"
 	private explicit_return_type "void"
-	nparams 6
+	nparams 7
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" explicit_type "ostream"
 	  param in name "a_include" explicit_type "unistr"
 	  param in name "a_ldflags" explicit_type "unistr"
 	  param in name "a_cflags" explicit_type "unistr"
 	  param in name "a_compiler" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${const}${volatile}${abstract};
+	  param in name "a_type" type class_ref 154281 // target_type
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -1732,9 +1809,7 @@ referenced."
 "
 	cpp_def "${inline}${class}::${name}${(}${)}
 : individual_obj_ ()
-, is_static_ ()
 , lib_set_ ()
-, other_target_type_ ()
 , qualified_target_name_ ()
 , root_dir_ ()
 , target_NAME_ ()
@@ -1881,14 +1956,15 @@ return true if found."
 
       operation 210601 "start_target"
 	private explicit_return_type "void"
-	nparams 4
+	nparams 5
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" explicit_type "ostream"
 	  param in name "a_build_file" explicit_type "unistr"
 	  param in name "a_compiler" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${abstract};
+	  param in name "a_type" type class_ref 154281 // target_type
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${v4}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${staticnl}{
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -2976,17 +3052,6 @@ the style for this buildfile type."
 	comment "The set of headers for the currently processing directory."
       end
 
-      attribute 174505 "other_target_type_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Target label for non-standard targets"
-      end
-
       attribute 174377 "qualified_target_name_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -3133,16 +3198,17 @@ to the (almost) complete content."
 
       operation 209321 "end_target"
 	private explicit_return_type "void"
-	nparams 6
+	nparams 7
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" explicit_type "ostream"
 	  param in name "a_include" explicit_type "unistr"
 	  param in name "a_ldflags" explicit_type "unistr"
 	  param in name "a_cflags" explicit_type "unistr"
 	  param in name "a_compiler" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${const}${volatile}${abstract};
+	  param in name "a_type" type class_ref 154281 // target_type
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${v6}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -3246,7 +3312,6 @@ Responsibilites
 , lib_defn_ ()
 , location_flags_ ()
 , location_hdrs_ ()
-, other_target_type_ ()
 , qualified_target_name_ ()
 {}
 "
@@ -3334,27 +3399,6 @@ list may not be empty.
 \\pre not a_includes.empty"
       end
 
-      operation 176681 "merge_string_list"
-	class_operation private explicit_return_type "void"
-	nparams 2
-	  param inout name "a_list" explicit_type "unistr"
-	  param in name "a_addition" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "The effect of this method is to convert the contents of a_list and a_addition
-into lists of tokens.  These lists are merged, removing duplicate items, and
-the new list is assigned back to a_list. Either list may be empty."
-      end
-
       operation 155689 "operator="
 	private return_type class_ref 134697 // jam_writer
 	nparams 1
@@ -3389,14 +3433,15 @@ return true if found."
 
       operation 208937 "start_target"
 	private explicit_return_type "void"
-	nparams 4
+	nparams 5
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" explicit_type "ostream"
 	  param in name "a_build_file" explicit_type "unistr"
 	  param in name "a_compiler" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${abstract};
+	  param in name "a_type" type class_ref 154281 // target_type
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${v4}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -4957,18 +5002,18 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 152489 // build_writer
-	artifact_ref 138793 // item_traits
-	artifact_ref 154025 // main
-	artifact_ref 152233 // style
-	artifact_ref 136361 // jam_writer
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 134057 // qt
-	artifact_ref 150825 // utility
-	artifact_ref 132521 // location
 	artifact_ref 142889 // bouml
 	artifact_ref 152361 // compound_artifact
+	artifact_ref 150825 // utility
+	artifact_ref 152233 // style
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 152489 // build_writer
+	artifact_ref 138793 // item_traits
+	artifact_ref 132521 // location
+	artifact_ref 154025 // main
+	artifact_ref 134057 // qt
+	artifact_ref 136361 // jam_writer
+	artifact_ref 135209 // bjam_writer
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
@@ -4976,93 +5021,93 @@ ${namespace_end}"
     artifact 148393 "butter.plugout"
       stereotype "file"
       associated_artifacts
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 152489 // build_writer
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 7297 // UmlNode
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 4992 // aVisibility
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 138793 // item_traits
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 154025 // main
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 152233 // style
-	artifact_ref 5120 // anItemKind
-	artifact_ref 5633 // UmlClass
-	artifact_ref 7169 // UmlItem
-	artifact_ref 136361 // jam_writer
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 768 // CppSettings
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 4480 // UmlCom
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 4864 // aDirection
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 150825 // utility
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 132521 // location
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 6017 // UmlClassView
 	artifact_ref 5121 // UmlClassItem
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 6016 // CppSettingsCmd
 	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 150825 // utility
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 152233 // style
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 7297 // UmlNode
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 152489 // build_writer
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 4992 // aVisibility
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 7169 // UmlItem
+	artifact_ref 5633 // UmlClass
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 5120 // anItemKind
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 138793 // item_traits
+	artifact_ref 132521 // location
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 154025 // main
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 136361 // jam_writer
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 4480 // UmlCom
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 768 // CppSettings
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 4864 // aDirection
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter/butter.pro"
@@ -5154,9 +5199,6 @@ ${includes}
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 135849 // gmake_writer
       end

@@ -98,6 +98,24 @@ while (not location_stack_.isEmpty ())
                 {
                   QString entry_;           // The target entry
                   {
+                    target_type target_type_ (executable); // The target's type, set to exe then change if library
+                    if (stereotype_label_.contains (item_traits::library_stereotype, false))
+                    {
+                      QString value_;
+                      if (item_traits::property_search (art_item_, item_traits::butter_lib_type_name, value_)
+                            and value_ == item_traits::shared_value)
+                      {
+                        target_type_ = shared_library;
+                      }
+                      else
+                      {
+                        target_type_ = static_library;
+                      }
+                      if (item_traits::property_value (art_item_, item_traits::butter_other_name, value_))
+                      {
+                        target_type_ = other;
+                      }
+                    }
                     QString compiler_, includes_, compflags_, ldflags_;
                     item_traits::property_value (art_item_, item_traits::butter_compiler_name, compiler_);
                     QTextOStream entry_os_ (&entry_);
@@ -106,7 +124,7 @@ while (not location_stack_.isEmpty ())
                     {
                       QString buildfile_;
                       item_traits::property_value (art_item_, item_traits::butter_buildfile_name, buildfile_);
-                      static_cast< derived* >(this)->start_target (art_item_, entry_os_, buildfile_, compiler_);
+                      static_cast< derived* >(this)->start_target (art_item_, entry_os_, buildfile_, compiler_, target_type_);
                     }
                     ///////////////////
                     // Process the associated artifacts
@@ -149,7 +167,7 @@ while (not location_stack_.isEmpty ())
                     // End target
                     find_hdr_link (art_item_, includes_, ldflags_, compflags_, static_cast< derived* >(this)->section_name, false); // Pass link flags to target
                     static_cast< derived* >(this)->end_target (art_item_, entry_os_
-                                            , includes_, ldflags_, compflags_, compiler_);
+                                            , includes_, ldflags_, compflags_, compiler_, target_type_);
                   }
                   if (not entry_.isEmpty ())
                   {
