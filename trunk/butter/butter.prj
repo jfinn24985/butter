@@ -1,6 +1,6 @@
 format 66
 "butter"
-  revision 42
+  revision 43
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/butter/include/"
 
@@ -56,10 +56,9 @@ The C++ root directory should point to an include directory one level higher
 than the project directory.  Eg if you want the project directort to be /tmp/butter
 then C++ root directory should be /tmp/butter/include (its current setting!)
 
-Project documentation is in Build/config/README.t2t. The 'butter' plugout
-will write this document into the project's base directory.
-
-"
+Project documentation is in Build/config/README.t2t. The 'butter' plugout,
+once made, can be used to create a build-system that converts this to HTML if
+you have the txt2tags program installed."
   package_ref 130729 // Build
 
   package_ref 256 // API BASE
