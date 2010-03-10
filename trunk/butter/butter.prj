@@ -1,6 +1,6 @@
 format 66
 "butter"
-  revision 43
+  revision 44
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/butter/include/"
 
@@ -53,7 +53,7 @@ format 66
 butter/butter/butter.plugout
 
 The C++ root directory should point to an include directory one level higher
-than the project directory.  Eg if you want the project directort to be /tmp/butter
+than the project directory.  Eg if you want the project directory to be /tmp/butter
 then C++ root directory should be /tmp/butter/include (its current setting!)
 
 Project documentation is in Build/config/README.t2t. The 'butter' plugout,

@@ -68,13 +68,13 @@ relationcanvas 135337 relation_ref 135337 // <composition>
   from ref 134825 z 1999 stereotype "<<vector>>" xyz 312 101 3000 to point 357 126
   line 135465 z 1999 to point 268 126
   line 135593 z 1999 to ref 134825
-  role_a_pos 304 87 3000 role_b_pos 343 87 3000
-  multiplicity_a_pos 279 87 3000 multiplicity_b_pos 315 87 3000
+  role_a_pos 304 84 3000 role_b_pos 339 84 3000
+  multiplicity_a_pos 279 84 3000 multiplicity_b_pos 312 84 3000
 end
 relationcanvas 135849 relation_ref 135593 // <directional composition>
   from ref 134825 z 1999 stereotype "<<vector>>" xyz 187 -41 3000 to ref 128937
-  role_a_pos 155 42 3000 no_role_b
-  multiplicity_a_pos 155 75 3000 no_multiplicity_b
+  role_a_pos 147 44 3000 no_role_b
+  multiplicity_a_pos 147 74 3000 no_multiplicity_b
 end
 relationcanvas 139177 relation_ref 144425 // <dependency>
   decenter_begin 192

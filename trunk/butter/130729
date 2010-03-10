@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 61
+  revision 62
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -43,10 +43,19 @@ October 2009
 
 =Introduction=
 
-Butter is a //bouml// plug-out for generating a build system for (at the moment) C++ projects. It can 
-produce build systems in three styles: Boost jam, standard jam and gnu make. The generated build 
+Butter is a //bouml// plug-out for generating a build system for (at the moment) C++ //bouml// projects. 
+It can  produce build systems in three styles: Boost jam, standard jam and gnu make. The generated build 
 systems should produce nearly equivalent results (see [limitations #limits]). Optionally you can 
 use target types that are specific to a particular build system style.
+
+== Features ==
++ All build information can be stored within the //bouml// project.
++ Build information can be added onto a source object as well as executables and libraries.
++ All artifacts with the //document// stereotype are written to disk, this can be used for:
+ + Including documentation into a //bouml// project.
+ + Non-C++ source to be included.
++ 
+
 
 == Motivation ==
 
@@ -54,7 +63,7 @@ You can define the build system information within //bouml// but it is difficult
 this into anything.  The //genpro// tool allows one build-target at a time to be created.  The 
 //butter// project takes all the build targets and creates a build system in one go.  One advantage of 
 this approach is build-system [properties #properties] can be specified on sources and targets with 
-these properties being combined usefully in the build-system. For example an //ldflag// property on 
+these properties being combined usefully in the build-system. For example an //ldflags// property on 
 a source artifact of a static library artifact will be automatically be added to any executable 
 artifact that includes the static library.
 
@@ -803,58 +812,11 @@ project directory.
     end
 
     artifact 128042 "todo"
-      comment "List of TODOs
+      comment "List of TODOs and suggested features
 
-* Make and build directory (?)
-* Standard jam and shared libraries (?)
-
-DONE
-
-"
-    end
-
-    artifact 155945 "local.jam"
-      stereotype "document"
-      comment "#
-# local.jam
-#
-# Set constants for installation paths
-path-constant VERSIONDIR : \"butter-1.0\" ;
-path-constant PREFIX : installdir ;
-path-constant EXEC_PREFIX : $(PREFIX) ;
-path-constant BINDIR : $(EXEC_PREFIX)/bin ;
-path-constant SBINDIR : $(EXEC_PREFIX)/sbin ;
-path-constant LIBEXECDIR : $(EXEC_PREFIX)/libexec ;
-path-constant LIBDIR : $(EXEC_PREFIX)/lib ;
-path-constant DATAROOTDIR : $(PREFIX)/share ;
-path-constant DATADIR : $(PREFIX)/share ;
-path-constant SYSCONFDIR : /etc ;
-path-constant SHAREDSTATEDIR : $(PREFIX)/com ;
-path-constant LOCALSTATEDIR : $(PREFIX)/var ;
-path-constant INCLUDEDIR : $(PREFIX)/include ;
-path-constant LOCALEDIR : $(DATAROOTDIR)/locale ;
-path-constant DOCDIR : $(DATAROOTDIR)/doc/$(VERSIONDIR) ;
-path-constant INFODIR : $(DATAROOTDIR)/info ;
-path-constant MANDIR : $(DATAROOTDIR)/man ;
-path-constant HTMLDIR : $(DOCDIR) ;
-path-constant DVIDIR : $(DOCDIR) ;
-path-constant PDFDIR : $(DOCDIR) ;
-path-constant PSDIR : $(DOCDIR) ;
-path-constant MAN1DIR : $(MANDIR)/man1 ;
-path-constant MAN2DIR : $(MANDIR)/man2 ;
-path-constant MAN3DIR : $(MANDIR)/man3 ;
-path-constant MAN4DIR : $(MANDIR)/man4 ;
-path-constant MAN5DIR : $(MANDIR)/man5 ;
-path-constant MAN6DIR : $(MANDIR)/man6 ;
-path-constant MAN7DIR : $(MANDIR)/man7 ;
-path-constant MAN8DIR : $(MANDIR)/man8 ;
-path-constant MANNDIR : $(MANDIR)/mann ;
-###############
-## Editor sugar
-###############
-# Local Variables:
-# mode: makefile
-# End:
+* Standard jam/make and shared libraries:  This version of butter does not
+     include a shared library target for \"jam\" and the \"make\" version is 
+     probably linux/gcc specific.
 
 "
     end
@@ -931,180 +893,6 @@ xx - indicates a feature that is not supported by the build-system
 | Build file not a document                 | 14  |
 | Build file read-only                      | 14  |
 | Unrecognised property                     | 14  |"
-    end
-
-    artifact 158249 "Jamfile"
-      stereotype "document"
-      comment "##START:version
-#Butter project version 1.2
-##END:version
-##START:date
-#Sun Oct 11 17:10:53 2009
-##END:date
-##START:preamble
-BUILDDIR = build ;
-
-SubDir TOP ;
-HDRS += \"include/bouml\" ;
-C++FLAGS += \"-DWITHCPP\" ;
-HDRS += \"include\" ;
-
-##END:preamble
-##START:target README.html
-include t2t.jam ;
-
-t2t <..>README.html :
-	<..>README.t2t
-	;
-
-
-InstallFile $(DOCDIR) : <..>README.html ;
-##END:target README.html
-##START:target qt
-InstallLib $(LIBDIR) :  ;
-##END:target qt
-##START:close
-SubInclude TOP src bouml ;
-SubInclude TOP src butter ;
-##END:close
-"
-    end
-
-    artifact 158377 "Jamrules"
-      stereotype "document"
-      comment "#
-# Default Jamrules
-#
-
-if $(UNIX)      { SUFSHR ?= .so ; }
-else if $(NT)   { SUFSHR ?= .dll ; }
-
-COMP ?= GNU ;
-
-#############################
-##
-##  Default install locations
-## 
-#############################
-VERSIONDIR = \"butter-1.0\" ;
-PREFIX = installdir ;
-EXEC_PREFIX = $(PREFIX) ;
-BINDIR = $(EXEC_PREFIX)/bin ;
-SBINDIR = $(EXEC_PREFIX)/sbin ;
-LIBEXECDIR = $(EXEC_PREFIX)/libexec ;
-LIBDIR = $(EXEC_PREFIX)/lib ;
-DATAROOTDIR = $(PREFIX)/share ;
-DATADIR = $(PREFIX)/share ;
-SYSCONFDIR = /etc ;
-SHAREDSTATEDIR = $(PREFIX)/com ;
-LOCALSTATEDIR = $(PREFIX)/var ;
-INCLUDEDIR = $(PREFIX)/include ;
-LOCALEDIR = $(DATAROOTDIR)/locale ;
-DOCDIR = $(DATAROOTDIR)/doc/$(VERSIONDIR) ;
-INFODIR = $(DATAROOTDIR)/info ;
-MANDIR = $(DATAROOTDIR)/man ;
-HTMLDIR = $(DOCDIR) ;
-DVIDIR = $(DOCDIR) ;
-PDFDIR = $(DOCDIR) ;
-PSDIR = $(DOCDIR) ;
-MAN1DIR = $(MANDIR)/man1 ;
-MAN2DIR = $(MANDIR)/man2 ;
-MAN3DIR = $(MANDIR)/man3 ;
-MAN4DIR = $(MANDIR)/man4 ;
-MAN5DIR = $(MANDIR)/man5 ;
-MAN6DIR = $(MANDIR)/man6 ;
-MAN7DIR = $(MANDIR)/man7 ;
-MAN8DIR = $(MANDIR)/man8 ;
-MANNDIR = $(MANDIR)/mann ;
-
-######################################################
-##
-##  Example definitions for compiler suite (TOOLSETS)
-## 
-######################################################
-switch $(COMP)
-{
-case GNU :
-CC = gcc ;
-C++ = g++ ;
-CCSTD = -std=c99 ;
-C++STD = -std=c++98 ;
-CCCPP = ;
-C++CPP = ;
-SHRFLAGS = -fpic ;
-SHRLINKLIBS = -shared -rdynamic -ldl ;
-ARCH = -march=native ;
-CCOPTIMCOMP = -O2 $(ARCH) ;
-C++OPTIMCOMP = -O2 $(ARCH) ;
-CCDEBUGCOMP = -O0 -ggdb -DDEBUG=1 ; # -pedantic
-C++DEBUGCOMP = -O0 -ggdb -DDEBUG=1 ; # -Weffc++
-CCCOMP = -Wall $(CCSTD) $(CCCPP) ;
-C++COMP = -Wall $(C++STD) $(C++CPP) ;
-LINKCOMP = ;
-}
-
-################################################
-##
-##  Define the \"standard\" GUI flags
-## 
-################################################
-
-CCGUI = ;
-C++GUI = ;
-LINKGUI = ;
-
-switch $(GUILIB)
-{
-case GTKMM :
-CCGUI = `pkg-config gtkmm-2.4 --cflags` ;
-C++GUI = `pkg-config gtkmm-2.4 --cflags` ;
-LINKGUI = `pkg-config gtkmm-2.4 --libs` ;
-
-case MOTIF :
-CCGUI = -I/usr/include ;
-C++GUI = -I/usr/include ;
-LINKGUI = -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;
-
-case QT3 :
-CCGUI = -I$(QTDIR)/include ;
-C++GUI = -I$(QTDIR)/include ;
-LINKGUI = -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;
-
-case * :
-CCGUI = ;
-C++GUI = ;
-LINKGUI = ;
-
-}
-
-#################################
-##
-##  Define the \"standard\" flags
-## 
-#################################
-
-CCFLAGS += $(CCCOMP) $(CCGUI) ;
-C++FLAGS += $(C++COMP) $(C++GUI) ;
-LINKLIBS += $(LINKCOMP) $(LINKGUI) ;
-
-OPTIM = $(CCDEBUGCOMP) ;
-OPTIM = $(C++DEBUGCOMP) ;
-
-switch $(VARIANT)
-{
-case RELEASE :
-OPTIM = $(CCOPTIMCOMP) ;
-OPTIM = $(C++OPTIMCOMP) ;
-
-}
-
-LINKFLAGS = $(C++FLAGS) -lz ;
-LINK = $(C++) ;
-
-# Local Variables:
-# mode: makefile
-# End: 
-"
     end
 
     artifact 159785 "t2t.jam"
