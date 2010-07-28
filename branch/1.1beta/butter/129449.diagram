@@ -1,0 +1,32 @@
+format 66
+
+note 128937 "Build phase scans the package tree builds the association between locations and packages. It also creates the location tree that mirrors the relevant filesystem tree."
+  xyzwh 393 41 2000 292 110
+note 130345 "Prune phase removes redundant locations from the tree.
+* locations with no parent, no content and one child.
+* locations with no children and package(s) with no targets/documents.
+?? Is this necessary??"
+  xyzwh 394 153 2000 289 162
+classcanvas 130601 class_ref 132393 // location
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 188 79 2000
+end
+classcanvas 130857 class_ref 132393 // location
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 100 195 2000
+end
+note 131241 "Build-system phase scans the packages of each location for targets and creates UmlArtifacts containing the build-system files in each location object.
+?? What happens if a location has no package??"
+  xyzwh 394 319 2000 290 133
+note 131369 "Writer phase: location objects scan and write any UmlArtifact documents, which includes all the build system docs."
+  xyzwh 394 454 2000 291 76
+classcanvas 131497 class_ref 145833 // pathcmp
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 33 47 2000
+end
+relationcanvas 131625 relation_ref 153641 // <dependency>
+  from ref 130601 z 2001 to ref 131497
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

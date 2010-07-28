@@ -1,0 +1,636 @@
+class location
+!!!143145.cpp!!!	add_package(inout a_package : UmlPackage) : void
+if (packages_.count () == packages_.size ())
+{
+  packages_.resize (packages_.size () + 4);
+}
+packages_.insert (packages_.count (), &a_package);
+
+!!!190505.cpp!!!	compare_file_to_string(in a_path : unistr, in a_str : unistr) : bool
+bool Result (false);
+class helper__
+{
+public:
+  helper__ (QFile & a_file, int a_flag): m_f (a_file)
+  {
+    if (not m_f.open (a_flag))
+    {
+      QString l_msg ("<b>Fatal Error:</b> Unable to open file for read/writing: " + m_f.name ());
+      throw std::runtime_error (static_cast<const char*>(l_msg));
+    }
+  }
+   ~helper__ ()
+  {
+    m_f.close ();
+  }
+  QFile & m_f;
+};
+
+if (QFile::exists (a_path))
+{
+  QFile l_dev (a_path);
+  // Test the file for reading
+  helper__ l_auto (l_dev, IO_ReadOnly);
+  unsigned int l_cursor (0);  // How far in to the file we are.
+  do
+  {
+    const unsigned int l_sz (1024);     // The size of the buffer
+    char l_buffer[l_sz];        // Buffer for reading
+    const unsigned int l_count (l_dev.readBlock (&l_buffer[0], l_sz));
+    if (l_count != 0)
+    {
+      Result = (a_str.length () >= l_cursor + l_count
+             and (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, l_count)));
+      l_cursor += l_count;
+    }
+  }
+  while (Result and not l_dev.atEnd ());
+}
+if (not Result)
+{
+  QFile l_dev (a_path);
+  helper__ l_auto (l_dev, IO_WriteOnly);
+  l_dev.reset ();
+  l_dev.writeBlock (a_str.data (), a_str.length ());
+}
+return Result;
+!!!187433.cpp!!!	create_as_child(in a_path : unistr) : location
+BUTTER_REQUIRE (parent_path (a_path), "This location is not a parent of the given path");
+butter::pathcmp const parent_path_ (full_path ());
+butter::pathcmp const child_path_ (a_path);
+butter::pathcmp const diff_path_ (parent_path_.relative (child_path_));
+butter::location * cursor_ = this;
+for (unsigned int i_ = 0; i_ < diff_path_.size (); ++i_)
+{
+  std::auto_ptr< location > tmp_ (new location (diff_path_.at (i_), *cursor_));
+  if (cursor_->children_.count () == cursor_->children_.size ())
+  {
+    cursor_->children_.resize (cursor_->children_.size () + 4);
+  }
+  cursor_->children_.insert (cursor_->children_.count (), tmp_.release ());
+  cursor_ = cursor_->children_.at (cursor_->children_.count () - 1);
+}
+return cursor_;
+!!!187561.cpp!!!	create_common_parent(inout a_base : location, in a_path : unistr) : location
+BUTTER_REQUIRE (NULL == a_base->parent (), "This is not the base location object");
+const butter::pathcmp start_path_ (a_base->full_path ());
+const butter::pathcmp new_path_ (start_path_.common (a_path));
+BUTTER_REQUIRE (new_path_.subpath (start_path_), "<p>The old base path is not a subdirectory of the new path</p>");
+BUTTER_REQUIRE (new_path_.equality (a_path) or new_path_.subpath (a_path), "<p>The given path is not a subdirectory of the new path</p>");
+butter::pathcmp const diff_path_ (new_path_.relative (start_path_));
+const int diff_path_size_ (diff_path_.size ());
+{
+  QString tmp_;
+  tmp_.setNum (diff_path_size_);
+}
+// make current base object's path relative
+a_base->path_ = diff_path_.at (diff_path_size_ - 1);
+// Add the intermediate steps.
+for (int i_ = diff_path_size_ - 2; i_ >= 0; --i_)
+{
+  std::auto_ptr< butter::location > tmp_ (new location (diff_path_.at (i_)));
+  BUTTER_CHECK (tmp_->children_.size () > 0, "<p>New location objects should have non-zero sized vectors</p>");
+  // Parent old base object
+  a_base->parent_ = tmp_.get ();
+  tmp_->children_.insert (0, a_base.release ());
+  a_base = tmp_;
+}
+// Add new base
+{
+  std::auto_ptr< butter::location > tmp_ (new location (new_path_.path ()));
+  BUTTER_CHECK (tmp_->children_.size () > 0, "<p>New location objects should have non-zero sized vectors</p>");
+  // Parent old base object
+  a_base->parent_ = tmp_.get ();
+  tmp_->children_.insert (0, a_base.release ());
+  a_base = tmp_;
+}
+return a_base;
+!!!164521.cpp!!!	create_uml_document(in a_name : unistr) : UmlArtifact
+BUTTER_REQUIRE (not packages_.isEmpty (), "<p><b>Program error:</b> Location has no packages!</p>");
+BUTTER_REQUIRE (find_uml_document (a_name).isEmpty (), "<p><b>Program error:</b> Cannot create a document with the name of an existing document.</p>");
+// Find deployment view
+UmlDeploymentView * deployview_ = NULL;
+// Only check local deployment views.
+for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
+{
+  UmlPackage * pkg_cursor_ = packages_.at (i_);
+  if (pkg_cursor_->isWritable ())
+  {
+    for (unsigned int j_ = 0; j_ < pkg_cursor_->children ().count (); ++j_)
+    {
+      UmlItem *const deploy_cursor_ = pkg_cursor_->children ().at (j_);
+      if (aDeploymentView == deploy_cursor_->kind () and deploy_cursor_->isWritable ())
+      {
+        deployview_ = dynamic_cast< UmlDeploymentView * > (deploy_cursor_);
+        BUTTER_CHECK (NULL != deployview_, "<p><b>Program error:</b> Item kind (DeploymentView) did not match class type.</p>");
+        break;
+      }
+    }
+  }
+}
+if (NULL == deployview_)
+{
+  // Didn't find deployment view, add to first writable package.
+  for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
+  {
+    if (packages_.at (i_)->isWritable ())
+    {
+      deployview_ = UmlDeploymentView::create (packages_.at (i_), packages_.at (i_)->name ());
+      break;
+    }
+  }
+  // QUERY = fails if create returns nul other than when non-package passed. 
+  if (NULL == deployview_)
+  {
+    throw std::runtime_error ("<p><b>Fatal error:</b> Unable to create a new deployment view, no editiable packages at location <b>" + std::string (full_path ().ascii ()) + "</b>. Make an editable package at this location and try again.</p>");
+  }
+}
+log::com.trace (log::info, "<p>New UML artifact named " + a_name + " being created in package " + deployview_->parent ()->name ().data () + " (which has source location " + full_path () + ").</p>");
+UmlArtifact * Result = UmlArtifact::create (deployview_, a_name);
+// QUERY = fails if create returns nul other than when non-deployment passed.
+if (NULL == Result)
+{
+  QString name_ (full_path ());
+  name_.append ("/");
+  name_.append (a_name);
+  throw std::runtime_error ("<p><b>Fatal error:</b> Unable to create a new artifact for <b>" + std::string (name_.ascii ()) + "</b>.</p>");
+}
+Result->set_Stereotype (item_traits::document_stereotype.utf8 ());
+return Result;
+!!!187689.cpp!!!	find(inout a_location : location, in a_path : unistr) : location
+BUTTER_REQUIRE (a_location->parent_path (a_path), "This location is not a parent of the given path");
+butter::pathcmp const parent_path_ (a_location->full_path ());
+butter::pathcmp const child_path_ (a_path);
+butter::pathcmp const diff_path_ (parent_path_.relative (child_path_));
+for (unsigned int i_ = 0; i_ < diff_path_.size (); ++i_)
+{
+  butter::location * tmp_ (NULL);
+  for (unsigned int j_ = 0; j_ < a_location->children_.count (); ++j_)
+  {
+    if (a_location->children_.at (j_)->path_ == diff_path_.at (i_))
+    {
+      tmp_ = a_location->children_.at (j_);
+      break;
+    }
+  }
+  if (NULL == tmp_)
+  {
+    break; // At closest point
+  }
+  else
+  {
+    a_location = tmp_;
+  }
+}
+return a_location;
+!!!164393.cpp!!!	find_uml_document(in a_name : unistr) : UmlItem
+BUTTER_REQUIRE (not a_name.isEmpty (), "Cannot look for a document without a name");  
+BUTTER_REQUIRE (not packages_.isEmpty (), "Location has no packages!");
+QPtrVector< UmlItem > Result (4);
+// Only check local deployment views.
+for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
+{
+  UmlPackage * pkg_cursor_ = packages_.at (i_);
+  for (unsigned int j_ = 0; j_ < pkg_cursor_->children ().count (); ++j_)
+  {
+    UmlItem *const deploy_cursor_ = pkg_cursor_->children ().at (j_);
+    if (aDeploymentView == deploy_cursor_->kind ())
+    {
+      for (unsigned int k_ = 0; k_ < deploy_cursor_->children ().count (); ++k_)
+      {
+        UmlItem *const artifact_cursor_ = deploy_cursor_->children ().at (k_);
+        if (anArtifact == artifact_cursor_->kind ()
+            and a_name == artifact_cursor_->name ().data ()
+            and item_traits::document_stereotype == artifact_cursor_->stereotype ().data ())
+        {
+          if (Result.count () == Result.size ())
+          {
+            Result.resize (Result.size () + 4);
+          }
+          Result.insert (Result.count (), artifact_cursor_);
+        }
+      }
+    }
+  }
+}
+return Result;
+
+!!!145577.cpp!!!	full_path() : unistr
+QString Result;
+const butter::location * tmp_ = this;
+char sep_[2];
+sep_[0] = QDir::separator ();
+sep_[1] = '\0';
+// Process non-base locations
+while (NULL != tmp_->parent_)
+{
+  Result.prepend (tmp_->path_);
+  Result.prepend (&sep_[0]);
+  tmp_ = tmp_->parent_;
+}
+// Process the base location
+Result.prepend (tmp_->path_);
+return Result;
+!!!142633.cpp!!!	location(in a_path : unistr)
+: children_ (4)
+, packages_ (4)
+, parent_ ()
+, path_ (a_path)
+{
+  children_.setAutoDelete (true);
+}
+!!!144425.cpp!!!	location(in a_path : unistr, inout a_parent : location)
+: children_ (4)
+, packages_ (4)
+, parent_ (&a_parent)
+, path_ (a_path)
+{
+  children_.setAutoDelete (true);
+}
+!!!187817.cpp!!!	match_path(in a_path : unistr) : bool
+const butter::pathcmp p1 (full_path ());
+const butter::pathcmp p2 (a_path);
+return p1.equality (p2);
+!!!187945.cpp!!!	parent_path(in a_path : unistr) : bool
+const butter::pathcmp p1 (full_path ());
+const butter::pathcmp p2 (a_path);
+return p1.subpath (p2);
+!!!133929.cpp!!!	parse_project(inout a_item : UmlItem) : location
+///////////////////////
+// Test preconditions
+BUTTER_REQUIRE (aPackage == const_cast< UmlItem& >(a_item).kind (), "Argument is not a UmlPackage item.");
+// Use pointer cast to avoid bad_cast throw, even though
+// we may throw in the next step..
+const UmlPackage * item_ = dynamic_cast < const UmlPackage * >(&a_item);
+BUTTER_REQUIRE (NULL != item_ and NULL == const_cast< UmlItem& >(a_item).parent ()
+                , "<p><b>Program error:</b> Item is not a package or is not the top-level package.</p>");
+/////////////////////
+// Set logging level
+QString level_;
+if (item_traits::property_value (*item_, item_traits::butter_log_name, level_))
+{
+  log::com.level (level_.toInt ());
+}
+/////////////////////
+// Initialisation
+QDir os_dir_obj_; // Object to access OS specific operations
+std::auto_ptr< location > Result; // The base of the location tree (and return value).
+butter::location * cache_ = NULL; // Cache location pointer used when adding UmlPackages.
+const QString root_dir_ (QDir::cleanDirPath (CppSettings::rootDir ())); // Project root dir.
+log::com.trace (log::warn, "<p><b>Please wait:</b> building target list for project <i>" + const_cast< UmlItem& >(a_item).name () + "</i>.</p>");
+// Ensure root directory exists.
+if (not QFile::exists (root_dir_))
+{
+  if (not os_dir_obj_.mkdir (root_dir_))
+  {
+    throw std::runtime_error ("<p><b>The project root directory could not be created</b>, please ensure that the root directory is a usable location.</p>");
+  }
+}
+/////////////////////
+// Set style
+QString style_;
+if (item_traits::property_value (*item_, item_traits::butter_style_name, style_))
+{
+  butter::style::set_style (style_);
+}
+else
+{
+  butter::style::set_style ();
+}
+// * Check and create any user-directed top-level directory.
+QString user_base_path_;
+item_traits::property_value (a_item, item_traits::butter_base_name, user_base_path_);
+if (not user_base_path_.isEmpty ())
+{
+  const QString base_path_ (QDir::cleanDirPath (root_dir_ + os_dir_obj_.separator () + user_base_path_));
+  // Ensure directory exists.
+  if (not QFile::exists (base_path_))
+  {
+    if (not os_dir_obj_.mkdir (base_path_))
+    {
+      throw std::runtime_error ("<p><b>Base directory could not be created</b>, please ensure that user supplied base directory is a usable locations.</p>");
+    }
+  }
+// * Create the initial base location object.
+  Result.reset (new location (base_path_));
+}
+else
+{
+  Result.reset (new location (root_dir_));
+}
+cache_ = Result.get ();
+
+#ifdef DEBUG
+log::com.debug_log (root_dir_ + os_dir_obj_.separator () + "butter.log");
+#endif
+///////////////////////////////////
+// Walk through the UmlItems.
+QPtrStack< UmlItem > item_stack_; // in-order project descent stack
+// Push items onto stack
+item_stack_.push (&a_item);
+while (not item_stack_.isEmpty ())
+{
+  UmlItem *const top_ (item_stack_.pop ());
+  // Check property names.
+  if (log::warn <= log::com.level ())
+  {
+    // The 'if' always succeeds in this version as warn is lowest level
+    QDict< QCString > property_map_ (top_->properties ());
+    QDictIterator < QCString > current_prop_ (property_map_);
+    if (not current_prop_.isEmpty ())
+    {
+      for (; current_prop_.current (); ++current_prop_)
+      {
+        if (current_prop_.currentKey ().contains ("butter"))
+        {
+          const QString current_key_ (current_prop_.currentKey ().data ());
+          if (current_key_ != item_traits::butter_base_name
+            and current_key_ != item_traits::butter_build_dir_name
+            and current_key_ != item_traits::butter_buildfile_name
+            and current_key_ != item_traits::butter_compiler_name
+            and current_key_ != item_traits::butter_flags_name
+            and current_key_ != item_traits::butter_install_name
+            and current_key_ != item_traits::butter_ldflags_name
+            and current_key_ != item_traits::butter_lib_type_name
+            and current_key_ != item_traits::butter_log_name
+            and current_key_ != item_traits::butter_other_name
+            and current_key_ != item_traits::butter_include_name
+            and current_key_ != item_traits::butter_project_name
+            and current_key_ != item_traits::butter_style_name
+            and current_key_ != item_traits::butter_version_name)
+          {
+            log::com.trace (log::warn, "<p><b>Warning:</b> Item \"" + QString (top_->name ().data ()) + "\" has property name \"" + current_key_ + "\" which contains 'butter' but is not a known property name</p>");
+          }
+        }
+      }
+    }
+  }
+  // Assign any packages to a location object
+  if (aPackage == top_->kind ())
+  {
+    UmlPackage *pack_item_ = dynamic_cast < UmlPackage * >(top_);
+    BUTTER_CHECK (NULL != pack_item_, "<p>Item type and class type do not match.</p>");
+    // Create the simplest absolute path to package without reference to filesystem
+    const QString pack_path_ (item_traits::dirname (*pack_item_).absPath ());
+    BUTTER_CHECK (not pack_path_.isEmpty (), "<p><b>Programming error:</b> Directory path for a package was found empty</p>");
+    // Ensure directory exists.
+    if (not QFile::exists (pack_path_))
+    {
+      if (not os_dir_obj_.mkdir (pack_path_))
+      {
+        QString msg_ ("<p><b>A package directory [" + pack_path_ + "] could not be created</b>, please ensure that all packages have usable locations. Running the code generator first may avoid this error.</p>");
+        throw std::runtime_error (msg_);
+      }
+    }
+    // Find/Create location, reparenting tree if necessary, and add package.
+#ifdef DEBUG
+    log::com.stream () << "## Finding/creating location for Package [" << pack_item_->name ()
+                 << "] at path [" << pack_path_ << "]\n"
+                 << "## Cache path [" << cache_->full_path () << "]\n";
+#endif
+    if (not cache_->match_path (pack_path_))
+    {
+#ifdef DEBUG
+      log::com.stream () << "## Cache-Package paths do not match\n";
+#endif
+      if (not cache_->parent_path (pack_path_))
+      {
+        cache_ = Result.get ();
+#ifdef DEBUG
+        log::com.stream () << "## Cache reset to base [" << cache_->full_path () << "]\n";
+#endif
+      }
+      if (not cache_->match_path (pack_path_))
+      {
+        if (not cache_->parent_path (pack_path_))
+        {
+#ifdef DEBUG
+          log::com.stream () << "## Package below base dir. Reparenting base.\n";
+#endif
+          // Reparent
+          Result = create_common_parent (Result, pack_path_);
+#ifdef DEBUG
+          log::com.stream () << "## Found common parent [" << Result->full_path () << "]\n";
+#endif
+          // Result is closest parent. Build descendent
+          if (Result->match_path (pack_path_))
+          {
+#ifdef DEBUG
+            log::com.stream () << "## New base matched package\n";
+#endif
+            cache_ = Result.get();
+          }
+          else
+          {
+#ifdef DEBUG
+            log::com.stream () << "## Package was below new base.\n";
+#endif
+            cache_ = Result->create_as_child (pack_path_);
+          }
+        }
+        else
+        {
+#ifdef DEBUG
+          log::com.stream () << "## Package below cache, finding package\n";
+#endif
+          cache_ = find (cache_, pack_path_);
+          if (not cache_->match_path (pack_path_))
+          {
+            cache_ = cache_->create_as_child (pack_path_);
+          }
+        }
+      }
+    }
+    BUTTER_CHECK (cache_->match_path (pack_path_)
+          , std::string ("<p><b>Program error:</b> Location path \"") + cache_->path ().ascii() + "\"(" + cache_->full_path ().ascii() + ") does not match package path \"" + pack_path_.ascii () + "\" </p>");
+    cache_->add_package (*pack_item_);
+  }
+#ifdef DEBUG
+  {
+    unsigned int depth_ (0);
+    UmlItem * print_tmp_ (top_);
+    for (; NULL != print_tmp_; ++depth_)
+    {
+      print_tmp_ = print_tmp_->parent ();
+    }
+    item_traits::print_item (*top_, depth_, log::com.stream ());
+  }
+#endif
+  // Push any children onto the stack (ensures all objects are checked for keywords)
+  QPtrVector < UmlItem > kids_ (top_->children ());
+  for (unsigned int i_ = 0; i_ < kids_.size (); ++i_)
+  {
+    BUTTER_CHECK (NULL != kids_.at (i_), "<p><b>Program error</b> Nul objects were children of an UmlItem.</p>");
+    item_stack_.push (kids_.at (i_));
+  }
+}
+#ifdef DEBUG
+// Output debugging information.
+Result->serialize (log::com.stream ());
+#endif
+// Perform exit test(s)
+if (not user_base_path_.isEmpty ())
+{
+  const QString base_path_ (QDir::cleanDirPath (root_dir_ + os_dir_obj_.separator () + user_base_path_));
+  if (not Result->match_path (base_path_))
+  {
+     log::com.trace (log::warn, "<p><b>Warning:</b> User set root directory is not the parent of all project directories and has been ignored.</p>");
+  }
+}
+// Check whether base location has an associated package and attempt to create
+// one.
+if (Result->packages_.isEmpty ())
+{
+  QString new_name_ ("Build");
+  bool top_package_is_writable_ (a_item.isWritable ());
+  QString msg_;
+  QTextOStream mos_ (&msg_);
+  mos_ << "<p>[" << Result->full_path () << "] found as parent directory";
+  if (top_package_is_writable_)
+  {
+    bool name_not_found_ (true);
+    for (unsigned int i_ = 0; name_not_found_ and i_ < a_item.children ().count (); ++i_)
+    {
+      name_not_found_ = (new_name_ != a_item.children ().at (i_)->name ().data ()
+                    or aPackage != a_item.children ().at (i_)->kind ());
+    }
+    if (not name_not_found_)
+    {
+      for (unsigned int j_ = 1; j_ < 10; ++j_)
+      {
+        QString cmpd_name_;
+        cmpd_name_.setNum (j_);
+        cmpd_name_.prepend (new_name_);
+        name_not_found_ = true;
+        for (unsigned int i_ = 0; name_not_found_ and i_ < a_item.children ().count (); ++i_)
+        {
+          name_not_found_ = (cmpd_name_ != a_item.children ().at (i_)->name ().data ()
+                    or aPackage != a_item.children ().at (i_)->kind ());
+        }
+        if (name_not_found_)
+        {
+          new_name_ = cmpd_name_;
+          break;
+        }
+      }
+    }
+    if (not name_not_found_)
+    {
+      mos_ << " but I can not create UML package for this location. Do one of:<p>\n";
+      mos_ << "<ul><li>Create/modify a package with this directory.</li>\n";
+      mos_ << "<li>Change existing directories to change parent directory.</li></ul>\n";
+      throw std::runtime_error (msg_);
+    }
+    else
+    {
+      mos_ << ". 'Ok' to create a package '" << new_name_ << "' with this directory ";
+      mos_ << "or 'Cancel' and do one of:<p>\n";
+      mos_ << "<ul><li>Create/modify a package with this directory.</li>\n";
+      mos_ << "<li>Change existing directories to change parent directory.</li></ul>\n";
+      if (QMessageBox::Ok == QMessageBox::question (0
+                                  , "Butter: Parent directory is outside project."
+                                  , msg_
+                                  , QMessageBox::Ok
+                                  , QMessageBox::Abort))
+      {
+        UmlPackage * build_ = UmlPackage::create (dynamic_cast< UmlPackage* >(&a_item), new_name_);
+        butter::pathcmp helper_ (CppSettings::rootDir ());
+        build_->set_CppSrcDir (helper_.relative (Result->full_path ()).utf8 ());
+        Result->add_package (*build_);
+      }
+      else
+      {
+        throw std::runtime_error ("<p>Program aborted at user request.</p>");
+      }
+    }
+  }
+  else
+  {
+    mos_ << " and project is not writable.<p>\n";
+    throw std::runtime_error (msg_);
+  }
+}
+return Result; // Pass ownership of location tree.
+!!!146601.cpp!!!	serialize(inout a_os : ostream) : void
+a_os << "<<BEGIN location [" << full_path () << "]\n";
+if (packages_.count () > 0)
+{
+  a_os << "Packages:\n";
+  for (unsigned int i_(0); i_ < packages_.count (); ++i_)
+  {
+    a_os << "[" << i_ << "] = " << packages_.at (i_)->name () << "\n";
+  }
+}
+if (children_.count () > 0)
+{
+  a_os << "Children:\n";
+  for (unsigned int i_(0); i_ < children_.count (); ++i_)
+  {
+    a_os << "[" << i_ << "] = " << children_.at (i_)->path () << "\n";
+  }
+}
+a_os << "<<END location [" << full_path () << "]\n";
+
+// Perform serialization in a top-down manner.
+if (children_.count () > 0)
+{
+  for (unsigned int i_(0); i_ < children_.count (); ++i_)
+  {
+    children_.at (i_)->serialize (a_os);
+  }
+}
+
+!!!190633.cpp!!!	write_documents(in a_base : location) : void
+QPtrStack< butter::location > stack_;
+stack_.push (&a_base);
+while (not stack_.isEmpty ())
+{
+  const butter::location *const top_ (stack_.pop ());
+  for (unsigned int i_ = 0; i_ < top_->children ().count (); ++i_)
+  {
+    stack_.push (top_->children ().at (i_));
+  }
+  top_->write_uml_documents ();
+}
+!!!189097.cpp!!!	write_uml_documents() : void
+// Only check local deployment views.
+for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
+{
+  UmlPackage * pkg_cursor_ = packages_.at (i_);
+  for (unsigned int j_ = 0; j_ < pkg_cursor_->children ().count (); ++j_)
+  {
+    UmlItem *const deploy_cursor_ = pkg_cursor_->children ().at (j_);
+    if (aDeploymentView == deploy_cursor_->kind ())
+    {
+      for (unsigned int k_ = 0; k_ < deploy_cursor_->children ().count (); ++k_)
+      {
+        UmlItem *const artifact_cursor_ = deploy_cursor_->children ().at (k_);
+        if (anArtifact == artifact_cursor_->kind ()
+            and item_traits::document_stereotype == artifact_cursor_->stereotype ().data ())
+        {
+          // Only write non-empty docs.
+          if (not artifact_cursor_->description ().isEmpty ())
+          {
+            QString document_prop_value_;
+            if (not item_traits::property_value (*artifact_cursor_, item_traits::butter_other_name, document_prop_value_) or document_prop_value_ == "nowrite")
+            {
+              QString document_filepath_ = full_path () + QDir::separator () + artifact_cursor_->name ().data ();
+              if (not document_prop_value_.isEmpty ())
+              {
+                document_filepath_ += "." + document_prop_value_;
+              }
+              if (not compare_file_to_string (document_filepath_, artifact_cursor_->description ()))
+              {
+                log::com.trace (log::warn, "<p>Writing changed document : " + document_filepath_ + "</p>");
+              }
+              else
+              {
+                log::com.trace (log::info, "<p>Skipping unchanged document : " + document_filepath_ + "</p>");
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

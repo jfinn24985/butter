@@ -1,0 +1,32 @@
+class jamfile_boost
+!!!137897.cpp!!!	jamfile_boost(inout a_rules : basic_rules)
+: basic_jamfile (a_rules)
+, m_parent ()
+, m_subprojects (16)
+{
+  m_subprojects.setAutoDelete (true);
+}
+!!!138153.cpp!!!	jamfile_boost(inout a_rules : basic_rules, inout a_parent : jamfile_boost)
+: basic_jamfile (a_rules)
+, m_parent (&a_parent)
+, m_subprojects (16)
+{
+  m_subprojects.setAutoDelete (true);
+}
+!!!140585.cpp!!!	serialize(in a_os : ostream) : void
+const std::string l_buffer = buffer ().str ();
+if (not l_buffer.empty () or not m_subprojects.isEmpty ())
+{
+  a_os << "BEGIN JAMFILE: {" << dirname ().path () << "/" << default_name () << "}\n";
+  a_os << "#\n# Jamfile for package(s): " << package_names () << "\n#\n";
+  a_os << l_buffer << "\n";
+  for (unsigned int l_i (0); l_i < m_subprojects.count (); ++l_i)
+  {
+    a_os << "build-project " << m_subprojects.at (l_i)->dirname ().dirName () << " ;\n";
+  }
+  a_os << "END JAMFILE: {" << dirname ().path () << "/" << default_name () << "}\n";
+  for (unsigned int l_i (0); l_i < m_subprojects.count (); ++l_i)
+  {
+    m_subprojects.at (l_i)->serialize (a_os);
+  }
+}

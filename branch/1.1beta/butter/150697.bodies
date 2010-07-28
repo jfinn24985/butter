@@ -1,0 +1,263 @@
+class writer
+!!!208809.cpp!!!	create_system(inout a_base : location, in a_project : UmlItem) : void
+// Start building system
+std::auto_ptr< compound_artifact > system_artifact_ = get_artifact (a_base, static_cast< derived* >(this)->build_file_sysname);
+
+// Perform style specific initialisation
+static_cast< derived* >(this)->initialise (a_base, a_project, *system_artifact_);
+
+// If no top-level system build-file document, create it from template.
+if (a_base.find_uml_document (static_cast< derived* >(this)->rules_name).isEmpty ())
+{
+  QString version_;
+  if (not item_traits::property_value (a_project, item_traits::butter_version_name, version_))
+  {
+    if (not item_traits::property_value (a_project, item_traits::version_name, version_))
+    {
+      version_ = "1.0";
+    }
+  }
+  QString rules_;
+  {
+    QTextOStream rules_os_ (&rules_);
+    for (const char ** line_ = &static_cast< derived* >(this)->default_rules[0];
+        0 != *line_;
+        ++line_)
+    {
+      int index_ = 0;
+      const QString project_placeholder_ ("@@project@@");
+      const QString version_placeholder_ ("@@version@@");
+      QString out_line_ (*line_);
+      if (-1 != (index_ = out_line_.find (project_placeholder_)))
+      {
+        out_line_.replace (index_, project_placeholder_.length (), const_cast< UmlItem & > (a_project).name ());
+      }
+      if (-1 != (index_ = out_line_.find (version_placeholder_)))
+      {
+        out_line_.replace (index_, version_placeholder_.length (), version_);
+      }
+      rules_os_ << out_line_;
+    }
+  }
+  a_base.create_uml_document (static_cast< derived* >(this)->rules_name)->set_Description (rules_.utf8 ());
+}
+
+//////////////
+// Process the project, handling items as we go.
+//
+
+QPtrStack< location > location_stack_;
+location_stack_.push (&a_base); // Use a stack to eliminate recursion
+while (not location_stack_.isEmpty ())
+{
+  location * top_ (location_stack_.pop ());
+  // Push children onto stack
+  for (unsigned int i_ = 0; i_ < top_->children ().count (); ++i_)
+  {
+    location_stack_.push (top_->children ().at (i_));
+  }
+
+  std::auto_ptr< compound_artifact > current_; // The current build file.
+  // Get deployment views from current location's packages
+  for (unsigned int i_ = 0; i_ < top_->packages ().count (); ++i_)
+  {
+    UmlPackage * I_ = top_->packages ().at (i_);
+    for (unsigned int j_ = 0; j_ < I_->children ().count (); ++j_)
+    {
+      UmlItem * J_ = I_->children ().at (j_);
+      if (aDeploymentView == J_->kind ())
+      {
+        // Scan for deployment views targets.
+        for (unsigned int k_ = 0; k_ < J_->children ().count (); ++ k_)
+        {
+          UmlItem * item_ = J_->children ().at (k_);
+          if (anArtifact == item_->kind ())             // UmlArtifacts.
+          {
+            const UmlArtifact &art_item_ = dynamic_cast < UmlArtifact& >(*item_);
+            const QString stereotype_label_ (const_cast< UmlArtifact& >(art_item_).stereotype ());
+            bool installable_ (false);
+            if (stereotype_label_.contains (item_traits::executable_stereotype, false)
+                or stereotype_label_.contains (item_traits::library_stereotype, false))
+            {
+              installable_ = true;
+              QString value_;
+              if (item_traits::property_value (art_item_, item_traits::butter_project_name, value_))
+              {
+                //////////////////////////////////////////////////
+                // Is an external target for project 'value_'.
+                static_cast< derived* >(this)->external_target (*top_, art_item_, *system_artifact_);
+              }
+              else
+              {
+                //////////////
+                // Is a local target
+                const QString target_name_ (const_cast< UmlArtifact& >(art_item_).name ());
+                QPtrVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(art_item_).associatedArtifacts ());
+                // Only process targets with associated entries.
+                if (not assoc_arts_.isEmpty ())
+                {
+                  QString entry_;           // The target entry
+                  {
+                    target_type target_type_ (executable); // The target's type, set to exe then change if library
+                    if (stereotype_label_.contains (item_traits::library_stereotype, false))
+                    {
+                      QString value_;
+                      if (item_traits::property_search (art_item_, item_traits::butter_lib_type_name, value_)
+                            and value_ == item_traits::shared_value)
+                      {
+                        target_type_ = shared_library;
+                      }
+                      else
+                      {
+                        target_type_ = static_library;
+                      }
+                      if (item_traits::property_value (art_item_, item_traits::butter_other_name, value_))
+                      {
+                        target_type_ = other;
+                      }
+                    }
+                    QString compiler_, includes_, compflags_, ldflags_;
+                    item_traits::property_value (art_item_, item_traits::butter_compiler_name, compiler_);
+                    QTextOStream entry_os_ (&entry_);
+                    ///////////////////
+                    // Indicate the start of the target entry.
+                    {
+                      QString buildfile_;
+                      item_traits::property_value (art_item_, item_traits::butter_buildfile_name, buildfile_);
+                      static_cast< derived* >(this)->start_target (art_item_, entry_os_, buildfile_, compiler_, target_type_);
+                    }
+                    ///////////////////
+                    // Process the associated artifacts
+                    for (unsigned int i_ = 0; i_ < assoc_arts_.size (); ++i_)
+                    {
+                      UmlArtifact *const current_art_ (assoc_arts_.at (i_));
+                      const QString stereotype_ (current_art_->stereotype ().data ());
+                      if (stereotype_ == item_traits::library_stereotype)
+                      {
+                        static_cast< derived* >(this)->assoc_library (*current_art_, entry_os_
+                                            , includes_, ldflags_, compflags_);
+                      }
+                      else if (stereotype_ == item_traits::source_stereotype)
+                      {
+                        QString src_inc_, src_flags_;
+                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, static_cast< derived* >(this)->section_name, true); // Pass link flags to target
+                        static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
+                                            , current_art_->name () + "." + CppSettings::sourceExtension ()
+                                            , current_art_->name ()
+                                            , src_inc_
+                                            , src_flags_
+                                            , false);
+                      }
+                      else if (stereotype_ == item_traits::document_stereotype)
+                      {
+                        QString src_inc_, src_flags_;
+                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, static_cast< derived* >(this)->section_name, true); // Pass link flags to target
+                        QString basename_ (current_art_->name ());
+                        const int dot_ (basename_.findRev ('.'));
+                        if (-1 != dot_) basename_.truncate (dot_);
+                        static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
+                                            , current_art_->name ()
+                                            , basename_
+                                            , src_inc_
+                                            , src_flags_
+                                            , true);
+                      }
+                    }
+                    ////////////////////
+                    // End target
+                    find_hdr_link (art_item_, includes_, ldflags_, compflags_, static_cast< derived* >(this)->section_name, false); // Pass link flags to target
+                    static_cast< derived* >(this)->end_target (art_item_, entry_os_
+                                            , includes_, ldflags_, compflags_, compiler_, target_type_);
+                  }
+                  if (not entry_.isEmpty ())
+                  {
+                    if (NULL == top_->parent ())
+                    {  // Is local at base, use system_artifact_
+                      system_artifact_->target (target_name_).second = entry_;
+                    }
+                    else
+                    {
+                      if (NULL == current_.get ())
+                      {
+                        current_ = get_artifact (*top_, static_cast< derived* >(this)->build_file_name);
+                      }
+                      current_->target (target_name_).second = entry_;
+                    }
+                  }
+                }
+              }
+            }
+            //////////////
+            // Handle installables
+            if (installable_ or stereotype_label_.contains (item_traits::document_stereotype, false))
+            {
+              QString entry_;           // The install entry
+              {
+                QString install_dir_;              // Location for install: DOCDIR,BINDIR etc
+                install_type install_type_ (file); // How the target should be installed
+                // Get the install property
+                item_traits::property_value (art_item_, item_traits::butter_install_name, install_dir_);
+                // For libraries and executables define some defaults.
+                if (stereotype_label_ == item_traits::library_stereotype)
+                {
+                  install_type_ = lib;
+                  if (install_dir_.isEmpty ())
+                  {
+                    install_dir_ = item_traits::libdir_value;
+                  }
+                  else
+                  {
+                    /////////////
+                    // Reset install type to file to handle "other" targets
+                    if (install_dir_ != item_traits::libdir_value)
+                    {
+                      install_type_ = file;
+                    }
+                  }
+                }
+                else if (stereotype_label_ == item_traits::executable_stereotype)
+                {
+                  install_type_ = bin;
+                  if (install_dir_.isEmpty ())
+                  {
+                    install_dir_ = item_traits::bindir_value;
+                  }
+                }
+                if (not install_dir_.isEmpty () and install_dir_ != item_traits::no_install_value)
+                {
+                  QTextOStream entry_os_ (&entry_);
+                  static_cast< derived* >(this)->install_target (art_item_, entry_os_, install_dir_, install_type_, not installable_);
+                }
+              }
+              if (not entry_.isEmpty ())
+              {
+                if (NULL == top_->parent ())
+                {  // Is local at base, use system_artifact_
+                  system_artifact_->target (const_cast< UmlArtifact& >(art_item_).name ()).second.append (entry_);
+                }
+                else
+                {
+                  if (NULL == current_.get ())
+                  {
+                    current_ = get_artifact (*top_, static_cast< derived* >(this)->build_file_name);
+                  }
+                  current_->target (const_cast< UmlArtifact& >(art_item_).name ()).second.append (entry_);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // End of current location
+  if (NULL != current_.get ())
+  {
+    // add the inter-file link
+    static_cast< derived* >(this)->descendent_link (*current_.get (), *system_artifact_, *top_);
+    // Close the build file
+    current_.reset ();
+  }
+}
+

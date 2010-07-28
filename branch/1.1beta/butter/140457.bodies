@@ -1,0 +1,13 @@
+class buildfile
+!!!178857.cpp!!!	add_template(inout a_tmplt : UmlArtifact) : void
+if (templates_.count () == templates_.size ())
+{
+  templates_.resize (templates_.size () + 4);
+}
+templates_.insert (templates_.count (), &a_art);
+!!!178985.cpp!!!	add_target(inout a_tmplt : UmlArtifact) : void
+if (targets_.count () == targets_.size ())
+{
+  targets_.resize (targets_.size () + 4);
+}
+targets_.insert (targets_.count (), &a_art);
