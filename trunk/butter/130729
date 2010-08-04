@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 64
+  revision 66
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -37,8 +37,8 @@ format 66
       associated_artifacts
       end
       comment "The butter plugout
-Butter Project (version 1.2: Beta 2)
-October 2009
+Butter Project (version 1.1:Beta)
+August 2010
 
 
 =Introduction=
@@ -975,24 +975,39 @@ T2TFLAGS=-toc -t html -o
       end
       comment "July 2010 Release 1.1beta
 
-Second beta release.  Greatly improved reliability and better
-error reporting.  Many fatal errors should now give a warning
-message with hints to fix problems, some non-fatal errors now
-give a dialog box with details of what plugout will do to fix
-the issue along with the option to continue or quit.
+Greatly improved reliability and better error reporting.
 
-Improved handling of build information.  \"checklist.t2t\" now
-documents the key features of the plugout along with the cvs
+Important external changes are:
+
+* auto-detecting the project root directory.  At the same time 
+this also fixed a number of program bugs related to detecting 
+directories.  The most significant of which was plugout failure 
+when the project was all in a single directory or if no project 
+directory existed.
+
+* better issue reporting.  Common issues related to generating 
+the build system are now reported by a dialog with some 
+instruction as to possible solutions.
+
+* writing the build files as UmlArtifacts into the bouml project.
+The plugout creates a \"tagged\" section for each target and copies 
+user text from between the sections.  This gives the ability to 
+do some per-target customization outside the plugout (see 
+documentation).
+
+* improved build systems.  The generated build systems are now 
+more consistent between styles.  The \"checklist.t2t\" now
+documents the key features of the plugout along with the subversion
 version that passed the acceptance test.
 
-Buildfiles are now written as UmlArtifacts back into the project.
-This enables easier customisation through direct editing of these
-UmlArtifacts (see documentation).
+Internal changes:
+
+* Rewrote the code to utilize only Qt containers and types.
+
 
 October 2008 Release 1.0
 
 First beta release of the \"butter\" build system plug-out."
     end
-
   end
 end
