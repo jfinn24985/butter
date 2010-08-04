@@ -2545,7 +2545,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
-@{PROJECT}_REQUIRE (not ${p1}.isEmpty (), \"Can not search for an empty key.\");
+@{PROJECT}_REQUIRE (! ${p1}.isEmpty (), \"Can not search for an empty key.\");
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -2569,7 +2569,7 @@ a_value and returns if such a property is found.
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
-@{PROJECT}_REQUIRE (not ${p1}.isEmpty (), \"Can not search for an empty key.\");
+@{PROJECT}_REQUIRE (! ${p1}.isEmpty (), \"Can not search for an empty key.\");
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -2592,7 +2592,7 @@ ${body}}
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${staticnl}{
-@{PROJECT}_REQUIRE (not ${p1}.isEmpty (), \"Can not search for an empty key.\");
+@{PROJECT}_REQUIRE (! ${p1}.isEmpty (), \"Can not search for an empty key.\");
 ${body}}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
@@ -3147,7 +3147,7 @@ QString includes_;
 QString cflags_;
 find_hdr_link_prop (a_source, includes_, link_flags_, cflags_);
 find_hdr_link (a_source.description (), includes_, link_flags_, cflags_);
-if (not cflags.isEmpty ())
+if (! cflags.isEmpty ())
 {
   a_os << 
 }"
@@ -5174,7 +5174,7 @@ ${namespace_end}"
 #define @{PROJECT}_CONFIG_H 1
 #include <stdexcept>
 
-#define @{PROJECT}_ALWAYS(X,Y) do { if (not (X)) { throw std::runtime_error(std::string(Y)); } } while (false)
+#define @{PROJECT}_ALWAYS(X,Y) do { if (! (X)) { throw std::runtime_error(std::string(Y)); } } while (false)
 
 #define @{PROJECT}_REQUIRE @{PROJECT}_ALWAYS
 #ifdef NO_DBC

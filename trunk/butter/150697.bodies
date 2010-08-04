@@ -10,9 +10,9 @@ static_cast< derived* >(this)->initialise (a_base, a_project, *system_artifact_)
 if (a_base.find_uml_document (static_cast< derived* >(this)->rules_name).isEmpty ())
 {
   QString version_;
-  if (not item_traits::property_value (a_project, item_traits::butter_version_name, version_))
+  if (! item_traits::property_value (a_project, item_traits::butter_version_name, version_))
   {
-    if (not item_traits::property_value (a_project, item_traits::version_name, version_))
+    if (! item_traits::property_value (a_project, item_traits::version_name, version_))
     {
       version_ = "1.0";
     }
@@ -48,7 +48,7 @@ if (a_base.find_uml_document (static_cast< derived* >(this)->rules_name).isEmpty
 
 QStack< location > location_stack_;
 location_stack_.push (&a_base); // Use a stack to eliminate recursion
-while (not location_stack_.isEmpty ())
+while (! location_stack_.isEmpty ())
 {
   location * top_ (location_stack_.pop ());
   // Push children onto stack
@@ -77,7 +77,7 @@ while (not location_stack_.isEmpty ())
             const QString stereotype_label_ (const_cast< UmlArtifact& >(art_item_).stereotype ());
             bool installable_ (false);
             if (stereotype_label_.contains (item_traits::executable_stereotype, false)
-                or stereotype_label_.contains (item_traits::library_stereotype, false))
+                || stereotype_label_.contains (item_traits::library_stereotype, false))
             {
               installable_ = true;
               QString value_;
@@ -94,7 +94,7 @@ while (not location_stack_.isEmpty ())
                 const QString target_name_ (const_cast< UmlArtifact& >(art_item_).name ());
                 QVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(art_item_).associatedArtifacts ());
                 // Only process targets with associated entries.
-                if (not assoc_arts_.isEmpty ())
+                if (! assoc_arts_.isEmpty ())
                 {
                   QString entry_;           // The target entry
                   {
@@ -103,7 +103,7 @@ while (not location_stack_.isEmpty ())
                     {
                       QString value_;
                       if (item_traits::property_search (art_item_, item_traits::butter_lib_type_name, value_)
-                            and value_ == item_traits::shared_value)
+                            && value_ == item_traits::shared_value)
                       {
                         target_type_ = shared_library;
                       }
@@ -169,7 +169,7 @@ while (not location_stack_.isEmpty ())
                     static_cast< derived* >(this)->end_target (art_item_, entry_os_
                                             , includes_, ldflags_, compflags_, compiler_, target_type_);
                   }
-                  if (not entry_.isEmpty ())
+                  if (! entry_.isEmpty ())
                   {
                     if (NULL == top_->parent ())
                     {  // Is local at base, use system_artifact_
@@ -189,7 +189,7 @@ while (not location_stack_.isEmpty ())
             }
             //////////////
             // Handle installables
-            if (installable_ or stereotype_label_.contains (item_traits::document_stereotype, false))
+            if (installable_ || stereotype_label_.contains (item_traits::document_stereotype, false))
             {
               QString entry_;           // The install entry
               {
@@ -223,13 +223,13 @@ while (not location_stack_.isEmpty ())
                     install_dir_ = item_traits::bindir_value;
                   }
                 }
-                if (not install_dir_.isEmpty () and install_dir_ != item_traits::no_install_value)
+                if (! install_dir_.isEmpty () && install_dir_ != item_traits::no_install_value)
                 {
                   QTextOStream entry_os_ (&entry_);
-                  static_cast< derived* >(this)->install_target (art_item_, entry_os_, install_dir_, install_type_, not installable_);
+                  static_cast< derived* >(this)->install_target (art_item_, entry_os_, install_dir_, install_type_, ! installable_);
                 }
               }
-              if (not entry_.isEmpty ())
+              if (! entry_.isEmpty ())
               {
                 if (NULL == top_->parent ())
                 {  // Is local at base, use system_artifact_

@@ -6,7 +6,7 @@ class helper__
 public:
   helper__ (QFile & a_file, int a_flag): m_f (a_file)
   {
-    if (not m_f.open (a_flag))
+    if (! m_f.open (a_flag))
     {
       QString l_msg ("Unable to open file for read/writing: " + m_f.name ());
       throw std::runtime_error (static_cast<const char*>(l_msg));
@@ -30,14 +30,14 @@ if (QFile::exists (a_path))
     const unsigned int l_sz (1024);     // The size of the buffer
     char l_buffer[l_sz];        // Buffer for reading
     const unsigned int l_count (l_dev.readBlock (&l_buffer[0], l_sz));
-    Result = (l_count == 0 or (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, std::min (l_count, a_str.length () - l_cursor))));
+    Result = (l_count == 0 || (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, std::min (l_count, a_str.length () - l_cursor))));
     l_cursor += l_count;
   }
-  while (Result and not l_dev.atEnd ());
+  while (Result && ! l_dev.atEnd ());
   // Read file must not be longer!
   Result = (l_cursor == a_str.length ());
 }
-if (not Result)
+if (! Result)
 {
   QFile l_dev (a_path);
   helper__ l_auto (l_dev, IO_WriteOnly);
@@ -51,26 +51,26 @@ QString l_sec (section (item_traits::generic_section, a_desc));
 QRegExp l_hdr_re ("^ *" + item_traits::header_label + " *= *");
 QRegExp l_link_re ("^ *" + item_traits::link_label + " *= *");
 QRegExp l_flag_re ("^ *" + item_traits::flag_label + " *= *");
-if (not l_sec.isEmpty ())
+if (! l_sec.isEmpty ())
 {
   QTextIStream l_sec_is (&l_sec);
-  while (not l_sec_is.atEnd ())
+  while (! l_sec_is.atEnd ())
   {
     const QString l_line (l_sec_is.readLine ());
     int l_length;
     if (-1 != l_hdr_re.match (l_line, 0, &l_length))
     {
-      if (not a_hdr.isEmpty ()) { a_hdr.append (" "); }
+      if (! a_hdr.isEmpty ()) { a_hdr.append (" "); }
       a_hdr.append (l_line.mid (l_length));
     }
     else if (-1 != l_link_re.match (l_line, 0, &l_length))
     {
-      if (not a_link.isEmpty ()) { a_link.append (" "); }
+      if (! a_link.isEmpty ()) { a_link.append (" "); }
       a_link.append (l_line.mid (l_length));
     }
     else if (-1 != l_flag_re.match (l_line, 0, &l_length))
     {
-      if (not a_flag.isEmpty ()) { a_flag.append (" "); }
+      if (! a_flag.isEmpty ()) { a_flag.append (" "); }
       a_flag.append (l_line.mid (l_length));
     }
   }
@@ -134,17 +134,17 @@ return Result;
 for (unsigned int l_i (0); l_i < a_top_loc.documents ().count (); ++l_i)
 {
   // Only write non-empty docs.
-  if (not a_top_loc.documents ().at (l_i)->description ().isEmpty ())
+  if (! a_top_loc.documents ().at (l_i)->description ().isEmpty ())
   {
     QCString l_tmp;
-    if (not a_top_loc.documents ().at (l_i)->propertyValue (item_traits::butter_other_name, l_tmp) or l_tmp == "nowrite")
+    if (! a_top_loc.documents ().at (l_i)->propertyValue (item_traits::butter_other_name, l_tmp) || l_tmp == "nowrite")
     {
       QCString l_doc_path = a_top_loc.full_path () + QDir::separator () + a_top_loc.documents ().at (l_i)->name ();
-      if (not l_tmp.isEmpty ())
+      if (! l_tmp.isEmpty ())
       {
         l_doc_path += "." + l_tmp;
       }
-      if (not compare_file_to_string (l_doc_path, a_top_loc.documents ().at (l_i)->description ()))
+      if (! compare_file_to_string (l_doc_path, a_top_loc.documents ().at (l_i)->description ()))
       {
         UmlCom::trace ("<p>Writing changed document : " + l_doc_path + "</p>");
       }

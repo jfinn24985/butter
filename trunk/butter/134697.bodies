@@ -18,7 +18,7 @@ else
   }
   QString libtype_; // Add LOC_TARGETLIBS variable for static libraries
   if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, libtype_)
-      and libtype_ == item_traits::static_value)
+      && libtype_ == item_traits::static_value)
   {
     QString defn_;
     {
@@ -34,15 +34,15 @@ else
 // Description for individual objects (optional)
 QString source_;
 QTextOStream source_os_ (&source_);
-if (not a_src_inc.isEmpty ())
+if (! a_src_inc.isEmpty ())
 {
   source_os_ << "HDRS on <" << item_traits::location (a_target) << ">"
               << a_basename << "$(SUFOBJ) += " << a_src_inc << " ;\n";
 }
-if (not a_src_flags.isEmpty ())
+if (! a_src_flags.isEmpty ())
 {
   QString comp_ ("C++");
-  BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, comp_) or not a_isdoc
+  BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, comp_) || ! a_isdoc
                 , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
                                 + "' property on " + item_traits::location (a_target) + "/" + a_filename).ascii ()));
   source_os_ << comp_ << "FLAGS on <" << item_traits::location (a_target) << ">"
@@ -53,7 +53,7 @@ if (not a_src_flags.isEmpty ())
     source_os_ << "+= ";
   source_os_ << a_src_flags << " ;\n";
 }
-if (not source_.isEmpty ())
+if (! source_.isEmpty ())
 {
   this->individual_obj_.append (source_);
 }
@@ -83,12 +83,12 @@ if (NULL != a_loc.parent ())
     subdir_os_ << "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)" << dir_line2_ << " ;\n\n"
               << "SubDir TOP" << dir_line_ << " ;\n\n";
     // Insert the subdir flags into l_buffer. 
-    if (not this->location_flags_.isEmpty ())
+    if (! this->location_flags_.isEmpty ())
     {
       subdir_os_ << "\nSUBDIRC++FLAGS += " << location_flags_ << " ;\n";
       this->location_flags_.truncate (0);
     }
-    if (not this->location_hdrs_.isEmpty ())
+    if (! this->location_hdrs_.isEmpty ())
     {
       subdir_os_ << "\nSUBDIRHDRS += " << location_hdrs_ << " ;\n";
       this->location_hdrs_.truncate (0);
@@ -105,7 +105,7 @@ a_os << ";\n\n";
 
 //////////////
 // Set up includes, libs etc.
-if (not a_ldflags.isEmpty ())
+if (! a_ldflags.isEmpty ())
 {
   // Create a named variable for static libraries else "LINKLIB on " defn
   QString libtype_;
@@ -121,7 +121,7 @@ if (not a_ldflags.isEmpty ())
   }
 }
 
-if (not this->lib_defn_.isEmpty ())
+if (! this->lib_defn_.isEmpty ())
 {
   a_os << "LinkLibraries " << this->qualified_target_name_ << " :\n\t" << this->lib_defn_ << ";\n";
 }
@@ -129,11 +129,11 @@ if (not this->lib_defn_.isEmpty ())
 if (a_type == other)
 {
   // Handle flags on non-standard targets differently.
-  if (not a_include.isEmpty ())
+  if (! a_include.isEmpty ())
   {
     a_os << "HDRS on " << this->qualified_target_name_ << " += " << a_include << " ;\n";
   }
-  if (not a_cflags.isEmpty ())
+  if (! a_cflags.isEmpty ())
   {
     a_os << this->other_target_type_.upper () << "FLAGS on " << this->qualified_target_name_ << " += " << a_cflags << " ;\n";
   }
@@ -141,11 +141,11 @@ if (a_type == other)
 else
 {
   // Headers and compile flags are set directory wide for standard targets.
-  if (not a_include.isEmpty ())
+  if (! a_include.isEmpty ())
   {
     merge_headers (a_include);
   }
-  if (not a_cflags.isEmpty ())
+  if (! a_cflags.isEmpty ())
   {
     merge_flags (a_cflags);
   }
@@ -153,7 +153,7 @@ else
 a_os << "\n";
 ////////////////////
 // Add any individually build objects
-if (not this->individual_obj_.isEmpty ())
+if (! this->individual_obj_.isEmpty ())
 {
   a_os << this->individual_obj_ << "\n";
 }
@@ -186,7 +186,7 @@ QString content_;
   // The include dir is the difference between the current fullpath and the
   // top-projects hdrDir
   QString toplevel_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
-  if (not toplevel_include_.isEmpty () && toplevel_include_ != base_path_)
+  if (! toplevel_include_.isEmpty () && toplevel_include_ != base_path_)
   {
     if (0 == toplevel_include_.find (base_path_))
     {
@@ -263,7 +263,7 @@ switch (a_type)
 case executable:
   {
     this->qualified_target_name_.append (const_cast< UmlArtifact& >(a_target).name () + "$(SUFEXE)");
-    if (not a_compiler.isEmpty ())
+    if (! a_compiler.isEmpty ())
     {
       a_os << "LINK on " << this->qualified_target_name_ << " = $(" <<  a_compiler << ") ;\n\n";
     }
@@ -273,7 +273,7 @@ case executable:
 case other:
   {
     item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_);
-    if (not a_build_file.isEmpty ())
+    if (! a_build_file.isEmpty ())
     {
       a_os << "include " << a_build_file << ".jam ;\n\n";
     }
@@ -284,7 +284,7 @@ case other:
 default: // cases static_library (and shared library)
   {
     this->qualified_target_name_.append ("lib" + const_cast< UmlArtifact& >(a_target).name () + "$(SUFLIB)");
-    if (not a_compiler.isEmpty ())
+    if (! a_compiler.isEmpty ())
     {
       a_os << "LINK on " << this->qualified_target_name_ << " = $(" <<  a_compiler << ") ;\n\n";
     }

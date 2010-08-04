@@ -8,7 +8,7 @@ if (NULL = a_cache)
   a_cache = base_.get ();
 }
 // Check if we need to go up the tree.
-while (not a_cache->match_path (a_path) or not a_cache->sub_path (a_path))
+while (! a_cache->match_path (a_path) || ! a_cache->sub_path (a_path))
 {
   if (NULL != a_cache->parent ()) // Check for base
   {
@@ -19,14 +19,14 @@ while (not a_cache->match_path (a_path) or not a_cache->sub_path (a_path))
     break; // at base, break loop
   }
 }
-if (not a_cache->match_path (a_path))
+if (! a_cache->match_path (a_path))
 {
   // Check if we need to reparent the entire tree.
-  if (not a_cache->sub_path (a_path))
+  if (! a_cache->sub_path (a_path))
   {
     BUTTER_CHECK (a_cache == base_.get (), "We should be at the base of the tree.");
     // Need to reparent tree.
-    while (not base_->match_path (a_path) or not base_->sub_path (a_path))
+    while (! base_->match_path (a_path) || ! base_->sub_path (a_path))
     {
       std::auto_ptr< location > tmp__ = base_->create_common_parent (a_path);
       base_.release (); // release old base ptr
@@ -45,14 +45,14 @@ if (not a_cache->match_path (a_path))
   else
   {
     // Attempt to descend tree
-    while (not a_cache->match_path (a_path))
+    while (! a_cache->match_path (a_path))
     {
       // Check children of current location
       QPtrVector< location > children__ = a_cache->children ();
       location * newloc__ (a_cache);
       for (int i_ = 0; i_ < children__.size (); ++i_)
       {
-        if (children__.at (i_)->match_path (a_path) or children__.at (i_)->sub_path (a_path))
+        if (children__.at (i_)->match_path (a_path) || children__.at (i_)->sub_path (a_path))
         {
           newloc__ = children__.at (i_);
           break;
@@ -73,7 +73,7 @@ if (not a_cache->match_path (a_path))
 BUTTER_ENSURE (a_cache->match_path (a_path), "Output location does not match input path");
 return a_cache;
 
-while (not stack__.isEmpty () and not stack__.top ()->match (a_path))
+while (! stack__.isEmpty () && ! stack__.top ()->match (a_path))
 {
   if (stack__.top ()->sub_path (a_path))
   {
@@ -125,7 +125,7 @@ while (search_path__ != a_path)
 {
   path_stack__.append (a_path.dirName ());
   a_path.cdUp ();
-  BUTTER_ALWAYS (not a_path.isRoot (), "The path of a package is not a descendent of the project root.");
+  BUTTER_ALWAYS (! a_path.isRoot (), "The path of a package is not a descendent of the project root.");
 }
 // Search up dir for existing locations
 while (path_stack__.last ())
@@ -176,7 +176,7 @@ return Result;
 !!!178345.cpp!!!	prune(in a_root : location, in a_base_path : string, inout a_error_message : string) : bool
 // Return true if we have no targets or children (documents and
 // templates are not considered).
-if (not m_children.isEmpty ())
+if (! m_children.isEmpty ())
 {
   unsigned int l_newsize (m_children.count ());
   for (unsigned int l_i (0); l_i < l_newsize;)
@@ -202,4 +202,4 @@ if (not m_children.isEmpty ())
     }
   }
 }
-return not m_children.isEmpty () or not m_targets.isEmpty ();
+return ! m_children.isEmpty () || ! m_targets.isEmpty ();

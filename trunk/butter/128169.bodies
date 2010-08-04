@@ -15,7 +15,7 @@ class jamfile_boost
 }
 !!!140585.cpp!!!	serialize(in a_os : ostream) : void
 const std::string l_buffer = buffer ().str ();
-if (not l_buffer.empty () or not m_subprojects.isEmpty ())
+if (! l_buffer.empty () || ! m_subprojects.isEmpty ())
 {
   a_os << "BEGIN JAMFILE: {" << dirname ().path () << "/" << default_name () << "}\n";
   a_os << "#\n# Jamfile for package(s): " << package_names () << "\n#\n";

@@ -27,12 +27,12 @@ else
   const QString lib_path_ (item_traits::dirname (*parent_package_).path ().mid (root_dir_.length () + 1));
   QString library_type_;
   lib_os_ << "$(ROOTDIR)";
-  if (not lib_path_.isEmpty ())
+  if (! lib_path_.isEmpty ())
   {
     lib_os_ << "/" << lib_path_;
   }
   lib_os_ << "/lib" << const_cast< UmlArtifact& >(a_target).name ();
-  if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, library_type_) and item_traits::shared_value == library_type_)
+  if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, library_type_) && item_traits::shared_value == library_type_)
   {
     //////////////////////
     // Is a shared library
@@ -52,7 +52,7 @@ else
     {
       const QString stereotype_ (assoc_arts_[i_]->stereotype ().data ());
       if (stereotype_ == item_traits::library_stereotype
-          or stereotype_ == item_traits::source_stereotype)
+          || stereotype_ == item_traits::source_stereotype)
       {
         QString ldflags_;
         if (item_traits::property_value (*assoc_arts_[i_], item_traits::butter_ldflags_name, ldflags_))
@@ -92,25 +92,25 @@ QString user_extra_;
   // means we have to make a separate build line for it.
   // name().o: name().cpp name().d
   // \t        $(CCC) $(USERHDRS) $(CCCFLAGS) -c -o name().o name().cpp
-  if (not a_src_inc.isEmpty () or not a_src_flags.isEmpty ())
+  if (! a_src_inc.isEmpty () || ! a_src_flags.isEmpty ())
   {
     QString comp_ ("CCC");
-    BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, comp_) or not a_isdoc
+    BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, comp_) || ! a_isdoc
                   , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
                                   + "' property on " + QString (a_filename)).ascii ()));
     user_obj_ << a_basename << ".o: " << a_filename << " ";
-    if (not a_isdoc)
+    if (! a_isdoc)
     { // Add dependencies for C++ source documents
       user_obj_ << a_basename << ".d";
     }
     user_obj_ << "\n";
     user_obj_ << "\t$(" << comp_ << ") $(USERHDRS) ";
-    if (not a_src_inc.isEmpty ())
+    if (! a_src_inc.isEmpty ())
     {
       user_obj_ << process_hdrs (a_src_inc) << " ";
     }
     user_obj_ << "$(" << comp_ << "FLAGS) ";
-    if (not a_src_flags.isEmpty ())
+    if (! a_src_flags.isEmpty ())
     {
       user_obj_ << a_src_flags << " ";
     }
@@ -118,7 +118,7 @@ QString user_extra_;
     user_obj_ << "\n\n";
   }
 }
-if (not user_extra_.isEmpty ())
+if (! user_extra_.isEmpty ())
 {
   this->individual_obj_.append (user_extra_);
 }
@@ -269,7 +269,7 @@ a_os << "TARGETS := $(TARGETS) " << this->qualified_target_name_ << "\n\n";
 QString init_text_;
 QTextOStream init_os_ (&init_text_);
 root_dir_ = a_base.full_path ();
-BUTTER_CHECK (not root_dir_.isEmpty (), "<p><b>Program error:</b> Project root directory is not set properly.</p>");
+BUTTER_CHECK (! root_dir_.isEmpty (), "<p><b>Program error:</b> Project root directory is not set properly.</p>");
 init_os_ << "include " << rules_name << "\n\n";
 init_os_ << "ROOTDIR := " << root_dir_ << "\n\n";
 const QString base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
@@ -311,7 +311,7 @@ QStringList l_list (QStringList::split (" ", a_inc_list));
 for (unsigned int l_i (0); l_i < l_list.count (); ++l_i)
 {
   const QString l_item ((*l_list.at (l_i)).stripWhiteSpace ());
-  if ('$' != l_item[0] and QDir::isRelativePath (l_item))
+  if ('$' != l_item[0] && QDir::isRelativePath (l_item))
   {
     l_os << "-I$(ROOTDIR)/" << l_item << " ";
   }
@@ -387,7 +387,7 @@ case other:
 // Handle target specific include file for library types only
 if (a_type != executable)
 {
-  if (not a_build_file.isEmpty ())
+  if (! a_build_file.isEmpty ())
   {
     a_os << "include $(ROOTDIR)/" << a_build_file << ".make\n\n";
   }

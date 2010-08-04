@@ -40,7 +40,7 @@ const butter::style & style_ (butter::style::get_style ());
 int state_ = 0; // 0 = unlabelled, 1 = labelled
 string_pair_t * cache_ (0);
 for (QString line_ = a_is.readLine ();
-    not line_.isNull (); // Check for EOF
+    ! line_.isNull (); // Check for EOF
     line_ = a_is.readLine ())
 {
   switch (state_)
@@ -77,7 +77,7 @@ for (QString line_ = a_is.readLine ();
           name_.append (artifact.name ());
           throw std::runtime_error ("<p><b>Fatal Error:</b> Error in artifact <b>" + std::string (name_.ascii ()) + "</b>, appears to have an unknown section type.</p>");
         }
-        if (not capture_.isEmpty ())
+        if (! capture_.isEmpty ())
         {
           cache_->first = capture_;
           capture_.setUnicode (0, 0);
@@ -102,7 +102,7 @@ for (QString line_ = a_is.readLine ();
     {
       if (line_.startsWith (style_.end_phrase))
       {
-        if (not capture_.isEmpty ())
+        if (! capture_.isEmpty ())
         {
           cache_->second = capture_;
           capture_.setUnicode (0, 0);
@@ -125,7 +125,7 @@ for (QString line_ = a_is.readLine ();
     break;
   }
 }
-if (not capture_.isEmpty ())
+if (! capture_.isEmpty ())
 {
   if (NULL != cache_) // Have there been sections?
   {
@@ -144,11 +144,11 @@ class helper_
 public:
   static void merge_ (string_pair_t &targ_, const string_pair_t &src_)
   {
-    if (not src_.first.isEmpty ())
+    if (! src_.first.isEmpty ())
     {
       targ_.first.append (src_.first);
     }
-    if (not src_.second.isEmpty ())
+    if (! src_.second.isEmpty ())
     {
       targ_.second.append (src_.second);
     }
@@ -167,7 +167,7 @@ for (QDictIterator< string_pair_t > i_ (tmp_.targets_);
 }
 end.append (tmp_.end);
 !!!196265.cpp!!!	reset() : void
-if (not targets_.isEmpty ())
+if (! targets_.isEmpty ())
 {
   for (QDictIterator< string_pair_t > i_ (targets_);
       NULL != i_.current ();
@@ -176,11 +176,11 @@ if (not targets_.isEmpty ())
     i_.current ()->second.truncate (0);
   }
 }
-if (not preamble.second.isEmpty ())
+if (! preamble.second.isEmpty ())
 {
   preamble.second.truncate (0);
 }
-if (not close.second.isEmpty ())
+if (! close.second.isEmpty ())
 {
   close.second.truncate (0);
 }
@@ -191,11 +191,11 @@ public:
   static void write (QTextStream &a_os_, const string_pair_t & a_cache_, QString a_label_)
   {
     const butter::style & s_ (butter::style::get_style ());
-    if (not a_cache_.first.isEmpty ())
+    if (! a_cache_.first.isEmpty ())
     {
       a_os_ << a_cache_.first;
     }
-    if (not a_cache_.second.isEmpty ())
+    if (! a_cache_.second.isEmpty ())
     {
       a_os_ << s_.start_phrase << a_label_ << "\n";
       a_os_ << a_cache_.second;
@@ -215,7 +215,7 @@ for (QValueListConstIterator< QString > i_ (target_order_.begin ());
   helper_::write (a_os, *tmp_, butter::item_traits::target_label + " " + *i_);
 }
 helper_::write (a_os, close, butter::item_traits::close_label);
-if (not end.isEmpty ())
+if (! end.isEmpty ())
 {
   a_os << end;
 }

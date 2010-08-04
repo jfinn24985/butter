@@ -22,15 +22,15 @@ if (a_not_doc)
   {
     section_ = section (item_traits::generic_section, const_cast< UmlItem& >(a_item).description ());
   }
-  if (not section_.isEmpty ())
+  if (! section_.isEmpty ())
   {
     QRegExp hdr_re_ ("^ *" + item_traits::header_label + " *= *");
     QRegExp link_re_ ("^ *" + item_traits::link_label + " *= *");
     QRegExp flag_re_ ("^ *" + item_traits::flag_label + " *= *");
-    if (not section_.isEmpty ())
+    if (! section_.isEmpty ())
     {
       QTextIStream section_is_ (&section_);
-      while (not section_is_.atEnd ())
+      while (! section_is_.atEnd ())
       {
         const QString line_ (section_is_.readLine ());
         int length_;
@@ -57,7 +57,7 @@ if (a_loc.packages ().count () > 0)
 {
   QVector< UmlItem > docs_ = a_loc.find_uml_document (a_name);
   // If any documents found
-  if (not docs_.isEmpty ())
+  if (! docs_.isEmpty ())
   {
     Result.reset (new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
     for (unsigned int k_ = 1; k_ < docs_.count (); ++k_)
@@ -83,7 +83,7 @@ if (a_list.isEmpty ())
 {
   a_list = a_addition;
 }
-else if (not a_list.contains (a_addition))
+else if (! a_list.contains (a_addition))
 {
   // a_addition is not a subset of a_list
   if (a_addition.contains (a_list))

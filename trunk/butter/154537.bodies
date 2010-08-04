@@ -1,9 +1,9 @@
 class tree_reader
 !!!198057.cpp!!!	increment() : void
-BUTTER_REQUIRE (not at_null (), "Attempt to increment iterator past the ultimate end");
+BUTTER_REQUIRE (! at_null (), "Attempt to increment iterator past the ultimate end");
 if (pointer() != here_) // Do nothing if here is nul
 {
-  if (not end_ and pointer() != here_->child_)
+  if (! end_ && pointer() != here_->child_)
   {
     here_ = here_->child_;
     end_ = false;
@@ -11,7 +11,7 @@ if (pointer() != here_) // Do nothing if here is nul
   }
   else
   {
-    if (pointer() == here_->sibling_ and pointer() != here_->parent_)
+    if (pointer() == here_->sibling_ && pointer() != here_->parent_)
     {
       here_ = here_->parent_;
       --depth_;

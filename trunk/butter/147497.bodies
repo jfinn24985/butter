@@ -103,14 +103,14 @@ std::cout << "Iterator value.second matches set value.second: " << result_.first
 std::cout << "-- Iterate over a tree --" << std::endl;
 for (iter_ = root_.begin (); iter_ != root_.end (); ++iter_)
 {
-  assert (not iter_.at_null ());
+  assert (! iter_.at_null ());
   iter_->debug_dump (std::cout);
 }
 std::cout << "-- Const_iterate over a tree --" << std::endl;
 const test_type & croot_ (root_);
 for (const_test_iterator citer_ = croot_.begin (); citer_ != croot_.end (); ++citer_)
 {
-  assert (not citer_.at_null ());
+  assert (! citer_.at_null ());
   citer_->debug_dump (std::cout);
 }
 #endif
@@ -128,19 +128,19 @@ std::cout << "begin + 4 = end for root with two+two children" << std::endl;
 std::cout << "-- Iterate over a subtree --" << std::endl;
 for (iter_ = root_.begin ()->begin (); iter_ != root_.begin ()->end (); ++iter_)
 {
-  assert (not iter_.at_null ());
+  assert (! iter_.at_null ());
   iter_->debug_dump (std::cout);
 }
 std::cout << "-- Const_iterate over a subtree --" << std::endl;
 for (const_test_iterator citer_ = croot_.begin ()->begin (); citer_ != croot_.begin ()->end (); ++citer_)
 {
-  assert (not citer_.at_null ());
+  assert (! citer_.at_null ());
   citer_->debug_dump (std::cout);
 }
 std::cout << "-- Use reader over tree --" << std::endl;
-for (test_type::tree_reader iter_ (root_.child ()); iter_.depth() >= 0 and not iter_.at_null (); ++iter_)
+for (test_type::tree_reader iter_ (root_.child ()); iter_.depth() >= 0 && ! iter_.at_null (); ++iter_)
 {
-  assert (not iter_.at_null ());
+  assert (! iter_.at_null ());
   std::cout << "Revisiting node: " << (iter_.end_of () ? "YES" : "NO") << std::endl;
   std::cout << "Node depth: " << iter_.depth () << std::endl;
   iter_->debug_dump (std::cout);

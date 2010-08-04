@@ -25,7 +25,7 @@ char sep_[2];
 sep_[0] = QDir::separator ();
 sep_[1] = '\0';
 const int sz_ = std::min(size (), a_other.size ());
-for (int c_ = 0; c_ < sz_ and at(c_) == a_other.at(c_); ++c_)
+for (int c_ = 0; c_ < sz_ && at(c_) == a_other.at(c_); ++c_)
 {
   Result.append (at(c_));
   Result.append (sep_);
@@ -35,12 +35,12 @@ Result.truncate (Result.length () - 1);
 return Result;
 !!!185769.cpp!!!	equality(in a_rhs : pathcmp) : bool
 bool Result (path_ == a_rhs.path_);
-if (not Result)
+if (! Result)
 {
   if (size () == a_rhs.size ())
   {
     Result = true;
-    for (unsigned int i = 0; Result and i < size (); ++i)
+    for (unsigned int i = 0; Result && i < size (); ++i)
     {
       Result = (at(i) == a_rhs.at (i));
     }
@@ -59,7 +59,7 @@ const int sz2_ (a_target.size ());
 const int sz_ (std::min (sz1_, sz2_));
 // Determine the parent dirs in common.
 int common_ = 0;
-for (; common_ < sz_ and at(common_) == a_target.at(common_); ++common_)
+for (; common_ < sz_ && at(common_) == a_target.at(common_); ++common_)
 {}
 // Add up dirs from here to common.
 for (int i_ = sz1_ - common_; i_ > 0; --i_)
@@ -83,7 +83,7 @@ if (Result)
   const unsigned int sz_ = size ();
   // Simple test that subdirs have more elements than this
   Result = (sz_ <= a_rhs.size ());
-  for (unsigned int c_ = 0; Result and c_ < sz_; ++c_)
+  for (unsigned int c_ = 0; Result && c_ < sz_; ++c_)
   {
     Result = (at(c_) == a_rhs.at (c_));
   }

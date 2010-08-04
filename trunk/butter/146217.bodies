@@ -1,6 +1,6 @@
 class tree_iterator
 !!!187177.cpp!!!	increment() : void
-REQUIRE (not at_null (), "Attempt to increment iterator past the ultimate end");
+REQUIRE (! at_null (), "Attempt to increment iterator past the ultimate end");
 if (pointer() != here_) // Do nothing if here is nul
 {
   if (pointer() != here_->child_)
@@ -9,7 +9,7 @@ if (pointer() != here_) // Do nothing if here is nul
   }
   else
   {
-    while (pointer() == here_->sibling_ and pointer() != here_->parent_)
+    while (pointer() == here_->sibling_ && pointer() != here_->parent_)
     {
       here_ = here_->parent_;
     }

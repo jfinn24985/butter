@@ -19,19 +19,19 @@ a_os << const_cast< UmlArtifact& >(a_target).name () << "\n\t";
 // Note. Header/link information is imported with library in boost jam.
 !!!212777.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 QString individual_;
-if (not this->is_other_ && (not a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
+if (! this->is_other_ && (! a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
 {
   // Add individual obj description
   QString compiler_ ("cxx");
   QTextOStream source_os_ (&individual_);
-  BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, compiler_) or not a_isdoc
+  BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, compiler_) || ! a_isdoc
                 , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
                                 + "' property on " + QString (a_filename)).ascii ()));
   if (compiler_ == "CC") compiler_ = "C";
   if (compiler_ == "FORTRAN") compiler_ = "F";
   source_os_ << "obj " << a_basename << "_obj : "
               << a_filename << " : ";
-  if (not a_src_inc.isEmpty ())
+  if (! a_src_inc.isEmpty ())
   {
     QStringList include_list_ (QStringList::split (" ", a_src_inc));
     for (unsigned int index_ = 0; index_ < include_list_.count (); ++index_)
@@ -40,7 +40,7 @@ if (not this->is_other_ && (not a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()
     }
   }
   source_os_ << "$(" << this->target_NAME_ << "HDRS) ";
-  if (not a_src_flags.isEmpty ())
+  if (! a_src_flags.isEmpty ())
   {
     source_os_ << "<" << compiler_.lower () << "flags>\"" << a_src_flags
                << " $(" << this->target_NAME_ << "FLAGS)\" ";
@@ -54,7 +54,7 @@ else
   a_os << a_filename << "\n\t";
 }
 
-if (not individual_.isEmpty ())
+if (! individual_.isEmpty ())
 {
   this->individual_obj_.append (individual_);
 }
@@ -69,7 +69,7 @@ if (NULL != a_loc.parent ())
   QString dir_line_;
   while (NULL != loc_cursor_->parent ())
   {
-    if (not dir_line_.isEmpty ())
+    if (! dir_line_.isEmpty ())
     {
       dir_line_.insert (0, QDir::separator ());
     }
@@ -90,7 +90,7 @@ if (NULL != a_loc.parent ())
 // end target definition
 a_os << ":\n\t"; // End sources.
 // Standard requirements
-if (not a_include.isEmpty ())
+if (! a_include.isEmpty ())
 {
   QStringList list_ (QStringList::split (" ", a_include));
   for (unsigned int i_ = 0; i_ < list_.count (); ++i_ )
@@ -99,7 +99,7 @@ if (not a_include.isEmpty ())
   }
   a_os << "\n\t";
 }
-if (not a_cflags.isEmpty ())
+if (! a_cflags.isEmpty ())
 {
   if (other == a_type)
   {
@@ -117,7 +117,7 @@ switch (a_type)
 case static_library:
   {
     a_os << "<link>shared\n\t";
-    if (not a_ldflags.isEmpty ())
+    if (! a_ldflags.isEmpty ())
     {
       // Put linker flags as pass-to-user
       a_os << ": :\n\t<linkflags>\"" << a_ldflags << "\"\n\t";
@@ -128,7 +128,7 @@ case static_library:
 case shared_library:
   {
     a_os << "<link>shared\n\t";
-    if (not a_ldflags.isEmpty ())
+    if (! a_ldflags.isEmpty ())
     {
       // Use linker flags but pass on any headers.
       a_os << "<linkflags>\"" << a_ldflags << "\"\n\t";
@@ -149,7 +149,7 @@ case shared_library:
   break;
 case executable:
 case other:
-  if (not a_ldflags.isEmpty ())
+  if (! a_ldflags.isEmpty ())
   {
     a_os << "<linkflags>\"" << a_ldflags << "\"\n\t";
   }
@@ -157,7 +157,7 @@ case other:
 }
 a_os << ";\n\n";
 // Add any object definitions
-if (not this->individual_obj_.isEmpty ())
+if (! this->individual_obj_.isEmpty ())
 {
   // Add variables for flags to use with obj
   a_os << this->target_NAME_ << "HDRS = ";
@@ -184,7 +184,7 @@ if (not this->individual_obj_.isEmpty ())
 // Get project name, if present
 QString value_;
 item_traits::property_value (a_target, item_traits::butter_project_name, value_);
-BUTTER_CHECK (not value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact.");
+BUTTER_CHECK (! value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact.");
 // Get the external target section
 butter::compound_artifact::string_pair_t & proj_ (a_sys.target (value_));
 // Construct a mini-project section.
@@ -193,7 +193,7 @@ if (proj_.second.isEmpty ())
   proj_.second.append ("#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\n");
 }
 // If this is a using directive - we don't need to do anything
-if (not proj_.second.contains ("using "))
+if (! proj_.second.contains ("using "))
 {
   QString tmp_;
   if (item_traits::property_value (a_target, item_traits::butter_buildfile_name, tmp_))
@@ -205,7 +205,7 @@ if (not proj_.second.contains ("using "))
   else
   {
     QString template_ (section (section_name, const_cast< UmlArtifact& >(a_target).description ()));
-    if (not template_.isEmpty ())
+    if (! template_.isEmpty ())
     {
       proj_.second.append (template_ + "\n");
     }
@@ -213,18 +213,18 @@ if (not proj_.second.contains ("using "))
     {
       QString includes_, linkflags_, cflags_;
       find_hdr_link (a_target, includes_, linkflags_, cflags_, section_name, true);
-      if (not (includes_.isEmpty ()and linkflags_.isEmpty ()))
+      if (! (includes_.isEmpty () && linkflags_.isEmpty ()))
       {
         proj_.second.append ("alias " + const_cast< UmlArtifact& >(a_target).name () + " : : : : ");
-        if (not includes_.isEmpty ())
+        if (! includes_.isEmpty ())
         {
           proj_.second.append ("<include>\"" + includes_ + "\" ");
         }
-        if (not linkflags_.isEmpty ())
+        if (! linkflags_.isEmpty ())
         {
           proj_.second.append ("<linkflags>\"" + linkflags_ + "\" ");
         }
-        if (not cflags_.isEmpty ())
+        if (! cflags_.isEmpty ())
         {
           proj_.second.append ("<cxxflags>\"" + cflags_ + "\" ");
         }
@@ -245,7 +245,7 @@ QString content_;
   os_ << "\n\t:  requirements <debug-symbols>on:<cxxflags>\"-DDEBUG=1\"\n\t";
   QString link_, flag_; // Needed arguments.
   find_hdr_link (a_project, base_include_, link_, flag_, section_name, false);
-  if (not base_include_.isEmpty ())
+  if (! base_include_.isEmpty ())
   {
     QStringList l_list (QStringList::split (" ", base_include_));
     for (unsigned int l_i (0); l_i < l_list.count (); ++l_i)
@@ -254,11 +254,11 @@ QString content_;
     }
     os_ << "\n\t";
   }
-  if (not link_.isEmpty ())
+  if (! link_.isEmpty ())
   {
     os_ << "<linkflags>\"" << link_ << "\"\n\t";
   }
-  if (not flag_.isEmpty ())
+  if (! flag_.isEmpty ())
   {
     os_ << "<cxxflags>\"" << flag_ << "\"\n\t";
   }
@@ -295,7 +295,7 @@ if (stereotype_ == item_traits::library_stereotype)
 {
   if (item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_))
   {
-    if (not a_build_file.isEmpty ())
+    if (! a_build_file.isEmpty ())
     {
       a_os << "include " << a_build_file << ".bjam ;\n\n";
     }

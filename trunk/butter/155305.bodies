@@ -6,7 +6,7 @@ class helper__
 public:
   helper__ (QFile & a_file, int a_flag): m_f (a_file)
   {
-    if (not m_f.open (a_flag))
+    if (! m_f.open (a_flag))
     {
       QString l_msg ("Unable to open file for read/writing: " + m_f.name ());
       throw std::runtime_error (static_cast<const char*>(l_msg));
@@ -30,14 +30,14 @@ if (QFile::exists (a_path))
     const unsigned int l_sz (1024);     // The size of the buffer
     char l_buffer[l_sz];        // Buffer for reading
     const unsigned int l_count (l_dev.readBlock (&l_buffer[0], l_sz));
-    Result = (l_count == 0 or (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, std::min (l_count, a_str.length () - l_cursor))));
+    Result = (l_count == 0 || (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, std::min (l_count, a_str.length () - l_cursor))));
     l_cursor += l_count;
   }
-  while (Result and not l_dev.atEnd ());
+  while (Result && ! l_dev.atEnd ());
   // Read file must not be longer!
   Result = (l_cursor == a_str.length ());
 }
-if (not Result)
+if (! Result)
 {
   QFile l_dev (a_path);
   helper__ l_auto (l_dev, IO_WriteOnly);
