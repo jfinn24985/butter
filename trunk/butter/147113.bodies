@@ -9,7 +9,11 @@ class compound_artifact
 , target_order_ ()
 , version ()
 {
+#if QT_VERSION < 0x030000
+  QString tmp_ (a_art.description ());
+#else
   const QString tmp_ (a_art.description ());
+#endif
   QTextIStream is_ (&tmp_);
   deserialise (is_);
 }

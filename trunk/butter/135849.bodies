@@ -47,7 +47,7 @@ else
     lib_os_ << "$(SUFLIB) ";
     //////////////////////
     // We need to get ldflags from static library's sources
-    QPtrVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(a_target).associatedArtifacts ());
+    QVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(a_target).associatedArtifacts ());
     for (unsigned int i_ = 0; i_ < assoc_arts_.size (); ++i_)
     {
       const QString stereotype_ (assoc_arts_[i_]->stereotype ().data ());
@@ -151,18 +151,22 @@ if (a_type == other)
   ////////////////
   // Handle "other" library types specially.
   QString other_type_ (this->other_target_type_.upper ());
+#if QT_VERSION < 0x030000
+  other_type_.replace (QRegExp ("-"), "_");
+#else
   other_type_.replace ('-', "_");
+#endif
   a_os << this->qualified_target_name_ << " : $(" << this->target_NAME_ << "SRC) " << this->lib_set_ << "\n"
         << "\t$(" << other_type_ << ") ";
-  if (not a_include.isEmpty ())
+  if (! a_include.isEmpty ())
   {
     a_os << process_hdrs (a_include) << " ";
   }
-  if (not a_cflags.isEmpty ())
+  if (! a_cflags.isEmpty ())
   {
     a_os << a_cflags << " ";
   }
-  if (not a_ldflags.isEmpty ())
+  if (! a_ldflags.isEmpty ())
   {
     a_os << a_ldflags << " ";
   }
@@ -172,22 +176,22 @@ else
 {
   // Create linker and compiler flagsets
   a_os << target_NAME_ << "LDFLAGS := $(LOCALLDFLAGS)";
-  if (not this->lib_set_.isEmpty () or not a_ldflags.isEmpty ())
+  if (! this->lib_set_.isEmpty () || ! a_ldflags.isEmpty ())
   {
-    if (not this->lib_set_.isEmpty ())
+    if (! this->lib_set_.isEmpty ())
     {
       a_os << " " << this->lib_set_;
     }
-    if (not a_ldflags.isEmpty ())
+    if (! a_ldflags.isEmpty ())
     {
       a_os << " " << a_ldflags;
     }
   }
   a_os << "\n";
-  if (not a_cflags.isEmpty () or a_type != static_library)
+  if (! a_cflags.isEmpty () || a_type != static_library)
   {
     a_os << "USERFLAGS := $(LOCALFLAGS)";
-    if (not a_cflags.isEmpty ())
+    if (! a_cflags.isEmpty ())
     {
       a_os << " " << a_cflags;
     }
@@ -197,7 +201,7 @@ else
     }
     a_os << "\n";
   }
-  if (not a_include.isEmpty ())
+  if (! a_include.isEmpty ())
   {
     a_os << "USERHDRS := $(LOCALHDRS) " << process_hdrs (a_include) << "\n";
   }
@@ -206,7 +210,7 @@ else
                     << " $(filter %.d, $(" << target_NAME_ << "SRC:.c=.d))\n"
               << "include $(" << target_NAME_ << "_DINC)\n";
   // Add any object definitions.
-  if (not this->individual_obj_.isEmpty ())
+  if (! this->individual_obj_.isEmpty ())
   {
     a_os << this->individual_obj_ << "\n";
   }
@@ -347,7 +351,11 @@ return Result;
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = const_cast< UmlArtifact& >(a_target).name ();
+#if QT_VERSION < 0x030000
+this->target_NAME_ = this->qualified_target_name_.upper ().replace (QRegExp("\\."), "");
+#else
 this->target_NAME_ = this->qualified_target_name_.upper ().remove ('.');
+#endif
 this->other_target_type_.truncate (0);    // An "other" target type.
 this->lib_set_.truncate (0);              // Set of included libraries
 this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled

@@ -46,7 +46,7 @@ if (a_base.find_uml_document (static_cast< derived* >(this)->rules_name).isEmpty
 // Process the project, handling items as we go.
 //
 
-QPtrStack< location > location_stack_;
+QStack< location > location_stack_;
 location_stack_.push (&a_base); // Use a stack to eliminate recursion
 while (not location_stack_.isEmpty ())
 {
@@ -92,7 +92,7 @@ while (not location_stack_.isEmpty ())
                 //////////////
                 // Is a local target
                 const QString target_name_ (const_cast< UmlArtifact& >(art_item_).name ());
-                QPtrVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(art_item_).associatedArtifacts ());
+                QVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(art_item_).associatedArtifacts ());
                 // Only process targets with associated entries.
                 if (not assoc_arts_.isEmpty ())
                 {

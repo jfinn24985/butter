@@ -186,7 +186,7 @@ return a_location;
 !!!164393.cpp!!!	find_uml_document(in a_name : unistr) : UmlItem
 BUTTER_REQUIRE (not a_name.isEmpty (), "Cannot look for a document without a name");  
 BUTTER_REQUIRE (not packages_.isEmpty (), "Location has no packages!");
-QPtrVector< UmlItem > Result (4);
+QVector< UmlItem > Result (4);
 // Only check local deployment views.
 for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
 {
@@ -262,7 +262,7 @@ BUTTER_REQUIRE (aPackage == const_cast< UmlItem& >(a_item).kind (), "Argument is
 // Use pointer cast to avoid bad_cast throw, even though
 // we may throw in the next step..
 const UmlPackage * item_ = dynamic_cast < const UmlPackage * >(&a_item);
-BUTTER_REQUIRE (NULL != item_ and NULL == const_cast< UmlItem& >(a_item).parent ()
+BUTTER_REQUIRE (NULL != item_ && NULL == const_cast< UmlItem& >(a_item).parent ()
                 , "<p><b>Program error:</b> Item is not a package or is not the top-level package.</p>");
 /////////////////////
 // Set logging level
@@ -325,7 +325,7 @@ log::com.debug_log (root_dir_ + os_dir_obj_.separator () + "butter.log");
 #endif
 ///////////////////////////////////
 // Walk through the UmlItems.
-QPtrStack< UmlItem > item_stack_; // in-order project descent stack
+QStack< UmlItem > item_stack_; // in-order project descent stack
 // Push items onto stack
 item_stack_.push (&a_item);
 while (not item_stack_.isEmpty ())
@@ -345,19 +345,19 @@ while (not item_stack_.isEmpty ())
         {
           const QString current_key_ (current_prop_.currentKey ().data ());
           if (current_key_ != item_traits::butter_base_name
-            and current_key_ != item_traits::butter_build_dir_name
-            and current_key_ != item_traits::butter_buildfile_name
-            and current_key_ != item_traits::butter_compiler_name
-            and current_key_ != item_traits::butter_flags_name
-            and current_key_ != item_traits::butter_install_name
-            and current_key_ != item_traits::butter_ldflags_name
-            and current_key_ != item_traits::butter_lib_type_name
-            and current_key_ != item_traits::butter_log_name
-            and current_key_ != item_traits::butter_other_name
-            and current_key_ != item_traits::butter_include_name
-            and current_key_ != item_traits::butter_project_name
-            and current_key_ != item_traits::butter_style_name
-            and current_key_ != item_traits::butter_version_name)
+            && current_key_ != item_traits::butter_build_dir_name
+            && current_key_ != item_traits::butter_buildfile_name
+            && current_key_ != item_traits::butter_compiler_name
+            && current_key_ != item_traits::butter_flags_name
+            && current_key_ != item_traits::butter_install_name
+            && current_key_ != item_traits::butter_ldflags_name
+            && current_key_ != item_traits::butter_lib_type_name
+            && current_key_ != item_traits::butter_log_name
+            && current_key_ != item_traits::butter_other_name
+            && current_key_ != item_traits::butter_include_name
+            && current_key_ != item_traits::butter_project_name
+            && current_key_ != item_traits::butter_style_name
+            && current_key_ != item_traits::butter_version_name)
           {
             log::com.trace (log::warn, "<p><b>Warning:</b> Item \"" + QString (top_->name ().data ()) + "\" has property name \"" + current_key_ + "\" which contains 'butter' but is not a known property name</p>");
           }
@@ -378,8 +378,8 @@ while (not item_stack_.isEmpty ())
     {
       if (not os_dir_obj_.mkdir (pack_path_))
       {
-        QString msg_ ("<p><b>A package directory [" + pack_path_ + "] could not be created</b>, please ensure that all packages have usable locations. Running the code generator first may avoid this error.</p>");
-        throw std::runtime_error (msg_);
+        const QString msg_ ("<p><b>A package directory [" + pack_path_ + "] could not be created</b>, please ensure that all packages have usable locations. Running the code generator first may avoid this error.</p>");
+        throw std::runtime_error (msg_.ascii ());
       }
     }
     // Find/Create location, reparenting tree if necessary, and add package.
@@ -457,7 +457,7 @@ while (not item_stack_.isEmpty ())
   }
 #endif
   // Push any children onto the stack (ensures all objects are checked for keywords)
-  QPtrVector < UmlItem > kids_ (top_->children ());
+  QVector < UmlItem > kids_ (top_->children ());
   for (unsigned int i_ = 0; i_ < kids_.size (); ++i_)
   {
     BUTTER_CHECK (NULL != kids_.at (i_), "<p><b>Program error</b> Nul objects were children of an UmlItem.</p>");
@@ -489,7 +489,7 @@ if (Result->packages_.isEmpty ())
   if (top_package_is_writable_)
   {
     bool name_not_found_ (true);
-    for (unsigned int i_ = 0; name_not_found_ and i_ < a_item.children ().count (); ++i_)
+    for (unsigned int i_ = 0; name_not_found_ && i_ < a_item.children ().count (); ++i_)
     {
       name_not_found_ = (new_name_ != a_item.children ().at (i_)->name ().data ()
                     or aPackage != a_item.children ().at (i_)->kind ());
@@ -502,7 +502,7 @@ if (Result->packages_.isEmpty ())
         cmpd_name_.setNum (j_);
         cmpd_name_.prepend (new_name_);
         name_not_found_ = true;
-        for (unsigned int i_ = 0; name_not_found_ and i_ < a_item.children ().count (); ++i_)
+        for (unsigned int i_ = 0; name_not_found_ && i_ < a_item.children ().count (); ++i_)
         {
           name_not_found_ = (cmpd_name_ != a_item.children ().at (i_)->name ().data ()
                     or aPackage != a_item.children ().at (i_)->kind ());
@@ -519,7 +519,7 @@ if (Result->packages_.isEmpty ())
       mos_ << " but I can not create UML package for this location. Do one of:<p>\n";
       mos_ << "<ul><li>Create/modify a package with this directory.</li>\n";
       mos_ << "<li>Change existing directories to change parent directory.</li></ul>\n";
-      throw std::runtime_error (msg_);
+      throw std::runtime_error (msg_.ascii ());
     }
     else
     {
@@ -527,7 +527,11 @@ if (Result->packages_.isEmpty ())
       mos_ << "or 'Cancel' and do one of:<p>\n";
       mos_ << "<ul><li>Create/modify a package with this directory.</li>\n";
       mos_ << "<li>Change existing directories to change parent directory.</li></ul>\n";
+#if QT_VERSION < 0x030000
+      if (QMessageBox::Ok == QMessageBox::warning (0
+#else
       if (QMessageBox::Ok == QMessageBox::question (0
+#endif
                                   , "Butter: Parent directory is outside project."
                                   , msg_
                                   , QMessageBox::Ok
@@ -547,7 +551,7 @@ if (Result->packages_.isEmpty ())
   else
   {
     mos_ << " and project is not writable.<p>\n";
-    throw std::runtime_error (msg_);
+    throw std::runtime_error (msg_.ascii ());
   }
 }
 return Result; // Pass ownership of location tree.
@@ -581,7 +585,7 @@ if (children_.count () > 0)
 }
 
 !!!190633.cpp!!!	write_documents(in a_base : location) : void
-QPtrStack< butter::location > stack_;
+QStack< butter::location > stack_;
 stack_.push (&a_base);
 while (not stack_.isEmpty ())
 {

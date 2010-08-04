@@ -186,7 +186,7 @@ QString content_;
   // The include dir is the difference between the current fullpath and the
   // top-projects hdrDir
   QString toplevel_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
-  if (not toplevel_include_.isEmpty () and toplevel_include_ != base_path_)
+  if (not toplevel_include_.isEmpty () && toplevel_include_ != base_path_)
   {
     if (0 == toplevel_include_.find (base_path_))
     {

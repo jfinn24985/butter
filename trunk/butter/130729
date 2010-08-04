@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 66
+  revision 67
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -1008,6 +1008,184 @@ Internal changes:
 October 2008 Release 1.0
 
 First beta release of the \"butter\" build system plug-out."
+    end
+
+    artifact 163753 "Jamfile"
+      stereotype "document"
+      comment "##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Wed Aug 4 21:37:06 2010
+##END:date
+##START:preamble
+BUILDDIR = build ;
+
+SubDir TOP ;
+HDRS += \"include/bouml\" ;
+C++FLAGS += \"-DWITHCPP\" ;
+HDRS += \"include\" ;
+
+##END:preamble
+##START:target qt
+InstallLib $(LIBDIR) :  ;
+##END:target qt
+##START:target README.html
+include t2t.jam ;
+
+t2t <..>README.html :
+	<..>README.t2t
+	;
+
+
+InstallFile $(DOCDIR) : <..>README.html ;
+##END:target README.html
+##START:close
+SubInclude TOP src bouml ;
+SubInclude TOP src butter ;
+##END:close
+"
+    end
+
+    artifact 163881 "Jamrules"
+      stereotype "document"
+      comment "#
+# Default Jamrules
+#
+
+if $(UNIX)  { SUFSHR ?= .so ; }
+else if $(NT) { SUFSHR ?= .dll ; }
+
+COMP ?= GNU ;
+VARIANT ?= DEBUG ;
+
+#############################
+##
+##  Default install locations
+##
+#############################
+VERSIONDIR = \"butter-1.0\" ;
+PREFIX = installdir ;
+EXEC_PREFIX = $(PREFIX) ;
+BINDIR = $(EXEC_PREFIX)/bin ;
+SBINDIR = $(EXEC_PREFIX)/sbin ;
+LIBEXECDIR = $(EXEC_PREFIX)/libexec ;
+LIBDIR = $(EXEC_PREFIX)/lib ;
+DATAROOTDIR = $(PREFIX)/share ;
+DATADIR = $(PREFIX)/share ;
+SYSCONFDIR = /etc ;
+SHAREDSTATEDIR = $(PREFIX)/com ;
+LOCALSTATEDIR = $(PREFIX)/var ;
+INCLUDEDIR = $(PREFIX)/include ;
+LOCALEDIR = $(DATAROOTDIR)/locale ;
+DOCDIR = $(DATAROOTDIR)/doc/$(VERSIONDIR) ;
+INFODIR = $(DATAROOTDIR)/info ;
+MANDIR = $(DATAROOTDIR)/man ;
+HTMLDIR = $(DOCDIR) ;
+DVIDIR = $(DOCDIR) ;
+PDFDIR = $(DOCDIR) ;
+PSDIR = $(DOCDIR) ;
+MAN1DIR = $(MANDIR)/man1 ;
+MAN2DIR = $(MANDIR)/man2 ;
+MAN3DIR = $(MANDIR)/man3 ;
+MAN4DIR = $(MANDIR)/man4 ;
+MAN5DIR = $(MANDIR)/man5 ;
+MAN6DIR = $(MANDIR)/man6 ;
+MAN7DIR = $(MANDIR)/man7 ;
+MAN8DIR = $(MANDIR)/man8 ;
+MANNDIR = $(MANDIR)/mann ;
+
+######################################################
+##
+##  Example definitions for compiler suite (TOOLSETS)
+## 
+######################################################
+switch $(COMP)
+{
+case GNU :
+CC = gcc ;
+C++ = g++ ;
+FORTRAN = gfortran ;
+CCSTD = -std=c99 ;
+C++STD = -std=c++98 ;
+CCCPP = ;
+C++CPP = ;
+SHRFLAGS = -fpic ;
+ARCH = -march=native ;
+OPTIMCOMP = -O2 $(ARCH) ;
+DEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;
+CCCOMP = -Wall -pedantic $(CCSTD) $(CCCPP) ;
+C++COMP = -Wall -Weffc++ $(C++STD) $(C++CPP) ;
+FORTRANCOMP = -Wall -c ;
+LINKCOMP = ;
+OPENMP = -fopenmp ;
+FORTRANLIBS = -lgfortran ;
+}
+
+################################################
+##
+##  Define the \"standard\" GUI flags
+## 
+################################################
+
+CCGUI = ;
+C++GUI = ;
+LINKGUI = ;
+
+switch $(GUILIB)
+{
+case GTKMM :
+CCGUI = `pkg-config gtkmm-2.4 --cflags` ;
+C++GUI = `pkg-config gtkmm-2.4 --cflags` ;
+LINKGUI = `pkg-config gtkmm-2.4 --libs` ;
+
+case MOTIF :
+CCGUI = -I/usr/include ;
+C++GUI = -I/usr/include ;
+LINKGUI = -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;
+
+case QT3 :
+CCGUI = -I$(QTDIR)/include ;
+C++GUI = -I$(QTDIR)/include ;
+LINKGUI = -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;
+
+case * :
+CCGUI = ;
+C++GUI = ;
+LINKGUI = ;
+
+}
+
+#################################
+##
+##  Define the \"standard\" flags
+## 
+#################################
+
+CCFLAGS += $(CCCOMP) $(CCGUI) ;
+C++FLAGS += $(C++COMP) $(C++GUI) ;
+LINKLIBS += $(LINKCOMP) $(LINKGUI) ;
+
+OPTIM = $(DEBUGCOMP) ;
+
+switch $(VARIANT)
+{
+case RELEASE :
+OPTIM = $(OPTIMCOMP) ;
+}
+
+FORTRANFLAGS += $(FORTRANCOMP) $(OPTIM) ;
+LINKFLAGS = $(OPTIM) ;
+LINK = $(C++) ;
+
+# Set variable for variant-specific build-dir handling
+BASE_LOCATE_TARGET = $(BUILDDIR)/$(VARIANT) ;
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
+
+# Local Variables:
+# mode: makefile
+# End: 
+"
     end
   end
 end

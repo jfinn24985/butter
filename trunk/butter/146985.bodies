@@ -55,7 +55,7 @@ if (a_not_doc)
 std::auto_ptr< compound_artifact > Result;
 if (a_loc.packages ().count () > 0)
 {
-  QPtrVector< UmlItem > docs_ = a_loc.find_uml_document (a_name);
+  QVector< UmlItem > docs_ = a_loc.find_uml_document (a_name);
   // If any documents found
   if (not docs_.isEmpty ())
   {

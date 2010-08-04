@@ -19,7 +19,7 @@ a_os << const_cast< UmlArtifact& >(a_target).name () << "\n\t";
 // Note. Header/link information is imported with library in boost jam.
 !!!212777.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 QString individual_;
-if (not this->is_other_ and (not a_src_inc.isEmpty () or not a_src_flags.isEmpty ()))
+if (not this->is_other_ && (not a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
 {
   // Add individual obj description
   QString compiler_ ("cxx");

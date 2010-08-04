@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 106
+  revision 107
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -232,6 +232,19 @@ friend class writer<bjam_writer>;" ""
 the style for this buildfile type."
       end
 
+      attribute 150057 "rules_name"
+	class_attribute const_attribute private explicit_type "unistr"
+	init_value "(\"local.jam\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the project rules file."
+      end
+
       attribute 150185 "default_rules"
 	class_attribute const_attribute private explicit_type "str"
 	init_value "{ \"#\\n\"
@@ -288,19 +301,6 @@ document artifact with name 'local.jam' is not present when
 butter is executed with @style='boost' then one will be created
 using this string.
 "
-      end
-
-      attribute 150057 "rules_name"
-	class_attribute const_attribute private explicit_type "unistr"
-	init_value "(\"local.jam\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The name of the project rules file."
       end
 
       attribute 177705 "individual_obj_"
@@ -976,7 +976,7 @@ Standard build-file form is a compound_artifact with something like
 
       class 148265 "string_pair_t"
 	visibility package stereotype "typedef" explicit_base_type "unistr"
-	cpp_decl "${comment}typedef QPair< ${type}, ${type} > ${name};
+	cpp_decl "${comment}typedef std::pair< ${type}, ${type} > ${name};
 "
 	java_decl ""
 	php_decl ""
@@ -989,7 +989,7 @@ Standard build-file form is a compound_artifact with something like
 
       class 153129 "value_type"
 	visibility package stereotype "typedef" explicit_base_type "unistr"
-	cpp_decl "${comment}typedef QPair< ${type}, string_pair_t > ${name};
+	cpp_decl "${comment}typedef std::pair< ${type}, string_pair_t > ${name};
 "
 	java_decl ""
 	php_decl ""
@@ -3736,9 +3736,9 @@ location if no exact match is found.
 	const public return_type class_ref 7553 // UmlItem
 	nparams 1
 	  param in name "a_name" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}QPtrVector< ${type} > ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}QVector< ${type} > ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}QPtrVector< ${type} > ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}QVector< ${type} > ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -5002,7 +5002,8 @@ ${includes}
 // Manual includes
 #include <qregexp.h>
 #include <stdexcept>
-#include <qptrstack.h>
+#include <qstack.h>
+#include <qstringlist.h>
 // --
 ${namespace_start}
 ${members}
@@ -5016,18 +5017,18 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 138793 // item_traits
-	artifact_ref 154025 // main
-	artifact_ref 134057 // qt
-	artifact_ref 142889 // bouml
-	artifact_ref 132521 // location
-	artifact_ref 136361 // jam_writer
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 152489 // build_writer
-	artifact_ref 152233 // style
 	artifact_ref 150825 // utility
+	artifact_ref 132521 // location
+	artifact_ref 142889 // bouml
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 154025 // main
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 152233 // style
+	artifact_ref 152489 // build_writer
+	artifact_ref 136361 // jam_writer
+	artifact_ref 138793 // item_traits
+	artifact_ref 134057 // qt
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
@@ -5035,93 +5036,93 @@ ${namespace_end}"
     artifact 148393 "butter.plugout"
       stereotype "file"
       associated_artifacts
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 7169 // UmlItem
-	artifact_ref 4992 // aVisibility
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 5120 // anItemKind
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 138793 // item_traits
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 154025 // main
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 5633 // UmlClass
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 768 // CppSettings
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 4480 // UmlCom
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 4864 // aDirection
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 132521 // location
-	artifact_ref 7297 // UmlNode
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 136361 // jam_writer
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 152489 // build_writer
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 152233 // style
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 150825 // utility
-	artifact_ref 7809 // UmlSequenceDiagram
 	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 150825 // utility
+	artifact_ref 132521 // location
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 4864 // aDirection
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 154025 // main
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 7297 // UmlNode
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 152233 // style
+	artifact_ref 4992 // aVisibility
+	artifact_ref 152489 // build_writer
+	artifact_ref 136361 // jam_writer
+	artifact_ref 768 // CppSettings
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 138793 // item_traits
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 7169 // UmlItem
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 5120 // anItemKind
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 4480 // UmlCom
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 5633 // UmlClass
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter/butter.pro"
@@ -5146,7 +5147,7 @@ ${comment}
 ${includes}
 #include \"butter/config.h\"
 // Manual includes
-#include <qpair.h>
+#include <utility>
 // --
 ${declarations}
 ${namespace_start}
@@ -5528,7 +5529,7 @@ ${includes}
 // Manual includes
 #include <qregexp.h>
 #include <stdexcept>
-#include <qptrstack.h>
+#include <qstack.h>
 // --
 ${declarations}
 ${namespace_start}
@@ -5542,5 +5543,46 @@ ${namespace_end}
       comment "Intermediate writer template class."
     end
 
+    artifact 164137 "Jamfile"
+      stereotype "document"
+      comment "##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Wed Aug 4 21:37:06 2010
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/src/butter ;
+
+SubDir TOP src butter ;
+
+
+SUBDIRC++FLAGS += -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT  ;
+
+SUBDIRHDRS += ${QTDIR}/include ;
+##END:preamble
+##START:target butter
+Main <butter>butter$(SUFEXE) :
+	<butter>utility.cpp
+	<butter>location.cpp
+	<butter>bjam_writer.cpp
+	<butter>compound_artifact.cpp
+	<butter>main.cpp
+	<butter>gmake_writer.cpp
+	<butter>style.cpp
+	<butter>build_writer.cpp
+	<butter>jam_writer.cpp
+	<butter>item_traits.cpp
+	;
+
+LINKLIBS on <butter>butter$(SUFEXE) += $(BOUML_BOUMLLIBS) -L${QTDIR}/lib64 -lqt-mt -lm ;
+LinkLibraries <butter>butter$(SUFEXE) :
+	 <bouml>libbouml$(SUFLIB) 
+	;
+
+InstallBin $(BINDIR) : <butter>butter$(SUFEXE) ;
+##END:target butter
+"
+    end
   end
 end
