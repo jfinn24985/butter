@@ -445,6 +445,7 @@ while (! item_stack_.isEmpty ())
           , std::string ("<p><b>Program error:</b> Location path \"") + cache_->path ().ascii() + "\"(" + cache_->full_path ().ascii() + ") does not match package path \"" + pack_path_.ascii () + "\" </p>");
     cache_->add_package (*pack_item_);
   }
+#ifndef NO_LOG
 #ifdef DEBUG
   {
     unsigned int depth_ (0);
@@ -456,6 +457,7 @@ while (! item_stack_.isEmpty ())
     item_traits::print_item (*top_, depth_, log::com.stream ());
   }
 #endif
+#endif
   // Push any children onto the stack (ensures all objects are checked for keywords)
   QVector < UmlItem > kids_ (top_->children ());
   for (unsigned int i_ = 0; i_ < kids_.size (); ++i_)
@@ -464,9 +466,11 @@ while (! item_stack_.isEmpty ())
     item_stack_.push (kids_.at (i_));
   }
 }
+#ifndef NO_LOG
 #ifdef DEBUG
 // Output debugging information.
 Result->serialize (log::com.stream ());
+#endif
 #endif
 // Perform exit test(s)
 if (! user_base_path_.isEmpty ())
