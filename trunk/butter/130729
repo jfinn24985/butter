@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 70
+  revision 71
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -974,7 +974,7 @@ T2TFLAGS=-toc -t html -o
       associated_artifacts
       end
       comment "July 2010 Release 1.1beta
-Code Revision Number: 27
+Code Revision Number: 30
 
 Greatly improved reliability and better error reporting.
 

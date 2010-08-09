@@ -1,6 +1,6 @@
 format 66
 "butter"
-  revision 51
+  revision 52
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/butter/include/"
 
@@ -49,10 +49,9 @@ format 66
   key "butter flags" value "-DWITHCPP"
   key "butter log-level" value "2"
   comment "To create the plug-out use 'genpro' on the artifact \"butter/butter/butter.plugout\".
-You will need to change it's stereotype to <<executable>> before using
-the genpro plugout.  If you want to try the \"butter\" plugout on this project then
-you will need to change the \"butter.plugout\" artifact's stereotype back to 
-<<file>> before running \"butter\".
+
+If you want to try the \"butter\" plugout on this project then change the 
+\"butter.plugout\" artifact's stereotype to <<file>> before running \"butter\".
 
 The C++ root directory should point to an include directory one level higher
 than the project directory.  Eg if you want the project directory to be /tmp/butter
