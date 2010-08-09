@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 69
+  revision 70
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -974,6 +974,7 @@ T2TFLAGS=-toc -t html -o
       associated_artifacts
       end
       comment "July 2010 Release 1.1beta
+Code Revision Number: 27
 
 Greatly improved reliability and better error reporting.
 
@@ -1009,6 +1010,5 @@ October 2008 Release 1.0
 
 First beta release of the \"butter\" build system plug-out."
     end
-
   end
 end
