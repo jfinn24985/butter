@@ -24,7 +24,9 @@ QString Result;
 char sep_[2];
 sep_[0] = QDir::separator ();
 sep_[1] = '\0';
-const int sz_ = std::min(size (), a_other.size ());
+const int sz1_ = size ();
+const int sz2_ = a_other.size ();
+const int sz_ = (sz1_ < sz2_) ? sz1_ : sz2_;
 for (int c_ = 0; c_ < sz_ && at(c_) == a_other.at(c_); ++c_)
 {
   Result.append (at(c_));
@@ -56,7 +58,7 @@ sep_[2] = QDir::separator ();
 sep_[3] = '\0';
 const int sz1_ (size ());
 const int sz2_ (a_target.size ());
-const int sz_ (std::min (sz1_, sz2_));
+const int sz_ = (sz1_ < sz2_) ? sz1_ : sz2_;
 // Determine the parent dirs in common.
 int common_ = 0;
 for (; common_ < sz_ && at(common_) == a_target.at(common_); ++common_)

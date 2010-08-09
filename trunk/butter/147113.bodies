@@ -194,7 +194,7 @@ class helper_
 public:
   static void write (QTextStream &a_os_, const string_pair_t & a_cache_, QString a_label_)
   {
-    const butter::style & s_ (butter::style::get_style ());
+    const butter::style & s_ = (butter::style::get_style ());
     if (! a_cache_.first.isEmpty ())
     {
       a_os_ << a_cache_.first;
