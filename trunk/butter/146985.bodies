@@ -59,7 +59,7 @@ if (a_loc.packages ().count () > 0)
   // If any documents found
   if (! docs_.isEmpty ())
   {
-    Result.reset (new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
+    MSC_NO_RESET (Result, std::auto_ptr< compound_artifact >)(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
     for (unsigned int k_ = 1; k_ < docs_.count (); ++k_)
     {
       UmlItem * item_ = docs_.at (k_);
@@ -75,7 +75,8 @@ if (a_loc.packages ().count () > 0)
 if (NULL == Result.get ())
 {
   // This will throw an error if no packages exist.
-  Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
+  // Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
+  MSC_NO_RESET (Result, std::auto_ptr< compound_artifact >)(new compound_artifact (*a_loc.create_uml_document (a_name)));
 }
 return Result;
 !!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void

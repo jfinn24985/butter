@@ -186,7 +186,7 @@ QString value_;
 item_traits::property_value (a_target, item_traits::butter_project_name, value_);
 BUTTER_CHECK (! value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact.");
 // Get the external target section
-butter::compound_artifact::string_pair_t & proj_ (a_sys.target (value_));
+butter::compound_artifact::string_pair_t & proj_ = a_sys.target (value_);
 // Construct a mini-project section.
 if (proj_.second.isEmpty ())
 {

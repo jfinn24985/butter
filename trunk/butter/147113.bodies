@@ -25,7 +25,7 @@ QTextOStream os_(&desc_);
 serialise (os_);
 if (0 != orig_desc_.compare (desc_))
 {
-  const butter::style &s_ (butter::style::get_style ());
+  const butter::style &s_ = butter::style::get_style ();
   // Document changed, update version and date
   version.second = s_.comment_text (item_traits::BUTTER_VERSION);
   date.second = s_.comment_text (QString (QDateTime::currentDateTime ().toString ()));
@@ -36,9 +36,9 @@ if (0 != orig_desc_.compare (desc_))
 }
 !!!193065.cpp!!!	deserialise(inout a_is : istream) : void
 QString capture_;
-const butter::style & style_ (butter::style::get_style ());
+const butter::style & style_ = butter::style::get_style ();
 int state_ = 0; // 0 = unlabelled, 1 = labelled
-string_pair_t * cache_ (0);
+string_pair_t * cache_ = NULL;
 for (QString line_ = a_is.readLine ();
     ! line_.isNull (); // Check for EOF
     line_ = a_is.readLine ())
@@ -72,10 +72,12 @@ for (QString line_ = a_is.readLine ();
         }
         else
         {
-          QString name_ (artifact.parent ()->parent ()->name ());
+          QString name_ ("<p><b>Fatal Error:</b> Error in artifact <b>");
+          name_.append (artifact.parent ()->parent ()->name ());
           name_.append ("/");
           name_.append (artifact.name ());
-          throw std::runtime_error ("<p><b>Fatal Error:</b> Error in artifact <b>" + std::string (name_.ascii ()) + "</b>, appears to have an unknown section type.</p>");
+	  name_.append ("</b>, appears to have an unknown section type.</p>");
+          throw std::runtime_error (name_.ascii ());
         }
         if (! capture_.isEmpty ())
         {
@@ -86,10 +88,12 @@ for (QString line_ = a_is.readLine ();
       }
       else if (line_.startsWith (style_.end_phrase))
       {
-        QString name_ (artifact.parent ()->parent ()->name ());
+        QString name_ ("<p><b>Fatal Error:</b> Error in artifact <b>");
+        name_.append (artifact.parent ()->parent ()->name ());
         name_.append ("/");
         name_.append (artifact.name ());
-        throw std::runtime_error ("<p><b>Fatal Error:</b> Error in artifact <b>" + std::string (name_.ascii ()) + "</b>, section end outside a section</p>");
+	name_.append ("</b>, section end outside a section</p>");
+        throw std::runtime_error (name_.ascii ());
       }
       else
       {
@@ -210,7 +214,7 @@ for (QValueListConstIterator< QString > i_ (target_order_.begin ());
       target_order_.end () != i_;
       ++i_)
 {
-  string_pair_t * tmp_ (targets_.find (*i_));
+  string_pair_t * tmp_ = targets_.find (*i_);
   BUTTER_CHECK (NULL != tmp_, "Error, key in target_order_ not found in targets.");
   helper_::write (a_os, *tmp_, butter::item_traits::target_label + " " + *i_);
 }
@@ -220,7 +224,7 @@ if (! end.isEmpty ())
   a_os << end;
 }
 !!!198057.cpp!!!	target(in a_label : unistr) : string_pair_t
-string_pair_t * existing_ (targets_.find (a_label));
+string_pair_t * existing_ = targets_.find (a_label);
 if (NULL != existing_)
 {
   return *existing_;

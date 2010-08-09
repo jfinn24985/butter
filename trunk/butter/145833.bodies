@@ -62,7 +62,7 @@ int common_ = 0;
 for (; common_ < sz_ && at(common_) == a_target.at(common_); ++common_)
 {}
 // Add up dirs from here to common.
-for (int i_ = sz1_ - common_; i_ > 0; --i_)
+for (int ii_ = sz1_ - common_; ii_ > 0; --ii_)
 {
   Result.append (&sep_[0]);
 }

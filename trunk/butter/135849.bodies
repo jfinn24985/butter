@@ -134,7 +134,7 @@ if (NULL != a_loc.parent ())
   desc_os_ << "LOCALHDRS:=$(USERHDRS)\nLOCALFLAGS:=$(USERFLAGS)\nLOCALLDFLAGS:=$(USERLDFLAGS)\n\n";
 
   // Add us to base makefile
-  QString & link_ (a_sys.target (a_loc.path ()).second);
+  QString & link_ = a_sys.target (a_loc.path ()).second;
   link_.append ("DIRS := $(DIRS) ");
   link_.append (a_loc.full_path ().mid (root_dir_.length () + 1));
   link_.append ("\n");

@@ -22,7 +22,7 @@ return *style_.get ();
 !!!196777.cpp!!!	set_style(in a_style : unistr = QString()) : void
 if (a_style == butter::bjam_writer::section_name)
 {
-  style_.reset (new style (butter::bjam_writer::comment_string
+  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::bjam_writer::comment_string
                      , butter::bjam_writer::end_phrase
                      , butter::bjam_writer::start_phrase
                      , &butter::bjam_writer::create));
@@ -30,7 +30,7 @@ if (a_style == butter::bjam_writer::section_name)
 }
 else if (a_style == butter::gmake_writer::section_name)
 {
-  style_.reset (new style (butter::gmake_writer::comment_string
+  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::gmake_writer::comment_string
                      , butter::gmake_writer::end_phrase
                      , butter::gmake_writer::start_phrase
                      , &butter::gmake_writer::create));
@@ -62,7 +62,7 @@ else
   {
     log::com.trace (log::info, "<p>Using style <b>Standard Jam</b></p>");
   }
-  style_.reset (new style (butter::jam_writer::comment_string
+  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::jam_writer::comment_string
                      , butter::jam_writer::end_phrase
                      , butter::jam_writer::start_phrase
                      , &butter::jam_writer::create));

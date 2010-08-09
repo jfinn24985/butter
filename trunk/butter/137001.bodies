@@ -62,7 +62,7 @@ else
   a_os << indent__ << title_lbl__ << "End Properties\n";
 }
 !!!135081.cpp!!!	property_search(out a_item : UmlItem, in a_key : unistr, inout a_value : unistr) : bool
-UmlItem *item_ (const_cast< UmlItem* >(&a_item));
+UmlItem *item_ = const_cast< UmlItem* >(&a_item);
 const QCString key_ (a_key.utf8 ());
 QCString value_;
 if (! item_->propertyValue (key_, value_))

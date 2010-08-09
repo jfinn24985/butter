@@ -50,11 +50,11 @@ QStack< location > location_stack_;
 location_stack_.push (&a_base); // Use a stack to eliminate recursion
 while (! location_stack_.isEmpty ())
 {
-  location * top_ (location_stack_.pop ());
+  location * top_ = location_stack_.pop ();
   // Push children onto stack
-  for (unsigned int i_ = 0; i_ < top_->children ().count (); ++i_)
+  for (unsigned int ii_ = 0; ii_ < top_->children ().count (); ++ii_)
   {
-    location_stack_.push (top_->children ().at (i_));
+    location_stack_.push (top_->children ().at (ii_));
   }
 
   std::auto_ptr< compound_artifact > current_; // The current build file.
@@ -130,7 +130,7 @@ while (! location_stack_.isEmpty ())
                     // Process the associated artifacts
                     for (unsigned int i_ = 0; i_ < assoc_arts_.size (); ++i_)
                     {
-                      UmlArtifact *const current_art_ (assoc_arts_.at (i_));
+                      UmlArtifact *const current_art_ = assoc_arts_.at (i_);
                       const QString stereotype_ (current_art_->stereotype ().data ());
                       if (stereotype_ == item_traits::library_stereotype)
                       {
@@ -200,18 +200,27 @@ while (! location_stack_.isEmpty ())
                 // For libraries and executables define some defaults.
                 if (stereotype_label_ == item_traits::library_stereotype)
                 {
-                  install_type_ = lib;
-                  if (install_dir_.isEmpty ())
+                  // Check to see if this is an external library
+                  QString project_;
+                  if (item_traits::property_value (art_item_, item_traits::butter_project_name, project_))
                   {
-                    install_dir_ = item_traits::libdir_value;
+                    install_dir_.truncate (0);
                   }
                   else
-                  {
-                    /////////////
-                    // Reset install type to file to handle "other" targets
-                    if (install_dir_ != item_traits::libdir_value)
+                  { 
+                    install_type_ = lib;
+                    if (install_dir_.isEmpty ())
                     {
-                      install_type_ = file;
+                      install_dir_ = item_traits::libdir_value;
+                    }
+                    else
+                    {
+                      /////////////
+                      // Reset install type to file to handle "other" targets
+                      if (install_dir_ != item_traits::libdir_value)
+                      {
+                        install_type_ = file;
+                      }
                     }
                   }
                 }
@@ -257,7 +266,7 @@ while (! location_stack_.isEmpty ())
     // add the inter-file link
     static_cast< derived* >(this)->descendent_link (*current_.get (), *system_artifact_, *top_);
     // Close the build file
-    current_.reset ();
+    // MSC_NO_RESET(current_, std::auto_ptr< compound_artifact >)();
   }
 }
 

@@ -142,7 +142,10 @@ if (NULL == deployview_)
   // QUERY = fails if create returns nul other than when non-package passed. 
   if (NULL == deployview_)
   {
-    throw std::runtime_error ("<p><b>Fatal error:</b> Unable to create a new deployment view, no editiable packages at location <b>" + std::string (full_path ().ascii ()) + "</b>. Make an editable package at this location and try again.</p>");
+    QString msg_ ("<p><b>Fatal error:</b> Unable to create a new deployment view, no editiable packages at location <b>");
+    msg_.append (full_path ());
+    msg_.append ("</b>. Make an editable package at this location and try again.</p>");
+    throw std::runtime_error (msg_.ascii ());
   }
 }
 log::com.trace (log::info, "<p>New UML artifact named " + a_name + " being created in package " + deployview_->parent ()->name ().data () + " (which has source location " + full_path () + ").</p>");
@@ -150,10 +153,12 @@ UmlArtifact * Result = UmlArtifact::create (deployview_, a_name);
 // QUERY = fails if create returns nul other than when non-deployment passed.
 if (NULL == Result)
 {
-  QString name_ (full_path ());
+  QString name_ ("<p><b>Fatal error:</b> Unable to create a new artifact for <b>");
+  name_.append (full_path ());
   name_.append ("/");
   name_.append (a_name);
-  throw std::runtime_error ("<p><b>Fatal error:</b> Unable to create a new artifact for <b>" + std::string (name_.ascii ()) + "</b>.</p>");
+  name_.append ("</b>.</p>");
+  throw std::runtime_error (name_.ascii ());
 }
 Result->set_Stereotype (item_traits::document_stereotype.utf8 ());
 return Result;
@@ -164,7 +169,7 @@ butter::pathcmp const child_path_ (a_path);
 butter::pathcmp const diff_path_ (parent_path_.relative (child_path_));
 for (unsigned int i_ = 0; i_ < diff_path_.size (); ++i_)
 {
-  butter::location * tmp_ (NULL);
+  butter::location * tmp_ = NULL;
   for (unsigned int j_ = 0; j_ < a_location->children_.count (); ++j_)
   {
     if (a_location->children_.at (j_)->path_ == diff_path_.at (i_))
@@ -312,11 +317,11 @@ if (! user_base_path_.isEmpty ())
     }
   }
 // * Create the initial base location object.
-  Result.reset (new location (base_path_));
+  MSC_NO_RESET(Result,std::auto_ptr< location >)(new location (base_path_));
 }
 else
 {
-  Result.reset (new location (root_dir_));
+  MSC_NO_RESET(Result, std::auto_ptr< location >)(new location (root_dir_));
 }
 cache_ = Result.get ();
 
@@ -330,7 +335,7 @@ QStack< UmlItem > item_stack_; // in-order project descent stack
 item_stack_.push (&a_item);
 while (! item_stack_.isEmpty ())
 {
-  UmlItem *const top_ (item_stack_.pop ());
+  UmlItem *const top_ = item_stack_.pop ();
   // Check property names.
   if (log::warn <= log::com.level ())
   {
@@ -593,7 +598,7 @@ QStack< butter::location > stack_;
 stack_.push (&a_base);
 while (! stack_.isEmpty ())
 {
-  const butter::location *const top_ (stack_.pop ());
+  const butter::location *const top_ = stack_.pop ();
   for (unsigned int i_ = 0; i_ < top_->children ().count (); ++i_)
   {
     stack_.push (top_->children ().at (i_));
