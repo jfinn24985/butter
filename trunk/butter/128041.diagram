@@ -64,6 +64,14 @@ classcanvas 148521 class_ref 151849 // log
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 194 211 2011
 end
+classcanvas 149161 class_ref 145833 // pathcmp
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 141 519 2000
+end
+classcanvas 149289 class_ref 155433 // QDir
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  xyz 133 425 2000
+end
 relationcanvas 135337 relation_ref 135337 // <composition>
   from ref 134825 z 1999 stereotype "<<vector>>" xyz 312 101 3000 to point 357 126
   line 135465 z 1999 to point 268 126
@@ -203,6 +211,11 @@ relationcanvas 148905 relation_ref 164649 // <dependency>
 end
 relationcanvas 149033 relation_ref 164777 // <dependency>
   from ref 142889 z 2012 to ref 148521
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 149417 relation_ref 167081 // <generalisation>
+  from ref 149161 z 2001 to ref 149289
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
