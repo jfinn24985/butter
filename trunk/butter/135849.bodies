@@ -134,9 +134,9 @@ if (NULL != a_loc.parent ())
   desc_os_ << "LOCALHDRS:=$(USERHDRS)\nLOCALFLAGS:=$(USERFLAGS)\nLOCALLDFLAGS:=$(USERLDFLAGS)\n\n";
 
   // Add us to base makefile
-  QString & link_ = a_sys.target (a_loc.path ()).second;
+  QString & link_ = a_sys.target (a_loc.path ().path ()).second;
   link_.append ("DIRS := $(DIRS) ");
-  link_.append (a_loc.full_path ().mid (root_dir_.length () + 1));
+  link_.append (a_loc.full_path ().path ().mid (root_dir_.length () + 1));
   link_.append ("\n");
 }
 a_art.preamble.second.append (tmp_);
@@ -268,7 +268,7 @@ a_os << "TARGETS := $(TARGETS) " << this->qualified_target_name_ << "\n\n";
 // top-projects hdrDir
 QString init_text_;
 QTextOStream init_os_ (&init_text_);
-root_dir_ = a_base.full_path ();
+root_dir_ = a_base.full_path ().path ();
 BUTTER_CHECK (! root_dir_.isEmpty (), "<p><b>Program error:</b> Project root directory is not set properly.</p>");
 init_os_ << "include " << rules_name << "\n\n";
 init_os_ << "ROOTDIR := " << root_dir_ << "\n\n";

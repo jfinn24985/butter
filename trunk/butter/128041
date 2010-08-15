@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 124
+  revision 127
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -2053,7 +2053,7 @@ string are considered to be templates"
 
       attribute 160809 "BUTTER_VERSION"
 	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"Butter project version 1.2\")"
+	init_value "(BUTTER_VERSION_)"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -2298,12 +2298,12 @@ a a list of directory names (\\see header_label)
       end
 
       operation 138921 "dirname"
-	class_operation public explicit_return_type "path"
+	class_operation public return_type class_ref 145833 // pathcmp
 	nparams 1
 	  param in name "a_pack" type class_ref 7937 // UmlPackage
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
 {
-  return QDir::cleanDirPath (CppSettings::rootDir () + QDir::separator () + const_cast< ${t0} &> (${p0}).cppSrcDir ());
+  return ${type} (CppSettings::rootDir ()) / ${type} (const_cast< ${t0} &> (${p0}).cppSrcDir ());
 }"
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
@@ -2377,10 +2377,10 @@ HDR=/dir1 /dir2"
 	class_operation public explicit_return_type "unistr"
 	nparams 1
 	  param in name "a_val" explicit_type "uint"
-	cpp_decl "#ifndef NO_LOG
+	cpp_decl "#ifdef DEBUG
     ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
 #endif"
-	cpp_def "#ifndef NO_LOG
+	cpp_def "#ifdef DEBUG
 ${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
 ${body}}
 #endif
@@ -2439,12 +2439,12 @@ LINK = -L/my/path -lmylib"
       end
 
       operation 158889 "hdrname"
-	class_operation cpp_inline public explicit_return_type "path"
+	class_operation cpp_inline public return_type class_ref 145833 // pathcmp
 	nparams 1
 	  param inout name "a_pack" type class_ref 7937 // UmlPackage
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
 {
-  return QDir::cleanDirPath (CppSettings::rootDir () + \"/\" + const_cast< ${t0} &> (${p0}).cppHDir ());
+  return pathcmp (CppSettings::rootDir ()) / pathcmp (const_cast< ${t0} &> (${p0}).cppHDir ());
 }"
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
@@ -2515,10 +2515,10 @@ should not be installed."
 	  param in name "a_item" type class_ref 7553 // UmlItem
 	  param in name "a_depth" explicit_type "uint"
 	  param inout name "a_os" explicit_type "ostream"
-	cpp_decl "#ifndef NO_LOG
+	cpp_decl "#ifdef DEBUG
     ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
 #endif"
-	cpp_def "#ifndef NO_LOG
+	cpp_def "#ifdef DEBUG
 ${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}
 {
 ${body}
@@ -3573,7 +3573,7 @@ Responsibilities:
       end
 
       attribute 134057 "path_"
-	private explicit_type "unistr"
+	private type class_ref 145833 // pathcmp
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -3644,10 +3644,10 @@ at a_path."
       operation 187433 "create_as_child"
 	private return_type class_ref 132393 // location
 	nparams 1
-	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+	  param in name "a_path" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}${type} * ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -3665,10 +3665,10 @@ created object is owned by this object or one of its descendents."
 	class_operation private return_type class_ref 132393 // location
 	nparams 2
 	  param inout name "a_base" type class_ref 132393 // location
-	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}std::auto_ptr< ${t0} > ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+	  param in name "a_path" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}std::auto_ptr< ${t0} > ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}std::auto_ptr< ${t0} > ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}std::auto_ptr< ${t0} > ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
 ${body}
 }
 "
@@ -3714,10 +3714,10 @@ selected deployment view.
 	class_operation public return_type class_ref 132393 // location
 	nparams 2
 	  param inout name "a_location" type class_ref 132393 // location
-	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+	  param in name "a_path" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
 ${body}
 }
 "
@@ -3756,7 +3756,7 @@ may return an empty list if no document is found
       end
 
       operation 145577 "full_path"
-	const public explicit_return_type "unistr"
+	const public return_type class_ref 145833 // pathcmp
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};"
 	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
@@ -3776,10 +3776,10 @@ ${body}}
       operation 142633 "location"
 	private explicit_return_type ""
 	nparams 1
-	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}${)}${volatile};
+	  param in name "a_path" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
 "
-	cpp_def "${inline}${class}::${name}${(}${t0} ${p0}${)}${volatile}
+	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}
 ${body}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -3794,11 +3794,11 @@ ${body}}
       operation 144425 "location"
 	private explicit_return_type ""
 	nparams 2
-	  param in name "a_path" explicit_type "unistr"
+	  param in name "a_path" type class_ref 145833 // pathcmp
 	  param inout name "a_parent" type class_ref 132393 // location
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${volatile};
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${volatile};
 "
-	cpp_def "${inline}${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${volatile}
+	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${volatile}
 ${body}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -3839,24 +3839,6 @@ ${body}}
 	
 	
 	comment "no copy"
-      end
-
-      operation 187817 "match_path"
-	const public explicit_return_type "bool"
-	nparams 1
-	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Does full_path equal a_path as determined by pathcmd::equality"
       end
 
       operation 143017 "operator="
@@ -3907,24 +3889,6 @@ ${body}}
 	comment "The parent location, this is nul for the top-level locations"
       end
 
-      operation 187945 "parent_path"
-	const public explicit_return_type "bool"
-	nparams 1
-	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Is full_path a parent path of a_path as determined by pathcmd::subpath"
-      end
-
       operation 133929 "parse_project"
 	class_operation public return_type class_ref 132393 // location
 	nparams 1
@@ -3951,9 +3915,9 @@ in the event of an error or there being no targets or documents.
       end
 
       operation 144553 "path"
-	const public explicit_return_type "unistr"
+	const public return_type class_ref 145833 // pathcmp
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${abstract}
 {
   return path_;
 }
@@ -3971,10 +3935,10 @@ ${body}}
 	const public explicit_return_type "void"
 	nparams 1
 	  param inout name "a_os" explicit_type "ostream"
-	cpp_decl "#ifndef NO_LOG
+	cpp_decl "#ifdef DEBUG
     ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
 #endif"
-	cpp_def "#ifndef NO_LOG
+	cpp_def "#ifdef DEBUG
 ${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
 {
 ${body}
@@ -4060,10 +4024,10 @@ are for absolute paths without resolving symlinks."
 	  b parent class_ref 155433 // QDir
       end
 
-      operation 185257 "leaf_at"
-	const public explicit_return_type "unistr"
+      operation 216361 "convert_separators"
+	public explicit_return_type "unistr"
 	nparams 1
-	  param in name "a_count" explicit_type "uint"
+	  param in name "a_trans" explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
@@ -4075,7 +4039,8 @@ ${body}
 	
 	
 	
-	comment "Get part of path at position a_count"
+	comment "Create a copy of the path string that has all 
+the separators replaced by a_trans"
       end
 
       operation 186025 "create_common"
@@ -4093,7 +4058,9 @@ ${body}
 	
 	
 	
-	comment "Generate a path that has the greatest shared path between this and a_other."
+	comment "Generate a path that has the greatest shared path between this and a_other.
+
+Will returnempty string when paths are on different drives."
       end
 
       operation 186281 "create_relative"
@@ -4116,6 +4083,22 @@ ${body}
 canonical (path_ + relative (a_target)) <==> a_target"
       end
 
+      operation 185385 "depth"
+	const public explicit_return_type "uint"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  const QString path_ (path ());
+  return (${type})(path_.contains (default_separator_[0]) + (path_.at(path_.length () - 1) == default_separator_[0] ? 0 : 1));
+}
+"
+	
+	
+	
+	
+	comment "The number of steps in the path."
+      end
+
       operation 185769 "equality"
 	const public explicit_return_type "bool"
 	nparams 1
@@ -4135,7 +4118,7 @@ ${body}
 (ignoring trailing separator)"
       end
 
-      operation 185897 "is_subpath"
+      operation 185897 "has_subpath"
 	const public explicit_return_type "bool"
 	nparams 1
 	  param in name "a_rhs" type class_ref 145833 // pathcmp
@@ -4158,6 +4141,24 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 "
       end
 
+      operation 185257 "leaf_at"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_count" explicit_type "uint"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Get part of path at position a_count"
+      end
+
       operation 185001 "operator="
 	public return_type class_ref 145833 // pathcmp
 	nparams 1
@@ -4172,6 +4173,22 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	
 	
 	
+      end
+
+      operation 216105 "operator/"
+	const public return_type class_ref 145833 // pathcmp
+	nparams 1
+	  param in name "rhs" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  return ${type}(path () + default_separator_ + ${p0}.path ());
+}
+"
+	
+	
+	
+	
+	comment "Concatenate 2 paths"
       end
 
       extra_member 129193 "operator=="
@@ -4192,7 +4209,7 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	  param in name "a_path" explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract}
 {
-  return -1 == ${p0}.find (\"\\\\\") ? ${p0} : normalise_(${p0});
+  return -1 == ${p0}.find (other_separator_) ? ${p0} : normalise_(${p0});
 }
 "
 	
@@ -4208,7 +4225,7 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	  param in name "a_path" explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
 	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
-  return ${p0}.replace (QRegExp(\"\\\\\\\\\"),\"/\");
+  return ${p0}.replace (QRegExp(\"\\\\\\\\\"), default_separator_);
 }"
 	
 	
@@ -4244,21 +4261,6 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	
 	
 	comment "Construct from string"
-      end
-
-      operation 214569 "pathcmp"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "a_path" explicit_type "char"
-	cpp_decl "    ${comment}${name}${(}${t0} const *const ${p0}${)}${volatile}
-: QDir (normalise (${p0}))
-{}
-"
-	
-	
-	
-	
-	comment "Construct from C string"
       end
 
       operation 184745 "~pathcmp"
@@ -4304,22 +4306,6 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	comment "Construct from base class"
       end
 
-      operation 185385 "depth"
-	const public explicit_return_type "uint"
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
-{
-  const QString path_ (path ());
-  return (${type})(path_.contains (separator ()) + (path_.at(path_.length () - 1) == separator () ? 0 : 1));
-}
-"
-	
-	
-	
-	
-	comment "The number of steps in the path."
-      end
-
       operation 214441 "swap"
 	stereotype "todo"
 	public explicit_return_type "void"
@@ -4345,6 +4331,32 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	
 	
 	
+      end
+
+      attribute 181673 "default_separator_"
+	class_attribute const_attribute private explicit_type "char"
+	multiplicity "2"
+	init_value "\"/\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Separator to use regardless of OS"
+      end
+
+      attribute 181801 "other_separator_"
+	class_attribute const_attribute private explicit_type "char"
+	multiplicity "2"
+	init_value "\"\\\\\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "separator used on other OS"
       end
     end
 
@@ -4708,14 +4720,12 @@ artifacts are inserted into a package at each location."
 
     class 151849 "log"
       visibility package 
-      cpp_decl "#ifndef NO_LOG
-${comment}${template}class ${name}${inherit}
+      cpp_decl "${comment}${template}class ${name}${inherit}
 {
 ${members}
 };
 
-${inlines}
-#endif // NO_LOG"
+${inlines}"
       java_decl ""
       php_decl ""
       python_2_2 python_decl ""
@@ -4723,20 +4733,6 @@ ${inlines}
       explicit_switch_type ""
       
       comment "Central point for handling logging and debugging messages."
-      extra_member 133033 "!remove_log start"
-	
-	cpp "
-
-" "#ifndef NO_LOG
-
-"
-	java ""
-	php ""
-	python ""
-	idl ""
-	comment "Include/Remove logging"
-      end
-
       classrelation 165161 // <dependency>
 	relation 164393 -_->
 	  a package
@@ -4993,20 +4989,6 @@ be tested with is_debug
 	python ""
 	idl ""
       end
-
-      extra_member 133161 "!no_log end"
-	
-	cpp "
-
-
-" "#endif // DEBUG
-
-"
-	java ""
-	php ""
-	python ""
-	idl ""
-      end
     end
   end
 
@@ -5079,112 +5061,112 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
+	artifact_ref 152489 // build_writer
+	artifact_ref 134057 // qt
+	artifact_ref 150825 // utility
 	artifact_ref 132521 // location
-	artifact_ref 154025 // main
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 138793 // item_traits
 	artifact_ref 136361 // jam_writer
 	artifact_ref 137641 // gmake_writer
 	artifact_ref 135209 // bjam_writer
-	artifact_ref 134057 // qt
 	artifact_ref 142889 // bouml
-	artifact_ref 152489 // build_writer
-	artifact_ref 150825 // utility
-	artifact_ref 138793 // item_traits
 	artifact_ref 152233 // style
-	artifact_ref 152361 // compound_artifact
+	artifact_ref 154025 // main
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
 
     artifact 148393 "butter.plugout"
-      stereotype "executable"
+      stereotype "file"
       associated_artifacts
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
 	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 132521 // location
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 154025 // main
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 136361 // jam_writer
-	artifact_ref 5120 // anItemKind
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 7297 // UmlNode
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 7169 // UmlItem
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 4864 // aDirection
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 768 // CppSettings
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 152489 // build_writer
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 150825 // utility
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 138793 // item_traits
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 152233 // style
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 4480 // UmlCom
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 5633 // UmlClass
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 4992 // aVisibility
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 6272 // IdlSettingsCmd
 	artifact_ref 1152 // JavaSettings
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 152489 // build_writer
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 150825 // utility
 	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5633 // UmlClass
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 4864 // aDirection
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 7169 // UmlItem
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 132521 // location
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 138793 // item_traits
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 7297 // UmlNode
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 4992 // aVisibility
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 136361 // jam_writer
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 4480 // UmlCom
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 5120 // anItemKind
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 768 // CppSettings
+	artifact_ref 152233 // style
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 154025 // main
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 6528 // UmlBuiltin
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter/butter.pro"
@@ -5235,6 +5217,8 @@ ${namespace_end}"
       cpp_h "#ifndef @{PROJECT}_CONFIG_H
 #define @{PROJECT}_CONFIG_H 1
 #include <stdexcept>
+
+#define BUTTER_VERSION_ \"Butter version 1.1beta 32\"
 
 #define @{PROJECT}_ALWAYS(X,Y) do { if (! (X)) { throw std::runtime_error(std::string(Y)); } } while (false)
 
@@ -5387,6 +5371,7 @@ ${namespace_end}"
 #include \"butter/build_writer.h\"
 #include \"butter/location.h\"
 #include \"butter/style.h\"
+#include \"butter/item_traits.h\"
 
 #include <qtextstream.h>
 #ifndef NO_LOG
@@ -5405,7 +5390,7 @@ int main(int argc, char ** argv)
 
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b><i>jamfile/makefile</i> generator</b> release 1.1<br>\");
+      UmlCom::trace(\"<b><i>jamfile/makefile</i> generator</b> \" + butter::item_traits::BUTTER_VERSION + \"<br>\");
 #ifndef NO_LOG
 #ifdef DEBUG
       QString msg_;
@@ -5455,7 +5440,7 @@ int main(int argc, char ** argv)
 #include <butter/utility.h>
 #include <iostream>
 
-void do_path_test (char const *const a1, char const *const a2, char const *const a3, char const *const a4)
+void do_path_test (QString const& a1, QString const& a2, QString const& a3, QString const& a4)
 {
 try {
 #ifdef _MSC_VER
@@ -5510,7 +5495,7 @@ try {
   {
     std::cerr << \"Correctly found that path 1 and 2 are not equal.\\n\";
   }
-  if (p3.is_subpath (p1))
+  if (p3.has_subpath (p1))
   {
     std::cerr << \"Correctly found that path 1 is a subpath of 3.\\n\";
   }
@@ -5518,7 +5503,7 @@ try {
   {
     std::cerr << \"Incorrectly found that path 1 is not a subpath of 3.\\n\";
   }
-  if (p3.is_subpath (p2))
+  if (p3.has_subpath (p2))
   {
     std::cerr << \"Incorrectly found that path 2 is a subpath of 3.\\n\";
   }
@@ -5651,318 +5636,15 @@ ${namespace_end}
       comment "Intermediate writer template class."
     end
 
-    artifact 164137 "makefile"
-      stereotype "document"
-      comment "##START:version
-#Butter project version 1.2
-##END:version
-##START:date
-#Sat Aug 14 19:19:42 2010
-##END:date
-##START:preamble
-include $(ROOTDIR)/makefile.sys
-
-LOCALHDRS:=$(USERHDRS)
-LOCALFLAGS:=$(USERFLAGS)
-LOCALLDFLAGS:=$(USERLDFLAGS)
-
-##END:preamble
-##START:target butter
-BUTTERSRC :=  \\
-	location.cpp \\
-	main.cpp \\
-	jam_writer.cpp \\
-	gmake_writer.cpp \\
-	bjam_writer.cpp \\
-	build_writer.cpp \\
-	utility.cpp \\
-	item_traits.cpp \\
-	style.cpp \\
-	compound_artifact.cpp
-BUTTERLDFLAGS := $(LOCALLDFLAGS) $(ROOTDIR)/src/bouml/libbouml$(SUFLIB)  -L${QTDIR}/lib64 -lqt-mt -lm
-USERFLAGS := $(LOCALFLAGS) -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT  $(SHRFLAGS)
-USERHDRS := $(LOCALHDRS) -I${QTDIR}/include 
-BUTTER_DINC := $(filter %.d, $(BUTTERSRC:.cpp=.d)) $(filter %.d, $(BUTTERSRC:.c=.d))
-include $(BUTTER_DINC)
-BUTTER_OBJ := $(BUTTER_OBJ) $(filter %.o, $(BUTTERSRC:.cpp=.o))
-USEROBJ := $(USEROBJ) $(BUTTER_OBJ)
-
-butter$(SUFEXE) : $(BUTTER_OBJ) $(BUTTER_DINC) $(ROOTDIR)/src/bouml/libbouml$(SUFLIB) 
-	$(CCC) $(CCCFLAGS) -o butter$(SUFEXE) $(BUTTER_OBJ) $(BUTTERLDFLAGS) $(LDFLAGS)
-
-all :: butter$(SUFEXE)
-TARGETS := $(TARGETS) butter$(SUFEXE)
-
-install:: butter$(SUFEXE)
-	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) $(BINIFLAGS) butter$(SUFEXE) $(BINDIR)/butter$(SUFEXE)
-##END:target butter
-##START:target butter.plugout
-BUTTERPLUGOUTSRC :=  \\
-	PackageGlobalCmd.cpp \\
-	UmlBaseCollaborationDiagram.cpp \\
-	UmlFormalParameter.cpp \\
-	UmlAttribute.cpp \\
-	UmlPackage.cpp \\
-	UmlUseCaseView.cpp \\
-	location.cpp \\
-	UmlBaseDeployment.cpp \\
-	UmlComponentView.cpp \\
-	UmlBaseSequenceDiagram.cpp \\
-	main.cpp \\
-	UmlClassItem.cpp \\
-	UmlActualParameter.cpp \\
-	UmlBaseAttribute.cpp \\
-	UmlBaseUseCase.cpp \\
-	jam_writer.cpp \\
-	anItemKind.cpp \\
-	UmlParameter.cpp \\
-	UmlBaseComponentView.cpp \\
-	UmlTypeSpec.cpp \\
-	UmlClassDiagram.cpp \\
-	UmlNode.cpp \\
-	gmake_writer.cpp \\
-	UmlBaseDiagram.cpp \\
-	UmlBaseClassDiagram.cpp \\
-	UmlSettingsCmd.cpp \\
-	UmlItem.cpp \\
-	UmlDiagram.cpp \\
-	UmlBaseDeploymentDiagram.cpp \\
-	UmlBaseClassItem.cpp \\
-	CmdFamily.cpp \\
-	UmlBaseClass.cpp \\
-	UmlBasePackage.cpp \\
-	UmlBaseExtraClassMember.cpp \\
-	UmlBaseOperation.cpp \\
-	aDirection.cpp \\
-	UmlExtraClassMember.cpp \\
-	UmlCollaborationDiagram.cpp \\
-	bjam_writer.cpp \\
-	UmlBaseComponentDiagram.cpp \\
-	UmlSettings.cpp \\
-	UmlComponentDiagram.cpp \\
-	UmlDeploymentView.cpp \\
-	UmlBaseClassView.cpp \\
-	UmlComponent.cpp \\
-	CppSettingsCmd.cpp \\
-	CppSettings.cpp \\
-	UmlBaseUseCaseDiagram.cpp \\
-	OnInstanceCmd.cpp \\
-	MiscGlobalCmd.cpp \\
-	build_writer.cpp \\
-	UmlUseCase.cpp \\
-	utility.cpp \\
-	UmlArtifact.cpp \\
-	UmlClassMember.cpp \\
-	UmlBaseRelation.cpp \\
-	UmlNcRelation.cpp \\
-	item_traits.cpp \\
-	UmlBaseArtifact.cpp \\
-	UmlBuiltin.cpp \\
-	style.cpp \\
-	UmlSequenceDiagram.cpp \\
-	UmlClassView.cpp \\
-	UmlCom.cpp \\
-	aRelationKind.cpp \\
-	UmlBaseActualParameter.cpp \\
-	JavaSettingsCmd.cpp \\
-	compound_artifact.cpp \\
-	UmlBaseFormalParameter.cpp \\
-	UmlDeploymentDiagram.cpp \\
-	ClassGlobalCmd.cpp \\
-	UmlClass.cpp \\
-	UmlBaseItem.cpp \\
-	UmlBaseUseCaseView.cpp \\
-	UmlOperation.cpp \\
-	IdlSettings.cpp \\
-	aVisibility.cpp \\
-	UmlStereotype.cpp \\
-	UmlBaseComponent.cpp \\
-	UmlUseCaseDiagram.cpp \\
-	UmlBaseNode.cpp \\
-	UmlBaseNcRelation.cpp \\
-	UmlRelation.cpp \\
-	UmlBaseClassMember.cpp \\
-	IdlSettingsCmd.cpp \\
-	JavaSettings.cpp \\
-	UmlBaseDeploymentView.cpp
-BUTTERPLUGOUTLDFLAGS := $(LOCALLDFLAGS)
-USERFLAGS := $(LOCALFLAGS) $(SHRFLAGS)
-BUTTERPLUGOUT_DINC := $(filter %.d, $(BUTTERPLUGOUTSRC:.cpp=.d)) $(filter %.d, $(BUTTERPLUGOUTSRC:.c=.d))
-include $(BUTTERPLUGOUT_DINC)
-BUTTERPLUGOUT_OBJ := $(BUTTERPLUGOUT_OBJ) $(filter %.o, $(BUTTERPLUGOUTSRC:.cpp=.o))
-USEROBJ := $(USEROBJ) $(BUTTERPLUGOUT_OBJ)
-
-butter.plugout$(SUFEXE) : $(BUTTERPLUGOUT_OBJ) $(BUTTERPLUGOUT_DINC) 
-	$(CCC) $(CCCFLAGS) -o butter.plugout$(SUFEXE) $(BUTTERPLUGOUT_OBJ) $(BUTTERPLUGOUTLDFLAGS) $(LDFLAGS)
-
-all :: butter.plugout$(SUFEXE)
-TARGETS := $(TARGETS) butter.plugout$(SUFEXE)
-
-install:: butter.plugout$(SUFEXE)
-	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) $(BINIFLAGS) butter.plugout$(SUFEXE) $(BINDIR)/butter.plugout$(SUFEXE)
-##END:target butter.plugout
-"
-    end
-
-    artifact 164649 "Jamfile"
-      stereotype "document"
-      comment "##START:version
-#Butter project version 1.2
-##END:version
-##START:date
-#Sat Aug 14 19:39:12 2010
-##END:date
-##START:preamble
-ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/src/butter ;
-
-SubDir TOP src butter ;
-
-
-SUBDIRC++FLAGS += -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT -DNO_LOG ;
-
-SUBDIRHDRS += ${QTDIR}/include ;
-##END:preamble
-##START:target butter
-Main <butter>butter$(SUFEXE) :
-	<butter>location.cpp
-	<butter>main.cpp
-	<butter>jam_writer.cpp
-	<butter>gmake_writer.cpp
-	<butter>bjam_writer.cpp
-	<butter>build_writer.cpp
-	<butter>utility.cpp
-	<butter>item_traits.cpp
-	<butter>style.cpp
-	<butter>compound_artifact.cpp
-	;
-
-LINKLIBS on <butter>butter$(SUFEXE) += -L${QTDIR}/lib64 -lqt-mt -lm $(BOUML_BOUMLLIBS)  ;
-LinkLibraries <butter>butter$(SUFEXE) :
-	 <bouml>libbouml$(SUFLIB) 
-	;
-
-InstallBin $(BINDIR) : <butter>butter$(SUFEXE) ;
-##END:target butter
-##START:target butter.plugout
-Main <butter>butter.plugout$(SUFEXE) :
-	<bouml>PackageGlobalCmd.cpp
-	<bouml>UmlBaseCollaborationDiagram.cpp
-	<bouml>UmlFormalParameter.cpp
-	<bouml>UmlAttribute.cpp
-	<bouml>UmlPackage.cpp
-	<bouml>UmlUseCaseView.cpp
-	<butter>location.cpp
-	<bouml>UmlBaseDeployment.cpp
-	<bouml>UmlComponentView.cpp
-	<bouml>UmlBaseSequenceDiagram.cpp
-	<butter>main.cpp
-	<bouml>UmlClassItem.cpp
-	<bouml>UmlActualParameter.cpp
-	<bouml>UmlBaseAttribute.cpp
-	<bouml>UmlBaseUseCase.cpp
-	<butter>jam_writer.cpp
-	<bouml>anItemKind.cpp
-	<bouml>UmlParameter.cpp
-	<bouml>UmlBaseComponentView.cpp
-	<bouml>UmlTypeSpec.cpp
-	<bouml>UmlClassDiagram.cpp
-	<bouml>UmlNode.cpp
-	<butter>gmake_writer.cpp
-	<bouml>UmlBaseDiagram.cpp
-	<bouml>UmlBaseClassDiagram.cpp
-	<bouml>UmlSettingsCmd.cpp
-	<bouml>UmlItem.cpp
-	<bouml>UmlDiagram.cpp
-	<bouml>UmlBaseDeploymentDiagram.cpp
-	<bouml>UmlBaseClassItem.cpp
-	<bouml>CmdFamily.cpp
-	<bouml>UmlBaseClass.cpp
-	<bouml>UmlBasePackage.cpp
-	<bouml>UmlBaseExtraClassMember.cpp
-	<bouml>UmlBaseOperation.cpp
-	<bouml>aDirection.cpp
-	<bouml>UmlExtraClassMember.cpp
-	<bouml>UmlCollaborationDiagram.cpp
-	<butter>bjam_writer.cpp
-	<bouml>UmlBaseComponentDiagram.cpp
-	<bouml>UmlSettings.cpp
-	<bouml>UmlComponentDiagram.cpp
-	<bouml>UmlDeploymentView.cpp
-	<bouml>UmlBaseClassView.cpp
-	<bouml>UmlComponent.cpp
-	<bouml>CppSettingsCmd.cpp
-	<bouml>CppSettings.cpp
-	<bouml>UmlBaseUseCaseDiagram.cpp
-	<bouml>OnInstanceCmd.cpp
-	<bouml>MiscGlobalCmd.cpp
-	<butter>build_writer.cpp
-	<bouml>UmlUseCase.cpp
-	<butter>utility.cpp
-	<bouml>UmlArtifact.cpp
-	<bouml>UmlClassMember.cpp
-	<bouml>UmlBaseRelation.cpp
-	<bouml>UmlNcRelation.cpp
-	<butter>item_traits.cpp
-	<bouml>UmlBaseArtifact.cpp
-	<bouml>UmlBuiltin.cpp
-	<butter>style.cpp
-	<bouml>UmlSequenceDiagram.cpp
-	<bouml>UmlClassView.cpp
-	<bouml>UmlCom.cpp
-	<bouml>aRelationKind.cpp
-	<bouml>UmlBaseActualParameter.cpp
-	<bouml>JavaSettingsCmd.cpp
-	<butter>compound_artifact.cpp
-	<bouml>UmlBaseFormalParameter.cpp
-	<bouml>UmlDeploymentDiagram.cpp
-	<bouml>ClassGlobalCmd.cpp
-	<bouml>UmlClass.cpp
-	<bouml>UmlBaseItem.cpp
-	<bouml>UmlBaseUseCaseView.cpp
-	<bouml>UmlOperation.cpp
-	<bouml>IdlSettings.cpp
-	<bouml>aVisibility.cpp
-	<bouml>UmlStereotype.cpp
-	<bouml>UmlBaseComponent.cpp
-	<bouml>UmlUseCaseDiagram.cpp
-	<bouml>UmlBaseNode.cpp
-	<bouml>UmlBaseNcRelation.cpp
-	<bouml>UmlRelation.cpp
-	<bouml>UmlBaseClassMember.cpp
-	<bouml>IdlSettingsCmd.cpp
-	<bouml>JavaSettings.cpp
-	<bouml>UmlBaseDeploymentView.cpp
-	;
-
-
-InstallBin $(BINDIR) : <butter>butter.plugout$(SUFEXE) ;
-##END:target butter.plugout
-##START:target test_path
-Main <butter>test_path$(SUFEXE) :
-	<butter>utility.cpp
-	<butter>path_test.cpp
-	;
-
-LINKLIBS on <butter>test_path$(SUFEXE) += -L${QTDIR}/lib64 -lqt-mt -lm ;
-
-C++FLAGS on <butter>path_test$(SUFOBJ) += -fopenmp ;
-
-InstallBin $(BINDIR) : <butter>test_path$(SUFEXE) ;
-##END:target test_path
-"
-    end
-
     artifact 164777 "test_path"
       stereotype "executable"
       associated_artifacts
+	artifact_ref 134057 // qt
 	artifact_ref 150825 // utility
 	artifact_ref 150953 // path_test
-	artifact_ref 134057 // qt
+	artifact_ref 142889 // bouml
       end
-      ncouples 1
-      key "butter flags" value "-DNO_LOG"
     end
+
   end
 end

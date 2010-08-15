@@ -66,22 +66,25 @@ a_os << "<" << item_traits::location (a_target) << ">" << a_filename << "\n\t";
 if (NULL != a_loc.parent ())
 {
   QString subdir_line_;  // The text of the preamble section (mainly SubDir)
-  QString dir_line_;     // The space separated list of folders between here and TOP
+  // Build SubDir.
+  pathcmp root_dir_;
+  for (location const* loc_cursor_ = &a_loc;
+	true;
+	loc_cursor_ = loc_cursor_->parent ())
+  {
+    if (NULL == loc_cursor_->parent ())
+    {
+      root_dir_ = loc_cursor_->full_path ();
+      break;
+    }
+  }
+  // Create subpath (eg. src/chemistry) ;
+  const QString dir_line2_ = a_loc.full_path ().path ().mid (root_dir_.path ().length () + 1);
+  const QString dir_line_ = pathcmp (dir_line2_).convert_separators(" ");     // The space separated list of folders between here and TOP
   {
     QTextOStream subdir_os_ (&subdir_line_);
-    // Build SubDir.
-    const location *loc_cursor_ = &a_loc;
-    QString dir_line2_;
-    while (NULL != loc_cursor_->parent ())
-    {
-      dir_line_.insert (0, loc_cursor_->path ());
-      dir_line_.insert (0, " ");
-      dir_line2_.insert (0, loc_cursor_->path ());
-      dir_line2_.insert (0, "/");
-      loc_cursor_ = loc_cursor_->parent ();
-    }
-    subdir_os_ << "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)" << dir_line2_ << " ;\n\n"
-              << "SubDir TOP" << dir_line_ << " ;\n\n";
+    subdir_os_ << "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/" << dir_line2_ << " ;\n\n"
+              << "SubDir TOP " << dir_line_ << " ;\n\n";
     // Insert the subdir flags into l_buffer. 
     if (! this->location_flags_.isEmpty ())
     {
@@ -96,7 +99,7 @@ if (NULL != a_loc.parent ())
   }
   a_art.preamble.second.insert (0, subdir_line_);
   // Add definition to top-level
-  a_sys.close.second.append ("SubInclude TOP" + dir_line_ + " ;\n");
+  a_sys.close.second.append ("SubInclude TOP " + dir_line_ + " ;\n");
 }
 !!!209321.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////
@@ -176,7 +179,7 @@ QString content_;
   os_ << "SubDir TOP ;\n";
   //////////////
   // Handle user-defined project includes and flag properties
-  const QString base_path_ (a_base.full_path ());
+  const QString base_path_ (a_base.full_path ().path ());
   QString requirement_text_;
   if (requirements (a_project, requirement_text_))
   {

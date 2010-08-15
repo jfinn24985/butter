@@ -84,31 +84,22 @@ if (a_list.isEmpty ())
 {
   a_list = a_addition;
 }
-else if (! a_list.contains (a_addition))
+else
 {
-  // a_addition is not a subset of a_list
-  if (a_addition.contains (a_list))
+  // contents do not overlap, split and compare
+  QRegExp split_re_ ("(\\s+)");
+  QStringList list_1_ (QStringList::split (split_re_, a_list, false));
+  QStringList list_2_ (QStringList::split (split_re_, a_addition, false));
+  int l_counter (0); // Guard counter.
+  for (QStringList::Iterator cursor_ = list_2_.begin(); cursor_ != list_2_.end(); ++cursor_,  ++l_counter)
   {
-    // a_list is a subset of a_addition, swap.
-    a_list = a_addition;
-  }
-  else
-  {
-    // contents do not overlap, split and compare
-    QRegExp split_re_ ("(\\s+)");
-    QStringList list_1_ (QStringList::split (split_re_, a_list, false));
-    QStringList list_2_ (QStringList::split (split_re_, a_addition, false));
-    int l_counter (0); // Guard counter.
-    for (QStringList::Iterator cursor_ = list_2_.begin(); cursor_ != list_2_.end(); ++cursor_,  ++l_counter)
+    if (0 == list_1_.contains (*cursor_))
     {
-      if (0 == list_1_.contains (*cursor_))
-      {
-         list_1_ += *cursor_;
-      }
-      if (l_counter >= 100) throw std::runtime_error ("merge_string_list loop counter > 100");
+       list_1_ += *cursor_;
     }
-    a_list = list_1_.join (" ");
+    if (l_counter >= 100) throw std::runtime_error ("merge_string_list loop counter > 100");
   }
+  a_list = list_1_.join (" ");
 }
 !!!192425.cpp!!!	section(in a_section : unistr, in a_desc : unistr) : unistr
 static const QString marker_start_ ("${" + item_traits::section_prefix);

@@ -1,6 +1,6 @@
 format 66
 "API USER" // API USER
-  revision 41
+  revision 43
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -1245,84 +1245,84 @@ Do not forget to modify Main !"
     artifact 142889 "bouml"
       stereotype "library"
       associated_artifacts
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 5760 // PackageGlobalCmd
 	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 5120 // anItemKind
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 7297 // UmlNode
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 7169 // UmlItem
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 4864 // aDirection
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 134057 // qt
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 6401 // UmlComponentDiagram
 	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 768 // CppSettings
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 6144 // JavaSettingsCmd
 	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 4480 // UmlCom
-	artifact_ref 5633 // UmlClass
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 4992 // aVisibility
 	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 5248 // CmdFamily
 	artifact_ref 1152 // JavaSettings
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 134057 // qt
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 5633 // UmlClass
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 4864 // aDirection
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 7169 // UmlItem
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 7297 // UmlNode
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 4992 // aVisibility
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 4480 // UmlCom
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 5120 // anItemKind
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 768 // CppSettings
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 5889 // UmlClassMember
       end
       comment "  Reference all the components used to made a C++ executable,
   used by 'genpro' to produce a .pro file allowing to produce a Makefile
@@ -2076,226 +2076,5 @@ ${definition}"
       end
     end
 
-    artifact 164009 "makefile"
-      stereotype "document"
-      comment "##START:version
-#Butter project version 1.2
-##END:version
-##START:date
-#Sat Aug 14 19:19:41 2010
-##END:date
-##START:preamble
-include $(ROOTDIR)/makefile.sys
-
-LOCALHDRS:=$(USERHDRS)
-LOCALFLAGS:=$(USERFLAGS)
-LOCALLDFLAGS:=$(USERLDFLAGS)
-
-##END:preamble
-##START:target bouml
-BOUMLSRC :=  \\
-	UmlPackage.cpp \\
-	UmlUseCaseView.cpp \\
-	PackageGlobalCmd.cpp \\
-	UmlFormalParameter.cpp \\
-	UmlAttribute.cpp \\
-	UmlBaseCollaborationDiagram.cpp \\
-	UmlComponentView.cpp \\
-	UmlBaseDeployment.cpp \\
-	anItemKind.cpp \\
-	UmlBaseUseCase.cpp \\
-	UmlBaseAttribute.cpp \\
-	UmlActualParameter.cpp \\
-	UmlClassItem.cpp \\
-	UmlBaseSequenceDiagram.cpp \\
-	UmlTypeSpec.cpp \\
-	UmlNode.cpp \\
-	UmlClassDiagram.cpp \\
-	UmlBaseComponentView.cpp \\
-	UmlParameter.cpp \\
-	UmlBaseDiagram.cpp \\
-	UmlBaseClassDiagram.cpp \\
-	UmlSettingsCmd.cpp \\
-	UmlItem.cpp \\
-	UmlBaseDeploymentDiagram.cpp \\
-	UmlDiagram.cpp \\
-	CmdFamily.cpp \\
-	UmlBaseClassItem.cpp \\
-	UmlExtraClassMember.cpp \\
-	UmlBaseExtraClassMember.cpp \\
-	UmlBasePackage.cpp \\
-	UmlCollaborationDiagram.cpp \\
-	UmlBaseComponentDiagram.cpp \\
-	UmlBaseClass.cpp \\
-	aDirection.cpp \\
-	UmlBaseOperation.cpp \\
-	UmlDeploymentView.cpp \\
-	UmlComponent.cpp \\
-	UmlBaseClassView.cpp \\
-	CppSettingsCmd.cpp \\
-	UmlSettings.cpp \\
-	UmlComponentDiagram.cpp \\
-	UmlBaseUseCaseDiagram.cpp \\
-	CppSettings.cpp \\
-	OnInstanceCmd.cpp \\
-	UmlUseCase.cpp \\
-	MiscGlobalCmd.cpp \\
-	UmlClassMember.cpp \\
-	UmlArtifact.cpp \\
-	UmlBaseArtifact.cpp \\
-	UmlBuiltin.cpp \\
-	UmlNcRelation.cpp \\
-	UmlSequenceDiagram.cpp \\
-	UmlBaseRelation.cpp \\
-	JavaSettingsCmd.cpp \\
-	UmlDeploymentDiagram.cpp \\
-	UmlClassView.cpp \\
-	UmlBaseActualParameter.cpp \\
-	UmlBaseFormalParameter.cpp \\
-	aRelationKind.cpp \\
-	UmlCom.cpp \\
-	UmlClass.cpp \\
-	ClassGlobalCmd.cpp \\
-	UmlBaseItem.cpp \\
-	UmlOperation.cpp \\
-	UmlBaseUseCaseView.cpp \\
-	IdlSettings.cpp \\
-	UmlBaseNcRelation.cpp \\
-	UmlStereotype.cpp \\
-	aVisibility.cpp \\
-	UmlBaseComponent.cpp \\
-	UmlUseCaseDiagram.cpp \\
-	UmlBaseNode.cpp \\
-	UmlRelation.cpp \\
-	IdlSettingsCmd.cpp \\
-	UmlBaseClassMember.cpp \\
-	UmlBaseDeploymentView.cpp \\
-	JavaSettings.cpp
-BOUMLLDFLAGS := $(LOCALLDFLAGS) -L${QTDIR}/lib64 -lqt-mt -lm
-USERFLAGS := $(LOCALFLAGS) -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
-USERHDRS := $(LOCALHDRS) -I${QTDIR}/include 
-BOUML_DINC := $(filter %.d, $(BOUMLSRC:.cpp=.d)) $(filter %.d, $(BOUMLSRC:.c=.d))
-include $(BOUML_DINC)
-BOUML_OBJ := $(BOUML_OBJ) $(filter %.o, $(BOUMLSRC:.cpp=.o))
-USEROBJ := $(USEROBJ) $(BOUML_OBJ)
-
-libbouml$(SUFLIB) : $(BOUML_OBJ) $(BOUML_DINC)
-	$(AR) $(ARFLAGS) libbouml$(SUFLIB) $(BOUML_OBJ)
-
-all :: libbouml$(SUFLIB)
-TARGETS := $(TARGETS) libbouml$(SUFLIB)
-
-install:: libbouml$(SUFLIB)
-	$(INSTALL) -d $(LIBDIR)
-	$(INSTALL) $(LIBIFLAGS) libbouml$(SUFLIB) $(LIBDIR)/libbouml$(SUFLIB)
-##END:target bouml
-"
-    end
-
-    artifact 164521 "Jamfile"
-      stereotype "document"
-      comment "##START:version
-#Butter project version 1.2
-##END:version
-##START:date
-#Sat Aug 14 19:20:24 2010
-##END:date
-##START:preamble
-ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/src/bouml ;
-
-SubDir TOP src bouml ;
-
-
-SUBDIRC++FLAGS += -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT  ;
-
-SUBDIRHDRS += ${QTDIR}/include ;
-##END:preamble
-##START:target bouml
-Library <bouml>libbouml$(SUFLIB) :
-	<bouml>UmlPackage.cpp
-	<bouml>UmlUseCaseView.cpp
-	<bouml>PackageGlobalCmd.cpp
-	<bouml>UmlFormalParameter.cpp
-	<bouml>UmlAttribute.cpp
-	<bouml>UmlBaseCollaborationDiagram.cpp
-	<bouml>UmlComponentView.cpp
-	<bouml>UmlBaseDeployment.cpp
-	<bouml>anItemKind.cpp
-	<bouml>UmlBaseUseCase.cpp
-	<bouml>UmlBaseAttribute.cpp
-	<bouml>UmlActualParameter.cpp
-	<bouml>UmlClassItem.cpp
-	<bouml>UmlBaseSequenceDiagram.cpp
-	<bouml>UmlTypeSpec.cpp
-	<bouml>UmlNode.cpp
-	<bouml>UmlClassDiagram.cpp
-	<bouml>UmlBaseComponentView.cpp
-	<bouml>UmlParameter.cpp
-	<bouml>UmlBaseDiagram.cpp
-	<bouml>UmlBaseClassDiagram.cpp
-	<bouml>UmlSettingsCmd.cpp
-	<bouml>UmlItem.cpp
-	<bouml>UmlBaseDeploymentDiagram.cpp
-	<bouml>UmlDiagram.cpp
-	<bouml>CmdFamily.cpp
-	<bouml>UmlBaseClassItem.cpp
-	<bouml>UmlExtraClassMember.cpp
-	<bouml>UmlBaseExtraClassMember.cpp
-	<bouml>UmlBasePackage.cpp
-	<bouml>UmlCollaborationDiagram.cpp
-	<bouml>UmlBaseComponentDiagram.cpp
-	<bouml>UmlBaseClass.cpp
-	<bouml>aDirection.cpp
-	<bouml>UmlBaseOperation.cpp
-	<bouml>UmlDeploymentView.cpp
-	<bouml>UmlComponent.cpp
-	<bouml>UmlBaseClassView.cpp
-	<bouml>CppSettingsCmd.cpp
-	<bouml>UmlSettings.cpp
-	<bouml>UmlComponentDiagram.cpp
-	<bouml>UmlBaseUseCaseDiagram.cpp
-	<bouml>CppSettings.cpp
-	<bouml>OnInstanceCmd.cpp
-	<bouml>UmlUseCase.cpp
-	<bouml>MiscGlobalCmd.cpp
-	<bouml>UmlClassMember.cpp
-	<bouml>UmlArtifact.cpp
-	<bouml>UmlBaseArtifact.cpp
-	<bouml>UmlBuiltin.cpp
-	<bouml>UmlNcRelation.cpp
-	<bouml>UmlSequenceDiagram.cpp
-	<bouml>UmlBaseRelation.cpp
-	<bouml>JavaSettingsCmd.cpp
-	<bouml>UmlDeploymentDiagram.cpp
-	<bouml>UmlClassView.cpp
-	<bouml>UmlBaseActualParameter.cpp
-	<bouml>UmlBaseFormalParameter.cpp
-	<bouml>aRelationKind.cpp
-	<bouml>UmlCom.cpp
-	<bouml>UmlClass.cpp
-	<bouml>ClassGlobalCmd.cpp
-	<bouml>UmlBaseItem.cpp
-	<bouml>UmlOperation.cpp
-	<bouml>UmlBaseUseCaseView.cpp
-	<bouml>IdlSettings.cpp
-	<bouml>UmlBaseNcRelation.cpp
-	<bouml>UmlStereotype.cpp
-	<bouml>aVisibility.cpp
-	<bouml>UmlBaseComponent.cpp
-	<bouml>UmlUseCaseDiagram.cpp
-	<bouml>UmlBaseNode.cpp
-	<bouml>UmlRelation.cpp
-	<bouml>IdlSettingsCmd.cpp
-	<bouml>UmlBaseClassMember.cpp
-	<bouml>UmlBaseDeploymentView.cpp
-	<bouml>JavaSettings.cpp
-	;
-
-BOUML_BOUMLLIBS = -L${QTDIR}/lib64 -lqt-mt -lm ;
-
-InstallLib $(LIBDIR) : <bouml>libbouml$(SUFLIB) ;
-##END:target bouml
-"
-    end
   end
 end

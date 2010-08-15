@@ -65,20 +65,22 @@ if (NULL != a_loc.parent ())
   QString tmp_;
   QTextOStream os_ (&tmp_);
   // Build SubDir.
-  const location *loc_cursor_ = &a_loc;
-  QString dir_line_;
-  while (NULL != loc_cursor_->parent ())
+  pathcmp root_dir_;
+  for (location const* loc_cursor_ = &a_loc;
+	true;
+	loc_cursor_ = loc_cursor_->parent ())
   {
-    if (! dir_line_.isEmpty ())
+    if (NULL == loc_cursor_->parent ())
     {
-      dir_line_.insert (0, QDir::separator ());
+      root_dir_ = loc_cursor_->full_path ();
+      break;
     }
-    dir_line_.insert (0, loc_cursor_->path ());
-    loc_cursor_ = loc_cursor_->parent ();
   }
   // Add definition for this sub-project to the top-level location
   // use-project /compchem/chemistry : src/chemistry ;
-  os_ << "use-project /" << project_name_ << "/" << a_loc.path () << " : " << dir_line_ << " ;\n";
+
+  const QString dir_line_ = a_loc.full_path ().path ().mid (root_dir_.path ().length () + 1);
+  os_ << "use-project /" << project_name_ << "/" << a_loc.path ().path () << " : " << dir_line_ << " ;\n";
   // build-project src/chemistry ;
   os_ << "build-project " << dir_line_ << " ;\n\n";
   a_sys.close.second.append (tmp_);
@@ -238,7 +240,7 @@ BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the 
 this->project_name_ = const_cast< UmlItem& >(a_project).name ();
 QString content_;
 {
-  QString base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ().mid (a_base.full_path ().length () + 1));
+  QString base_include_ (a_base.full_path ().create_relative (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project))));
   QTextOStream os_ (&content_);
   os_ << "# Include local constants\ninclude " << rules_name << " ;\n\n";
   os_ << "# Set project's global settings\nproject " << project_name_;
