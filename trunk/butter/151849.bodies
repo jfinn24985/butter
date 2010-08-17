@@ -9,3 +9,20 @@ if (! debug_file_->open (IO_WriteOnly))
   throw std::runtime_error (msg_.ascii ());
 }
 MSC_NO_RESET (debug_os_, std::auto_ptr< QTextStream >)(new QTextStream (debug_file_.get ()));
+!!!223017.cpp!!!	~log()
+  // NOTE: This will only be called during program exit.
+
+  // For some reason under WIN32 we get a violation error, when we
+  // reset the pointer, so here we call the dtor and then release
+  // the pointers.
+if (NULL != debug_os_.get ())
+{
+  debug_os_->~QTextStream ();
+  debug_os_.release ();
+}
+if (NULL != debug_file_.get ())
+{
+  debug_file_->flush ();
+  debug_file_->~QFile ();
+  debug_file_.release ();
+}

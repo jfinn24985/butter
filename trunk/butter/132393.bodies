@@ -434,9 +434,9 @@ while (! item_stack_.isEmpty ())
       }
     }
     BUTTER_CHECK (cache_->full_path ().equality (pack_path_)
-          , std::string ("<p><b>Program error:</b> Location path \"") + cache_->path ().path ().ascii()
-           + "\"(" + cache_->full_path ().path ().ascii() + ") does not match package path \""
-           + pack_path_.path ().ascii () + "\" </p>");
+          ,  ("<p><b>Program error:</b> Location path \"" + cache_->path ().path ()
+           + "\"(" + cache_->full_path ().path () + ") does not match package path \""
+           + pack_path_.path () + "\" </p>").utf8 ().data ());
     cache_->add_package (*pack_item_);
   }
 #ifdef DEBUG

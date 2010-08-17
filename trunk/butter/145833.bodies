@@ -58,7 +58,7 @@ for (int i_ = 0; true; ++i_)
     break; 
   }
 }
-#ifdef _WIN32
+#ifdef _WS_WIN_
 // Throw exception when the two directories are not on the same partition
 if (0 == last_sep_)
 {
