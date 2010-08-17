@@ -140,7 +140,7 @@ if (NULL == deployview_)
     QString msg_ ("<p><b>Fatal error:</b> Unable to create a new deployment view, no editiable packages at location <b>");
     msg_.append (full_path ().path ());
     msg_.append ("</b>. Make an editable package at this location and try again.</p>");
-    throw std::runtime_error (msg_.ascii ());
+    throw std::runtime_error (msg_.utf8 ().data ());
   }
 }
 log::com.trace (log::info, "<p>New UML artifact named " + a_name + " being created in package " + deployview_->parent ()->name ().data () + " (which has source location " + full_path ().path () + ").</p>");
@@ -149,11 +149,9 @@ UmlArtifact * Result = UmlArtifact::create (deployview_, a_name);
 if (NULL == Result)
 {
   QString name_ ("<p><b>Fatal error:</b> Unable to create a new artifact for <b>");
-  name_.append (full_path ().path ());
-  name_.append ("/");
-  name_.append (a_name);
+  name_.append ((full_path () / a_name).path ());
   name_.append ("</b>.</p>");
-  throw std::runtime_error (name_.ascii ());
+  throw std::runtime_error (name_.utf8 ().data ());
 }
 Result->set_Stereotype (item_traits::document_stereotype.utf8 ());
 return Result;
@@ -269,7 +267,10 @@ if (! root_dir_.exists ())
 {
   if (! root_dir_.mkdir (root_dir_.path ()))
   {
-    throw std::runtime_error ("<p><b>The project root directory does not exists and could not be created</b>, please ensure that the root directory is a usable location.</p>");
+    QString msg_ ("<p><b>The project root directory <pre>[");
+    msg_.append (root_dir_.path ());
+    msg_.append ("]</pre> does not exists and could not be created</b>, please ensure that the root directory is a usable location.</p>");
+    throw std::runtime_error (msg_.utf8 ().data ());
   }
 }
 /////////////////////
@@ -294,7 +295,10 @@ if (! user_base_path_.isEmpty ())
   {
     if (! base_path_.mkdir (base_path_.path ()))
     {
-      throw std::runtime_error ("<p><b>Base directory does not exists and could not be created</b>, please ensure that user supplied base directory is a usable locations.</p>");
+      QString msg_ ("<p><b>The base directory <pre>[");
+      msg_.append (base_path_.path ());
+      msg_.append ("]</pre> does not exists and could not be created</b>, please ensure that the user supplied base directory is a usable locations.</p>");
+      throw std::runtime_error (msg_.utf8 ().data ());
     }
   }
 // * Create the initial base location object.
@@ -308,7 +312,7 @@ cache_ = Result.get ();
 
 #ifdef DEBUG
 log::com.debug_log ((root_dir_ / butter::pathcmp("butter.log")).path ());
-log::com.stream () << "## BEGIN LOG FOR " << item_traits::BUTTER_VERSION << "\n";
+log::com.stream () << "##\n## BEGIN LOG FOR " << item_traits::BUTTER_VERSION << "\n##\n";
 #endif
 ///////////////////////////////////
 // Walk through the UmlItems.
@@ -365,8 +369,8 @@ while (! item_stack_.isEmpty ())
     {
       if (! pack_path_.mkdir (pack_path_.path ()))
       {
-        const QString msg_ ("<p><b>A package directory [" + pack_path_.path () + "] does not exist and could not be created</b>, please ensure that all packages have usable locations. Running the code generator first may avoid this error.</p>");
-        throw std::runtime_error (msg_.ascii ());
+        const QString msg_ ("<p><b>A package directory <pre>[" + pack_path_.path () + "]</pre> does not exist and could not be created</b>, please ensure that all packages have usable locations. Running the code generator first may avoid this error.</p>");
+        throw std::runtime_error (msg_.utf8 ().data ());
       }
     }
     // Find/Create location, reparenting tree if necessary, and add package.
@@ -434,9 +438,9 @@ while (! item_stack_.isEmpty ())
       }
     }
     BUTTER_CHECK (cache_->full_path ().equality (pack_path_)
-          ,  ("<p><b>Program error:</b> Location path \"" + cache_->path ().path ()
-           + "\"(" + cache_->full_path ().path () + ") does not match package path \""
-           + pack_path_.path () + "\" </p>").utf8 ().data ());
+          ,  ("<p><b>Program error:</b> Location path <pre>[" + cache_->path ().path ()
+           + "] [" + cache_->full_path ().path () + "]</pre> does not match package path <pre>["
+           + pack_path_.path () + "]</pre> </p>").utf8 ().data ());
     cache_->add_package (*pack_item_);
   }
 #ifdef DEBUG
@@ -479,7 +483,7 @@ if (Result->packages_.isEmpty ())
   bool top_package_is_writable_ (a_item.isWritable ());
   QString msg_;
   QTextOStream mos_ (&msg_);
-  mos_ << "<p>[" << Result->full_path ().path () << "] found as parent directory";
+  mos_ << "<p><pre>[" << Result->full_path ().path () << "]</pre> found as parent directory";
   if (top_package_is_writable_)
   {
     bool name_not_found_ (true);
@@ -513,7 +517,7 @@ if (Result->packages_.isEmpty ())
       mos_ << " but I can not create UML package for this location. Do one of:<p>\n";
       mos_ << "<ul><li>Create/modify a package with this directory.</li>\n";
       mos_ << "<li>Change existing directories to change parent directory.</li></ul>\n";
-      throw std::runtime_error (msg_.ascii ());
+      throw std::runtime_error (msg_.utf8 ().data ());
     }
     else
     {
@@ -545,7 +549,7 @@ if (Result->packages_.isEmpty ())
   else
   {
     mos_ << " and project is not writable.<p>\n";
-    throw std::runtime_error (msg_.ascii ());
+    throw std::runtime_error (msg_.utf8 ().data ());
   }
 }
 return Result; // Pass ownership of location tree.
@@ -612,7 +616,7 @@ for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
             QString document_prop_value_;
             if (! item_traits::property_value (*artifact_cursor_, item_traits::butter_other_name, document_prop_value_) || document_prop_value_ == "nowrite")
             {
-              QString document_filepath_ = (full_path () / pathcmp(artifact_cursor_->name ())).path ();
+              QString document_filepath_ = (full_path () / artifact_cursor_->name ()).path_localised ();
               if (! document_prop_value_.isEmpty ())
               {
                 document_filepath_ += "." + document_prop_value_;

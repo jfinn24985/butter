@@ -24,15 +24,17 @@ else
   QTextOStream lib_os_ (&lib_body_); // Stream for  dependent library data
   UmlPackage * parent_package_ = dynamic_cast< UmlPackage * >(const_cast< UmlArtifact& >(a_target).parent ()->parent ());
   BUTTER_CHECK (NULL != parent_package_, "Grandparent of an artifact was not a package!");
-  const QString lib_path_ (item_traits::dirname (*parent_package_).path ().mid (root_dir_.length () + 1));
+  const QString lib_path_ (root_dir_.create_relative (item_traits::dirname (*parent_package_)));
   QString library_type_;
-  lib_os_ << "$(ROOTDIR)";
+  pathcmp lib_fname_ ("$(ROOTDIR)");
   if (! lib_path_.isEmpty ())
   {
-    lib_os_ << "/" << lib_path_;
+    lib_fname_ / lib_path_;
   }
-  lib_os_ << "/lib" << const_cast< UmlArtifact& >(a_target).name ();
-  if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, library_type_) && item_traits::shared_value == library_type_)
+  lib_fname_ / ("lib" + const_cast< UmlArtifact& >(a_target).name ());
+  lib_os_ << lib_fname_.path_localised ();
+  if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, library_type_)
+      && item_traits::shared_value == library_type_)
   {
     //////////////////////
     // Is a shared library
@@ -96,8 +98,8 @@ QString user_extra_;
   {
     QString comp_ ("CCC");
     BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, comp_) || ! a_isdoc
-                  , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
-                                  + "' property on " + QString (a_filename)).ascii ()));
+                  , ("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
+                                  + "' property on " + QString (a_filename)).utf8 ().data ());
     user_obj_ << a_basename << ".o: " << a_filename << " ";
     if (! a_isdoc)
     { // Add dependencies for C++ source documents
@@ -126,7 +128,8 @@ if (! user_extra_.isEmpty ())
 // Need to write the "makefiles.sys" include line.
 QString tmp_;
 QTextOStream desc_os_ (&tmp_);
-desc_os_ << "include $(ROOTDIR)/" << rules_name << "\n\n";
+
+desc_os_ << "include " << (pathcmp("$(ROOTDIR)") / rules_name).path_localised () << "\n\n";
 
 // Keep parent dir definitions.
 if (NULL != a_loc.parent ())
@@ -136,7 +139,7 @@ if (NULL != a_loc.parent ())
   // Add us to base makefile
   QString & link_ = a_sys.target (a_loc.path ().path ()).second;
   link_.append ("DIRS := $(DIRS) ");
-  link_.append (a_loc.full_path ().path ().mid (root_dir_.length () + 1));
+  link_.append (pathcmp(root_dir_.create_relative (a_loc.full_path ())).path_localised ());
   link_.append ("\n");
 }
 a_art.preamble.second.append (tmp_);
@@ -268,14 +271,15 @@ a_os << "TARGETS := $(TARGETS) " << this->qualified_target_name_ << "\n\n";
 // top-projects hdrDir
 QString init_text_;
 QTextOStream init_os_ (&init_text_);
-root_dir_ = a_base.full_path ().path ();
-BUTTER_CHECK (! root_dir_.isEmpty (), "<p><b>Program error:</b> Project root directory is not set properly.</p>");
+root_dir_ = a_base.full_path ();
+BUTTER_CHECK (! root_dir_.path ().isEmpty (), "<p><b>Program error:</b> Project root directory is not set properly.</p>");
 init_os_ << "include " << rules_name << "\n\n";
-init_os_ << "ROOTDIR := " << root_dir_ << "\n\n";
-const QString base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
-if (root_dir_ != base_include_)
+init_os_ << "ROOTDIR := " << root_dir_.path_localised () << "\n\n";
+const pathcmp base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)));
+if (!root_dir_.equality (base_include_))
 {
-  init_os_ << "USERHDRS := $(USERHDRS) -I$(ROOTDIR)/" << base_include_.mid (root_dir_.length () + 1) << "\n\n";
+  init_os_ << "USERHDRS := $(USERHDRS) -I"
+        << (pathcmp("$(ROOTDIR)") / root_dir_.create_relative (base_include_)).path_localised () << "\n\n";
 }
 QString l_tmp;
 if (requirements (a_project, l_tmp))

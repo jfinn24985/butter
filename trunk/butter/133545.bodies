@@ -25,8 +25,8 @@ if (! this->is_other_ && (! a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
   QString compiler_ ("cxx");
   QTextOStream source_os_ (&individual_);
   BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, compiler_) || ! a_isdoc
-                , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
-                                + "' property on " + QString (a_filename)).ascii ()));
+                , ("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
+                                + "' property on " + QString (a_filename)).utf8 ().data ());
   if (compiler_ == "CC") compiler_ = "C";
   if (compiler_ == "FORTRAN") compiler_ = "F";
   source_os_ << "obj " << a_basename << "_obj : "
@@ -78,8 +78,8 @@ if (NULL != a_loc.parent ())
   }
   // Add definition for this sub-project to the top-level location
   // use-project /compchem/chemistry : src/chemistry ;
-
-  const QString dir_line_ = a_loc.full_path ().path ().mid (root_dir_.path ().length () + 1);
+  
+  const QString dir_line_ = root_dir_.create_relative (a_loc.full_path ());
   os_ << "use-project /" << project_name_ << "/" << a_loc.path ().path () << " : " << dir_line_ << " ;\n";
   // build-project src/chemistry ;
   os_ << "build-project " << dir_line_ << " ;\n\n";

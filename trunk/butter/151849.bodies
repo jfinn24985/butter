@@ -6,9 +6,13 @@ if (! debug_file_->open (IO_WriteOnly))
   QString msg_ ("<p>Unable to open log file for read/writing: ");
   msg_.append (debug_file_->name ());
   msg_.append ("</p>");
-  throw std::runtime_error (msg_.ascii ());
+  MSC_NO_RESET (debug_os_, std::auto_ptr< QTextStream >)(); // Reset stream
+  throw std::runtime_error (msg_.utf8 ().data ());
 }
-MSC_NO_RESET (debug_os_, std::auto_ptr< QTextStream >)(new QTextStream (debug_file_.get ()));
+else
+{
+  MSC_NO_RESET (debug_os_, std::auto_ptr< QTextStream >)(new QTextStream (debug_file_.get ()));
+}
 !!!223017.cpp!!!	~log()
   // NOTE: This will only be called during program exit.
 

@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 74
+  revision 75
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -980,6 +980,10 @@ Greatly improved reliability and better error reporting.
 
 Important external changes are:
 
+* first Windows version. Currently have not implemented 
+specific build files specifically for Windows.  Windows nmake
+is not capable of interpreting generated makefiles.
+
 * auto-detecting the project root directory.  At the same time 
 this also fixed a number of program bugs related to detecting 
 directories.  The most significant of which was plugout failure 
@@ -1010,6 +1014,5 @@ October 2008 Release 1.0
 
 First beta release of the \"butter\" build system plug-out."
     end
-
   end
 end

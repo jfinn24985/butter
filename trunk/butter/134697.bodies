@@ -43,8 +43,8 @@ if (! a_src_flags.isEmpty ())
 {
   QString comp_ ("C++");
   BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, comp_) || ! a_isdoc
-                , std::string (("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
-                                + "' property on " + item_traits::location (a_target) + "/" + a_filename).ascii ()));
+                , ("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
+                 + "' property on " + item_traits::location (a_target) + "/" + a_filename).utf8 ().data ());
   source_os_ << comp_ << "FLAGS on <" << item_traits::location (a_target) << ">"
               << a_basename << "$(SUFOBJ) ";
   if (a_isdoc) // Need to handle non-C++ cases differently - this is sort of a bug in jam!
@@ -79,8 +79,9 @@ if (NULL != a_loc.parent ())
     }
   }
   // Create subpath (eg. src/chemistry) ;
-  const QString dir_line2_ = a_loc.full_path ().path ().mid (root_dir_.path ().length () + 1);
-  const QString dir_line_ = pathcmp (dir_line2_).convert_separators(" ");     // The space separated list of folders between here and TOP
+  const QString dir_line2_ = root_dir_.create_relative (a_loc.full_path ());
+  // Create a space separated list of folders between here and TOP
+  const QString dir_line_ = pathcmp (dir_line2_).path_convert (" ");
   {
     QTextOStream subdir_os_ (&subdir_line_);
     subdir_os_ << "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/" << dir_line2_ << " ;\n\n"
@@ -179,7 +180,7 @@ QString content_;
   os_ << "SubDir TOP ;\n";
   //////////////
   // Handle user-defined project includes and flag properties
-  const QString base_path_ (a_base.full_path ().path ());
+  const pathcmp base_path_ (a_base.full_path ());
   QString requirement_text_;
   if (requirements (a_project, requirement_text_))
   {
@@ -188,16 +189,19 @@ QString content_;
   ////////////
   // The include dir is the difference between the current fullpath and the
   // top-projects hdrDir
-  QString toplevel_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)).path ());
-  if (! toplevel_include_.isEmpty () && toplevel_include_ != base_path_)
+  const pathcmp toplevel_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)));
+  if (! toplevel_include_.path ().isEmpty ())
   {
-    if (0 == toplevel_include_.find (base_path_))
+    if (!base_path_.equality (toplevel_include_))
     {
-      os_ << "HDRS += \"" << toplevel_include_.mid (base_path_.length () + 1) << "\" ;\n\n";
-    }
-    else
-    {
-      os_ << "HDRS += \"" << toplevel_include_ << "\" ;\n";
+      if (base_path_.has_subpath (toplevel_include_))
+      {
+        os_ << "HDRS += \"" << base_path_.create_relative (toplevel_include_) << "\" ;\n\n";
+      }
+      else
+      {
+        os_ << "HDRS += \"" << toplevel_include_.path () << "\" ;\n";
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 format 66
 "butter"
-  revision 55
+  revision 56
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/butter/include/"
 
@@ -45,8 +45,8 @@ format 66
   key "butter include" value "include/bouml"
   key "butter base" value ".."
   key "butter build-dir" value "build"
-  key "butter style" value "boost"
-  key "butter flags" value "-DWITHCPP"
+  key "butter style" value "standard"
+  key "butter flags" value "-DWITHCPP -DDEBUG"
   key "butter log-level" value "5"
   comment "To create the plug-out use 'genpro' on the artifact \"butter/butter/butter.plugout\".
 

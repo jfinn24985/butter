@@ -73,11 +73,9 @@ for (QString line_ = a_is.readLine ();
         else
         {
           QString name_ ("<p><b>Fatal Error:</b> Error in artifact <b>");
-          name_.append (artifact.parent ()->parent ()->name ());
-          name_.append ("/");
-          name_.append (artifact.name ());
+          name_.append ((pathcmp(artifact.parent ()->parent ()->name ()) / artifact.name ()).path ());
 	  name_.append ("</b>, appears to have an unknown section type.</p>");
-          throw std::runtime_error (name_.ascii ());
+          throw std::runtime_error (name_.utf8 ().data ());
         }
         if (! capture_.isEmpty ())
         {
@@ -89,11 +87,9 @@ for (QString line_ = a_is.readLine ();
       else if (line_.startsWith (style_.end_phrase))
       {
         QString name_ ("<p><b>Fatal Error:</b> Error in artifact <b>");
-        name_.append (artifact.parent ()->parent ()->name ());
-        name_.append ("/");
-        name_.append (artifact.name ());
+        name_.append ((pathcmp(artifact.parent ()->parent ()->name ()) / artifact.name ()).path ());
 	name_.append ("</b>, section end outside a section</p>");
-        throw std::runtime_error (name_.ascii ());
+        throw std::runtime_error (name_.utf8 ().data ());
       }
       else
       {
