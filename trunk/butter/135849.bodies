@@ -29,9 +29,9 @@ else
   pathcmp lib_fname_ ("$(ROOTDIR)");
   if (! lib_path_.isEmpty ())
   {
-    lib_fname_ / lib_path_;
+    lib_fname_ = lib_fname_ / lib_path_;
   }
-  lib_fname_ / ("lib" + const_cast< UmlArtifact& >(a_target).name ());
+  lib_fname_ = lib_fname_ / ("lib" + const_cast< UmlArtifact& >(a_target).name ());
   lib_os_ << lib_fname_.path_localised ();
   if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, library_type_)
       && item_traits::shared_value == library_type_)
@@ -39,14 +39,14 @@ else
     //////////////////////
     // Is a shared library
     //
-    lib_os_ << "$(SUFSHR) ";
+    lib_os_ << "$(sufshr) ";
   }
   else
   {
     //////////////////////
     // Is a static library
     //
-    lib_os_ << "$(SUFLIB) ";
+    lib_os_ << "$(suflib) ";
     //////////////////////
     // We need to get ldflags from static library's sources
     QVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(a_target).associatedArtifacts ());
@@ -84,7 +84,7 @@ QString user_extra_;
     // Add document to TARGET_OBJ as they can not be deduced from source list
     //
     // Assume object just replaces extension
-    user_obj_ << this->target_NAME_ << "_OBJ := $(" << this->target_NAME_ << "_OBJ)  " << a_basename << ".o\n\n";
+    user_obj_ << this->target_NAME_ << "_OBJ := $(" << this->target_NAME_ << "_OBJ)  " << a_basename << "$(sufobj)\n\n";
   }
   // Add source/document
   a_os << " \\\n\t" << a_filename;
@@ -93,17 +93,17 @@ QString user_extra_;
   //
   // means we have to make a separate build line for it.
   // name().o: name().cpp name().d
-  // \t        $(CCC) $(USERHDRS) $(CCCFLAGS) -c -o name().o name().cpp
+  // \t        $(CCC) $(USERHDRS) $(CCCFLAGS) $(compileonly) $(outputfile) name().o name().cpp
   if (! a_src_inc.isEmpty () || ! a_src_flags.isEmpty ())
   {
     QString comp_ ("CCC");
     BUTTER_ALWAYS(item_traits::property_value (a_target, item_traits::butter_compiler_name, comp_) || ! a_isdoc
                   , ("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
                                   + "' property on " + QString (a_filename)).utf8 ().data ());
-    user_obj_ << a_basename << ".o: " << a_filename << " ";
+    user_obj_ << a_basename << "$(sufobj): " << a_filename << " ";
     if (! a_isdoc)
     { // Add dependencies for C++ source documents
-      user_obj_ << a_basename << ".d";
+      user_obj_ << a_basename << "$(sufdep)";
     }
     user_obj_ << "\n";
     user_obj_ << "\t$(" << comp_ << ") $(USERHDRS) ";
@@ -116,7 +116,7 @@ QString user_extra_;
     {
       user_obj_ << a_src_flags << " ";
     }
-    user_obj_ << "-c -o " << a_basename << ".o "<< a_filename;
+    user_obj_ << "$(compileonly) $(outputfile)" << a_basename << "$(sufobj) "<< a_filename;
     user_obj_ << "\n\n";
   }
 }
@@ -138,7 +138,7 @@ if (NULL != a_loc.parent ())
 
   // Add us to base makefile
   QString & link_ = a_sys.target (a_loc.path ().path ()).second;
-  link_.append ("DIRS := $(DIRS) ");
+  link_.append ("dirs += ");
   link_.append (pathcmp(root_dir_.create_relative (a_loc.full_path ())).path_localised ());
   link_.append ("\n");
 }
@@ -154,7 +154,7 @@ if (a_type == other)
   ////////////////
   // Handle "other" library types specially.
   QString other_type_ (this->other_target_type_.upper ());
-#if QT_VERSION < 0x030000
+#if QT_VERSION < 300L
   other_type_.replace (QRegExp ("-"), "_");
 #else
   other_type_.replace ('-', "_");
@@ -209,15 +209,16 @@ else
     a_os << "USERHDRS := $(LOCALHDRS) " << process_hdrs (a_include) << "\n";
   }
   // Add dependency information
-  a_os << target_NAME_ << "_DINC := $(filter %.d, $(" << target_NAME_ << "SRC:." << CppSettings::sourceExtension () << "=.d))"
-                    << " $(filter %.d, $(" << target_NAME_ << "SRC:.c=.d))\n"
-              << "include $(" << target_NAME_ << "_DINC)\n";
+  a_os << target_NAME_ << "_DINC := $(filter %$(sufdep), $(" << target_NAME_ << "SRC:." << CppSettings::sourceExtension () << "=$(sufdep)))"
+                    << " $(filter %$(sufdep), $(" << target_NAME_ << "SRC:.c=$(sufdep)))\n"
+              << "-include $(" << target_NAME_ << "_DINC)\n";
   // Add any object definitions.
   if (! this->individual_obj_.isEmpty ())
   {
     a_os << this->individual_obj_ << "\n";
   }
-  a_os << target_NAME_ << "_OBJ := $(" << target_NAME_ << "_OBJ) $(filter %.o, $(" << target_NAME_ << "SRC:." << CppSettings::sourceExtension () << "=.o))\n";
+  a_os << target_NAME_ << "_OBJ := $(" << target_NAME_ << "_OBJ) $(filter %$(sufobj), $(" << target_NAME_
+       << "SRC:." << CppSettings::sourceExtension () << "=$(sufobj)))\n";
   a_os << "USEROBJ := $(USEROBJ) $(" << target_NAME_ << "_OBJ)\n\n";
 
   // Finally add target build definition
@@ -233,7 +234,7 @@ else
               << " : $(" << this->target_NAME_ << "_OBJ) $("
                           << this->target_NAME_ << "_DINC) "
                           << this->lib_set_ << "\n"
-              << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) -o " << this->qualified_target_name_
+              << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) $(outputfile)" << this->qualified_target_name_
                 << " $(" << this->target_NAME_ << "_OBJ)"
                 << " $(" << this->target_NAME_ << "LDFLAGS) $(LDFLAGS)\n";
     }
@@ -254,7 +255,7 @@ else
                           << this->target_NAME_ << "_DINC) "
               << this->lib_set_ << "\n";
       a_os << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) $(SHRXFLAGS)" << this->qualified_target_name_
-                << " -o " << this->qualified_target_name_
+                << " $(outputfile)" << this->qualified_target_name_
                 << " $(" << this->target_NAME_ << "_OBJ)"
                 << " $(" << this->target_NAME_ << "LDFLAGS) $(LDFLAGS)\n";
     }
@@ -273,8 +274,8 @@ QString init_text_;
 QTextOStream init_os_ (&init_text_);
 root_dir_ = a_base.full_path ();
 BUTTER_CHECK (! root_dir_.path ().isEmpty (), "<p><b>Program error:</b> Project root directory is not set properly.</p>");
-init_os_ << "include " << rules_name << "\n\n";
 init_os_ << "ROOTDIR := " << root_dir_.path_localised () << "\n\n";
+init_os_ << "include $(ROOTDIR)/" << rules_name << "\n\n";
 const pathcmp base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)));
 if (!root_dir_.equality (base_include_))
 {
@@ -351,11 +352,50 @@ if (Result)
   a_reqs = l_section;
 }
 return Result;
+!!!226601.cpp!!!	rules_file(inout a_base : location, in a_project : UmlItem) : void
+const static QString cl_("M_cl.mak");
+const static QString gcc_("M_gcc.mak");
+const static QString unix_("M_unix.mak");
+const static QString winnt_("M_Windows_NT.make");
+class helper_
+{
+public:
+  static QString list_to_string (const char *a_list[])
+  {
+    QString result;
+    {
+      QTextOStream os_(&result);
+      for (const char **line_ = &a_list[0]; 0 != *line_; ++line_)
+      {
+        os_ << *line_;
+      }
+    }
+    return result;
+  }
+};
+   
+if (a_base.find_uml_document (cl_).isEmpty ())
+{
+  a_base.create_uml_document (cl_)->set_Description (helper_::list_to_string (this->default_rules_cl).utf8 ());
+}
+if (a_base.find_uml_document (gcc_).isEmpty ())
+{
+  a_base.create_uml_document (gcc_)->set_Description (helper_::list_to_string (this->default_rules_gcc).utf8 ());
+}
+if (a_base.find_uml_document (unix_).isEmpty ())
+{
+  a_base.create_uml_document (unix_)->set_Description (helper_::list_to_string (this->default_rules_unix).utf8 ());
+}
+if (a_base.find_uml_document (winnt_).isEmpty ())
+{
+  a_base.create_uml_document (winnt_)->set_Description (helper_::list_to_string (this->default_rules_winnt).utf8 ());
+}
+this->writer< gmake_writer >::rules_file(a_base, a_project);
 !!!210601.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = const_cast< UmlArtifact& >(a_target).name ();
-#if QT_VERSION < 0x030000
+#if QT_VERSION < 300L
 this->target_NAME_ = this->qualified_target_name_.upper ().replace (QRegExp("\\."), "");
 #else
 this->target_NAME_ = this->qualified_target_name_.upper ().remove ('.');
@@ -372,16 +412,16 @@ switch (a_type)
 {
 case executable:
   {
-    this->qualified_target_name_.append ("$(SUFEXE)");
+    this->qualified_target_name_.append ("$(sufexe)");
   }
   break;
 case static_library:
   this->qualified_target_name_.prepend ("lib");
-  this->qualified_target_name_.append ("$(SUFLIB)");
+  this->qualified_target_name_.append ("$(suflib)");
   break;
 case shared_library:
   this->qualified_target_name_.prepend ("lib");
-  this->qualified_target_name_.append ("$(SUFSHR)");
+  this->qualified_target_name_.append ("$(sufshr)");
   break;
 case other:
   item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_);
@@ -393,7 +433,7 @@ if (a_type != executable)
 {
   if (! a_build_file.isEmpty ())
   {
-    a_os << "include $(ROOTDIR)/" << a_build_file << ".make\n\n";
+    a_os << "include $(ROOTDIR)/" << a_build_file << ".mak\n\n";
   }
 }
 

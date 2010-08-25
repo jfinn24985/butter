@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 75
+  revision 76
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -55,6 +55,13 @@ use target types that are specific to a particular build system style.
  + Including documentation into a //bouml// project.
  + Non-C++ source to be included.
 
+
+== Notes for Windows users ==
+
+The //make// style generates makefiles for the GNU //make// program and will not work with 
+other //make// programs, such as //nmake//. The GNU make program can be installed by itself from 
+http://gnuwin32.sourceforge.net/packages/make.htm .  It is also the default //make// program
+in the Cygwin or MingW systems.
 
 
 == Motivation ==
@@ -958,7 +965,7 @@ actions t2t-action
 "
     end
 
-    artifact 160041 "t2t.make"
+    artifact 160041 "t2t.mak"
       stereotype "document"
       associated_artifacts
       end
@@ -980,9 +987,8 @@ Greatly improved reliability and better error reporting.
 
 Important external changes are:
 
-* first Windows version. Currently have not implemented 
-specific build files specifically for Windows.  Windows nmake
-is not capable of interpreting generated makefiles.
+* first Windows version. Requires GNU make for interpreting 
+generated makefiles.  Example settings for gcc and cl.
 
 * auto-detecting the project root directory.  At the same time 
 this also fixed a number of program bugs related to detecting 

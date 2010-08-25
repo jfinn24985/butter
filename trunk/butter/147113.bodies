@@ -9,7 +9,7 @@ class compound_artifact
 , target_order_ ()
 , version ()
 {
-#if QT_VERSION < 300
+#if QT_VERSION < 300L
   QString tmp_ (a_art.description ());
 #else
   const QString tmp_ (a_art.description ());

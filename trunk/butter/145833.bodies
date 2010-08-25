@@ -1,6 +1,4 @@
 class pathcmp
-!!!216361.cpp!!!	convert_separators(in a_trans : unistr) : unistr
-return path ().replace (QRegExp (default_separator_), a_trans);
 !!!186025.cpp!!!	create_common(in a_other : pathcmp) : unistr
 const QString lhs_ = absPath ();
 const QString rhs_ = a_other.absPath ();
@@ -100,7 +98,7 @@ switch (lhs_sz_ - rhs_sz_)
 // check if lhs_ ends in redundant separator
 case 1:
 {
-  if (default_separator_[0] == lhs_[lhs_sz_ - 1])
+  if (default_separator_[0] == lhs_.at (lhs_sz_ - 1))
   {
     return lhs_.startsWith (rhs_);
   }
@@ -109,7 +107,7 @@ case 1:
 // check if rhs_ ends in redundant separator
 case -1:
 {
-  if (default_separator_[0] == rhs_[rhs_sz_ - 1])
+  if (default_separator_[0] == rhs_.at (rhs_sz_ - 1))
   {
     return rhs_.startsWith (lhs_);
   }
@@ -151,3 +149,5 @@ while (true)
   s_ = e_ + 1;
   --a_count;
 }
+!!!216361.cpp!!!	path_convert(in a_trans : unistr) : unistr
+return path ().replace (QRegExp (default_separator_), a_trans);

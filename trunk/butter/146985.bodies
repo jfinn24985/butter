@@ -82,7 +82,7 @@ return Result;
 !!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
 if (a_list.isEmpty ())
 {
-  a_list = a_addition;
+  a_list = a_addition.stripWhiteSpace ();
 }
 else
 {
@@ -99,7 +99,7 @@ else
     }
     if (l_counter >= 100) throw std::runtime_error ("merge_string_list loop counter > 100");
   }
-  a_list = list_1_.join (" ");
+  a_list = list_1_.join (" ").stripWhiteSpace ();
 }
 !!!192425.cpp!!!	section(in a_section : unistr, in a_desc : unistr) : unistr
 static const QString marker_start_ ("${" + item_traits::section_prefix);

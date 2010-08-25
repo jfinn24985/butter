@@ -9,37 +9,7 @@ static_cast< derived* >(this)->initialise (a_base, a_project, *system_artifact_)
 // If no top-level system build-file document, create it from template.
 if (a_base.find_uml_document (static_cast< derived* >(this)->rules_name).isEmpty ())
 {
-  QString version_;
-  if (! item_traits::property_value (a_project, item_traits::butter_version_name, version_))
-  {
-    if (! item_traits::property_value (a_project, item_traits::version_name, version_))
-    {
-      version_ = "1.0";
-    }
-  }
-  QString rules_;
-  {
-    QTextOStream rules_os_ (&rules_);
-    for (const char ** line_ = &static_cast< derived* >(this)->default_rules[0];
-        0 != *line_;
-        ++line_)
-    {
-      int index_ = 0;
-      const QString project_placeholder_ ("@@project@@");
-      const QString version_placeholder_ ("@@version@@");
-      QString out_line_ (*line_);
-      if (-1 != (index_ = out_line_.find (project_placeholder_)))
-      {
-        out_line_.replace (index_, project_placeholder_.length (), const_cast< UmlItem & > (a_project).name ());
-      }
-      if (-1 != (index_ = out_line_.find (version_placeholder_)))
-      {
-        out_line_.replace (index_, version_placeholder_.length (), version_);
-      }
-      rules_os_ << out_line_;
-    }
-  }
-  a_base.create_uml_document (static_cast< derived* >(this)->rules_name)->set_Description (rules_.utf8 ());
+  this->rules_file (a_base, a_project);
 }
 
 //////////////
@@ -270,3 +240,35 @@ while (! location_stack_.isEmpty ())
   }
 }
 
+!!!226473.cpp!!!	rules_file(inout a_base : location, in a_project : UmlItem) : void
+QString version_;
+if (! item_traits::property_value (a_project, item_traits::butter_version_name, version_))
+{
+  if (! item_traits::property_value (a_project, item_traits::version_name, version_))
+  {
+    version_ = "1.0";
+  }
+}
+QString rules_;
+{
+  QTextOStream rules_os_ (&rules_);
+  for (const char ** line_ = &static_cast< derived* >(this)->default_rules[0];
+      0 != *line_;
+      ++line_)
+  {
+    int index_ = 0;
+    const QString project_placeholder_ ("@@project@@");
+    const QString version_placeholder_ ("@@version@@");
+    QString out_line_ (*line_);
+    if (-1 != (index_ = out_line_.find (project_placeholder_)))
+    {
+      out_line_.replace (index_, project_placeholder_.length (), const_cast< UmlItem & > (a_project).name ());
+    }
+    if (-1 != (index_ = out_line_.find (version_placeholder_)))
+    {
+      out_line_.replace (index_, version_placeholder_.length (), version_);
+    }
+    rules_os_ << out_line_;
+  }
+}
+a_base.create_uml_document (static_cast< derived* >(this)->rules_name)->set_Description (rules_.utf8 ());

@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 130
+  revision 134
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -1403,98 +1403,48 @@ the style for this buildfile type."
       attribute 138793 "default_rules"
 	class_attribute const_attribute private explicit_type "str"
 	init_value "{ \"#\\n\"
-, \"# Makefile.sys\\n\"
+, \"# M_sys.mak\\n\"
 , \"#\\n\"
 , \"##################################\\n\"
 , \"# Settings for current environment\\n\"
 , \"##################################\\n\"
 , \"\\n\"
-, \"OS ?= LINUX\\n\"
-, \"COMP ?= GNU\\n\"
+, \"OS ?= unix\\n\"
+, \"ifeq ($(origin CC),default)\\n\"
+, \"CC = gcc\\n\"
+, \"endif\\n\"
 , \"VARIANT ?= DEBUG\\n\"
-, \"XMLLIB ?=\\n\"
 , \"\\n\"
 , \"#############################\\n\"
-, \"##\\n\"
 , \"##  Default install locations\\n\"
-, \"##\\n\"
 , \"#############################\\n\"
 , \"VERSIONDIR:=\\\"@@project@@-@@version@@\\\"\\n\"
-, \"PREFIX=$(ROOTDIR)/installdir\\n\"
-, \"EXEC_PREFIX=$(PREFIX)\\n\"
-, \"BINDIR=$(EXEC_PREFIX)/bin\\n\"
-, \"SBINDIR=$(EXEC_PREFIX)/sbin\\n\"
-, \"LIBEXECDIR=$(EXEC_PREFIX)/libexec\\n\"
-, \"LIBDIR=$(EXEC_PREFIX)/lib\\n\"
-, \"DATAROOTDIR=$(PREFIX)/share\\n\"
-, \"DATADIR=$(PREFIX)/share\\n\"
-, \"SYSCONFDIR=/etc\\n\"
-, \"SHAREDSTATEDIR=$(PREFIX)/com\\n\"
-, \"LOCALSTATEDIR=$(PREFIX)/var\\n\"
-, \"INCLUDEDIR=$(PREFIX)/include\\n\"
-, \"LOCALEDIR=$(DATAROOTDIR)/locale\\n\"
-, \"DOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)\\n\"
-, \"INFODIR=$(DATAROOTDIR)/info\\n\"
-, \"MANDIR=$(DATAROOTDIR)/man\\n\"
-, \"HTMLDIR=$(DOCDIR)\\n\"
-, \"DVIDIR=$(DOCDIR)\\n\"
-, \"PDFDIR=$(DOCDIR)\\n\"
-, \"PSDIR=$(DOCDIR)\\n\"
-, \"MAN1DIR=$(MANDIR)/man1\\n\"
-, \"MAN2DIR=$(MANDIR)/man2\\n\"
-, \"MAN3DIR=$(MANDIR)/man3\\n\"
-, \"MAN4DIR=$(MANDIR)/man4\\n\"
-, \"MAN5DIR=$(MANDIR)/man5\\n\"
-, \"MAN6DIR=$(MANDIR)/man6\\n\"
-, \"MAN7DIR=$(MANDIR)/man7\\n\"
-, \"MAN8DIR=$(MANDIR)/man8\\n\"
-, \"MANNDIR=$(MANDIR)/mann\\n\"
-, \"# Flags for the install targets.\\n\"
-, \"INSTALL:=install\\n\"
-, \"BINIFLAGS:=-m 755\\n\"
-, \"FILEIFLAGS:=-m 644\\n\"
-, \"LIBIFLAGS:=-m 644 \\n\"
-, \"MANIFLAGS:=-m 644\\n\"
-, \"###########################\\n\"
-, \"##\\n\"
-, \"## Generic setup below here\\n\"
-, \"##\\n\"
-, \"###########################\\n\"
 , \"\\n\"
-, \"####################\\n\"
-, \"## OS SPECIFIC STUFF\\n\"
-, \"####################\\n\"
-, \"# Assume unix-like \\n\"
-, \"SUFOBJ:=.o\\n\"
-, \"SUFEXE:=\\n\"
-, \"SUFLIB:=.a\\n\"
-, \"SUFSHR:=.so.0\\n\"
-, \"ifeq ($(OS),WIN32)\\n\"
-, \"SUFEXE:=.exe\\n\"
-, \"SUFLIB:=.lib\\n\"
-, \"SUFSHR:=.dll\\n\"
-, \"endif\\n\"
+, \"##########################\\n\"
+, \"## Include compiler and OS\\n\"
+, \"##########################\\n\"
+, \"include $(ROOTDIR)/M_$(CC).mak\\n\"
+, \"include $(ROOTDIR)/M_$(OS).mak\\n\"
 , \"\\n\"
+, \"#############################################\\n\"
+, \"##  Define standard directory descent targets\\n\"
+, \"#############################################\\n\"
+, \"export\\n\"
+, \"unexport dirs\\n\"
 , \"\\n\"
-, \"###############################################\\n\"
-, \"##  Definitions for GNU g++ compiler for unices\\n\"
-, \"###############################################\\n\"
+, \"all:: ; $(call doit,all,$(dirs))\\n\"
 , \"\\n\"
-, \"ifeq ($(COMP),GNU)\\n\"
-, \"## For linux\\n\"
-, \"CC:=gcc\\n\"
-, \"CCC:=g++\\n\"
-, \"FORTRAN:=gfortran\\n\"
-, \"STDCCFLAGS:=-Wall -std=c99 -pedantic\\n\"
-, \"STDCCCFLAGS:=-Wall -std=c++98 -Weffc++\\n\"
-, \"STDOPTFLAGS:=-O2 -march=native\\n\"
-, \"STDDEBUGFLAGS:=-O0 -Wall -DDEBUG=1\\n\"
-, \"STDLDFLAGS:=\\n\"
-, \"STDSHRFLAGS:=-fpic\\n\"
-, \"STDSHRXFLAGS:=-shared -Wl,-soname,\\n\"
-, \"FORTRANLIBS:=-lgfortran\\n\"
-, \"OPENMP:=-fopenmp\\n\"
-, \"endif\\n\"
+, \"install:: ; $(call doit,install,$(dirs))\\n\"
+, \"\\n\"
+, \"distclean: doclean\\n\"
+, \"\\t$(call doit,distclean,$(dirs))\\n\"
+, \"\\trm -f core core.* $(TARGETS) *~ *.dep\\n\"
+, \"\\n\"
+, \"clean: doclean\\n\"
+, \"\\t$(call doit,clean,$(dirs))\\n\"
+, \"\\n\"
+, \"doclean: \\n\"
+, \"\\trm -f $(USEROBJ)\\n\"
 , \"\\n\"
 , \"######################################################\\n\"
 , \"##  Example library setup definition for XML libraries\\n\"
@@ -1527,57 +1477,116 @@ the style for this buildfile type."
 , \"SHRFLAGS:=$(STDSHRFLAGS)\\n\"
 , \"SHRXFLAGS:=$(STDSHRXFLAGS)\\n\"
 , \"\\n\"
-, \"#############################################\\n\"
-, \"##  Define standard directory descent targets\\n\"
-, \"#############################################\\n\"
-, \"\\n\"
-, \"all:: dopart\\n\"
-, \"\\n\"
-, \"install:: doinstall\\n\"
-, \"\\n\"
-, \"doit:\\n\"
-, \"\\tfor WORKDIR in $(DIRS); do \\\\\\n\"
-, \"\\techo Working on $$WORKDIR; \\\\\\n\"
-, \"\\tpushd $$WORKDIR;\\\\\\n\"
-, \"\\tOS=$(OS) USERHDRS=\\\"$(USERHDRS)\\\" USERLDFLAGS=\\\"$(USERLDFLAGS)\\\" USERFLAGS=\\\"$(USERFLAGS)\\\" ROOTDIR=\\\"$(ROOTDIR)\\\" COMP=\\\"$(COMP)\\\" VARIANT=\\\"$(VARIANT)\\\"  make $(WHAT); \\\\\\n\"
-, \"\\tpopd;\\\\\\n\"
-, \"\\tdone\\n\"
-, \"\\n\"
-, \"dopart:\\n\"
-, \"\\tWHAT=\\\"all\\\" make doit\\n\"
-, \"\\n\"
-, \"doinstall:\\n\"
-, \"\\tWHAT=\\\"install\\\" make doit\\n\"
-, \"\\n\"
-, \"distclean: clean\\n\"
-, \"\\trm -f core core.* $(TARGETS) *~ *.d\\n\"
-, \"\\tWHAT=\\\"distclean\\\" make doit\\n\"
-, \"\\n\"
-, \"clean: \\n\"
-, \"\\trm -f $(USEROBJ)\\n\"
-, \"\\tWHAT=\\\"clean\\\" make doit\\n\"
-, \"\\n\"
 , \"##############\\n\"
-, \"## Build rules\\n\"
+, \"## Unify Vars\\n\"
 , \"##############\\n\"
 , \"CFLAGS = $(CCFLAGS)\\n\"
 , \"CXXFLAGS = $(CCCFLAGS)\\n\"
 , \"FFLAGS = $(FORTANFLAGS)\\n\"
 , \"FC = $(FORTRAN)\\n\"
 , \"\\n\"
-, \"%.d: %.c\\n\"
+, \"###############\\n\"
+, \"## Editor sugar\\n\"
+, \"###############\\n\"
+, \"# Local Variables:\\n\"
+, \"# mode: makefile\\n\"
+, \"# End:\\n\"
+, \"\\n\"
+, 0 }
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This is the default contents of a the rules file (M_sys.mak) If a 
+document artifact with name 'M_sys.mak' is not present when 
+butter is executed with @style='make' then one will be created
+using this string.
+"
+      end
+
+      attribute 183209 "default_rules_cl"
+	class_attribute const_attribute private explicit_type "str"
+	init_value "{ \"#########################################\\n\"
+, \"##  Definitions for Microsoft VC compiler\\n\"
+, \"#########################################\\n\"
+, \"\\n\"
+, \"CCC:=cl\\n\"
+, \"FORTRAN:=\\n\"
+, \"STDCCFLAGS:=/Za /errorReport:none\\n\"
+, \"STDCCCFLAGS:=/GR /Gm- /EHsc /Za /Zc:forscope /errorReport:none\\n\"
+, \"STDOPTFLAGS:=/O2\\n\"
+, \"STDDEBUGFLAGS:=/Od /Zi\\n\"
+, \"STDLDFLAGS:=/MT\\n\"
+, \"STDSHRFLAGS:=\\n\"
+, \"STDSHRXFLAGS:=\\n\"
+, \"FORTRANLIBS:=\\n\"
+, \"OPENMP:=/openmp\\n\"
+, \"# internal flags\\n\"
+, \"compileonly:=# No flag need for compilation only\\n\"
+, \"outputfile:=/OUT:\\n\"
+, \"\\n\"
+, \"###############\\n\"
+, \"## Editor sugar\\n\"
+, \"###############\\n\"
+, \"# Local Variables:\\n\"
+, \"# mode: makefile\\n\"
+, \"# End:\\n\"
+, \"\\n\"
+, 0 }
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This is the default contents of a the rules file (makefile.sys) If a 
+document artifact with name 'makefile.sys' is not present when 
+butter is executed with @style='make' then one will be created
+using this string.
+"
+      end
+
+      attribute 182953 "default_rules_gcc"
+	class_attribute const_attribute private explicit_type "str"
+	init_value "{ \"####################################\\n\"
+, \"##  Definitions for GNU g++ compiler\\n\"
+, \"####################################\\n\"
+, \"\\n\"
+, \"## For linux\\n\"
+, \"CCC:=g++\\n\"
+, \"FORTRAN:=gfortran\\n\"
+, \"STDCCFLAGS:=-Wall -std=c99 -pedantic\\n\"
+, \"STDCCCFLAGS:=-Wall -std=c++98 -Weffc++\\n\"
+, \"STDOPTFLAGS:=-O2 -march=native\\n\"
+, \"STDDEBUGFLAGS:=-O0 -Wall -DDEBUG=1\\n\"
+, \"STDLDFLAGS:=\\n\"
+, \"STDSHRFLAGS:=-fpic\\n\"
+, \"STDSHRXFLAGS:=-shared -Wl,-soname,\\n\"
+, \"FORTRANLIBS:=-lgfortran\\n\"
+, \"OPENMP:=-fopenmp\\n\"
+, \"# internal flags\\n\"
+, \"compileonly:=-c\\n\"
+, \"outputfile:=-o # need whitspace\\n\"
+, \"\\n\"
+, \"%$(sufdep): %.c\\n\"
 , \"\\tset -e; $(CC) -MM $(CCFLAGS) $< \\\\\\n\"
-, \"\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\"
+, \"\\t| sed 's/\\\\($*\\\\)\\\\$(sufobj)[ :]*/\\\\1$(sufobj) $@ : /g' > $@; \\\\\\n\"
 , \"\\t[ -s $@ ] || rm -f $@\\n\"
 , \"\\n\"
-, \"%.d: %.cc\\n\"
+, \"%$(sufdep): %.cc\\n\"
 , \"\\tset -e; $(CCC) -MM $(CCCFLAGS) $< \\\\\\n\"
-, \"\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\"
+, \"\\t| sed 's/\\\\($*\\\\)\\\\$(sufobj)[ :]*/\\\\1$(sufobj) $@ : /g' > $@; \\\\\\n\"
 , \"\\t[ -s $@ ] || rm -f $@\\n\"
 , \"\\n\"
-, \"%.d: %.cpp\\n\"
+, \"%$(sufdep): %.cpp\\n\"
 , \"\\tset -e; $(CCC) -MM $(CCCFLAGS) $< \\\\\\n\"
-, \"\\t| sed 's/\\\\($*\\\\)\\\\.o[ :]*/\\\\1.o $@ : /g' > $@; \\\\\\n\"
+, \"\\t| sed 's/\\\\($*\\\\)\\\\$(sufobj)[ :]*/\\\\1$(sufobj) $@ : /g' > $@; \\\\\\n\"
 , \"\\t[ -s $@ ] || rm -f $@\\n\"
 , \"\\n\"
 , \"###############\\n\"
@@ -1603,9 +1612,148 @@ using this string.
 "
       end
 
+      attribute 183081 "default_rules_unix"
+	class_attribute const_attribute private explicit_type "str"
+	init_value "{ \"#############################\\n\"
+, \"##  Default install locations\\n\"
+, \"#############################\\n\"
+, \"PREFIX=$(ROOTDIR)/installdir\\n\"
+, \"EXEC_PREFIX=$(PREFIX)\\n\"
+, \"BINDIR=$(EXEC_PREFIX)/bin\\n\"
+, \"SBINDIR=$(EXEC_PREFIX)/sbin\\n\"
+, \"LIBEXECDIR=$(EXEC_PREFIX)/libexec\\n\"
+, \"LIBDIR=$(EXEC_PREFIX)/lib\\n\"
+, \"DATAROOTDIR=$(PREFIX)/share\\n\"
+, \"DATADIR=$(PREFIX)/share\\n\"
+, \"SYSCONFDIR=/etc\\n\"
+, \"SHAREDSTATEDIR=$(PREFIX)/com\\n\"
+, \"LOCALSTATEDIR=$(PREFIX)/var\\n\"
+, \"INCLUDEDIR=$(PREFIX)/include\\n\"
+, \"LOCALEDIR=$(DATAROOTDIR)/locale\\n\"
+, \"DOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)\\n\"
+, \"INFODIR=$(DATAROOTDIR)/info\\n\"
+, \"MANDIR=$(DATAROOTDIR)/man\\n\"
+, \"HTMLDIR=$(DOCDIR)\\n\"
+, \"DVIDIR=$(DOCDIR)\\n\"
+, \"PDFDIR=$(DOCDIR)\\n\"
+, \"PSDIR=$(DOCDIR)\\n\"
+, \"MAN1DIR=$(MANDIR)/man1\\n\"
+, \"MAN2DIR=$(MANDIR)/man2\\n\"
+, \"MAN3DIR=$(MANDIR)/man3\\n\"
+, \"MAN4DIR=$(MANDIR)/man4\\n\"
+, \"MAN5DIR=$(MANDIR)/man5\\n\"
+, \"MAN6DIR=$(MANDIR)/man6\\n\"
+, \"MAN7DIR=$(MANDIR)/man7\\n\"
+, \"MAN8DIR=$(MANDIR)/man8\\n\"
+, \"MANNDIR=$(MANDIR)/mann\\n\"
+, \"\\n# Flags for the install targets.\\n\"
+, \"BINIFLAGS:=-m 755\\n\"
+, \"FILEIFLAGS:=-m 644\\n\"
+, \"LIBIFLAGS:=-m 644 \\n\"
+, \"MANIFLAGS:=-m 644\\n\"
+, \"\\n# Standard suffixes\\n\"
+, \"sufobj:=.o\\n\"
+, \"sufexe:=\\n\"
+, \"suflib:=.a\\n\"
+, \"sufshr:=.so.0\\n\"
+, \"sufdep:=.dep\\n\"
+, \"\\n# Definition of for loop in local shell.\\n\"
+, \"define doit\\n\"
+, \"for subdir in $(2); do $(MAKE) -C $${subdir}  $(1); done\\n\"
+, \"endef\\n\"
+, \"###############\\n\"
+, \"## Editor sugar\\n\"
+, \"###############\\n\"
+, \"# Local Variables:\\n\"
+, \"# mode: makefile\\n\"
+, \"# End:\\n\"
+, \"\\n\"
+, 0 }
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This is the default contents of a the rules file (makefile.sys) If a 
+document artifact with name 'makefile.sys' is not present when 
+butter is executed with @style='make' then one will be created
+using this string.
+"
+      end
+
+      attribute 183337 "default_rules_winnt"
+	class_attribute const_attribute private explicit_type "str"
+	init_value "{ \"#############################\\n\"
+, \"##  Default install locations\\n\"
+, \"#############################\\n\"
+, \"PREFIX=$(ROOTDIR)\\\\$(VERSIONDIR)\\n\"
+, \"EXEC_PREFIX=$(PREFIX)\\n\"
+, \"BINDIR=$(EXEC_PREFIX)\\n\"
+, \"SBINDIR=$(EXEC_PREFIX)\\n\"
+, \"LIBEXECDIR=$(EXEC_PREFIX)\\n\"
+, \"LIBDIR=$(EXEC_PREFIX)\\n\"
+, \"DATAROOTDIR=$(PREFIX)\\n\"
+, \"DATADIR=$(PREFIX)\\n\"
+, \"SYSCONFDIR=$(PREFIX)\\n\"
+, \"SHAREDSTATEDIR=$(PREFIX)\\n\"
+, \"LOCALSTATEDIR=$(PREFIX)\\n\"
+, \"INCLUDEDIR=$(PREFIX)\\\\include\\n\"
+, \"LOCALEDIR=$(DATAROOTDIR)\\\\locale\\n\"
+, \"DOCDIR=$(DATAROOTDIR)\\\\doc\\n\"
+, \"INFODIR=$(DATAROOTDIR)\\\\info\\n\"
+, \"MANDIR=$(DATAROOTDIR)\\\\man\\n\"
+, \"HTMLDIR=$(DOCDIR)\\n\"
+, \"DVIDIR=$(DOCDIR)\\n\"
+, \"PDFDIR=$(DOCDIR)\\n\"
+, \"PSDIR=$(DOCDIR)\\n\"
+, \"MAN1DIR=$(MANDIR)\\\\man1\\n\"
+, \"MAN2DIR=$(MANDIR)\\\\man2\\n\"
+, \"MAN3DIR=$(MANDIR)\\\\man3\\n\"
+, \"MAN4DIR=$(MANDIR)\\\\man4\\n\"
+, \"MAN5DIR=$(MANDIR)\\\\man5\\n\"
+, \"MAN6DIR=$(MANDIR)\\\\man6\\n\"
+, \"MAN7DIR=$(MANDIR)\\\\man7\\n\"
+, \"MAN8DIR=$(MANDIR)\\\\man8\\n\"
+, \"MANNDIR=$(MANDIR)\\\\mann\\n\"
+, \"\\n# Standard Suffixes\\n\"
+, \"sufobj:=.obj\\n\"
+, \"sufexe:=.exe\\n\"
+, \"sufdep:=.dep\\n\"
+, \"suflib:=.lib\\n\"
+, \"sufshr:=.dll\\n\"
+, \"\\n# Definition of for loop in local shell.\\n\"
+, \"define doit\\n\"
+, \"for %%W in ( $(2) ) do ( $(MAKE) -C %%W $(1) )\\n\"
+, \"endef\\n\"
+, \"###############\\n\"
+, \"## Editor sugar\\n\"
+, \"###############\\n\"
+, \"# Local Variables:\\n\"
+, \"# mode: makefile\\n\"
+, \"# End:\\n\"
+, \"\\n\"
+, 0 }
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "This is the default contents of a the rules file (makefile.sys) If a 
+document artifact with name 'makefile.sys' is not present when 
+butter is executed with @style='make' then one will be created
+using this string.
+"
+      end
+
       attribute 144297 "rules_name"
 	class_attribute const_attribute private explicit_type "unistr"
-	init_value "(\"makefile.sys\")"
+	init_value "(\"M_sys.mak\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -1962,6 +2110,25 @@ ${body}}
 	
 	comment "Scan a_item for any requirements, add these to a_req and
 return true if found."
+      end
+
+      operation 226601 "rules_file"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param inout name "a_base" type class_ref 132393 // location
+	  param in name "a_project" type class_ref 7553 // UmlItem
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Create the initial rules set."
       end
 
       operation 210601 "start_target"
@@ -4747,6 +4914,25 @@ ${body}
 Create a series of build-system artifacts based at a_base location. The
 artifacts are inserted into a package at each location."
       end
+
+      operation 226473 "rules_file"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param inout name "a_base" type class_ref 132393 // location
+	  param in name "a_project" type class_ref 7553 // UmlItem
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Create the initial rules set."
+      end
     end
 
     class 151849 "log"
@@ -5136,18 +5322,18 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 152489 // build_writer
-	artifact_ref 136361 // jam_writer
-	artifact_ref 142889 // bouml
-	artifact_ref 134057 // qt
-	artifact_ref 138793 // item_traits
 	artifact_ref 132521 // location
-	artifact_ref 150825 // utility
+	artifact_ref 138793 // item_traits
 	artifact_ref 135209 // bjam_writer
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 134057 // qt
+	artifact_ref 154025 // main
+	artifact_ref 150825 // utility
 	artifact_ref 137641 // gmake_writer
 	artifact_ref 152233 // style
-	artifact_ref 154025 // main
+	artifact_ref 152489 // build_writer
+	artifact_ref 142889 // bouml
+	artifact_ref 136361 // jam_writer
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
@@ -5155,93 +5341,93 @@ ${namespace_end}"
     artifact 148393 "butter.plugout"
       stereotype "file"
       associated_artifacts
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 5633 // UmlClass
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 152489 // build_writer
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 136361 // jam_writer
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 768 // CppSettings
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 4864 // aDirection
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 7297 // UmlNode
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 7169 // UmlItem
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 138793 // item_traits
 	artifact_ref 132521 // location
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 4992 // aVisibility
-	artifact_ref 150825 // utility
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 4480 // UmlCom
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
 	artifact_ref 6529 // UmlComponentView
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 5120 // anItemKind
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 4480 // UmlCom
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 138793 // item_traits
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 5633 // UmlClass
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 6017 // UmlClassView
 	artifact_ref 7425 // UmlOperation
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 7297 // UmlNode
 	artifact_ref 6913 // UmlDiagram
-	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 4736 // aRelationKind
 	artifact_ref 6273 // UmlArtifact
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 2304 // UmlBaseArtifact
 	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 128228 // UmlNcRelation
 	artifact_ref 7937 // UmlUseCase
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 4992 // aVisibility
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 154025 // main
+	artifact_ref 150825 // utility
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 152233 // style
+	artifact_ref 1920 // UmlBaseClassMember
 	artifact_ref 7553 // UmlPackage
 	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 152233 // style
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 5120 // anItemKind
 	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 154025 // main
-	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 152489 // build_writer
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 768 // CppSettings
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 7169 // UmlItem
+	artifact_ref 136361 // jam_writer
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 4864 // aDirection
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5376 // MiscGlobalCmd
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter/butter.pro"
@@ -5732,10 +5918,10 @@ ${namespace_end}
     artifact 164777 "test_path"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 142889 // bouml
 	artifact_ref 150953 // path_test
 	artifact_ref 134057 // qt
 	artifact_ref 150825 // utility
+	artifact_ref 142889 // bouml
       end
       comment "Simple program to exercise pathcmp class."
     end

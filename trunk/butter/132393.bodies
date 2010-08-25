@@ -289,7 +289,7 @@ QString user_base_path_;
 item_traits::property_value (a_item, item_traits::butter_base_name, user_base_path_);
 if (! user_base_path_.isEmpty ())
 {
-  const pathcmp base_path_  (root_dir_ / user_base_path_);
+  const pathcmp base_path_ (root_dir_ / user_base_path_);
   // Ensure directory exists.
   if (! base_path_.exists ())
   {
@@ -446,7 +446,7 @@ while (! item_stack_.isEmpty ())
 #ifdef DEBUG
   {
     unsigned int depth_ (0);
-    UmlItem * print_tmp_ (top_);
+    UmlItem * print_tmp_ = top_;
     for (; NULL != print_tmp_; ++depth_)
     {
       print_tmp_ = print_tmp_->parent ();
@@ -525,7 +525,7 @@ if (Result->packages_.isEmpty ())
       mos_ << "or 'Cancel' and do one of:<p>\n";
       mos_ << "<ul><li>Create/modify a package with this directory.</li>\n";
       mos_ << "<li>Change existing directories to change parent directory.</li></ul>\n";
-#if QT_VERSION < 300
+#if QT_VERSION < 300L
       if (QMessageBox::Ok == QMessageBox::warning (0
 #else
       if (QMessageBox::Ok == QMessageBox::question (0
