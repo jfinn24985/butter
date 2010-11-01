@@ -1,0 +1,17 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Mon Nov 1 15:00:33 2010
+##END:date
+##START:preamble
+SubDir TOP ;
+##END:preamble
+##START:target test
+Main <.>test$(SUFEXE) :
+	<.>single_test.cc
+	;
+
+
+InstallBin $(BINDIR) : <.>test$(SUFEXE) ;
+##END:target test
