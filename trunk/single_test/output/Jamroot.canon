@@ -1,0 +1,24 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Nov 13 18:20:09 2010
+##END:date
+##START:preamble
+# Include local constants
+include local.jam ;
+
+# Set project's global settings
+project single_test
+	:  requirements <debug-symbols>on:<cxxflags>"-DDEBUG=1"
+	: build-dir build ;
+##END:preamble
+##START:target test
+exe test :
+	single_test.cc
+	:
+	;
+
+install install_test : test : <variant>release <location>$(BINDIR) ;
+install install_test : : <variant>debug ;
+##END:target test
