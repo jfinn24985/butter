@@ -3,9 +3,9 @@ Index: single_test.prj
 --- single_test.prj	(revision 38)
 +++ single_test.prj	(working copy)
 @@ -37,6 +37,8 @@
-
+ 
    mark_for_import
-
+   
 +  ncouples 1
 +  key "butter style" value "jam"
    classview 128041 "main"
