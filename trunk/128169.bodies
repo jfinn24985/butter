@@ -1,0 +1,31 @@
+class example_exe
+!!!128041.cpp!!!	main(in argc : int, in argv : char) : int
+if (argc < 2)
+{
+  std::cerr << "Usage [program] [filename] [filename...]\n";
+  return (1);
+}
+else
+{
+  for (int i_ = 1; i_ < argc; i_++)
+  {
+    std::ifstream ifs_(argv[i_]);
+    if (ifs_)
+    {
+      example_lib l_;
+      l_.set_line_width (40);
+      while (ifs_)
+      {
+	std::string s_;
+	std::getline (ifs_, s_);
+        std::cout << l_.format (s_);
+	std::cout << "\n";
+      }
+    }
+    else
+    {
+      std::cerr << "Unable to open file [" << argv[i_] << "]\n";
+    }
+  }
+  return 0;
+}

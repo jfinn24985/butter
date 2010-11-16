@@ -1,0 +1,15 @@
+window_sizes 1350 787 337 1007 548 152
+diagrams
+  active  classdiagram_ref 128041 // Overview
+    1007 548 100 4 0 0
+end
+show_stereotypes
+selected 
+  package_ref 129 // multitarget
+open
+  class_ref 128041 // example_lib
+  deploymentview_ref 128041 // Library
+  classview_ref 128169 // Executable
+  deploymentview_ref 128169 // Executable
+end
+end
