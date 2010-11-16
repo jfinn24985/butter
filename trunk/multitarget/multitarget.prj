@@ -1,8 +1,8 @@
 format 66
 "multitarget"
-  revision 1
+  revision 2
   modified_by 41 "finnerty"
-  cpp_root_dir "/tmp/multitarget/"
+  cpp_root_dir "/tmp/multitarget/output/"
 
 
   
@@ -175,7 +175,6 @@ ${namespace_end}"
 	artifact_ref 128169 // example_lib
       end
     end
-
   end
 
   classview 128169 "Executable"
@@ -277,8 +276,8 @@ int main (int argc, const char** argv)
     artifact 128297 "program"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128681 // library
 	artifact_ref 128041 // example_exe
+	artifact_ref 128681 // library
       end
     end
   end

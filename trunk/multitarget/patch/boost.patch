@@ -1,0 +1,10 @@
+Index: multitarget.prj
+===================================================================
+--- multitarget.prj	(revision 38)
++++ multitarget.prj	(working copy)
+@@ -37,6 +37,8 @@
+ 
+   mark_for_import
+   
++  ncouples 1
++  key "butter style" value "boost"
