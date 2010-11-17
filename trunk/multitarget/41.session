@@ -9,7 +9,7 @@ selected
 open
   class_ref 128041 // example_lib
   deploymentview_ref 128041 // Library
-  classview_ref 128169 // Executable
+  class_ref 128169 // example_exe
   deploymentview_ref 128169 // Executable
 end
 end
