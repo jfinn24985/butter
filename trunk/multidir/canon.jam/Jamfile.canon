@@ -1,0 +1,15 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Fri Nov 19 14:41:04 2010
+##END:date
+##START:preamble
+SubDir TOP ;
+HDRS += "include" ;
+
+##END:preamble
+##START:close
+SubInclude TOP src Library ;
+SubInclude TOP src Executable ;
+##END:close

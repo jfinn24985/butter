@@ -1,0 +1,20 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Fri Nov 19 14:41:04 2010
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/src/Library ;
+
+SubDir TOP src Library ;
+
+##END:preamble
+##START:target library
+Library <Library>liblibrary$(SUFLIB) :
+	<Library>example_lib.cpp
+	;
+
+
+InstallLib $(LIBDIR) : <Library>liblibrary$(SUFLIB) ;
+##END:target library
