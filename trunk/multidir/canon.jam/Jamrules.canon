@@ -13,7 +13,7 @@ VARIANT ?= DEBUG ;
 ##  Default install locations
 ##
 #############################
-VERSIONDIR = "multidir.prj-1.0" ;
+VERSIONDIR = "multidir-1.0" ;
 PREFIX = installdir ;
 EXEC_PREFIX = $(PREFIX) ;
 BINDIR = $(EXEC_PREFIX)/bin ;
