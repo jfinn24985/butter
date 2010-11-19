@@ -5,7 +5,7 @@ diagrams
 end
 show_stereotypes
 selected 
-  package_ref 129 // multidir.prj
+  package_ref 129 // multidir
 open
   class_ref 128041 // example_lib
   deploymentview_ref 128041 // Library

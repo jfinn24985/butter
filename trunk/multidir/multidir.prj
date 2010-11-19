@@ -1,8 +1,8 @@
 format 66
-"multidir.prj"
-  revision 4
+"multidir"
+  revision 5
   modified_by 41 "finnerty"
-  cpp_root_dir "/tmp/multitarget/output/include/"
+  cpp_root_dir "/tmp/multidir/output/include/"
 
 
   
