@@ -1,0 +1,33 @@
+class example_lib
+!!!128169.cpp!!!	format(in a_value : string) : string
+std::ostringstream os_;
+const size_t width_ (get_line_width ());
+const size_t size_ (a_value.size ());
+
+for (size_t left_ (0);
+     left_ < size_;
+     left_++)
+{
+  if (width_ > size_ - left_)
+  {
+    // End of text
+    os_ << "[" << a_value.substr (left_) << "]\n";
+    break;
+  }
+  // Find
+  const size_t right_ (example_lib_backscan (a_value.data () + left_, width_,' '));
+  // possible results right_ = npos or not
+  if (right_ < width_)
+  {
+    os_ << "[" << a_value.substr (left_, right_) << "]\n";
+    left_ += right_;
+  }
+  else
+  {
+    // no space in left_ --> left_ + width_, find first space after this.
+    const size_t right_ (std::min (size_, a_value.find (' ', left_ + width_)));
+    os_ << "[" << a_value.substr (left_, right_ - left_) << "]\n";
+    left_ += right_;
+  }
+}
+return os_.str ();
