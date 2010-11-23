@@ -2,7 +2,7 @@ Index: multilang.prj
 ===================================================================
 --- multilang.prj	(revision 59)
 +++ multilang.prj	(working copy)
-@@ -37,9 +37,10 @@
+@@ -37,6 +37,8 @@
 
    mark_for_import
 
@@ -10,7 +10,3 @@ Index: multilang.prj
 +  key "butter base" value ".."
    comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
    package_ref 128041 // Library
-
-   package_ref 128169 // Executable
--
- end
