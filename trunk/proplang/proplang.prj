@@ -1,8 +1,8 @@
 format 66
-"multilang"
-  revision 5
+"proplang"
+  revision 6
   modified_by 41 "finnerty"
-  cpp_root_dir "/tmp/multilang/output/include/"
+  cpp_root_dir "/tmp/proplang/output/include/"
 
 
   
@@ -37,9 +37,20 @@ format 66
 
   mark_for_import
   
+  ncouples 8
+  key "butter base" value ".."
+  key "butter version" value "1.4"
+  key "butter type" value "shared"
+  key "butter flags" value "-DPROJ_FLAGS"
+  key "butter ldflags" value "-Lproj_ldflags"
+  key "butter build-dir" value "build"
+  key "butter style" value "make"
+  key "butter include" value "proj_include include"
   comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
   package_ref 128041 // Library
 
   package_ref 128169 // Executable
+
+  package_ref 129321 // Build
 
 end
