@@ -1,6 +1,6 @@
 format 66
 "Library" // Library
-  revision 5
+  revision 6
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -162,20 +162,22 @@ ${namespace_end}"
       associated_classes
 	class_ref 128041 // example_lib
       end
-      ncouples 1
+      ncouples 3
       key "butter include" value "src_include"
+      key "butter ldflags" value "-Lsrc_ldflags"
+      key "butter flags" value "-DSRC_FLAGS"
     end
 
     artifact 128681 "library"
       stereotype "library"
       associated_artifacts
-	artifact_ref 129833 // example_c.c
 	artifact_ref 128169 // example_lib
+	artifact_ref 129833 // example_c.c
       end
       ncouples 4
       key "butter include" value "lib_include"
       key "butter flags" value "-DLIB_FLAG"
-      key "butter ldflags" value "-DLIB_LDFLAG"
+      key "butter ldflags" value "-Llib_ldflags"
       key "butter install" value "LIBEXECDIR"
     end
 
@@ -187,7 +189,7 @@ ${namespace_end}"
       key "butter compiler" value "CC"
       key "butter flags" value "-DFOR_C_FLAG"
       key "butter include" value "doc_include"
-      key "butter ldflags" value "-LFOR_C_LDFLAGS"
+      key "butter ldflags" value "-Ldoc_ldflags"
       comment "/**
 
 Example C source file
@@ -203,6 +205,5 @@ unsigned int example_lib_backscan(const char *const src, unsigned int len, char 
   return len;
 } "
     end
-
   end
 end

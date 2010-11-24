@@ -1,6 +1,6 @@
 format 66
 "Executable" // Executable
-  revision 4
+  revision 5
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -127,14 +127,14 @@ int main (int argc, const char** argv)
     artifact 128297 "program"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128041 // example_exe
 	artifact_ref 128681 // library
+	artifact_ref 128041 // example_exe
       end
       ncouples 4
       key "butter install" value "SBINDIR"
       key "butter flags" value "-DEXE_FLAG"
       key "butter include" value "exe_include"
-      key "butter ldflags" value "-DEXE_LDFLAGS"
+      key "butter ldflags" value "-Lexe_ldflags"
     end
 
     artifact 131497 "program.t2t"
@@ -215,7 +215,7 @@ C     [5] When equal print result and stop
       key "butter compiler" value "FORTRAN"
       key "butter flags" value "-DEXE_F_FLAG"
       key "butter include" value "exe_f_include"
-      key "butter ldflags" value "-DEXE_F_LDFLAGS"
+      key "butter ldflags" value "-Lexe_f_ldflags"
     end
   end
 end
