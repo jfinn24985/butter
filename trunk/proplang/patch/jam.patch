@@ -1,13 +1,21 @@
-Index: multidir.prj
+Index: proplang.prj
 ===================================================================
---- multidir.prj	(revision 50)
-+++ multidir.prj	(working copy)
-@@ -37,6 +37,8 @@
+--- proplang.prj	(revision 69)
++++ proplang.prj	(working copy)
+@@ -37,7 +37,7 @@
  
    mark_for_import
    
-+  ncouples 1
+-  ncouples 7
++  ncouples 8
+   key "butter base" value ".."
+   key "butter version" value "1.4"
+   key "butter type" value "shared"
+@@ -45,6 +45,7 @@
+   key "butter ldflags" value "-Lproj_ldflags"
+   key "butter build-dir" value "build"
+   key "butter include" value "proj_include include"
 +  key "butter style" value "jam"
-   classview 128041 "Library"
-     //class diagram settings
-     draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+   comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
+   package_ref 128041 // Library
+ 
