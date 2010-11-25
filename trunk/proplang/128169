@@ -1,6 +1,6 @@
 format 66
 "Executable" // Executable
-  revision 5
+  revision 6
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -127,8 +127,8 @@ int main (int argc, const char** argv)
     artifact 128297 "program"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128681 // library
 	artifact_ref 128041 // example_exe
+	artifact_ref 128681 // library
       end
       ncouples 4
       key "butter install" value "SBINDIR"
@@ -170,7 +170,7 @@ This is a test of building an \"other\" library."
       end
       ncouples 1
       key "butter compiler" value "FORTRAN"
-      comment "      PROGRAM FORTPROG
+      comment "      SUBROUTINE FORTPROG
 
       INTEGER MCOUNT
       DOUBLE PRECISION RPRES1, RPRES2
@@ -210,12 +210,32 @@ C     [5] When equal print result and stop
       stereotype "executable"
       associated_artifacts
 	artifact_ref 133033 // fortran.f
+	artifact_ref 134313 // fortmain
       end
       ncouples 4
       key "butter compiler" value "FORTRAN"
       key "butter flags" value "-DEXE_F_FLAG"
       key "butter include" value "exe_f_include"
-      key "butter ldflags" value "-Lexe_f_ldflags"
+      key "butter ldflags" value "-Lexe_f_ldflags -lgfortran"
     end
+
+    artifact 134313 "fortmain"
+      stereotype "source"
+      cpp_src "extern \"C\"
+{
+  void fortprog_();
+}
+
+int main(int,char**)
+{
+  fortprog_();
+  return 0;
+}
+"
+      associated_classes
+      end
+      comment "Dummy file to allow Fortran program to compile using Boost Jam"
+    end
+
   end
 end

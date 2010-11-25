@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 1
+  revision 2
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -94,6 +94,11 @@ T2TFLAGS+=-toc -t man -o
 .man.t2t :
 	$(T2T) $(T2TFLAGS) $< $>
  "
+    end
+
+    artifact 134441 "Jamroot"
+      stereotype "document"
+      comment "using gfortran ;"
     end
 
   end
