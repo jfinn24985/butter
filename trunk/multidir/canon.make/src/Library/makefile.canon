@@ -1,0 +1,33 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Nov 27 16:53:26 2010
+##END:date
+##START:preamble
+include $(ROOTDIR)/makefile.sys
+
+LOCALHDRS:=$(USERHDRS)
+LOCALFLAGS:=$(USERFLAGS)
+LOCALLDFLAGS:=$(USERLDFLAGS)
+
+##END:preamble
+##START:target library
+LIBRARYSRC :=  \
+	example_lib.cpp
+LIBRARYLDFLAGS := $(LOCALLDFLAGS)
+LIBRARY_DINC := $(filter %.d, $(LIBRARYSRC:.cpp=.d)) $(filter %.d, $(LIBRARYSRC:.c=.d))
+include $(LIBRARY_DINC)
+LIBRARY_OBJ := $(LIBRARY_OBJ) $(filter %.o, $(LIBRARYSRC:.cpp=.o))
+USEROBJ := $(USEROBJ) $(LIBRARY_OBJ)
+
+liblibrary$(SUFLIB) : $(LIBRARY_OBJ) $(LIBRARY_DINC)
+	$(AR) $(ARFLAGS) liblibrary$(SUFLIB) $(LIBRARY_OBJ)
+
+all :: liblibrary$(SUFLIB)
+TARGETS := $(TARGETS) liblibrary$(SUFLIB)
+
+install:: liblibrary$(SUFLIB)
+	$(INSTALL) -d $(LIBDIR)
+	$(INSTALL) $(LIBIFLAGS) liblibrary$(SUFLIB) $(LIBDIR)/liblibrary$(SUFLIB)
+##END:target library

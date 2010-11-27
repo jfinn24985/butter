@@ -1,0 +1,34 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Nov 27 16:53:26 2010
+##END:date
+##START:preamble
+include $(ROOTDIR)/makefile.sys
+
+LOCALHDRS:=$(USERHDRS)
+LOCALFLAGS:=$(USERFLAGS)
+LOCALLDFLAGS:=$(USERLDFLAGS)
+
+##END:preamble
+##START:target program
+PROGRAMSRC :=  \
+	example_exe.cpp
+PROGRAMLDFLAGS := $(LOCALLDFLAGS) $(ROOTDIR)/src/Library/liblibrary$(SUFLIB) 
+USERFLAGS := $(LOCALFLAGS) $(SHRFLAGS)
+PROGRAM_DINC := $(filter %.d, $(PROGRAMSRC:.cpp=.d)) $(filter %.d, $(PROGRAMSRC:.c=.d))
+include $(PROGRAM_DINC)
+PROGRAM_OBJ := $(PROGRAM_OBJ) $(filter %.o, $(PROGRAMSRC:.cpp=.o))
+USEROBJ := $(USEROBJ) $(PROGRAM_OBJ)
+
+program$(SUFEXE) : $(PROGRAM_OBJ) $(PROGRAM_DINC) $(ROOTDIR)/src/Library/liblibrary$(SUFLIB) 
+	$(CCC) $(CCCFLAGS) -o program$(SUFEXE) $(PROGRAM_OBJ) $(PROGRAMLDFLAGS) $(LDFLAGS)
+
+all :: program$(SUFEXE)
+TARGETS := $(TARGETS) program$(SUFEXE)
+
+install:: program$(SUFEXE)
+	$(INSTALL) -d $(BINDIR)
+	$(INSTALL) $(BINIFLAGS) program$(SUFEXE) $(BINDIR)/program$(SUFEXE)
+##END:target program

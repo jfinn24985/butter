@@ -1,0 +1,24 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Nov 27 19:01:00 2010
+##END:date
+##START:preamble
+# Include local constants
+include local.jam ;
+
+# Set project's global settings
+project multidir
+	:  requirements <debug-symbols>on:<cxxflags>"-DDEBUG=1"
+	<include>"include" 
+	: build-dir build ;
+##END:preamble
+##START:close
+use-project /multidir/Library : src/Library ;
+build-project src/Library ;
+
+use-project /multidir/Executable : src/Executable ;
+build-project src/Executable ;
+
+##END:close
