@@ -1,0 +1,35 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Nov 27 18:37:05 2010
+##END:date
+##START:preamble
+# Include local constants
+include local.jam ;
+
+# Set project's global settings
+project multitarget
+	:  requirements <debug-symbols>on:<cxxflags>"-DDEBUG=1"
+	: build-dir build ;
+##END:preamble
+##START:target library
+lib library :
+	example_lib.cpp
+	:
+	<link>shared
+	;
+
+install install_library : library : <variant>release <location>$(LIBDIR) ;
+install install_library : : <variant>debug ;
+##END:target library
+##START:target program
+exe program :
+	/multitarget//library
+	example_exe.cpp
+	:
+	;
+
+install install_program : program : <variant>release <location>$(BINDIR) ;
+install install_program : : <variant>debug ;
+##END:target program

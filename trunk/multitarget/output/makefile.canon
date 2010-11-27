@@ -1,0 +1,51 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Nov 27 16:52:43 2010
+##END:date
+##START:preamble
+include makefile.sys
+
+ROOTDIR := /tmp/multitarget/output
+
+##END:preamble
+##START:target library
+LIBRARYSRC :=  \
+	example_lib.cpp
+LIBRARYLDFLAGS := $(LOCALLDFLAGS)
+LIBRARY_DINC := $(filter %.d, $(LIBRARYSRC:.cpp=.d)) $(filter %.d, $(LIBRARYSRC:.c=.d))
+include $(LIBRARY_DINC)
+LIBRARY_OBJ := $(LIBRARY_OBJ) $(filter %.o, $(LIBRARYSRC:.cpp=.o))
+USEROBJ := $(USEROBJ) $(LIBRARY_OBJ)
+
+liblibrary$(SUFLIB) : $(LIBRARY_OBJ) $(LIBRARY_DINC)
+	$(AR) $(ARFLAGS) liblibrary$(SUFLIB) $(LIBRARY_OBJ)
+
+all :: liblibrary$(SUFLIB)
+TARGETS := $(TARGETS) liblibrary$(SUFLIB)
+
+install:: liblibrary$(SUFLIB)
+	$(INSTALL) -d $(LIBDIR)
+	$(INSTALL) $(LIBIFLAGS) liblibrary$(SUFLIB) $(LIBDIR)/liblibrary$(SUFLIB)
+##END:target library
+##START:target program
+PROGRAMSRC :=  \
+	example_exe.cpp
+PROGRAMLDFLAGS := $(LOCALLDFLAGS) $(ROOTDIR)/liblibrary$(SUFLIB) 
+USERFLAGS := $(LOCALFLAGS) $(SHRFLAGS)
+PROGRAM_DINC := $(filter %.d, $(PROGRAMSRC:.cpp=.d)) $(filter %.d, $(PROGRAMSRC:.c=.d))
+include $(PROGRAM_DINC)
+PROGRAM_OBJ := $(PROGRAM_OBJ) $(filter %.o, $(PROGRAMSRC:.cpp=.o))
+USEROBJ := $(USEROBJ) $(PROGRAM_OBJ)
+
+program$(SUFEXE) : $(PROGRAM_OBJ) $(PROGRAM_DINC) $(ROOTDIR)/liblibrary$(SUFLIB) 
+	$(CCC) $(CCCFLAGS) -o program$(SUFEXE) $(PROGRAM_OBJ) $(PROGRAMLDFLAGS) $(LDFLAGS)
+
+all :: program$(SUFEXE)
+TARGETS := $(TARGETS) program$(SUFEXE)
+
+install:: program$(SUFEXE)
+	$(INSTALL) -d $(BINDIR)
+	$(INSTALL) $(BINIFLAGS) program$(SUFEXE) $(BINDIR)/program$(SUFEXE)
+##END:target program
