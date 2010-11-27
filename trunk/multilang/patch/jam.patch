@@ -1,7 +1,7 @@
-Index: multidir.prj
+Index: multilang.prj
 ===================================================================
---- multidir.prj	(revision 50)
-+++ multidir.prj	(working copy)
+--- multilang.prj	(revision 50)
++++ multilang.prj	(working copy)
 @@ -37,6 +37,8 @@
  
    mark_for_import
