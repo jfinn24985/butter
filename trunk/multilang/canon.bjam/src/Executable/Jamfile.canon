@@ -1,0 +1,16 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Nov 27 19:46:12 2010
+##END:date
+##START:target program
+exe program :
+	/multilang/Library//library
+	example_exe.cpp
+	:
+	;
+
+install install_program : program : <variant>release <location>$(BINDIR) ;
+install install_program : : <variant>debug ;
+##END:target program
