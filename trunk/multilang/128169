@@ -1,6 +1,6 @@
 format 66
 "Executable" // Executable
-  revision 3
+  revision 4
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -131,6 +131,5 @@ int main (int argc, const char** argv)
 	artifact_ref 128041 // example_exe
       end
     end
-
   end
 end
