@@ -4,10 +4,9 @@ diagrams
     1007 548 100 4 0 0
 end
 show_stereotypes
-selected 
-  package_ref 129 // multidir
+selected artifact_ref 128169 // example_lib
 open
-  class_ref 128041 // example_lib
+  classview_ref 128041 // Library
   deploymentview_ref 128041 // Library
   class_ref 128169 // example_exe
   deploymentview_ref 128169 // Executable

@@ -1,6 +1,6 @@
 format 66
 "Library" // Library
-  revision 1
+  revision 2
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -75,9 +75,9 @@ ${inlines}
 	public explicit_return_type "string"
 	nparams 1
 	  param in name "a_value" explicit_type "string"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}BUTTER_EXPORT ${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}BUTTER_EXPORT ${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -140,7 +140,9 @@ ${inlines}
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
-
+#ifndef BUTTER_EXPORT 
+#define BUTTER_EXPORT 
+#endif
 ${comment}
 ${includes}
 ${declarations}
