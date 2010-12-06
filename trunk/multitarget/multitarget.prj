@@ -1,6 +1,6 @@
 format 66
 "multitarget"
-  revision 3
+  revision 5
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/multitarget/output/"
 
@@ -85,9 +85,9 @@ ${inlines}
 	public explicit_return_type "string"
 	nparams 1
 	  param in name "a_value" explicit_type "string"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}${friend}BUTTER_EXPORT ${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}BUTTER_EXPORT ${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -150,7 +150,9 @@ ${inlines}
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
-
+#ifndef BUTTER_EXPORT
+#define BUTTER_EXPORT
+#endif
 ${comment}
 ${includes}
 ${declarations}
@@ -277,8 +279,8 @@ int main (int argc, const char** argv)
     artifact 128297 "program"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128681 // library
 	artifact_ref 128041 // example_exe
+	artifact_ref 128681 // library
       end
     end
   end
