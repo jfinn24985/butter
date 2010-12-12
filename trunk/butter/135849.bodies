@@ -129,7 +129,7 @@ if (! user_extra_.isEmpty ())
 QString tmp_;
 QTextOStream desc_os_ (&tmp_);
 
-desc_os_ << "include " << (pathcmp("$(ROOTDIR)") / rules_name).path_localised () << "\n\n";
+desc_os_ << "include " << (pathcmp("$(ROOTDIR)") / rules_name.section(' ', 0, 0)).path_localised () << "\n\n";
 
 // Keep parent dir definitions.
 if (NULL != a_loc.parent ())
@@ -234,7 +234,7 @@ else
               << " : $(" << this->target_NAME_ << "_OBJ) $("
                           << this->target_NAME_ << "_DINC) "
                           << this->lib_set_ << "\n"
-              << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) $(outputfile)" << this->qualified_target_name_
+              << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) $(exec_file)" << this->qualified_target_name_
                 << " $(" << this->target_NAME_ << "_OBJ)"
                 << " $(" << this->target_NAME_ << "LDFLAGS) $(LDFLAGS)\n";
     }
@@ -244,7 +244,7 @@ else
       a_os << this->qualified_target_name_
               << " : $(" << this->target_NAME_ << "_OBJ) $("
                           << this->target_NAME_ << "_DINC)\n";
-      a_os << "\t$(AR) $(ARFLAGS) " << this->qualified_target_name_
+      a_os << "\t$(AR) $(ARFLAGS) $(static_file)" << this->qualified_target_name_
                 << " $(" << this->target_NAME_ << "_OBJ)\n";
     }
     break;
@@ -255,7 +255,7 @@ else
                           << this->target_NAME_ << "_DINC) "
               << this->lib_set_ << "\n";
       a_os << "\t$(" << a_compiler << ") $(" << a_compiler << "FLAGS) $(SHRXFLAGS)" << this->qualified_target_name_
-                << " $(outputfile)" << this->qualified_target_name_
+                << " $(shared_file)" << this->qualified_target_name_
                 << " $(" << this->target_NAME_ << "_OBJ)"
                 << " $(" << this->target_NAME_ << "LDFLAGS) $(LDFLAGS)\n";
     }
@@ -275,7 +275,11 @@ QTextOStream init_os_ (&init_text_);
 root_dir_ = a_base.full_path ();
 BUTTER_CHECK (! root_dir_.path ().isEmpty (), "<p><b>Program error:</b> Project root directory is not set properly.</p>");
 init_os_ << "ROOTDIR := " << root_dir_.path_localised () << "\n\n";
+<<<<<<< .mine
+init_os_ << "include " << (pathcmp("$(ROOTDIR)") / rules_name.section (' ', 0, 0)).path_localised () << "\n\n";
+=======
 init_os_ << "include " << (pathcmp("$(ROOTDIR)") / rules_name).path_localised () << "\n\n";
+>>>>>>> .r84
 const pathcmp base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)));
 if (!root_dir_.equality (base_include_))
 {
@@ -352,6 +356,8 @@ if (Result)
   a_reqs = l_section;
 }
 return Result;
+<<<<<<< .mine
+=======
 !!!226601.cpp!!!	rules_file(inout a_base : location, in a_project : UmlItem) : void
 const static QString cl_("M_cl.mak");
 const static QString gcc_("M_gcc.mak");
@@ -391,6 +397,7 @@ if (a_base.find_uml_document (winnt_).isEmpty ())
   a_base.create_uml_document (winnt_)->set_Description (helper_::list_to_string (this->default_rules_winnt).utf8 ());
 }
 this->writer< gmake_writer >::rules_file(a_base, a_project);
+>>>>>>> .r84
 !!!210601.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
 /////////////////
 // Initialise variables for the new target
@@ -433,7 +440,11 @@ if (a_type != executable)
 {
   if (! a_build_file.isEmpty ())
   {
+<<<<<<< .mine
+    a_os << "include " << pathcmp("$(ROOTDIR)/" + a_build_file + ".mak").path_localised() << "\n\n";
+=======
     a_os << "include " << (pathcmp("$(ROOTDIR)") / a_build_file).path_localised () << ".mak\n\n";
+>>>>>>> .r84
   }
 }
 

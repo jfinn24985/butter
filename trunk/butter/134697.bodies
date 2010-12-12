@@ -84,7 +84,7 @@ if (NULL != a_loc.parent ())
   const QString dir_line_ = pathcmp (dir_line2_).path_convert (" ");
   {
     QTextOStream subdir_os_ (&subdir_line_);
-    subdir_os_ << "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/" << dir_line2_ << " ;\n\n"
+    subdir_os_ << "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)" << pathcmp(dir_line2_).path_convert("$(SLASH)") << " ;\n\n"
               << "SubDir TOP " << dir_line_ << " ;\n\n";
     // Insert the subdir flags into l_buffer. 
     if (! this->location_flags_.isEmpty ())
@@ -173,7 +173,7 @@ QString content_;
   QString prop_value_;
   if (item_traits::property_value (a_project, item_traits::butter_build_dir_name, prop_value_))
   {
-  os_ << "BUILDDIR = " << prop_value_ <<" ;\n\n";
+  os_ << "BUILDDIR = " << pathcmp(prop_value_).path_localised () <<" ;\n\n";
   }
   //////////////
   // Set this as top location and bring in Jamrules.

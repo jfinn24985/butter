@@ -242,7 +242,7 @@ QString content_;
 {
   QString base_include_ (a_base.full_path ().create_relative (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project))));
   QTextOStream os_ (&content_);
-  os_ << "# Include local constants\ninclude " << rules_name << " ;\n\n";
+  os_ << "# Include local constants\ninclude " << rules_name.section(' ', 0, 0) << " ;\n\n";
   os_ << "# Set project's global settings\nproject " << project_name_;
   os_ << "\n\t:  requirements <debug-symbols>on:<cxxflags>\"-DDEBUG=1\"\n\t";
   QString link_, flag_; // Needed arguments.
