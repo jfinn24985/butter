@@ -28,6 +28,14 @@ if (a_style == butter::bjam_writer::section_name)
                      , &butter::bjam_writer::create));
   log::com.trace (log::info, "<p>Using style <b>Boost Jam</b></p>");
 }
+else if (a_style == butter::cmake_writer::section_name)
+{
+  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::cmake_writer::comment_string
+                     , butter::cmake_writer::end_phrase
+                     , butter::cmake_writer::start_phrase
+                     , &butter::cmake_writer::create));
+  log::com.trace (log::info, "<p>Using style <b>CMake</b></p>");
+}
 else if (a_style == butter::gmake_writer::section_name)
 {
   MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::gmake_writer::comment_string

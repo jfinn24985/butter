@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 76
+  revision 80
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -833,6 +833,10 @@ project directory.
     artifact 128042 "todo"
       comment "List of TODOs and suggested features
 
+* Handle relative root paths
+
+* Handle creation of subdirectories (instead of relying on cpp generator)
+
 * Standard jam/make and shared libraries:  This version of butter does not
      include a shared library target for \"jam\" and the \"make\" version is 
      probably linux/gcc specific.
@@ -847,71 +851,71 @@ project directory.
       comment "Acceptance checklist
 
 
-| Acceptance tests                    | boost | standard | make |
-| Build system creation |||
-| Single directory, single target project   | 14  | 14  |  14   |
-| Single directory, multiple target project | 14  | 14  |  14   |
-| Multiple directory and target project     | 14  | 12  |  13   |
-| Variant default (debug)                   | 14  | 12  |  13   |
-| Variant release (optimised)               | 14  | 12  |  13   |
-| Variant install                           | 14  | 12  |  13   |
-| Variant clean (distclean)                 | 14  | 12  |  13   |
-| Target inclusion |||
-| Basic executable                          | 14  | 12  |  13   |
-| Basic static library                      | 14  | 12  |  13   |
-| Basic shared library                      |  9  | ni  |   9   |
-| External library                          |  9  |  9  |   9   |
-| Non-standard target                       | 14  | 12  |  13   |
-| Document as non-C++ source                | 14  | 12  |  13   |
-| UML object property inclusion |||
-| butter build-dir  : project               | 14  | 12  |  ni   |
-| butter base       : project               | 14  | 12  |  13   |
-| butter buildfile  : library (other)       | 14  | 12  |  13   |
-|                   : library (external)    |  9  |  9  |   9   |
-| butter compiler   : document              | 14a | 12  |  13   |
-|                   : executable            | xx  | 12  |  13   |
-|                   : library               | xx  | ni  |   9   |
-| butter flags      : project               | 14  | 12  |  13   |
-|                   : executable            | 14  | 12  |  13   |
-|                   : library               | 14  | 12  |  13   |
-|                   : source                | 14  | 12  |  13   |
-|                   : document              | 14  | 12  |  13   |
-| butter include    : project               | 14  | 12  |  13   |
-|                   : executable            | 14  | 12  |  13   |
-|                   : library               | 14  | 12  |  13   |
-|                   : source                | 14  | 12  |  13   |
-|                   : document              | 14  | 12  |  13   |
-| butter install    : executable, library   | 14  | 12  |  13   |
-|                   : document              |     |     |       |
-| butter ldflags    : project               | 14  | 12  |  13   |
-|                   : executable            | 14  | 12  |  13   |
-|                   : library               | 14  | 12  |  13   |
-|                   : source                | 14  | 12  |  13   |
-|                   : document              | 14  | 12  |  13   |
-| butter log-level  : project               | 14  | 12  |  13   |
-| butter other      : library               | 14* | 12  |  13   |
-| butter project    : library               |  9  |  9  |   9   |
-| butter style      : project               | 14  | 12  |  13   |
-| butter type       : library               | 14  | ni  |   9   |
-|                   : project, package      | 14  | ni  |   9   |
-| butter version    : project               | 14  | 12  |  13   |
+| #.#.# | Acceptance tests                    | boost | standard | make |
+| 1     | Build system creation                     |||
+| 1.1.1 | Single directory, single target project   | 14  | 14  |  14   |
+| 1.1.2 | Single directory, multiple target project | 14  | 14  |  14   |
+| 1.1.3 | Multiple directory and target project     | 14  | 12  |  13   |
+| 1.2.1 | Variant default (debug)                   | 14  | 12  |  13   |
+| 1.2.2 | Variant release (optimised)               | 14  | 12  |  13   |
+| 1.2.3 | Variant install                           | 14  | 12  |  13   |
+| 1.2.4 | Variant clean (distclean)                 | 14  | 12  |  13   |
+| 2     | Target inclusion                          |||
+| 2.1.1 | Basic executable                          | 14  | 12  |  13   |
+| 2.1.2 | Basic static library                      | 14  | 12  |  13   |
+| 2.1.3 | Basic shared library                      |  9  | ni  |   9   |
+| 2.2.1 | External library                          |  9  |  9  |   9   |
+| 2.3.1 | Non-standard target                       | 14  | 12  |  13   |
+| 2.3.2 | Document as non-C++ source                | 14  | 12  |  13   |
+| 3     | UML object property inclusion             |||
+| 3.1.1 | butter build-dir  : project               | 14  | 12  |  ni   |
+| 3.1.2 | butter base       : project               | 14  | 12  |  13   |
+| 3.2.1 | butter buildfile  : library (other)       | 14  | 12  |  13   |
+| 3.2.1 |                   : library (external)    |  9  |  9  |   9   |
+| 3.3.1 | butter compiler   : document              | 14a | 12  |  13   |
+| 3.3.2 |                   : executable            | xx  | 12  |  13   |
+| 3.3.3 |                   : library               | xx  | ni  |   9   |
+| 3.4.1 | butter flags      : project               | 14  | 12  |  13   |
+| 3.4.2 |                   : executable            | 14  | 12  |  13   |
+| 3.4.3 |                   : library               | 14  | 12  |  13   |
+| 3.4.4 |                   : source                | 14  | 12  |  13   |
+| 3.4.5 |                   : document              | 14  | 12  |  13   |
+| 3.5.1 | butter include    : project               | 14  | 12  |  13   |
+| 3.5.2 |                   : executable            | 14  | 12  |  13   |
+| 3.5.3 |                   : library               | 14  | 12  |  13   |
+| 3.5.4 |                   : source                | 14  | 12  |  13   |
+| 3.5.5 |                   : document              | 14  | 12  |  13   |
+| 3.6.1 | butter install    : executable, library   | 14  | 12  |  13   |
+| 3.6.2 |                   : document              |     |     |       |
+| 3.7.1 | butter ldflags    : project               | 14  | 12  |  13   |
+| 3.7.2 |                   : executable            | 14  | 12  |  13   |
+| 3.7.3 |                   : library               | 14  | 12  |  13   |
+| 3.7.4 |                   : source                | 14  | 12  |  13   |
+| 3.7.5 |                   : document              | 14  | 12  |  13   |
+| 3.8.1 | butter log-level  : project               | 14  | 12  |  13   |
+| 3.8.2 | butter other      : library               | 14* | 12  |  13   |
+| 3.8.3 | butter project    : library               |  9  |  9  |   9   |
+| 3.9.1 | butter style      : project               | 14  | 12  |  13   |
+| 3.A.1 | butter type       : library               | 14  | ni  |   9   |
+| 3.A.2 |                   : project, package      | 14  | ni  |   9   |
+| 3.B.1 | butter version    : project               | 14  | 12  |  13   |
 
 a - requires autodetection by build-system
 * - some limitations apply to other properties when this property is in force
 ni - not-implemented. A feature that is currently not implemented in a build system
 xx - indicates a feature that is not supported by the build-system
 
-| UML object description inclusion |||
-| Build file merging |||
-| Existing artifact                         | 14  |
-| Multiple artifacts                        | 14  |
-| Error condition tests |||
-| Project read-only                         | 14  |
-| Package read-only                         | 14  |
-| Build file miss-edit                      | 14  |
-| Build file not a document                 | 14  |
-| Build file read-only                      | 14  |
-| Unrecognised property                     | 14  |"
+| 4     | UML object description inclusion |||
+| 4.1   | Build file merging |||
+| 4.1.1 | Existing artifact                         | 14  |
+| 4.1.2 | Multiple artifacts                        | 14  |
+| 4.2   | Error condition tests |||
+| 4.2.1 | Project read-only                         | 14  |
+| 4.2.2 | Package read-only                         | 14  |
+| 4.2.3 | Build file miss-edit                      | 14  |
+| 4.2.4 | Build file not a document                 | 14  |
+| 4.2.5 | Build file read-only                      | 14  |
+| 4.2.6 | Unrecognised property                     | 14  |"
     end
 
     artifact 159785 "t2t.jam"
@@ -976,6 +980,26 @@ T2TFLAGS=-toc -t html -o
  "
     end
 
+    artifact 167081 "t2t.cmake"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "set (T2T txt2tags)
+macro (add_t2t_target outfile infile)
+  if (outfile MATCHES \".*\\.man\")
+    set (T2TFLAGS -t man)
+  else
+    set (T2TFLAGS -toc -t html)
+  endif
+  add_custom_command (OUTPUT ${outfile}
+    COMMAND ${T2T}
+    ARGS ${T2TFLAGS} -o ${outfile} ${infile}
+    DEPENDS ${infile})
+endmacro (add_t2t_target)
+
+ "
+    end
+
     artifact 162601 "RELEASE_NOTES"
       stereotype "document"
       associated_artifacts
@@ -1019,6 +1043,276 @@ Internal changes:
 October 2008 Release 1.0
 
 First beta release of the \"butter\" build system plug-out."
+    end
+
+    artifact 166057 "Jamfile"
+      stereotype "document"
+      comment "##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Fri Dec 10 15:15:40 2010
+##END:date
+##START:preamble
+BUILDDIR = build ;
+
+SubDir TOP ;
+HDRS += \"include/bouml\" ;
+C++FLAGS += \"-DWITHCPP -DDEBUG\" ;
+HDRS += \"include\" ;
+
+##END:preamble
+##START:target qt
+InstallLib $(LIBDIR) :  ;
+##END:target qt
+##START:target README.html
+include t2t.jam ;
+
+t2t <..>README.html :
+	<..>README.t2t
+	;
+
+
+InstallFile $(DOCDIR) : <..>README.html ;
+##END:target README.html
+##START:close
+SubInclude TOP src bouml ;
+SubInclude TOP src butter ;
+##END:close
+"
+    end
+
+    artifact 166185 "Jamrules"
+      stereotype "document"
+      comment "#
+# Default Jamrules
+#
+
+if $(UNIX)  { SUFSHR ?= .so ; }
+else if $(NT) { SUFSHR ?= .dll ; }
+
+COMP ?= GNU ;
+VARIANT ?= DEBUG ;
+
+#############################
+##
+##  Default install locations
+##
+#############################
+VERSIONDIR = \"butter-1.0\" ;
+PREFIX = installdir ;
+EXEC_PREFIX = $(PREFIX) ;
+BINDIR = $(EXEC_PREFIX)/bin ;
+SBINDIR = $(EXEC_PREFIX)/sbin ;
+LIBEXECDIR = $(EXEC_PREFIX)/libexec ;
+LIBDIR = $(EXEC_PREFIX)/lib ;
+DATAROOTDIR = $(PREFIX)/share ;
+DATADIR = $(PREFIX)/share ;
+SYSCONFDIR = /etc ;
+SHAREDSTATEDIR = $(PREFIX)/com ;
+LOCALSTATEDIR = $(PREFIX)/var ;
+INCLUDEDIR = $(PREFIX)/include ;
+LOCALEDIR = $(DATAROOTDIR)/locale ;
+DOCDIR = $(DATAROOTDIR)/doc/$(VERSIONDIR) ;
+INFODIR = $(DATAROOTDIR)/info ;
+MANDIR = $(DATAROOTDIR)/man ;
+HTMLDIR = $(DOCDIR) ;
+DVIDIR = $(DOCDIR) ;
+PDFDIR = $(DOCDIR) ;
+PSDIR = $(DOCDIR) ;
+MAN1DIR = $(MANDIR)/man1 ;
+MAN2DIR = $(MANDIR)/man2 ;
+MAN3DIR = $(MANDIR)/man3 ;
+MAN4DIR = $(MANDIR)/man4 ;
+MAN5DIR = $(MANDIR)/man5 ;
+MAN6DIR = $(MANDIR)/man6 ;
+MAN7DIR = $(MANDIR)/man7 ;
+MAN8DIR = $(MANDIR)/man8 ;
+MANNDIR = $(MANDIR)/mann ;
+
+######################################################
+##
+##  Example definitions for compiler suite (TOOLSETS)
+## 
+######################################################
+switch $(COMP)
+{
+case GNU :
+CC = gcc ;
+C++ = g++ ;
+FORTRAN = gfortran ;
+CCSTD = -std=c99 ;
+C++STD = -std=c++98 ;
+CCCPP = ;
+C++CPP = ;
+SHRFLAGS = -fpic ;
+ARCH = -march=native ;
+OPTIMCOMP = -O2 $(ARCH) ;
+DEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;
+CCCOMP = -Wall -pedantic $(CCSTD) $(CCCPP) ;
+C++COMP = -Wall -Weffc++ $(C++STD) $(C++CPP) ;
+FORTRANCOMP = -Wall -c ;
+LINKCOMP = ;
+OPENMP = -fopenmp ;
+FORTRANLIBS = -lgfortran ;
+}
+
+################################################
+##
+##  Define the \"standard\" GUI flags
+## 
+################################################
+
+CCGUI = ;
+C++GUI = ;
+LINKGUI = ;
+
+switch $(GUILIB)
+{
+case GTKMM :
+CCGUI = `pkg-config gtkmm-2.4 --cflags` ;
+C++GUI = `pkg-config gtkmm-2.4 --cflags` ;
+LINKGUI = `pkg-config gtkmm-2.4 --libs` ;
+
+case MOTIF :
+CCGUI = -I/usr/include ;
+C++GUI = -I/usr/include ;
+LINKGUI = -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;
+
+case QT3 :
+CCGUI = -I$(QTDIR)/include ;
+C++GUI = -I$(QTDIR)/include ;
+LINKGUI = -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;
+
+case * :
+CCGUI = ;
+C++GUI = ;
+LINKGUI = ;
+
+}
+
+#################################
+##
+##  Define the \"standard\" flags
+## 
+#################################
+
+CCFLAGS += $(CCCOMP) $(CCGUI) ;
+C++FLAGS += $(C++COMP) $(C++GUI) ;
+LINKLIBS += $(LINKCOMP) $(LINKGUI) ;
+
+OPTIM = $(DEBUGCOMP) ;
+
+switch $(VARIANT)
+{
+case RELEASE :
+OPTIM = $(OPTIMCOMP) ;
+}
+
+FORTRANFLAGS += $(FORTRANCOMP) $(OPTIM) ;
+LINKFLAGS = $(OPTIM) ;
+LINK = $(C++) ;
+
+# Set variable for variant-specific build-dir handling
+BASE_LOCATE_TARGET = $(BUILDDIR)/$(VARIANT) ;
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
+
+# Local Variables:
+# mode: makefile
+# End: 
+"
+    end
+
+    artifact 166569 "CMakeLists.txt"
+      stereotype "document"
+      comment "##START:version
+#Butter version 1.1beta 32
+##END:version
+##START:date
+#Fri Dec 10 18:14:43 2010
+##END:date
+##START:preamble
+# Include local constants
+include (local.cmake)
+
+# Set project's global settings
+project (BUTTER)
+set (CMAKE_INCLUDE_PATH include include/bouml)
+set (BUTTER_FLAGS CACHE STRING \"Project wide compile flags\" -DWITHCPP -DDEBUG)
+##END:preamble
+##START:target qt3
+# Include qt3 settings
+
+find_package(qt3)
+add_definitions (-DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT)
+
+##END:target qt3
+##START:target README.html
+set (BUTTER_README.HTML README.html)
+
+include (t2t.cmake)
+
+add_t2t_target (${BUTTER_README.HTML}
+	README.t2t
+	)
+
+
+install (TARGET ${BUTTER_README.HTML}
+	DESTINATION ${DOCDIR}
+	CONFIGURATIONS Release )
+
+##END:target README.html
+##START:close
+add_subdirectory (src/bouml)
+add_subdirectory (src/butter)
+##END:close
+"
+    end
+
+    artifact 166697 "local.cmake"
+      stereotype "document"
+      comment "#
+# local.jam
+#
+# Set constants for installation paths
+path-constant VERSIONDIR : \"butter-1.0\" ;
+path-constant PREFIX : installdir ;
+path-constant EXEC_PREFIX : $(PREFIX) ;
+path-constant BINDIR : $(EXEC_PREFIX)/bin ;
+path-constant SBINDIR : $(EXEC_PREFIX)/sbin ;
+path-constant LIBEXECDIR : $(EXEC_PREFIX)/libexec ;
+path-constant LIBDIR : $(EXEC_PREFIX)/lib ;
+path-constant DATAROOTDIR : $(PREFIX)/share ;
+path-constant DATADIR : $(PREFIX)/share ;
+path-constant SYSCONFDIR : /etc ;
+path-constant SHAREDSTATEDIR : $(PREFIX)/com ;
+path-constant LOCALSTATEDIR : $(PREFIX)/var ;
+path-constant INCLUDEDIR : $(PREFIX)/include ;
+path-constant LOCALEDIR : $(DATAROOTDIR)/locale ;
+path-constant DOCDIR : $(DATAROOTDIR)/doc/$(VERSIONDIR) ;
+path-constant INFODIR : $(DATAROOTDIR)/info ;
+path-constant MANDIR : $(DATAROOTDIR)/man ;
+path-constant HTMLDIR : $(DOCDIR) ;
+path-constant DVIDIR : $(DOCDIR) ;
+path-constant PDFDIR : $(DOCDIR) ;
+path-constant PSDIR : $(DOCDIR) ;
+path-constant MAN1DIR : $(MANDIR)/man1 ;
+path-constant MAN2DIR : $(MANDIR)/man2 ;
+path-constant MAN3DIR : $(MANDIR)/man3 ;
+path-constant MAN4DIR : $(MANDIR)/man4 ;
+path-constant MAN5DIR : $(MANDIR)/man5 ;
+path-constant MAN6DIR : $(MANDIR)/man6 ;
+path-constant MAN7DIR : $(MANDIR)/man7 ;
+path-constant MAN8DIR : $(MANDIR)/man8 ;
+path-constant MANNDIR : $(MANDIR)/mann ;
+###############
+## Editor sugar
+###############
+# Local Variables:
+# mode: makefile
+# End:
+
+"
     end
   end
 end

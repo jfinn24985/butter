@@ -84,7 +84,7 @@ QString user_extra_;
     // Add document to TARGET_OBJ as they can not be deduced from source list
     //
     // Assume object just replaces extension
-    user_obj_ << this->target_NAME_ << "_OBJ := $(" << this->target_NAME_ << "_OBJ)  " << a_basename << "$(sufobj)\n\n";
+    user_obj_ << this->target_NAME_ << "_OBJ +=  " << a_basename << "$(sufobj)\n\n";
   }
   // Add source/document
   a_os << " \\\n\t" << a_filename;
@@ -116,7 +116,7 @@ QString user_extra_;
     {
       user_obj_ << a_src_flags << " ";
     }
-    user_obj_ << "$(compileonly) $(outputfile)" << a_basename << "$(sufobj) "<< a_filename;
+    user_obj_ << "$(compileonly) $(OUTPUT_OPTION)" << a_basename << "$(sufobj) "<< a_filename;
     user_obj_ << "\n\n";
   }
 }
@@ -219,7 +219,7 @@ else
   }
   a_os << target_NAME_ << "_OBJ := $(" << target_NAME_ << "_OBJ) $(filter %$(sufobj), $(" << target_NAME_
        << "SRC:." << CppSettings::sourceExtension () << "=$(sufobj)))\n";
-  a_os << "USEROBJ := $(USEROBJ) $(" << target_NAME_ << "_OBJ)\n\n";
+  a_os << "USEROBJ += $(" << target_NAME_ << "_OBJ)\n\n";
 
   // Finally add target build definition
   if (a_compiler.isEmpty ())
@@ -266,7 +266,7 @@ else
 }
 
 a_os << "\nall :: " << this->qualified_target_name_ << "\n";
-a_os << "TARGETS := $(TARGETS) " << this->qualified_target_name_ << "\n\n";
+a_os << "TARGETS += " << this->qualified_target_name_ << "\n\n";
 !!!160809.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void
 // The include dir is the difference between the current fullpath and the
 // top-projects hdrDir
@@ -275,11 +275,11 @@ QTextOStream init_os_ (&init_text_);
 root_dir_ = a_base.full_path ();
 BUTTER_CHECK (! root_dir_.path ().isEmpty (), "<p><b>Program error:</b> Project root directory is not set properly.</p>");
 init_os_ << "ROOTDIR := " << root_dir_.path_localised () << "\n\n";
-init_os_ << "include $(ROOTDIR)/" << rules_name << "\n\n";
+init_os_ << "include " << (pathcmp("$(ROOTDIR)") / rules_name).path_localised () << "\n\n";
 const pathcmp base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)));
 if (!root_dir_.equality (base_include_))
 {
-  init_os_ << "USERHDRS := $(USERHDRS) -I"
+  init_os_ << "USERHDRS += -I"
         << (pathcmp("$(ROOTDIR)") / root_dir_.create_relative (base_include_)).path_localised () << "\n\n";
 }
 QString l_tmp;
@@ -308,7 +308,7 @@ else
 a_os << "install:: " << target_name_ << "\n";
 a_os << "\t$(INSTALL) -d $(" << a_loc_var << ")\n";
 a_os << "\t$(INSTALL) $(" << install_flag_ [a_type] << ") ";
-a_os << target_name_ << " $("  << a_loc_var << ")/" << target_name_ << "\n";
+a_os << target_name_ << " " << (pathcmp("$(" + a_loc_var + ")") / target_name_).path_localised () << "\n";
 !!!162089.cpp!!!	process_hdrs(in a_inc_list : unistr) : unistr
 QString Result;
 QTextOStream l_os (&Result);
@@ -318,11 +318,11 @@ for (unsigned int l_i (0); l_i < l_list.count (); ++l_i)
   const QString l_item ((*l_list.at (l_i)).stripWhiteSpace ());
   if ('$' != l_item[0] && QDir::isRelativePath (l_item))
   {
-    l_os << "-I$(ROOTDIR)/" << l_item << " ";
+    l_os << "-I" << (pathcmp("$(ROOTDIR)") / l_item).path_localised() << " ";
   }
   else
   {
-    l_os << "-I" << l_item << " ";
+    l_os << "-I" << pathcmp(l_item).path_localised() << " ";
   }
 }
 
@@ -335,17 +335,17 @@ QTextOStream l_os (&l_section);
 if (item_traits::property_value (a_item, item_traits::butter_include_name, l_tmp))
 {
   Result = true;
-  l_os << "USERHDRS := $(USERHDRS) " << process_hdrs (l_tmp) << "\n";
+  l_os << "USERHDRS += " << process_hdrs (l_tmp) << "\n";
 }
 if (item_traits::property_search (a_item, item_traits::butter_ldflags_name, l_tmp))
 {
   Result = true;
-  l_os << "USERLDFLAGS := $(USERLDFLAGS) " << l_tmp << "\n";
+  l_os << "USERLDFLAGS += " << l_tmp << "\n";
 }
 if (item_traits::property_search (a_item, item_traits::butter_flags_name, l_tmp))
 {
   Result = true;
-  l_os << "USERFLAGS := $(USERFLAGS) " << l_tmp << "\n";
+  l_os << "USERFLAGS += " << l_tmp << "\n";
 }
 if (Result)
 {
@@ -356,7 +356,7 @@ return Result;
 const static QString cl_("M_cl.mak");
 const static QString gcc_("M_gcc.mak");
 const static QString unix_("M_unix.mak");
-const static QString winnt_("M_Windows_NT.make");
+const static QString winnt_("M_Windows_NT.mak");
 class helper_
 {
 public:
@@ -433,7 +433,7 @@ if (a_type != executable)
 {
   if (! a_build_file.isEmpty ())
   {
-    a_os << "include $(ROOTDIR)/" << a_build_file << ".mak\n\n";
+    a_os << "include " << (pathcmp("$(ROOTDIR)") / a_build_file).path_localised () << ".mak\n\n";
   }
 }
 
