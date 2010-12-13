@@ -61,6 +61,7 @@ else
       }
       msg_os_ << butter::bjam_writer::section_name;
       msg_os_ << "|" << butter::jam_writer::section_name;
+      msg_os_ << "|" << butter::cmake_writer::section_name;
       msg_os_ << "|" << butter::gmake_writer::section_name;
       msg_os_ << "), using <i>standard jam</i> as default</p>";
     }

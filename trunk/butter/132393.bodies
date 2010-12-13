@@ -40,11 +40,21 @@ if (QFile::exists (a_path))
     if (l_count != 0)
     {
       Result = (a_str.length () >= l_cursor + l_count
-             && (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, l_count)));
-      l_cursor += l_count;
+          && (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, l_count)));
+    }
+    else
+    {
+      Result = (a_str.length () == l_cursor);
+      break;
+    }
+    l_cursor += l_count;
+    if (l_dev.atEnd ())
+    {
+      Result = (a_str.length () == l_cursor);
+      break;
     }
   }
-  while (Result && ! l_dev.atEnd ());
+  while (Result);
 }
 if (! Result)
 {

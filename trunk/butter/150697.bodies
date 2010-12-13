@@ -43,6 +43,7 @@ while (! location_stack_.isEmpty ())
             const UmlArtifact &art_item_ = dynamic_cast < UmlArtifact& >(*item_);
             const QString stereotype_label_ (const_cast< UmlArtifact& >(art_item_).stereotype ());
             bool installable_ (false);
+            target_type target_type_ (executable); // The target's type, set to exe then change if library etc
             if (stereotype_label_.contains (item_traits::executable_stereotype, false)
                 || stereotype_label_.contains (item_traits::library_stereotype, false))
             {
@@ -65,7 +66,6 @@ while (! location_stack_.isEmpty ())
                 {
                   QString entry_;           // The target entry
                   {
-                    target_type target_type_ (executable); // The target's type, set to exe then change if library
                     if (stereotype_label_.contains (item_traits::library_stereotype, false))
                     {
                       QString value_;
@@ -161,7 +161,7 @@ while (! location_stack_.isEmpty ())
               QString entry_;           // The install entry
               {
                 QString install_dir_;              // Location for install: DOCDIR,BINDIR etc
-                install_type install_type_ (file); // How the target should be installed
+                install_type install_type_ (build_writer::file); // How the target should be installed
                 // Get the install property
                 item_traits::property_value (art_item_, item_traits::butter_install_name, install_dir_);
                 // For libraries and executables define some defaults.
@@ -174,8 +174,8 @@ while (! location_stack_.isEmpty ())
                     install_dir_.truncate (0);
                   }
                   else
-                  { 
-                    install_type_ = lib;
+                  {
+                    install_type_ = build_writer::lib;
                     if (install_dir_.isEmpty ())
                     {
                       install_dir_ = item_traits::libdir_value;
@@ -184,16 +184,17 @@ while (! location_stack_.isEmpty ())
                     {
                       /////////////
                       // Reset install type to file to handle "other" targets
-                      if (install_dir_ != item_traits::libdir_value)
+                      if (install_dir_ != item_traits::libdir_value
+                         && target_type_ == build_writer::other)
                       {
-                        install_type_ = file;
+                        install_type_ = build_writer::file;
                       }
                     }
                   }
                 }
                 else if (stereotype_label_ == item_traits::executable_stereotype)
                 {
-                  install_type_ = bin;
+                  install_type_ = build_writer::bin;
                   if (install_dir_.isEmpty ())
                   {
                     install_dir_ = item_traits::bindir_value;
@@ -242,7 +243,7 @@ while (! location_stack_.isEmpty ())
 class helper_
 {
 public:
-  static QString& make_substitutions(QString &content, const QString& project_name, const QString& project_version)
+  static QString make_substitutions(QString content, const QString& project_name, const QString& project_version)
   {
     const QString project_placeholder_ ("@@project@@");
     const QString version_placeholder_ ("@@version@@");
@@ -256,7 +257,7 @@ public:
       content.replace (index_, version_placeholder_.length (), project_version);
     }
     return content;
-  }  
+  }
   static QString list_to_string (const char *a_list[], unsigned int index)
   {
     QString result;
@@ -279,7 +280,7 @@ public:
     }
     return result;
   }
-  static QString file_to_string (const char *a_name)
+  static QString file_to_string (const char *a_name, const int sz_ = 1024)
   {
     QString result = "";
     {
@@ -287,17 +288,16 @@ public:
       if (!input_file_.open (IO_ReadOnly))
       {
 	const QString error_("Unable to open text file for reading: ");
-        throw std::runtime_error((error_ + a_name).utf8());
+        throw std::runtime_error((error_ + a_name).utf8().data());
       }
       while (!input_file_.atEnd ())
       {
-	const unsigned int sz_(1024);
         char buf_[sz_];
 	const int read_sz_ (input_file_.readBlock(&buf_[0], sz_));
 	if (0 > read_sz_)
 	{
 	  const QString error_("Reading of file failed for: ");
-          throw std::runtime_error((error_ + a_name).utf8());
+          throw std::runtime_error((error_ + a_name).utf8().data());
 	}
         result.append(QString::fromUtf8(buf_, read_sz_));
       }
@@ -317,42 +317,44 @@ if (! item_traits::property_value (a_project, item_traits::butter_version_name, 
   }
 }
 
-
 // See if the user has defined some defaults for themselves for this style.
 //
-QByteArray qgetenv (const char * varName);
-const static QString app_data_var (qgetenv ("APPDATA"));
+const char *const var_ = getenv (item_traits::app_data_env_var);
+const QString app_data_var (var_ == NULL? "" : var_);
+
 if ( !app_data_var.isEmpty() && ! app_data_var.isNull ())
 {
-QFileInfo app_data_info_(app_data_var + "/Butter/" + static_cast< derived* >(this)->section_name);
-if (app_data_info_.exists () && app_data_info_.isReadable() && app_data_info_.isDir ())
-{
-  // For each file in directory create a UML document
-  // 
-  QDir app_data_(app_data_info_.absFilePath());
-  app_data_.setFilter(QDir::Files | QDir::NoSymLinks | QDir::Readable);
-  for (int i_ = 0; i_ < app_data_.count (); ++i_)
+  QFileInfo app_data_info_((pathcmp(app_data_var)
+    / item_traits::app_data_subdir_name
+    / static_cast< derived* >(this)->section_name).path_localised());
+  if (app_data_info_.exists () && app_data_info_.isReadable() && app_data_info_.isDir ())
   {
-    if (a_base.find_uml_document (app_data_[i_]).isEmpty ())
+    // For each file in directory create a UML document
+    //
+    QDir app_data_(app_data_info_.absFilePath());
+    app_data_.setFilter(QDir::Files | QDir::NoSymLinks | QDir::Readable);
+    for (unsigned int i_ = 0; i_ < app_data_.count (); ++i_)
     {
-      a_base.create_uml_document (app_data_[i_])->set_Description (
-		    helper_::make_substitutions (
-			    helper_::file_to_string(app_data_.absFilePath(app_data_[i_]))
-			    , project_name_, version_).utf8());
+      if (a_base.find_uml_document (app_data_[i_]).isEmpty ())
+      {
+        a_base.create_uml_document (app_data_[i_])->set_Description (
+          helper_::make_substitutions (
+		helper_::file_to_string(app_data_.absFilePath(app_data_[i_]))
+		     , project_name_, version_).utf8());
+      }
     }
   }
 }
-}
 
 // Now check to see if the default rules file(s) have been created
-// 
+//
 const QString &rules_name_ (static_cast< derived* >(this)->rules_name);
 if (rules_name_.contains(" "))
 {
   // Is a list of names
-  // 
+  //
   const QStringList names_ (QStringList::split(" ", rules_name_));
-  for (int i_ = 0; i_ < names_.count (); ++i_)
+  for (unsigned int i_ = 0; i_ < names_.count (); ++i_)
   {
     if (a_base.find_uml_document (names_[i_]).isEmpty ())
     {
@@ -369,7 +371,8 @@ else
   {
     a_base.create_uml_document (rules_name_)->set_Description (
        helper_::make_substitutions (
-         helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], 0)
+         helper_::list_to_string(
+           &static_cast< derived* >(this)->default_rules[0], 0)
            , project_name_, version_).utf8());
   }
 }

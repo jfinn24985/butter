@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 140
+  revision 144
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -927,42 +927,59 @@ to get style specific data from target artifact description fields."
       end
     end
 
-    class 156585 "cmake_writer"
+    class 157737 "cmake_writer"
       visibility package 
       nactuals 1
       actual class class_ref 150697 // writer
-        rank 0 value class_ref 156585 // cmake_writer
-      cpp_decl "${comment}${template}class ${name}${inherit}
-{
-${members}
-};
+        rank 0 value class_ref 157737 // cmake_writer
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
 
 ${inlines}
 "
-      java_decl ""
+      java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
       php_decl ""
       python_2_2 python_decl ""
       idl_decl ""
       explicit_switch_type ""
       
-      comment "Generator for the CMake style"
-      classrelation 169001 // <realization>
-	relation 168233 -_-|>
+      comment "Build file writer for cmake
+
+Assumes external library xxx will set variables:
+XXX_INCLUDE_DIRS
+XXX_COMPILE_FLAGS
+XXX_LINK_LIBRARIES
+
+Additionally external library xxx without a local buildfile can be
+found using:
+find_package(Xxx)"
+      classrelation 170409 // <realization>
+	relation 169641 -_-|>
 	  a public
 	    cpp default "${type}"
-	    classrelation_ref 169001 // <realization>
+	    classrelation_ref 170409 // <realization>
 	  b parent class_ref 150697 // writer
       end
 
-      classrelation 169129 // <dependency>
-	relation 168361 -_->
+      classrelation 170537 // <dependency>
+	relation 169769 -_->
 	  a default
 	    cpp default "#include in source"
-	    classrelation_ref 169129 // <dependency>
+	    classrelation_ref 170537 // <dependency>
 	  b parent class_ref 137001 // item_traits
       end
 
-      extra_member 139945 "friend writer"
+      classrelation 170665 // <dependency>
+	relation 169897 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 170665 // <dependency>
+	  b parent class_ref 151849 // log
+      end
+
+      extra_member 146345 "friend writer"
 	
 	cpp "// Make out parent a friend.
 friend class writer<cmake_writer>;" ""
@@ -972,7 +989,7 @@ friend class writer<cmake_writer>;" ""
 	idl ""
       end
 
-      attribute 185129 "build_file_name"
+      attribute 191145 "build_file_name"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"CMakeLists.txt\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -984,7 +1001,7 @@ friend class writer<cmake_writer>;" ""
 	comment "The default leaf filename for the current style"
       end
 
-      attribute 185001 "build_file_sysname"
+      attribute 191273 "build_file_sysname"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(cmake_writer::build_file_name)"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}& ${name}${value};
@@ -996,7 +1013,20 @@ friend class writer<cmake_writer>;" ""
 	comment "The default leaf filename for the current style"
       end
 
-      attribute 184873 "comment_string"
+      attribute 196393 "cmake_minimum_required_"
+	class_attribute const_attribute private explicit_type "unistr"
+	init_value "(\"cmake_minimum_required(VERSION 2.6)\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Identify the minimum cmake version this generator supports."
+      end
+
+      attribute 191401 "comment_string"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"#\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1008,7 +1038,7 @@ friend class writer<cmake_writer>;" ""
 	comment "Comment line prefix"
       end
 
-      attribute 185897 "end_phrase"
+      attribute 191529 "end_phrase"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"##END:\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1019,20 +1049,18 @@ friend class writer<cmake_writer>;" ""
 	idl_decl ""
       end
 
-      attribute 184617 "rules_name"
-	class_attribute const_attribute private explicit_type "unistr"
-	init_value "(\"local.cmake\")"
+      attribute 191657 "start_phrase"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"##START:\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
+	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "The name of the project rules file."
       end
 
-      attribute 184745 "section_name"
+      attribute 191785 "section_name"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"cmake\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1046,53 +1074,44 @@ friend class writer<cmake_writer>;" ""
 the style for this buildfile type."
       end
 
-      attribute 185769 "start_phrase"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"##START:\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 184489 "default_rules"
+      attribute 191913 "default_rules"
 	class_attribute const_attribute private explicit_type "str"
 	init_value "{ \"#\\n\"
-, \"# local.jam\\n\"
+, \"# local.cmake\\n\"
 , \"#\\n\"
-, \"# Set constants for installation paths\\n\"
-, \"path-constant VERSIONDIR : \\\"@@project@@-@@version@@\\\" ;\\n\"
-, \"path-constant PREFIX : installdir ;\\n\"
-, \"path-constant EXEC_PREFIX : $(PREFIX) ;\\n\"
-, \"path-constant BINDIR : $(EXEC_PREFIX)/bin ;\\n\"
-, \"path-constant SBINDIR : $(EXEC_PREFIX)/sbin ;\\n\"
-, \"path-constant LIBEXECDIR : $(EXEC_PREFIX)/libexec ;\\n\"
-, \"path-constant LIBDIR : $(EXEC_PREFIX)/lib ;\\n\"
-, \"path-constant DATAROOTDIR : $(PREFIX)/share ;\\n\"
-, \"path-constant DATADIR : $(PREFIX)/share ;\\n\"
-, \"path-constant SYSCONFDIR : /etc ;\\n\"
-, \"path-constant SHAREDSTATEDIR : $(PREFIX)/com ;\\n\"
-, \"path-constant LOCALSTATEDIR : $(PREFIX)/var ;\\n\"
-, \"path-constant INCLUDEDIR : $(PREFIX)/include ;\\n\"
-, \"path-constant LOCALEDIR : $(DATAROOTDIR)/locale ;\\n\"
-, \"path-constant DOCDIR : $(DATAROOTDIR)/doc/$(VERSIONDIR) ;\\n\"
-, \"path-constant INFODIR : $(DATAROOTDIR)/info ;\\n\"
-, \"path-constant MANDIR : $(DATAROOTDIR)/man ;\\n\"
-, \"path-constant HTMLDIR : $(DOCDIR) ;\\n\"
-, \"path-constant DVIDIR : $(DOCDIR) ;\\n\"
-, \"path-constant PDFDIR : $(DOCDIR) ;\\n\"
-, \"path-constant PSDIR : $(DOCDIR) ;\\n\"
-, \"path-constant MAN1DIR : $(MANDIR)/man1 ;\\n\"
-, \"path-constant MAN2DIR : $(MANDIR)/man2 ;\\n\"
-, \"path-constant MAN3DIR : $(MANDIR)/man3 ;\\n\"
-, \"path-constant MAN4DIR : $(MANDIR)/man4 ;\\n\"
-, \"path-constant MAN5DIR : $(MANDIR)/man5 ;\\n\"
-, \"path-constant MAN6DIR : $(MANDIR)/man6 ;\\n\"
-, \"path-constant MAN7DIR : $(MANDIR)/man7 ;\\n\"
-, \"path-constant MAN8DIR : $(MANDIR)/man8 ;\\n\"
-, \"path-constant MANNDIR : $(MANDIR)/mann ;\\n\"
+, \"#############################\\n\"
+, \"##  Default install locations\\n\"
+, \"#############################\\n\"
+, \"set (VERSIONDIR \\\"@@project@@-@@version@@\\\")\\n\"
+, \"\\n\"
+, \"set (EXEC_PREFIX ${CMAKE_INSTALL_PREFIX})\\n\"
+, \"set (BINDIR ${EXEC_PREFIX}/bin)\\n\"
+, \"set (SBINDIR ${EXEC_PREFIX}/sbin)\\n\"
+, \"set (LIBEXECDIR ${EXEC_PREFIX}/libexec)\\n\"
+, \"set (LIBDIR ${EXEC_PREFIX}/lib)\\n\"
+, \"set (DATAROOTDIR ${CMAKE_INSTALL_PREFIX}/share)\\n\"
+, \"set (DATADIR ${CMAKE_INSTALL_PREFIX}/share)\\n\"
+, \"set (SYSCONFDIR /etc)\\n\"
+, \"set (SHAREDSTATEDIR ${CMAKE_INSTALL_PREFIX}/com)\\n\"
+, \"set (LOCALSTATEDIR ${CMAKE_INSTALL_PREFIX}/var)\\n\"
+, \"set (INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)\\n\"
+, \"set (LOCALEDIR ${DATAROOTDIR}/locale)\\n\"
+, \"set (DOCDIR ${DATAROOTDIR}/doc/${VERSIONDIR})\\n\"
+, \"set (INFODIR ${DATAROOTDIR}/info)\\n\"
+, \"set (MANDIR ${DATAROOTDIR}/man)\\n\"
+, \"set (HTMLDIR ${DOCDIR})\\n\"
+, \"set (DVIDIR ${DOCDIR})\\n\"
+, \"set (PDFDIR ${DOCDIR})\\n\"
+, \"set (PSDIR ${DOCDIR})\\n\"
+, \"set (MAN1DIR ${MANDIR}/man1)\\n\"
+, \"set (MAN2DIR ${MANDIR}/man2)\\n\"
+, \"set (MAN3DIR ${MANDIR}/man3)\\n\"
+, \"set (MAN4DIR ${MANDIR}/man4)\\n\"
+, \"set (MAN5DIR ${MANDIR}/man5)\\n\"
+, \"set (MAN6DIR ${MANDIR}/man6)\\n\"
+, \"set (MAN7DIR ${MANDIR}/man7)\\n\"
+, \"set (MAN8DIR ${MANDIR}/man8)\\n\"
+, \"set (MANNDIR ${MANDIR}/mann)\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
 , \"###############\\n\"
@@ -1100,7 +1119,8 @@ the style for this buildfile type."
 , \"# mode: makefile\\n\"
 , \"# End:\\n\"
 , \"\\n\"
-, 0 }"
+, 0 }
+"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -1108,14 +1128,27 @@ the style for this buildfile type."
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of a the rules file (local.jam) If a 
-document artifact with name 'local.jam' is not present when 
-butter is executed with @style='boost' then one will be created
+	comment "This is the default contents of a the rules file (M_sys.mak) If a 
+document artifact with name 'M_sys.mak' is not present when 
+butter is executed with @style='make' then one will be created
 using this string.
 "
       end
 
-      attribute 185641 "individual_obj_"
+      attribute 192809 "rules_name"
+	class_attribute const_attribute private explicit_type "unistr"
+	init_value "(\"local.cmake\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the rules file."
+      end
+
+      attribute 192937 "individual_obj_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1126,7 +1159,7 @@ using this string.
 	comment "Set of sources that need to be individually compiled"
       end
 
-      attribute 186025 "dependency_obj_"
+      attribute 193065 "lib_set_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1134,21 +1167,10 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "Set of targets that this target depends on"
+	comment "Set of included libraries"
       end
 
-      attribute 185513 "is_other_"
-	private explicit_type "bool"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Is this an alternate/other library target?"
-      end
-
-      attribute 185385 "target_NAME_"
+      attribute 193193 "project_name_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1156,11 +1178,11 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "The version of the target name to use with variables."
+	comment "The top-level package name"
       end
 
-      attribute 185257 "project_name_"
-	private explicit_type "unistr"
+      attribute 193321 "root_dir_"
+	private type class_ref 145833 // pathcmp
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -1168,29 +1190,68 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This name of the project"
+	comment "The root directory of the project."
       end
 
-      operation 228649 "create"
-	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // build_writer
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
+      attribute 193449 "target_NAME_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
-{
-  std::auto_ptr< ${type} > Result (new cmake_writer);
-  return Result;
-}
-"
-	
-	
-	
-	
-	comment "Create cmake writer object.s"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Upper case target-name used to construct make variables
+for use with the target (TARGET_SRC, TARGET_OBJ etc)"
       end
 
-      operation 228905 "assoc_library"
+      attribute 194985 "depend_set_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Upper case target-name used to construct make variables
+for use with the target (TARGET_SRC, TARGET_OBJ etc)"
+      end
+
+      attribute 196137 "is_static_type_"
+	private explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "When type is library, is this a static library?"
+      end
+
+      attribute 196265 "language_set_"
+	private explicit_type "QStringList"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "List of languages to include (excluding C++)"
+      end
+
+      attribute 196521 "sys_buildfile_"
+	private type class_ref 147113 // compound_artifact
+	init_value "NULL"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}* ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 230441 "assoc_library"
 	private explicit_return_type "void"
 	nparams 5
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
@@ -1209,10 +1270,14 @@ ${body}}
 	
 	
 	
-	comment "Add link dependencies. "
+	comment "** This method a library association to the current target entry for a_target.
+
+Responsibilites
+- Properties
+ - associated includes, ldflags, cflags"
       end
 
-      operation 228777 "assoc_source"
+      operation 230569 "assoc_source"
 	private explicit_return_type "void"
 	nparams 7
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
@@ -1233,18 +1298,113 @@ ${body}}
 	
 	
 	
-	comment "Add source "
+	comment "** This method sets up object for creating a new target entry for a_target.
+
+Responsibilites
+- Properties
+ - doc/source: includes, ldflags, cflags
+ - compiler
+- Other
+ - set compilation for individual "
       end
 
-      operation 229289 "cmake_writer"
+      operation 230697 "create"
+	stereotype "auto_ptr"
+	class_operation public return_type class_ref 146985 // build_writer
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+  std::auto_ptr< ${type} > Result (new cmake_writer);
+  return Result;
+}
+"
+	
+	
+	
+	
+	comment "Create bjam writer object.s"
+      end
+
+      operation 230825 "descendent_link"
+	private explicit_return_type "void"
+	nparams 3
+	  param inout name "a_art" type class_ref 147113 // compound_artifact
+	  param inout name "a_sys" type class_ref 147113 // compound_artifact
+	  param in name "a_loc" type class_ref 132393 // location
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} & ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Write the Jamfile descent links for a_location to a_os"
+      end
+
+      operation 230953 "end_target"
+	private explicit_return_type "void"
+	nparams 7
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	  param out name "a_os" explicit_type "ostream"
+	  param in name "a_include" explicit_type "unistr"
+	  param in name "a_ldflags" explicit_type "unistr"
+	  param in name "a_cflags" explicit_type "unistr"
+	  param in name "a_compiler" explicit_type "unistr"
+	  param in name "a_type" type class_ref 154281 // target_type
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "** This method finalises the target entry for a_target."
+      end
+
+      operation 231081 "external_target"
+	private explicit_return_type "void"
+	nparams 3
+	  param in name "a_current" type class_ref 132393 // location
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	  param inout name "a_sys" type class_ref 147113 // compound_artifact
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} & ${p2}${v2}${)}${const}${volatile}${abstract} {}
+"
+	
+	
+	
+	
+	comment "In this style external targets are not used, external library 
+data is written in local-targets directly where it is 
+referenced."
+      end
+
+      operation 231209 "cmake_writer"
 	private explicit_return_type ""
 	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile}
-: dependency_obj_ ()
-, individual_obj_ ()
-, is_other_ ()
+	cpp_decl "    ${comment}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}
+: individual_obj_ ()
+, lib_set_ ()
 , project_name_ ()
+, root_dir_ ()
 , target_NAME_ ()
+, depend_set_ ()
+, is_static_type_ (false)
+, language_set_ ()
+, sys_buildfile_ ()
 {}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -1253,9 +1413,12 @@ ${body}}
 	
 	
 	
+	comment "Create a writer from the top-level a_project
+
+\\pre a_project.parent = nul"
       end
 
-      operation 229161 "~cmake_writer"
+      operation 231337 "~cmake_writer"
 	public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
@@ -1266,11 +1429,11 @@ ${body}}
 	
       end
 
-      operation 229033 "cmake_writer"
+      operation 231465 "cmake_writer"
 	stereotype "copy"
 	private explicit_return_type ""
 	nparams 1
-	  param in name "source" type class_ref 156585 // cmake_writer
+	  param in name "source" type class_ref 157737 // cmake_writer
 	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -1282,74 +1445,7 @@ ${body}}
 	comment "no copy"
       end
 
-      operation 228521 "descendent_link"
-	private explicit_return_type "void"
-	nparams 3
-	  param inout name "a_art" type class_ref 147113 // compound_artifact
-	  param inout name "a_sys" type class_ref 147113 // compound_artifact
-	  param in name "a_loc" type class_ref 132393 // location
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} & ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Write the Jamfile descent links for a_location."
-      end
-
-      operation 228393 "end_target"
-	private explicit_return_type "void"
-	nparams 7
-	  param in name "a_target" type class_ref 6913 // UmlArtifact
-	  param out name "a_os" explicit_type "ostream"
-	  param in name "a_include" explicit_type "unistr"
-	  param in name "a_ldflags" explicit_type "unistr"
-	  param in name "a_cflags" explicit_type "unistr"
-	  param in name "a_compiler" explicit_type "unistr"
-	  param in name "a_type" type class_ref 154281 // target_type
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${v6}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}, ${t5} ${p5}, ${t6} ${p6}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "end the target definition and set any extras"
-      end
-
-      operation 228265 "external_target"
-	private explicit_return_type "void"
-	nparams 3
-	  param in name "a_current" type class_ref 132393 // location
-	  param in name "a_target" type class_ref 6913 // UmlArtifact
-	  param inout name "a_sys" type class_ref 147113 // compound_artifact
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} & ${p2}${v2}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Write the external a_target at a_location. 
-
-* searches system_artifact_ for an existing target
-* new target sections are add to system_artifact_"
-      end
-
-      operation 228137 "initialise"
+      operation 231593 "initialise"
 	private explicit_return_type "void"
 	nparams 3
 	  param inout name "a_base" type class_ref 132393 // location
@@ -1357,8 +1453,10 @@ ${body}}
 	  param inout name "a_sys" type class_ref 147113 // compound_artifact
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, const ${t1} & ${p1}, ${t2} & ${p2}${v2}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
-${body}}
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
@@ -1366,12 +1464,10 @@ ${body}}
 	
 	
 	
-	comment "Write extra details to the top-level build file.
-
-"
+	comment "Write extra details to the top-level build file. "
       end
 
-      operation 228009 "install_target"
+      operation 231721 "install_target"
 	private explicit_return_type "void"
 	nparams 5
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
@@ -1379,7 +1475,7 @@ ${body}}
 	  param in name "a_loc_var" explicit_type "unistr"
 	  param in name "a_type" type class_ref 139305 // install_type
 	  param in name "a_isdoc" explicit_type "bool"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)}${const}${volatile}${staticnl}
 {
@@ -1392,13 +1488,17 @@ ${body}}
 	
 	
 	
-	comment "Create an install target."
+	comment "** Create an install target.
+
+Responsibilites
+- Properties
+ - install (library, executable and document)"
       end
 
-      operation 227881 "operator="
-	private return_type class_ref 156585 // cmake_writer
+      operation 231849 "operator="
+	private return_type class_ref 157737 // cmake_writer
 	nparams 1
-	  param in name "source" type class_ref 156585 // cmake_writer
+	  param in name "source" type class_ref 157737 // cmake_writer
 	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
 	
 	
@@ -1407,7 +1507,45 @@ ${body}}
 	comment "no assign"
       end
 
-      operation 227753 "start_target"
+      operation 233385 "preamble"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Update the main buildfile's project entry.  This is called
+in initialise() and when adding a new source language."
+      end
+
+      operation 232105 "requirements"
+	private explicit_return_type "bool"
+	nparams 2
+	  param in name "a_item" type class_ref 7553 // UmlItem
+	  param inout name "a_reqs" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+${body}}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Scan a_item for any requirements, add these to a_req and
+return true if found."
+      end
+
+      operation 232233 "start_target"
 	private explicit_return_type "void"
 	nparams 5
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
@@ -1426,16 +1564,19 @@ ${body}}
 	
 	
 	
-	comment "Start the target definition"
-      end
+	comment "** This method sets up object for creating a new target entry for a_target.
 
-      extra_member 139817 "so far"
-	
-	cpp "" ""
-	java ""
-	php ""
-	python ""
-	idl ""
+Responsibility
+- Properties
+ - compiler
+ - include, ldflags, cflags
+ - buildfile
+ - type (library)
+- Other
+ - shared lib
+ - static lib
+ - executable
+ - non-standard target"
       end
     end
 
@@ -3465,6 +3606,44 @@ library targets will be static."
 	idl_decl ""
 	comment "Build file section label for a target section."
       end
+
+      attribute 193577 "app_data_env_var"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "
+#ifdef _Win32
+\"APPDATA\"
+#else
+\"HOME\"
+#endif
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Build file section label for a target section."
+      end
+
+      attribute 193705 "app_data_subdir_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "
+#ifdef _Win32
+\"Butter\"
+#else
+\".butter\"
+#endif
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Build file section label for a target section."
+      end
     end
 
     class 134697 "jam_writer"
@@ -5145,12 +5324,12 @@ to add the new build_writer derived class to the system."
 	  b parent class_ref 133545 // bjam_writer
       end
 
-      classrelation 169257 // <dependency>
-	relation 168489 -_->
+      classrelation 170793 // <dependency>
+	relation 170025 -_->
 	  a default
 	    cpp default "#include in source"
-	    classrelation_ref 169257 // <dependency>
-	  b parent class_ref 156585 // cmake_writer
+	    classrelation_ref 170793 // <dependency>
+	  b parent class_ref 157737 // cmake_writer
       end
 
       classrelation 161705 // <dependency>
@@ -5889,19 +6068,19 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 142889 // bouml
-	artifact_ref 150825 // utility
-	artifact_ref 136361 // jam_writer
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 134057 // qt
-	artifact_ref 152489 // build_writer
-	artifact_ref 165929 // cmake_writer
 	artifact_ref 152233 // style
-	artifact_ref 132521 // location
-	artifact_ref 138793 // item_traits
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 154025 // main
+	artifact_ref 142889 // bouml
+	artifact_ref 165929 // cmake_writer
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 152489 // build_writer
 	artifact_ref 137641 // gmake_writer
+	artifact_ref 132521 // location
+	artifact_ref 154025 // main
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 134057 // qt
+	artifact_ref 150825 // utility
+	artifact_ref 138793 // item_traits
+	artifact_ref 136361 // jam_writer
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
@@ -5909,93 +6088,93 @@ ${namespace_end}"
     artifact 148393 "butter.plugout"
       stereotype "file"
       associated_artifacts
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 7169 // UmlItem
-	artifact_ref 4992 // aVisibility
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 768 // CppSettings
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 152233 // style
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 5120 // anItemKind
 	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 154025 // main
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 150825 // utility
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 1024 // IdlSettings
 	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 4864 // aDirection
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 4480 // UmlCom
-	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 768 // CppSettings
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 6913 // UmlDiagram
 	artifact_ref 5889 // UmlClassMember
 	artifact_ref 6017 // UmlClassView
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 152233 // style
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 5504 // OnInstanceCmd
 	artifact_ref 7297 // UmlNode
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 5120 // anItemKind
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 136361 // jam_writer
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 5633 // UmlClass
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 132521 // location
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 138793 // item_traits
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 152489 // build_writer
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 7425 // UmlOperation
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
 	artifact_ref 1152 // JavaSettings
-	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 4480 // UmlCom
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 4864 // aDirection
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 5633 // UmlClass
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 152489 // build_writer
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 132521 // location
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 154025 // main
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 5504 // OnInstanceCmd
 	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 7169 // UmlItem
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 4992 // aVisibility
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 150825 // utility
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 138793 // item_traits
+	artifact_ref 136361 // jam_writer
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter2/butter.pro"
@@ -6047,7 +6226,7 @@ ${namespace_end}"
 #define @{PROJECT}_CONFIG_H 1
 #include <stdexcept>
 
-#define BUTTER_VERSION_ \"Butter version 1.1beta 32\"
+#define BUTTER_VERSION_ \"Butter version 1.1beta.36\"
 
 #define @{PROJECT}_ALWAYS(X,Y) do { if (! (X)) { throw std::runtime_error(std::string(Y)); } } while (false)
 
@@ -6094,7 +6273,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_classes
-	class_ref 156585 // cmake_writer
+	class_ref 157737 // cmake_writer
       end
     end
 
@@ -6228,7 +6407,7 @@ ${namespace_end}"
 #include <qtextstream.h>
 #ifdef DEBUG 
 #include <qmessagebox.h>
-#ifdef __UNIX__
+#ifdef __unix__
 #include <unistd.h>
 #else
 #ifdef _WIN32
@@ -6252,11 +6431,13 @@ int main(int argc, char ** argv)
 #ifdef DEBUG
       QString msg_;
       QTextOStream mos_ (&msg_);
-#ifdef __UNIX__
+#ifdef __unix__
       mos_ << \"Hit Ok to continue. If you want to debug this application attach to process [pid=\" << getpid () << \"] before continuing.\";
 #else
 #ifdef _WIN32
       mos_ << \"Hit Ok to continue. If you want to debug this application attach to process [Id=\" << GetCurrentProcessId () << \"] before continuing.\";
+#else
+      mos_ << \"Hit Ok to continue. If you want to debug this application attach to butter process now.\";
 #endif
 #endif
       QMessageBox msg_box_ (butter::item_traits::BUTTER_VERSION, msg_, QMessageBox::Warning, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton);
@@ -6494,6 +6675,9 @@ ${includes}
 #include <qregexp.h>
 #include <stdexcept>
 #include <qstack.h>
+
+// for getenv method
+#include <cstdlib>
 // --
 ${declarations}
 ${namespace_start}
@@ -6510,128 +6694,12 @@ ${namespace_end}
     artifact 164777 "test_path"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 150825 // utility
 	artifact_ref 150953 // path_test
 	artifact_ref 142889 // bouml
 	artifact_ref 134057 // qt
+	artifact_ref 150825 // utility
       end
       comment "Simple program to exercise pathcmp class."
-    end
-
-    artifact 166441 "Jamfile"
-      stereotype "document"
-      comment "##START:version
-#Butter project version 1.2
-##END:version
-##START:date
-#Fri Dec 10 15:15:40 2010
-##END:date
-##START:preamble
-ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/src/butter ;
-
-SubDir TOP src butter ;
-
-
-SUBDIRC++FLAGS += -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT  ;
-
-SUBDIRHDRS += ${QTDIR}/include ;
-##END:preamble
-##START:target butter
-Main <butter>butter$(SUFEXE) :
-	<butter>utility.cpp
-	<butter>jam_writer.cpp
-	<butter>compound_artifact.cpp
-	<butter>build_writer.cpp
-	<butter>cmake_writer.cpp
-	<butter>style.cpp
-	<butter>location.cpp
-	<butter>item_traits.cpp
-	<butter>bjam_writer.cpp
-	<butter>main.cpp
-	<butter>gmake_writer.cpp
-	;
-
-LINKLIBS on <butter>butter$(SUFEXE) += $(BOUML_BOUMLLIBS) -L${QTDIR}/lib64 -lqt-mt -lm ;
-LinkLibraries <butter>butter$(SUFEXE) :
-	 <bouml>libbouml$(SUFLIB) 
-	;
-
-InstallBin $(BINDIR) : <butter>butter$(SUFEXE) ;
-##END:target butter
-##START:target test_path
-Main <butter>test_path$(SUFEXE) :
-	<butter>utility.cpp
-	<butter>path_test.cpp
-	;
-
-LINKLIBS on <butter>test_path$(SUFEXE) += $(BOUML_BOUMLLIBS) -L${QTDIR}/lib64 -lqt-mt -lm ;
-LinkLibraries <butter>test_path$(SUFEXE) :
-	 <bouml>libbouml$(SUFLIB) 
-	;
-
-C++FLAGS on <butter>path_test$(SUFOBJ) += -fopenmp ;
-
-InstallBin $(BINDIR) : <butter>test_path$(SUFEXE) ;
-##END:target test_path
-"
-    end
-
-    artifact 166953 "CMakeLists.txt"
-      stereotype "document"
-      comment "##START:version
-#Butter version 1.1beta 32
-##END:version
-##START:date
-#Fri Dec 10 18:14:43 2010
-##END:date
-##START:target butter
-set (BUTTER_BUTTER butter)
-
-add_executable (${BUTTER_BUTTER}
-	utility.cpp
-	jam_writer.cpp
-	compound_artifact.cpp
-	build_writer.cpp
-	cmake_writer.cpp
-	style.cpp
-	location.cpp
-	item_traits.cpp
-	bjam_writer.cpp
-	main.cpp
-	gmake_writer.cpp
-	)
-
-
-add_dependencies (${BUTTER_BUTTER}
-	bouml
-	qt3
-	)
-install (TARGET ${BUTTER_BUTTER}
-	RUNTIME
-	DESTINATION ${BINDIR}
-	CONFIGURATIONS Release )
-
-##END:target butter
-##START:target test_path
-set (BUTTER_TEST_PATH test_path)
-
-add_executable (${BUTTER_TEST_PATH}
-	utility.cpp
-	path_test.cpp
-	)
-
-
-add_dependencies (${BUTTER_TEST_PATH}
-	bouml
-	qt3
-	)
-install (TARGET ${BUTTER_TEST_PATH}
-	RUNTIME
-	DESTINATION ${BINDIR}
-	CONFIGURATIONS Release )
-
-##END:target test_path
-"
     end
   end
 end

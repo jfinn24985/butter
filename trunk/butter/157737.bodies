@@ -1,0 +1,421 @@
+class cmake_writer
+!!!230441.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+////////////////////////////////////
+// Define the associations of target
+//
+// to sources and libraries
+//
+QString project_;
+if (item_traits::property_value (a_target, item_traits::butter_project_name, project_))
+{
+  //////////////////////////////////
+  // Is an externally linked library
+  //
+  // add flags to main target.
+  find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, section_name, true);
+
+  QString name_ (const_cast< UmlArtifact& >(a_target).name ());
+  if (! lib_set_.isEmpty ())
+  {
+    lib_set_.append (" ");
+  }
+  lib_set_.append("${" + project_.upper() + "_LINK_LIBS}");
+}
+else
+{
+  QString name_ (const_cast< UmlArtifact& >(a_target).name ());
+  ///////////////////
+  // Is local library target, add as a dependency
+  if (!depend_set_.isEmpty ())
+  {
+    depend_set_.append (" ");
+  }
+  depend_set_.append(name_);
+  //
+  // Create linker information
+  if (!lib_set_.isEmpty ())
+  {
+    lib_set_.append (" ");
+  }
+  lib_set_.append(name_);
+
+  // Get any flags that we might need
+  QString library_type_;
+  if (item_traits::property_search (a_target, item_traits::butter_lib_type_name, library_type_)
+      && item_traits::static_value == library_type_)
+  {
+    //////////////////////
+    // Is a static library so we need to get
+    // ldflags from static library's sources
+    QVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(a_target).associatedArtifacts ());
+    for (unsigned int i_ = 0; i_ < assoc_arts_.size (); ++i_)
+    {
+      const QString stereotype_ (assoc_arts_[i_]->stereotype ().data ());
+      if (stereotype_ == item_traits::library_stereotype
+          || stereotype_ == item_traits::source_stereotype)
+      {
+        QString ldflags_;
+        if (item_traits::property_value (*assoc_arts_[i_], item_traits::butter_ldflags_name, ldflags_))
+        {
+          merge_string_list (a_ldflags, ldflags_);
+        }
+      }
+    }
+  }
+  // Both static/shared add include and link flags, ignore cflags
+  QString src_flags_;
+  find_hdr_link (a_target, a_includes, a_ldflags, src_flags_, section_name, true);
+}
+!!!230569.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+////////////////////////////////////
+// Define the associations of target
+//
+// to sources and documents
+//
+
+/*
+  if (a_isdoc)
+  {
+    /////////////////////////////////
+    // Add document to TARGET_OBJ as they may
+    // not be deduced from source list in case
+    // they are not deduced for "clean" target
+    //
+    // Assume object just replaces extension
+    user_obj_ << this->target_NAME_ << "_OBJ := $(" << this->target_NAME_ << "_OBJ)  " << a_basename << "$(sufobj)\n\n";
+  }
+*/
+
+// Add source/document
+a_os << "\n\t" << a_filename;
+
+///////////////////////////////
+// If src has hdr defined
+// add to target's includes.
+if (! a_src_inc.isEmpty ())
+{
+  QString user_extra_;
+  {
+    QTextOStream user_obj_ (&user_extra_);
+    user_obj_ << "\ninclude_directories (" << a_src_inc << ")\n";
+  }
+  this->individual_obj_.append (user_extra_);
+}
+
+///////////////////////////////
+// If src has flags or is a doc with compiler set means we
+// have to add properties for it.
+// set_source_files_properties (name COMPILE_FLAGS .. COMPILE_DEFINITIONS ..)
+QString comp_;
+if (a_isdoc)
+{
+  // Check if user has set the language,
+  // if not assume it will be autodetected
+  item_traits::property_value (a_target
+          , item_traits::butter_compiler_name, comp_);
+}
+
+if (! a_src_flags.isEmpty () || ! comp_.isEmpty())
+{
+  QString user_extra_;
+  {
+    QTextOStream user_obj_ (&user_extra_);
+    user_obj_ << "set_source_files_properties (" << a_filename
+        << "\n\tPROPERTIES";
+    if (! comp_.isEmpty() && "CCC" != comp_)
+    {
+      if ("CC" == comp_)
+      {
+        comp_ = "C";
+      }
+      else
+      {
+        comp_ = comp_.lower();
+        comp_[0] = comp_[0].upper ();
+      }
+      if (0 == this->language_set_.contains (comp_))
+      {
+        this->language_set_.append (comp_);
+        // Update project header
+        this->preamble ();
+      }
+      user_obj_ << "\n\tLANGUAGE " << comp_;
+    }
+    if (! a_src_flags.isEmpty ())
+    {
+      user_obj_ << "\n\tCOMPILE_FLAGS " << a_src_flags;
+    }
+    user_obj_ << ")\n\n";
+  }
+  this->individual_obj_.append (user_extra_);
+}
+!!!230825.cpp!!!	descendent_link(inout a_art : compound_artifact, inout a_sys : compound_artifact, in a_loc : location) : void
+// Keep parent dir definitions.
+if (NULL != a_loc.parent ())
+{
+  // Add us to base makefile
+  QString tmp_;
+  QTextOStream link_os_ (&tmp_);
+  link_os_ << "add_subdirectory (";
+  link_os_ << pathcmp(root_dir_.create_relative (a_loc.full_path ())).path_localised ();
+  link_os_ << ")\n";
+  a_sys.close.second.append (tmp_);
+}
+
+!!!230953.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
+////////////////////////////////
+// Finalise target build instructions
+//
+a_os << ")\n";
+if (a_type == other)
+{
+  ////////////////
+  // Handle "other" library types specially.
+  QString other_type_ (this->other_target_type_.upper ());
+#if QT_VERSION < 300L
+  other_type_.replace (QRegExp ("-"), "_");
+#else
+  other_type_.replace ('-', "_");
+#endif
+  a_os << "add_custom_command (OUTPUT ${" << this->target_NAME_
+      << "}\n\t DEPENDS ${" << this->target_NAME_ << "_SRC} "
+      << this->lib_set_
+      << "\n\tCOMMAND ${" << other_type_ << "} ";
+  if (! a_include.isEmpty ())
+  {
+    a_os << a_include << " ";
+  }
+  if (! a_cflags.isEmpty ())
+  {
+    a_os << a_cflags << " ";
+  }
+  if (! a_ldflags.isEmpty ())
+  {
+    a_os << a_ldflags << " ";
+  }
+  a_os << "${" << other_type_ << "FLAGS} ${" << this->target_NAME_
+      << "} ${" << this->target_NAME_ << "_SRC})\n\n"
+      << "set_directory_properties (PROPERTIES\n"
+      << "\tADDITIONAL_MAKE_CLEAN_FILES ${"
+      << this->target_NAME_ << "})\n\n";
+}
+else
+{
+  switch (a_type)
+  {
+  case executable:
+    {
+      a_os << "add_executable (${" << this->target_NAME_ << "}"
+              << "\n\t${" << this->target_NAME_ << "_SRC})\n";
+    }
+    break;
+  case static_library:
+    {
+      a_os << "add_library (${" << this->target_NAME_ << "}"
+              << "\n\tSTATIC ${" << this->target_NAME_ << "_SRC})\n";
+    }
+    break;
+  case shared_library:
+    {
+      a_os << "add_library (${" << this->target_NAME_ << "}"
+              << "\n\tSHARED ${" << this->target_NAME_ << "_SRC})\n";
+    }
+    break;
+  case other: // Can not get here.
+    break;
+  }
+  // Create linker and compiler flagsets
+  if (! this->lib_set_.isEmpty () || ! a_ldflags.isEmpty ())
+  {
+    a_os << "target_link_libraries (${" << this->target_NAME_ << "}";
+    if (! this->lib_set_.isEmpty ())
+    {
+      a_os << "\n\t" << this->lib_set_;
+    }
+    if (! a_ldflags.isEmpty ())
+    {
+      a_os << "\n\t" << a_ldflags;
+    }
+    a_os << ")\n";
+  }
+  if (! a_cflags.isEmpty ())
+  {
+    a_os << "set_target_properties(${" << target_NAME_ << "}"
+      << "\n\tPROPERTIES"
+      << "\n\tCOMPILE_FLAGS " << a_cflags << ")\n";
+  }
+  if (! a_include.isEmpty ())
+  {
+    a_os << "include_directories (" << a_include << ")\n";
+  }
+
+  // Add any object definitions.
+  if (! this->individual_obj_.isEmpty ())
+  {
+    a_os << this->individual_obj_ << "\n";
+  }
+}
+
+!!!231593.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void
+BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
+this->project_name_ = const_cast< UmlItem& >(a_project).name ().upper ();
+this->root_dir_ = a_base.full_path ();
+BUTTER_CHECK (! this->root_dir_.path ().isEmpty ()
+      , "<p><b>Program error:</b> Project root directory is not set properly.</p>");
+this->sys_buildfile_ = &a_sys;
+this->preamble ();
+
+QString proj_text_;
+{
+  QTextOStream proj_os_ (&proj_text_);
+  proj_os_ << "include (" << (pathcmp("${CMAKE_SOURCE_DIR}")
+         / this->rules_name).path_localised () << ")\n\n";
+
+  const pathcmp base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)));
+
+  if (! this->root_dir_.equality (base_include_))
+  {
+    proj_os_ << "include_directories ("
+       << (pathcmp("${CMAKE_SOURCE_DIR}")
+            / this->root_dir_.create_relative (base_include_))
+                .path_localised ()
+       << ")\n\n";
+  }
+  QString reqs_;
+  if (this->requirements (a_project, reqs_))
+  {
+    proj_os_ << reqs_;
+  }
+}
+a_sys.target(this->project_name_).second = proj_text_;
+!!!231721.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
+QString target_name_;
+if (a_isdoc)
+{
+  target_name_ = const_cast< UmlArtifact& >(a_target).name ();
+}
+else
+{
+  target_name_ = "${" + this->target_NAME_ + "}";
+}
+switch(a_type)
+{
+  case build_writer::bin:
+  {
+    a_os << "install (TARGETS " << target_name_
+        << "\n\tRUNTIME DESTINATION ${" << a_loc_var << "}"
+        << "\n\tCONFIGURATIONS Release)\n\n";
+    break;
+  }
+  case build_writer::lib:
+  {
+    QString shard_, statd_;
+    if (this->is_static_type_)
+    {
+      statd_ = a_loc_var;
+      shard_ = "LIBDIR";
+    }
+    else
+    {
+      statd_ = "ARCHDIR";
+      shard_ = a_loc_var;
+    }
+    a_os << "install (TARGETS " << target_name_
+        << "\n\tLIBRARY DESTINATION ${" << shard_ << "}"
+        << "\n\tCONFIGURATIONS Release"
+        << "\n\tARCHIVE DESTINATION ${" << shard_ << "}"
+        << "\n\tCONFIGURATIONS Release)\n\n";
+    break;
+  }
+  case build_writer::file:
+  case build_writer::man:
+  {
+    a_os << "install (FILES " << target_name_
+        << "\n\tDESTINATION ${" << a_loc_var << "}"
+        << "\n\tCONFIGURATIONS Release)\n\n";
+    break;
+  }
+}
+!!!233385.cpp!!!	preamble() : void
+if (this->sys_buildfile_->preamble.second.isEmpty ()
+     || ! this->language_set_.isEmpty ())
+{
+  QString init_text_;
+  {
+    QTextOStream init_os_ (&init_text_);
+    init_os_ << this->cmake_minimum_required_ << "\n\n"
+        << "project (" << this->project_name_;
+    // Handle languages if necessary
+    if (! this->language_set_.isEmpty ())
+    {
+      init_os_ << " CXX " << this->language_set_.join (" ");
+    }
+    init_os_ << ")\n\n";
+  }
+  this->sys_buildfile_->preamble.second = init_text_;
+}
+!!!232105.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr) : bool
+bool Result (false);
+QString value_;
+QString requirements_text_;
+QTextOStream os_ (&requirements_text_);
+if (item_traits::property_value (a_item
+    , item_traits::butter_include_name, value_))
+{
+  Result = true;
+  os_ << "include_directories (" << value_ << ")\n";
+}
+if (item_traits::property_search (a_item
+    , item_traits::butter_ldflags_name, value_))
+{
+  Result = true;
+  os_ << "set (" << this->project_name_ << "_USER_LDFLAGS " << value_ << ")\n";
+}
+if (item_traits::property_search (a_item
+    , item_traits::butter_flags_name, value_))
+{
+  Result = true;
+  os_ << "set (" << this->project_name_ << "_USER_FLAGS " << value_ << ")\n";
+}
+if (Result)
+{
+  a_reqs = requirements_text_;
+}
+return Result;
+!!!232233.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
+/////////////////
+// Initialise variables for the new target
+const QString target_name_ (const_cast< UmlArtifact& >(a_target).name ());
+#if QT_VERSION < 300L
+this->target_NAME_ = this->project_name_.upper() + "_" + target_name_.upper ().replace (QRegExp("\\."), "");
+#else
+this->target_NAME_ = this->project_name_.upper() + "_" + target_name_.upper ().remove ('.');
+#endif
+this->other_target_type_.truncate (0);    // An "other" target type.
+this->lib_set_.truncate (0);              // Set of included libraries
+this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled
+this->depend_set_.truncate (0);        // local targets
+this->is_static_type_ = (a_type == build_writer::static_library);
+///////////////////////////////////////////
+// Define the characteristics of the target
+//
+// a_target must be executable or library stereotype!
+//
+if (a_type == other)
+{
+  item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_);
+}
+
+// Handle target specific include file for library types only
+if (a_type != executable)
+{
+  if (! a_build_file.isEmpty ())
+  {
+    a_os << "include (" << (pathcmp("${CMAKE_SOURCE_DIR}") / a_build_file).path_localised () << ".cmake)\n\n";
+  }
+}
+
+//////////////////
+// Start the source file associations
+a_os << "set (" << this->target_NAME_ << " " << target_name_ << ")\n\n";
+a_os << "set (" << this->target_NAME_ << "_SRC ";
