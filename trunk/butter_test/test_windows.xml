@@ -1,0 +1,22 @@
+<?xml version = '1.0'?>
+<test-suite>
+<property name="bouml" >C:\Progra~1\Bouml\bouml</property>
+  <property name="jam" >jam</property>
+  <property name="jam-arg" >-d2 -sCOMP=MSVC</property>
+  <property name="boost" >bjam</property>
+  <property name="boost" >-d2</property>
+  <property name="make" >gmake</property>
+  <property name="make-sys" >M_sys.mak</property>
+  <property name="base-dir" >C:\tmp</property>
+  <property name="patch-args" >--verbose --binary -t -l -i</property>
+  <property name="checkout-tool" >zip</property>
+  <property name="zip-command" >unzip -o -u </property>
+  <property name="to-dir" >-d %(base-dir)s</property>
+  <property name="checkout-suf" >.zip</property>
+  <property name="exe-suf" >.exe</property>
+  <property name="ark-suf" >.lib</property>
+  <property name="shr-suf" >.dll</property>
+  <property name="shrt-suf" >.dll</property>
+  <property name="cmdsep" >&amp;</property>
+  <property name="checkout-url" >C:\Users\finnerty\Desktop\Butter\test_suite\test_suite</property>
+</test-suite>

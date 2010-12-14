@@ -1,0 +1,20 @@
+<?xml version = '1.0'?>
+<test-suite>
+  <property name="bouml" >/usr/bin/bouml</property>
+  <property name="jam" >jam</property>
+  <property name="jam-arg" >-d2</property>
+  <property name="boost" >bjam</property>
+  <property name="boost-arg" >-d2</property>
+  <property name="make" >make</property>
+  <property name="make-sys" >makefile.sys</property>
+  <property name="base-dir" >/tmp</property>
+  <property name="patch-args" >-l -t -i</property>
+  <property name="checkout-tool" >svn</property>
+  <property name="checkout-suf" ></property>
+  <property name="exe-suf" ></property>
+  <property name="ark-suf" >.a</property>
+  <property name="shrt-suf" >.so</property>
+  <property name="shr-suf" >.so.0</property>
+  <property name="cmdsep" >;</property>
+  <property name="checkout-url" >file:///home/finnerty/Office/Programming/svnroot/butter/trunk</property>
+</test-suite>

@@ -1,0 +1,445 @@
+<?xml version = '1.0'?>
+<test-suite src="test_unix.xml">
+Test suite for &quot;butter&quot; project on UNIX like operating systems.
+ 
+This suite tests building C++ projects.
+
+Note that we make the following assumptions about the set up of the project:
+* The C++ extensions used are hpp/cpp
+* The output directory is &quot;output&quot; in the project directory
+* Build dir is &quot;build&quot; and install dir is &quot;install_dir&quot;
+  <property name="job-id" >%(build-tool)s</property>
+  <property name="test-dir" >output</property>
+  <property name="build-dir" >build/DEBUG</property>
+  <property name="build-var" ></property>
+  <property name="install-dir" >installdir</property>
+  <property name="error" >fatal</property>
+  <property name="compare-args" >
+<!--Ignore lines with dates-->-w -B -I'#\(Mon\|Tue\|Wed\|Thu\|Fri\|Sat\|Sun\) .* [[:digit:]]\{4\}'</property>
+
+<!--
+
+Single Directory, single target test cases
+
+-->
+
+  <job src="job_single_test.xml">
+
+default (jam) build tool + debug + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-dir" >.</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+default (jam) build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-dir" >.</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=RELEASE</property>
+  </job>
+
+   <job src="job_single_test.xml">
+
+jam build tool + debug + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-dir" >.</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+jam build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-dir" >.</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=RELEASE</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+make build tool + debug + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-dir" >.</property>
+    <property name="basefile" >makefile</property>
+    <property name="sysfile" >%(make-sys)s</property>
+    <property name="mainfile" >makefile</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="build-arg" >VARIANT=DEBUG</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+make build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-dir" >.</property>
+    <property name="basefile" >makefile</property>
+    <property name="sysfile" >%(make-sys)s</property>
+    <property name="mainfile" >makefile</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="build-arg" >VARIANT=RELEASE</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+boost build tool + debug + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="basefile" >Jamroot</property>
+    <property name="sysfile" >local.jam</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="build-arg" >-d2</property>
+    <property name="build-dir" >build/gcc-4.3/debug</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+boost build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="basefile" >Jamroot</property>
+    <property name="sysfile" >local.jam</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="build-arg" >%(boost-arg)s release</property>
+    <property name="build-dir" >build/gcc-4.3/release</property>
+  </job>
+
+<!--
+
+Multiple target test cases
+
+-->
+
+  <job src="job_multitarget.xml">
+
+default (jam) build tool + debug + single directory, multiple target
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+   <job src="job_multitarget.xml">
+
+jam build tool + debug + single directory, multiple target
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+   <job src="job_multitarget.xml">
+
+boost build tool + debug + single directory, multiple target
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="basefile" >Jamroot</property>
+    <property name="sysfile" >local.jam</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >library%(shrt-suf)s</property>
+    <property name="build-arg" > %(boost-arg)s debug</property>
+    <property name="build-dir" >build/gcc-4.3/debug</property>
+  </job>
+
+   <job src="job_multitarget.xml">
+
+make build tool + debug + single directory, multiple target
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="basefile" >makefile</property>
+    <property name="sysfile" >%(make-sys)s</property>
+    <property name="mainfile" >makefile</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" >VARIANT=DEBUG</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+<!--
+
+Multiple Directory test cases
+
+-->
+
+  <job src="job_multidir.xml">
+
+default (jam) build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+   <job src="job_multidir.xml">
+
+jam build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+   <job src="job_multidir.xml">
+
+boost build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="basefile" >Jamroot</property>
+    <property name="sysfile" >local.jam</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >library%(shrt-suf)s</property>
+    <property name="build-arg" > %(boost-arg)s debug</property>
+    <property name="build-dir" >build</property>
+    <property name="build-var" >/gcc-4.3/debug</property>
+  </job>
+
+   <job src="job_multidir.xml">
+
+make build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="basefile" >makefile</property>
+    <property name="sysfile" >%(make-sys)s</property>
+    <property name="mainfile" >makefile</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" >VARIANT=DEBUG</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+<!--
+
+Multiple Directory + non-C++ test cases (auto-detect source types)
+
+-->
+
+  <job src="job_multilang.xml">
+
+standard (jam) tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="patch-args" >-l -t -i</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG</property>
+    <property name="build-clean" >%(build-arg)s clean</property>
+    <property name="build-install" >%(build-arg)s install</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+  <job src="job_multilang.xml">
+
+jam tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="patch-args" >-l -t -i</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG</property>
+    <property name="build-clean" >%(build-arg)s clean</property>
+    <property name="build-install" >%(build-arg)s install</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+  <job src="job_multilang.xml">
+
+boost tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="basefile" >Jamroot</property>
+    <property name="sysfile" >local.jam</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="patch-args" >-l -t -i</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >library%(shrt-suf)s</property>
+    <property name="build-arg" >%(boost-arg)s debug</property>
+    <property name="build-clean" >%(boost-arg)s clean</property>
+    <property name="build-install" >%(boost-arg)s release</property>
+    <property name="build-dir" >build</property>
+    <property name="build-var" >/gcc-4.3/debug</property>
+  </job>
+
+  <job src="job_multilang.xml">
+
+make tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="basefile" >makefile</property>
+    <property name="sysfile" >%(make-sys)s</property>
+    <property name="mainfile" >makefile</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="patch-args" >-l -t -i</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" >VARIANT=DEBUG</property>
+    <property name="build-clean" >%(build-arg)s distclean</property>
+    <property name="build-install" >%(build-arg)s install</property>
+    <property name="build-dir" >.</property>
+  </job>
+
+
+<!--
+
+Multiple Directory, non-C++ source and property usage test cases
+
+-->
+
+   <job src="job_proplang.xml">
+
+default (jam) build tool + debug + non-C++ + property usage + multidirectory
+* shared lib not available for jam yet
+
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="patch-args" >-l -t -i</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG</property>
+    <property name="build-clean" >%(build-arg)s clean</property>
+    <property name="build-install" >%(build-arg)s install</property>
+  </job>
+
+   <job src="job_proplang.xml">
+
+jam build tool + debug + non-C++ + property usage + multidirectory
+* shared lib not available for jam yet
+
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="basefile" >Jamfile</property>
+    <property name="sysfile" >Jamrules</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="patch-args" >-l -t -i</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG</property>
+    <property name="build-clean" >%(build-arg)s clean</property>
+    <property name="build-install" >%(build-arg)s install</property>
+  </job>
+
+   <job src="job_proplang.xml">
+
+boost build tool + debug + non-C++ + property usage + multidirectory + shared lib
+
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="basefile" >Jamroot</property>
+    <property name="sysfile" >local.jam</property>
+    <property name="mainfile" >Jamfile</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >library%(shrt-suf)s</property>
+    <property name="build-arg" >%(boost-arg)s debug</property>
+    <property name="build-clean" >%(build-arg)s clean</property>
+    <property name="build-install" >%(boost-arg)s release</property>
+    <property name="build-dir" >build</property>
+    <property name="build-var" >/gcc-4.3/debug</property>
+  </job>
+
+   <job src="job_proplang.xml">
+
+ make build tool + debug + non-C++ + property usage + multidirectory + shared lib
+
+    <property name="build-dir" >.</property>
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="basefile" >makefile</property>
+    <property name="sysfile" >%(make-sys)s</property>
+    <property name="mainfile" >makefile</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="patch-args" >-l -t -i</property>
+    <property name="exe-name" >program%(exe-suf)s</property>
+    <property name="library-name" >liblibrary%(shr-suf)s</property>
+    <property name="build-arg" >VARIANT=DEBUG</property>
+    <property name="build-clean" >%(build-arg)s clean</property>
+    <property name="build-install" >%(build-arg)s install</property>
+  </job>
+
+</test-suite>
