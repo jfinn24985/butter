@@ -1,0 +1,48 @@
+class stage
+!!!155561.python!!!	do_category(in self : , in category : string)
+if self._children:
+  subtmp_ = None
+  for item_ in self._children:
+    if isinstance(item_, verb_list):
+      if category == item_.category:
+        if not subtmp_:
+	  subtmp_ = self.start("sub-stage", {"#title":"Running " + category + " stage code"})
+	  if item_.content:
+	    p_ = item_.start("par")
+	    print item_.content
+	    del p_
+        tmp_ = item_.start("code",{"#title":"Code to execute"})
+        print item_.get_action ()
+        del tmp_
+        result = True
+        tmp_ = item_.start("output",{"#title":"Code output"}),
+	exec item_.get_action ()
+        del tmp_
+	self.passed = result
+        if not self.passed:
+          return
+  if subtmp_: del subtmp_
+pass
+!!!147369.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == stage.element_name
+return stage()
+!!!129577.python!!!	run(in self : ) : bool
+# Run each verb list with quit on fail
+self.passed = True
+self.start ("divider")
+tmp_ = self.start("stage", {"#title":self.content or "Begin job stage"})
+for category_ in ( stage.setup_category_name, stage.execute_category_name, stage.verify_category_name ):
+  self.do_category (category_)
+if self.passed:
+  # Cleanup if all operations passed.
+  self.do_category (stage.cleanup_category_name)
+del tmp_
+return self.passed
+!!!158377.python!!!	system_call(in self : , in a_cmd : string, in a_errmsg : string)
+import sys, subprocess
+proc_ = subprocess.Popen(a_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+res_ = proc_.wait ()
+sys.stdout.write(proc_.stdout.read())
+if res_:
+  exec a_errmsg
+pass

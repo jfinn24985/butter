@@ -1,0 +1,40 @@
+class verb_patch
+!!!155177.python!!!	do_end_load(in self : )
+# Build replacement dictionary and phrase for this type
+patch_ = self.get (u"patch-command", u"patch")
+args_ = self.get (u"patch-args", u"-t -i")
+suffix_ = self.get (u"suffix", u".patch")
+msg_ = u"""File %(_path_)s failed to apply"""
+base_ = self.make_substitutions(self[u"base"])
+patch_dir_ = self.make_substitutions(self.get(u"patch-dir", u""))
+if not patch_dir_:
+  patch_dir_ = base_
+
+# Initialise the object-specific substitution dictionary
+self.substitutions( None, { u"_patch_": patch_, u"_patch_args_": args_, u"_path_": None, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")]
+, u"_base_": base_ } )
+
+phrase_ = u"""self.system_call(r"%(_patch_)s -d %(_base_)s %(_patch_args_)s %(_path_)s", r\"\"\"%(_error_)s\"\"\")\n"""
+
+# Build python evaluation string
+self.reset_action ()
+
+for leaf_ in self.make_substitutions(self[u"location"]).split(u" "):
+  # update dictionary for current file
+  self.substitutions(u"_path_", os.path.normpath(os.path.join(patch_dir_, leaf_)))
+  self.substitutions(u"_message_", self.make_substitutions(msg_))
+  # append actions
+  self.add_action (self.make_substitutions(phrase_))
+
+if _DEBUG:
+  tmp_ = self.start("debug", {"#title":"Verb patch data:"})
+  print self.get_action ()
+  del tmp_
+pass
+!!!146857.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == verb.element_name
+assert elemattr.has_key (verb.type_attr)
+if elemattr[verb.type_attr] == verb_patch.type_value:
+  return verb_patch()
+else:
+  return None

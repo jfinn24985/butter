@@ -1,0 +1,21 @@
+class verb_system
+!!!155433.python!!!	do_end_load(in self : )
+# Build python evaluation string
+self.reset_action ()
+command_ = """self.system_call(r\"""" + self.content + """\", r\"\"\"%(_error_)s\"\"\")\n"""
+self.substitutions(u"_message_", """System command [""" + self.content + """] returned non-zero status""")
+self.substitutions(u"_error_", verb._error[self.get (u"error",u"fatal")])
+self.add_action (self.make_substitutions(command_))
+
+if _DEBUG:
+  tmp_ = self.start("debug", {"#title": "Verb system data:"})
+  print self.get_action ()
+  del tmp_
+pass
+!!!146217.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == verb.element_name
+assert elemattr.has_key (verb.type_attr)
+if elemattr[verb.type_attr] == verb_system.type_value:
+  return verb_system()
+else:
+  return None

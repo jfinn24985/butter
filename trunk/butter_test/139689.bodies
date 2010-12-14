@@ -1,0 +1,60 @@
+class object_interface
+!!!144937.python!!!	add_characters(in self : , in text : unistr)
+if not text.isspace ():
+   self.content += text
+!!!145065.python!!!	add_child(in self : , in child : object_interface)
+assert isinstance(child, object_interface)
+if not self._children:
+  self._children = []
+self._children.append (child)
+child._parent = self
+!!!153129.python!!!	__getitem__(in self : , in name : unistr) : unistr
+# If not found return None
+return None
+
+!!!149929.python!!!	__str__(in self : ) : string
+Result = "Depth[" + str(object_interface.__depth) + "]" + str(type(self))
+Result = Result + "\n content ["
+Result = Result + self.content
+Result = Result + "]\n"
+if self._children:
+  counter = 1
+  object_interface.__depth += 1
+  for child in self._children:
+    Result = Result + "Child [" + str(object_interface.__depth - 1) + "][" +  str(counter) + "]\n"
+    Result = Result + str(child)
+    counter += 1
+  object_interface.__depth -= 1
+return Result
+!!!166057.python!!!	start(in elem : string, in args : dict = None, in a_os : ostream = None) : write_helper
+import sys
+os_ = a_os or sys.stdout
+if not elem in object_interface._parts:
+  print >>sys.stderr, "Invalid output element id: " + elem
+  raise KeyError("Invalid output element id: " + elem)
+part_ = object_interface._parts[elem]
+args_ = args or {}
+title_ = None
+anchor_ = None
+if 3 <= len(part_):
+  args_.update(part_[2])
+# Do print
+print >>os_, "<" + part_[0],
+may_have_title_ = 2 <= len(part_) and part_[1]
+for key_ in args_:
+  if may_have_title_ and key_ in ( "#title", "#target", "#href" ):
+    if "#title" == key_:
+      title_ = ( "<" + part_[1] + ">", args_[key_], "</" + part_[1] + ">" )
+    elif "#target" == key_:
+      anchor_ = ( "<a name=\"" + args_[key_] + "\">", "</a>" )
+    else:
+      anchor_ = ( "<a href=\"#" + args_[key_] + "\">", "</a>" )
+  else:
+    print >>os_, " " + key_ + "=\"" + args_[key_] + "\"",
+print >>os_, ">",
+if title_:
+  if anchor_:
+    print >>os_, title_[0], anchor_[0], title_[1], anchor_[1], title_[2]
+  else:
+    print >>os_, title_[0], title_[1], title_[2]
+return write_helper ("</" + part_[0] + ">", a_os)

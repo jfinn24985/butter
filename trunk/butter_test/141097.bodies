@@ -1,0 +1,17 @@
+class subfile_interpreter
+!!!159913.python!!!	__init__(inout self : , in top : object_interface)
+super(subfile_interpreter, self).__init__(top)
+!!!143017.python!!!	startElement(in self : , in name : , in attr : )
+# If this is the document element return
+if name in ( job.element_name, test_suite.element_name ):
+  if not isinstance(self.cursor, (job, test_suite)):
+    raise RuntimeError("<job> or <test_suite> element encountered in subfile that was not the document element.")
+  return
+# if this is any other element act normal.
+super(subfile_interpreter, self).startElement (name, attr)
+!!!160041.python!!!	endElement(in self : , in name : string)
+# If this is the document element return
+if name in ( job.element_name , test_suite.element_name ):
+  return
+# if this is any other element act normal.
+super(subfile_interpreter, self).endElement (name)

@@ -1,0 +1,13 @@
+class option
+!!!163113.python!!!	__init__(inout self : , in a_flag : string, in a_has_param : bool = False, in a_default : any = False)
+import sys
+for index in range(len(sys.argv)):
+   if a_flag == sys.argv[index]:
+     # handle pos args
+     if a_has_param:
+       self.value = sys.argv[index + 1]
+     else:
+       self.value = True
+     # Finished
+     return
+pass

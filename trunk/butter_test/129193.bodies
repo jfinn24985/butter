@@ -1,0 +1,79 @@
+class job
+!!!150313.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == job.element_name
+result = job ()
+result.set_src (elemattr)
+return result
+!!!166313.python!!!	_mapfn(in self : , in a_os : ostream, in a_jobnum : string, in a_jobid : string, in a_test : list) : void
+tr_ = self.start("tablerow", None, a_os)
+td_ = self.start("tableitem", {"bgcolor": job.test_color[a_test[0]]}, a_os)
+print >>a_os, job.test_result[a_test[0]],
+del td_
+td_ = self.start("tableitem", None, a_os)
+print >>a_os, a_jobnum,
+del td_
+td_ = self.start("tableitem", None, a_os)
+print >>a_os, a_jobid,
+del td_
+td_ = self.start("tableitem", None, a_os)
+print >>a_os, a_test[1],
+del td_
+del tr_
+!!!136873.python!!!	report(in self : , in a_os : ostream, in a_jobnum : int) : void
+jobnum_ = str(a_jobnum)
+jobid_ = str(self.make_substitutions(self.get(u"job-id",u"-")))
+self.start("divider", None , a_os)
+tmp_ = self.start("report",{"#title":"Job " + str(a_jobnum) + ": " + (self.content or "Report"), "#href": "job_" + str(a_jobnum)}, a_os)
+tbl_ = self.start("table",None, a_os)
+map (lambda _test: self._mapfn(a_os, jobnum_,jobid_, _test), self._test_list)
+del tbl_
+del tmp_
+pass
+!!!158249.python!!!	run(in self : , in a_jobnum : int)
+if self._children:
+  try:
+    import sys
+    import cStringIO
+    SAVEOUT = sys.stdout
+    capture_ = cStringIO.StringIO()
+    sys.stdout = capture_
+    jobelem_ = self.start("job", {"#title": "Job " + str(a_jobnum) + ": " + (self.content or " execution"), "#target": "job_" + str(a_jobnum)}, capture_)
+
+    self.__run (capture_)
+
+    self.report (capture_, a_jobnum)
+    del jobelem_
+    jobelem_ = None
+    content_ = capture_.getvalue ()
+    capture_.close ()
+    sys.stdout = SAVEOUT
+    print content_
+  except Exception, err:
+    tmp_ = self.start("error",{"#title":"Fatal internal error occured"}, sys.stderr)
+    print >>sys.stderr, str(err)
+    del tmp_
+  except:
+    jobelem_ = self.start("error", {"#title": "Job "+ str(a_jobnum) + " execution"}, sys.stderr)
+    print >>sys.stderr, "test-suite job initialisation failed."
+    del jobelem_
+pass
+!!!167977.python!!!	__run(in self : , in a_os : ostream)
+try:
+  for stage_ in self._children:
+    if isinstance(stage_, stage):
+      if not stage_.run ():
+	self.start("error",{"#title":"Non-fatal error occured"}, a_os)
+	self.non_fatal_error += 1
+except RuntimeError, err:
+  tmp_ = self.start("error",{"#title":"Fatal RuntimeError occured"}, a_os)
+  print >> a_os, str(err)
+  del tmp_
+  self.fatal_error += 1
+except Exception, err:
+  tmp_ = self.start("error",{"#title":"Fatal generic error occured"}, a_os)
+  print >> a_os, str(err)
+  del tmp_
+  self.fatal_error += 1
+except:
+  self.start("error",{"#title":"Unknown fatal error occured"}, a_os)
+  self.fatal_error += 1

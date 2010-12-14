@@ -1,0 +1,64 @@
+class property_holder
+!!!147753.python!!!	add_child(in self : , in child : property_holder)
+if isinstance(child, property):
+  if None == self._property_list:
+    self._property_list = []
+  self._property_list.append(child)
+  child._parent = self
+else:
+  # Call parent class method
+  super(property_holder,self).add_child(child)
+assert None != child._parent
+!!!167465.python!!!	__chkpath(in matchobj : )
+if matchobj.group(1):
+  return os.path.normpath(matchobj.group(1))
+else:
+  return ""
+pass
+!!!153001.python!!!	get(in self : , in key : , in default_val : )
+Result = self.__getitem__(key)
+if not Result:
+  return default_val
+return Result
+!!!147625.python!!!	__getitem__(in self : , in name : unistr) : unistr
+# Check in replacements first
+if self._replace:
+  if self._replace.has_key (name):
+    return self._replace[name]
+# If find a value return it
+if self._property_list:
+  for _nv in self._property_list:
+    if name == _nv.name:
+      return _nv.content
+# not in this object, try parent
+if None != self.parent ():
+  return self.parent ().__getitem__ (name)
+# If not found return None
+raise None
+
+!!!154409.python!!!	make_substitutions(in self : , in phrase : string) : string
+tmp1_ = phrase
+while 0 != tmp1_.count ("%"):
+  tmp1_ = tmp1_ % self
+import re
+return re.sub("PATH\{([^}]*)\}",property_holder.__chkpath, tmp1_)
+!!!150057.python!!!	__str__(in self : )
+Result = super(property_holder, self).__str__()
+if self._property_list:
+  Property = " property list:"
+  for prop_ in self._property_list:
+    Property = Property + "\n   " + prop_.name + " = " + prop_.content
+  delim = "\n"
+  ( start, end ) = Result.split(delim, 1)
+  return delim.join( ( start, Property, end) )
+else:
+  return Result
+!!!154537.python!!!	substitutions(in self : , in key : string, in value : string) : void
+if key != None:
+  if not self._replace:
+    self._replace = {}
+  self._replace[key] = value
+else: # assume value is {}
+  assert isinstance(value, type({})), "Expected a dictionary object"
+  self._replace = value
+pass

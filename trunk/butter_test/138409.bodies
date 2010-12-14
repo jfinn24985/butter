@@ -1,0 +1,60 @@
+class interpreter
+!!!144809.python!!!	add_constructor(in name : string, in fntor : constructor) : void
+if not interpreter.__constructor_set:
+  interpreter.__constructor_set = {}
+if not name in interpreter.__constructor_set:
+  interpreter.__constructor_set[name] = []
+interpreter.__constructor_set[name].append (fntor)
+if _DEBUG:
+  tmp_ = object_interface.start("debug")
+  print "Added: ", name, " : ", fntor
+  del tmp_
+pass
+!!!143529.python!!!	__init__(inout self : , in top : object_interface)
+assert isinstance(self.top, object_interface)
+!!!145321.python!!!	parse(inout self : , in fname : string)
+# Set up parser
+_parser = xml.sax.make_parser ()
+_parser.setContentHandler (self)
+# Start parsing
+_parser.parse (fname)
+!!!141737.python!!!	characters(in self : , in content : )
+self.cursor.add_characters (content)
+!!!141865.python!!!	endDocument(in self : )
+self.valid = False
+!!!141993.python!!!	endElement(in self : , in name : )
+self.depth -= 1
+self.cursor.end_load ()
+if self.cursor != self.top:
+  self.cursor = self.cursor.parent ()
+!!!142633.python!!!	setDocumentLocator(in self : , in locator : )
+self.location = locator
+!!!142889.python!!!	startDocument(in self : )
+self.valid = (self.top != None)
+assert self.valid
+self.cursor = self.top
+!!!159529.python!!!	startElement(in self : , in name : , in attr : )
+_obj = None
+if _DEBUG:
+  tmp_ = object_interface.start("debug")
+  print "Number of makers: ", len(interpreter.__constructor_set)
+  print interpreter.__constructor_set.keys()
+  del tmp_
+assert name in interpreter.__constructor_set, "The XML element <" + name + " ...> is not recognised\n" + self._location_to_string ()
+for __ctor in interpreter.__constructor_set[name]:
+   _obj = __ctor(name, attr)
+   if None != _obj:
+      self.cursor.add_child (_obj)
+      self.cursor = _obj
+      break
+if None == _obj:
+  raise IndexError("No match for XML element <" + name + " " + str([str(v) + "=" + str(attr[v]) for v in attr.keys()]) + ">\n" + self._location_to_string ())
+
+self.depth += 1
+!!!153257.python!!!	_location_to_string(in self : ) : string
+fname_ = self.location.getSystemId()
+if not fname_:
+  fname_ = self.location.getPublicId()
+  if not fname_:
+    fname_ = "buffer"
+return """at %s: line %d, column %d""" % ( fname_, self.location.getLineNumber(), self.location.getColumnNumber() )

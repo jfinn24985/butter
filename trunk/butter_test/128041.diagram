@@ -1,0 +1,12 @@
+format 66
+
+classinstance 128041 class_ref 129193 // job
+ name ""  xyz 171 153 2000
+classinstance 129321 class_ref 129705 // stage
+ name ""  xyz 169 287 2000
+linkcanvas 129449
+  from ref 128041 z 2001 to ref 129321
+dirscanvas 129577 z 1000 linkcanvas_ref 129449
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+no_msg
+end

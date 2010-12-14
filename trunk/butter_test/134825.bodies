@@ -1,0 +1,5 @@
+class property
+!!!145577.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == property.element_name
+assert elemattr.has_key(property.name_attr)
+return property(elemattr[property.name_attr])

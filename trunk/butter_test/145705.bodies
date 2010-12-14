@@ -1,0 +1,14 @@
+class subfile_holder
+!!!159657.python!!!	end_load(in self : )
+# Build python evaluation string
+if self._src:
+  if _DEBUG:
+    tmp_ = self.start("debug")
+    print "Have sub-file \"" + self._src + "\"; reading file."
+    del tmp_
+  parser_ = subfile_interpreter (self)
+  parser_.parse (self._src)
+  del parser_
+pass
+!!!167593.python!!!	set_src(in self : , in elemattr : dict) : object_interface
+self._src = elemattr.get (self.src_name, None)

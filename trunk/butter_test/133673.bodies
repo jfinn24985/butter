@@ -1,0 +1,8 @@
+class verb_filecheck
+!!!147241.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == verb.element_name
+assert elemattr.has_key (verb.type_attr)
+if elemattr[verb.type_attr] == verb_filecheck.type_value:
+  return verb_filecheck()
+else:
+  return None

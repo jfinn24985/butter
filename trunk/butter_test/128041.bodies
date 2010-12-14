@@ -1,0 +1,90 @@
+class test_suite
+!!!129833.python!!!	do(in manager : )
+if _DEBUG:
+  tmp_ = manager.start ("debug",{"#title":"suite content"})
+  print str(manager)
+  del tmp_
+while True:
+  # Get a job number
+  num_ = 0
+  if manager._list_lock:
+    with manager._list_lock:
+      num_ = manager.next_job
+      manager.next_job += 1
+  else:
+    num_ = manager.next_job
+    manager.next_job += 1
+  # Check if all jobs are done
+  if manager.indices:
+    if num_ >= len(manager.indices):
+      return
+  elif num_ >= manager.qsize:
+    return
+  #import os
+  #if 0 == os.fork():
+  # run job
+  #dir_ = os.tempnam()
+  #os.makedirs(dir_)
+  #os.chdir(dir_)
+  if manager.indices:
+    job_num_ = manager.indices[num_]
+  else:
+    job_num_ = num_
+  # job.run must never raise an error
+  manager._children[job_num_].run (job_num_)
+  #verb_filelist.remove_dirs(dir_)
+  #  import sys
+  #  sys.exit(0)
+  #os.wait()
+pass
+!!!128041.python!!!	__init__(inout self : )
+super(test_suite, self).__init__()
+assert None == test_suite.__singleton
+test_suite.__singleton = self
+pass
+!!!163241.python!!!	index_(in self : ) : void
+import re
+if test_suite.run_.value:
+  self.indices = map(int,re.findall("\d\d*", test_suite.run_.value))
+if _DEBUG:
+  tmp_ = self.start("debug", {"#title":"in use job indices"})
+  print self.indices
+  del tmp_
+pass
+!!!150441.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == test_suite.element_name
+test_suite.__singleton.set_src(elemattr)
+test_suite.__singleton.load_subfile()
+return test_suite.__singleton
+!!!148649.python!!!	run(in self : )
+fname = test_suite.file_.value
+dummy = object_interface ()
+# Read file
+if fname:
+  parser_ = interpreter(dummy)
+  parser_.parse (fname)
+  del parser_
+assert self.parent () == dummy
+self._parent = None
+self.qsize = len(self._children)
+self.index_ ()
+if 0 < self.qsize:
+  if True:
+    # running single threaded
+    test_suite.do (self)
+  else:
+    # running multi-thread
+    self._dict_lock = threading.Lock ()
+    self._list_lock = threading.Lock ()
+    num_threads_ = 2
+    thread_pool_ = []
+    for n_ in range(num_threads_ - 1):
+      thread_pool_.append (threading.Thread(test_suite.do, self))
+    for n_ in range(num_threads_ - 1):
+      thread_pool_[n_].start ()
+    for n_ in range(num_threads_ - 1):
+      thread_pool_[n_].join ()
+  import sys
+  for i_ in self.indices or range(self.qsize):
+    self._children[i_].report(sys.stdout, i_)
+pass

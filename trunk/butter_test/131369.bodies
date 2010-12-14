@@ -1,0 +1,19 @@
+class verb
+!!!161193.python!!!	end_load(in self : )
+self.do_end_load ()
+# The action should have been built in derived classes
+assert self.get_action (), "Action needs to be set in derived classes"
+# If search for "test" property
+if self._property_list:
+  for _nv in self._property_list:
+    if verb.test_property_name == _nv.name:
+      # This verb performs a specific test
+      test_id_ = self.add_test (self.make_substitutions (_nv.content))
+      action_ = self.get_action ()
+      self.reset_action ()
+      #Indent lines 2 spaces
+      import string
+      action_ = string.join(map(lambda a: "  " + a, action_.split("\n")),"\n")
+      self.add_action ("try:\n" + action_ + "\n  self.pass_test (" + str(test_id_) +
+       ", self.passed)\nexcept:\n  self.fail_test (" + str(test_id_) + ", self.passed)\n  raise\nself.passed = True")
+pass

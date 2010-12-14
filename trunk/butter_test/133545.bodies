@@ -1,0 +1,57 @@
+class verb_filelist
+!!!151849.python!!!	do_end_load(in self : )
+"""
+The output of this function:
+
+* generate list of locations
+
+* if file-type is "file" then we
+only check for existence
+"""
+# Build replacement dictionary and phrase for this type
+action_ = self.get (u"verify", u"exist")
+verify_ = verb_filelist._verify[action_]
+if action_ != u"nonexist":
+  verify_ += """if """ + (action_ != u"remove" and "not " or "") + """%(_type_)s:\n  %(_error_)s\n"""
+( type_, remove_, create_, msg_ ) = verb_filelist._filetype[self.get (u"file-type",u"file")]
+error_ = verb._error[self.get (u"error",u"fatal")]
+
+# Initialise the object-specific substitution dictionary
+self.substitutions( None, { u"_action_": action_, u"_remove_": remove_, u"_create_": create_, u"_error_" : error_, u"_type_": type_, u"_path_": None, u"_message_": None } )
+
+base_path_ = self.make_substitutions(self[u"base"])
+
+#
+# Build python evaluation string
+#
+
+self.reset_action ()
+
+for leaf_ in self[u"location"].split(u" "):
+  # update dictionary for current file
+  self.substitutions(u"_path_", os.path.normpath(os.path.join(base_path_, leaf_)))
+  self.substitutions(u"_message_", self.make_substitutions(msg_))
+  # append actions
+  self.add_action (self.make_substitutions(verify_))
+
+if _DEBUG:
+  tmp_ = self.start("debug", {"#title":"Verb filelist data:"})
+  print self.get_action ()
+  del tmp_
+pass
+!!!147113.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == verb.element_name
+assert elemattr.has_key (verb.type_attr)
+if elemattr[verb.type_attr] == verb_filelist.type_value:
+  return verb_filelist()
+else:
+  return None
+!!!156713.python!!!	removedirs(in a_path : string)
+if os.path.exists(a_path):
+  for root_, dirs_, files_ in os.walk(a_path, False):
+    for f_ in files_:
+        os.unlink(os.path.join(root_, f_))
+    for d_ in dirs_:
+        os.rmdir(os.path.join(root_, d_))
+  os.rmdir(a_path)
+pass

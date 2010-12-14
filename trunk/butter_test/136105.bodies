@@ -1,0 +1,98 @@
+class xml_iterator
+!!!138537.python!!!	read(in self : ) : bool
+# self.read ().next ()
+print "In read()"
+self._read.next ()
+return self.valid
+!!!138665.python!!!	characters(in self : , in content : )
+if self.TEXT == self.node_type:
+  self.value += content
+else:
+  self._zap ()
+  self.name = self.TEXT_LABEL
+  self.node_type = self.TEXT
+  self.value = content
+!!!138793.python!!!	endDocument(in self : )
+self.valid = False
+yield
+!!!138921.python!!!	endElement(in self : , in name : )
+print "In end element"
+if self.TEXT == self.node_type:
+  self._next.send (None)
+self._zap()
+self.depth -= 1
+self.name = name
+self.node_type = self.END_ELEMENT
+self._next.send (None)
+!!!139049.python!!!	endElementNS(in self : , in name : , in qname : )
+if TEXT == self.node_type:
+  self._next.send (None)
+self._zap()
+self.depth -= 1
+self.name = name
+self.namespace = qname
+self.node_type = self.END_ELEMENT
+self._next.send (None)
+!!!139433.python!!!	processingInstruction(in self : , in name : , in value : )
+if self.TEXT == self.node_type:
+  self._next.send (None)
+self._zap ()
+self.name = name
+self.node_type = PI
+seld.value = value
+self._next.send (None)
+!!!139561.python!!!	setDocumentLocator(in self : , in locator : )
+self.location = locator
+!!!139817.python!!!	startDocument(in self : )
+self.valid = True
+# self._next.send (None)
+!!!139945.python!!!	startElement(in self : , in name : , in attr : )
+print "Enter start element"
+if self.TEXT == self.node_type:
+  self._next.send (None)
+print "2nd enter start element"
+self._zap ()
+self.attributes = attr
+self.depth += 1
+self.name = name
+self.node_type = self.START_ELEMENT
+self._next.send (None)
+!!!140073.python!!!	startElementNS(in self : , in name : , in qname : , in attr : )
+print "Enter start element NS"
+if self.TEXT == self.node_type:
+  self._next.send (None)
+print "2nd enter start element NS"
+self._zap ()
+self.attributes = attr
+self.depth += 1
+self.name = name
+self.namespace = qname
+self.node_type = self.START_ELEMENT
+self._next.send (None)
+!!!140329.python!!!	_zap(in self : )
+if self.attributes: self.attributes = None
+if self.name: self.name = None
+if self.namespace: self.namespace = None
+if self.value: self.value = None
+!!!140457.python!!!	__init__(inout self : , in fname : )
+# Set up variables
+self._zap ()
+self.depth = 0
+self.location = None
+
+# Start parsing
+self.parser = xml.sax.make_parser ()
+self.parser.setContentHandler (self)
+def _next_():
+  # while True:
+  yield
+  yield
+self._next = _next_ ()
+self._next.next ()
+def _read_(*args,**kwargs):
+  self.parser.parse (*args, **kwargs)
+  while self.valid:
+    self._next.next ()
+    print "Here"
+    yield
+self._read = _read_ (fname)

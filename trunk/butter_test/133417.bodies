@@ -1,0 +1,47 @@
+class verb_compare
+!!!155049.python!!!	do_end_load(in self : )
+"""
+The output of this function:
+
+* generate list of locations
+
+* if file-type is "file" then we
+only check for existence
+"""
+# Build replacement dictionary and phrase for this type
+compare_ = self.get (u"compare-command", u"diff")
+args_ = self.get (u"compare-args", u"-q")
+suffix_ = self.get (u"suffix", u".canon")
+msg_ = u"""File %(_path1_)s does not compare equal to canonical file %(_path2_)s%(_suffix_)s"""
+base1_ = self.make_substitutions(self[u"base"])
+base2_ = self.make_substitutions(self.get(u"compare-base", u""))
+if not base2_:
+  base2_ = base1_
+# Initialise the object-specific substitution dictionary
+self.substitutions( None, { u"_compare_": compare_, u"_compare_args_": args_, u"_path1_": None, u"_path2_": None, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")], u"_suffix_": suffix_ } )
+
+phrase_ = u"""self.system_call(r"%(_compare_)s %(_compare_args_)s %(_path1_)s %(_path2_)s%(_suffix_)s", r\"\"\"%(_error_)s\"\"\")\n"""
+
+# Build python evaluation string
+self.reset_action ()
+
+for leaf_ in self[u"location"].split(u" "):
+  # update dictionary for current file
+  self.substitutions(u"_path1_", os.path.normpath(os.path.join(base1_, leaf_)))
+  self.substitutions(u"_path2_", os.path.normpath(os.path.join(base2_, leaf_)))
+  self.substitutions(u"_message_", self.make_substitutions(msg_))
+  # append actions
+  self.add_action (self.make_substitutions(phrase_))
+
+if _DEBUG:
+  tmp_ = self.start("debug", {"#title":"Verb compare data:"})
+  print self.get_action ()
+  del tmp_
+pass
+!!!146985.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == verb.element_name
+assert elemattr.has_key(verb.type_attr)
+if elemattr[verb.type_attr] == verb_compare.type_value:
+  return verb_compare()
+else:
+  return None

@@ -1,0 +1,21 @@
+class verb_list
+!!!150185.python!!!	end_load(in self : )
+# Run each verb list with quit on fail
+if self._children:
+  for item_ in self._children:
+    if isinstance(item_, verb):
+      self.add_action(item_.get_action ())
+      self.add_action(u"\n")
+  self._children = None
+
+if _DEBUG:
+  tmp_ = self.start("debug", {"#title":"List of verbs data"})
+  print self.get_action ()
+  del tmp_
+pass
+!!!148009.python!!!	__init__(inout self : , in a_cat : )
+super(verb_list, self).__init__()
+!!!147881.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
+assert elemname == verb_list.element_name
+assert elemattr.has_key(verb_list.category_attr)
+return verb_list(elemattr[verb_list.category_attr])

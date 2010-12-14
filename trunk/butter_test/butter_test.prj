@@ -1,0 +1,3033 @@
+format 66
+"butter_test"
+  revision 33
+  modified_by 41 "finnerty"
+  python_root_dir "/tmp/test_suite/"
+
+
+  
+  // class settings
+  default_attribute_visibility private default_relation_visibility private default_operation_visibility public
+  //class diagram settings
+  draw_all_relations yes hide_attributes no hide_operations no show_members_full_definition no show_members_visibility no show_members_stereotype no show_members_multiplicity no show_members_initialization no show_attribute_modifiers no member_max_width 127 show_parameter_dir yes show_parameter_name yes package_name_in_tab no class_drawing_mode natural drawing_language uml show_context_mode no auto_label_position yes show_relation_modifiers no show_infonote no shadow yes show_stereotype_properties no
+  //use case diagram settings
+  package_name_in_tab no show_context no auto_label_position yes draw_all_relations yes class_drawing_mode actor shadow yes show_stereotype_properties no
+  //sequence diagram settings
+  show_full_operations_definition no write_horizontally yes class_drawing_mode natural drawing_language uml draw_all_relations yes shadow yes show_stereotype_properties no
+  //collaboration diagram settings
+  show_full_operations_definition no show_hierarchical_rank no write_horizontally yes drawing_language uml package_name_in_tab no show_context no draw_all_relations yes shadow yes show_stereotype_properties no
+  //object diagram settings
+   write_horizontally yes package_name_in_tab no show_context no auto_label_position yes draw_all_relations yes shadow yes show_stereotype_properties no
+  //component diagram settings
+  package_name_in_tab no show_context no auto_label_position yes draw_all_relations yes shadow yes
+  draw_component_as_icon no show_component_req_prov no show_component_rea no show_stereotype_properties no
+  //deployment diagram settings
+  package_name_in_tab no show_context no write_horizontally yes auto_label_position yes draw_all_relations yes shadow yes
+  draw_component_as_icon no show_component_req_prov no show_component_rea no show_stereotype_properties no
+  //state diagram settings
+  package_name_in_tab no show_context no auto_label_position yes write_trans_label_horizontally yes show_trans_definition no draw_all_relations yes shadow yes
+  show_activities yes region_horizontally yes drawing_language uml show_stereotype_properties no
+  //activity diagram settings
+  package_name_in_tab no show_context no show_opaque_action_definition no auto_label_position yes write_flow_label_horizontally no draw_all_relations yes shadow yes
+  show_infonote yes drawing_language uml show_stereotype_properties no
+  
+  class_color yellow duration_color transparent continuation_color gray note_color blue fragment_color transparent subject_color transparent usecase_color yellow package_color transparent component_color green artifact_color green deploymentnode_color gray state_color yellow stateaction_color transparent activity_color transparent activityregion_color transparent activitypartition_color transparent activityaction_color transparent parameterpin_color white 
+  font_size 12
+  diagram_format A4
+
+  mark_for_import
+  
+  classview 128041 "test_suite"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    associated_deployment_view deploymentview_ref 128041 // main
+    comment "
+* Standard properties *
+
+** Localised commands **
+patch-command (patch)
+cvs-command (cvs)
+svn-command (svn)
+tar-command (tar)
+compare-command (diff)
+unzip-command (unzip)"
+    classdiagram 128425 "overview"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    collaborationdiagram 128041 "test run"
+      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    sequencediagram 128169 "test job"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+      overlapping_bars size A4
+    end
+
+    class 139561 "constructor"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Dummy class that's role is to add constructors to the intepreters
+constructor set."
+      operation 144681 "__init__"
+	public explicit_return_type ""
+	nparams 3
+	  param inout name "self" explicit_type ""
+	  param in name "name" explicit_type "string"
+	  param inout name "fntor" type class_ref 139561 // constructor
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+	comment "Construct object with the given callable for the given XML element
+
+/param name  XML element name
+
+/param fntor  Functor to create object for XML element.  Signature is
+              fntor(name: string; attributes: dictionary): object_interface"
+      end
+    end
+
+    class 138409 "interpreter"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}(xml.sax.handler.ContentHandler, object):
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "The handler for a SAX parser that converts job description XML into
+job objects. "
+      attribute 140201 "__constructor_set"
+	class_attribute private explicit_type "dictionary"
+	multiplicity "*"
+	init_value "None"
+	stereotype "set"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "A map of XML element names to object contructors. The
+constructors can be a single function or a list of
+functions."
+      end
+
+      attribute 137897 "cursor"
+	private type class_ref 139689 // object_interface
+	multiplicity "1"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The current object."
+      end
+
+      attribute 137641 "depth"
+	private explicit_type "int"
+	init_value "0"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The depth in the XML doc tree"
+      end
+
+      attribute 137769 "location"
+	private explicit_type ""
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The current location in the document"
+      end
+
+      attribute 137513 "top"
+	private type class_ref 139689 // object_interface
+	multiplicity "1"
+	init_value "top"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The initial object."
+      end
+
+      operation 144809 "add_constructor"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "name" explicit_type "string"
+	  param in name "fntor" type class_ref 139561 // constructor
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Add constructor to the set."
+      end
+
+      operation 143529 "__init__"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "self" explicit_type ""
+	  param in name "top" type class_ref 139689 // object_interface
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Create handler for deserialising objects."
+      end
+
+      operation 145321 "parse"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "self" explicit_type ""
+	  param in name "fname" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Parse XML document fname"
+      end
+
+      operation 141737 "characters"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "content" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "(private) Handle text"
+      end
+
+      operation 141865 "endDocument"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Notification of end of document"
+      end
+
+      operation 141993 "endElement"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Notification of end of element"
+      end
+
+      operation 142121 "endElementNS"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type ""
+	  param in name "qname" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${p0}.endElement(${p1}[1])
+"
+	
+	comment "aliased to endElement()"
+      end
+
+      operation 142249 "endPrefixMapping"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "prefix" explicit_type ""
+	
+	
+	
+	
+	
+	comment "Use super-class default"
+      end
+
+      operation 142377 "ignorableWhitespace"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "content" explicit_type ""
+	
+	
+	
+	
+	
+	comment "Use super-class default"
+      end
+
+      operation 142505 "processingInstruction"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type ""
+	  param in name "value" explicit_type ""
+	
+	
+	
+	
+	
+	comment "Use super-class default"
+      end
+
+      operation 142633 "setDocumentLocator"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "locator" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Set a location variable that can be used to highlight error point in the XML
+document"
+      end
+
+      operation 142761 "skippedEntity"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "entity" explicit_type ""
+	
+	
+	
+	
+	
+	comment "Use super-class default"
+      end
+
+      operation 142889 "startDocument"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Notify that document has started.  Initialise some variables-"
+      end
+
+      operation 159529 "startElement"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type ""
+	  param in name "attr" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+      end
+
+      operation 143145 "startElementNS"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type ""
+	  param in name "qname" explicit_type ""
+	  param in name "attr" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}, ${p3}${v3}${)}:
+${docstring}self.startElement(${p1}[1],${p3})
+"
+	
+      end
+
+      operation 143273 "startPrefixMapping"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type ""
+	  param in name "uri" explicit_type ""
+	
+	
+	
+	
+	
+	comment "Use super-class default"
+      end
+
+      operation 153257 "_location_to_string"
+	public explicit_return_type "string"
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Convert self.location to a string"
+      end
+    end
+
+    class 129193 "job"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "A set of instructions that perform a test of a system. These instructions are 
+grouped into stages that are executed in series.
+
+* common job specifications can be saved in a separate
+ file and loaded using @src.  This file is loaded at the end
+ of the element scope allowing properties defined in this
+ element to be used in the sub-file. (cf test_suite where the
+ sub-file properties are loaded at the start)
+
+<job @src>
+  Job description
+  <property @name>value<>
+  ...
+  <stage>
+     Stage description
+     <verb-list @category>
+       <verb @type>..</>
+    </>
+  </>
+  ...
+</>
+
+also
+<job src=\"..\">...</>
+This form has the following consequences:
+* The content of the element is read and interpreted as normal.
+* When the end element is reached the file indicated by @src is
+opened and the top-level <job> tag is treated as if it was the 
+current element and it's content appended to the currrent object."
+      classrelation 141609 // <generalisation>
+	relation 139689 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 141609 // <generalisation>
+	  b parent class_ref 145705 // subfile_holder
+      end
+
+      attribute 147497 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(u\"job\", lambda name, attr: job.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 147625 "element_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"job\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 153385 "test_result"
+	class_attribute private explicit_type "list"
+	init_value "[\"NODO\", \"PASS\", \"FAIL\",\"DIFF\"]"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 158249 "test_color"
+	class_attribute private explicit_type "list"
+	init_value "[\"YELLOW\", \"GREEN\", \"RED\",\"BLUE\"]"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 133417 "fatal_error"
+	private explicit_type "int"
+	init_value "0"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The number of fatal errors detected."
+      end
+
+      attribute 133289 "non_fatal_error"
+	private explicit_type "int"
+	init_value "0"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The number of non-fatal errors detected."
+      end
+
+      attribute 153257 "_test_list"
+	private explicit_type "list"
+	init_value "[]"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The list of tests being performed"
+      end
+
+      operation 161961 "add_test"
+	public explicit_return_type "int"
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "a_phrase" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}self._test_list.append([0, ${p1}])
+return len(self._test_list) - 1
+"
+	
+	comment "Add an acceptance test phrase, return an
+integer that identifies this phrase"
+      end
+
+      operation 167849 "end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}self.load_subfile()
+"
+	
+      end
+
+      operation 161705 "fail_test"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "a_id" explicit_type "int"
+	  param in name "a_is_nonfatal" explicit_type "bool"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}self._test_list[${p1}][0] = 2
+self.fatal_error += 1
+"
+	
+	comment "Indicate test with a_id has failed."
+      end
+
+      operation 150313 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+
+      operation 166313 "_mapfn"
+	public explicit_return_type "void"
+	nparams 5
+	  param in name "self" explicit_type ""
+	  param in name "a_os" explicit_type "ostream"
+	  param in name "a_jobnum" explicit_type "string"
+	  param in name "a_jobid" explicit_type "string"
+	  param in name "a_test" explicit_type "list"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}, ${p3}${v3}, ${p4}${v4}${)}:
+${docstring}${body}
+"
+	
+	comment "Write job's report to a_os."
+      end
+
+      operation 161833 "pass_test"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "a_id" explicit_type "int"
+	  param in name "a_is_nonfatal" explicit_type "bool"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}if ${p2}:
+  self._test_list[${p1}][0] = 1
+else:
+  self._test_list[${p1}][0] = 3
+  self.non_fatal_error += 1
+"
+	
+	comment "Indicate test with a_id has passed."
+      end
+
+      operation 136873 "report"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "a_os" explicit_type "ostream"
+	  param in name "a_jobnum" explicit_type "int"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+	comment "Write job's report to a_os."
+      end
+
+      operation 158249 "run"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "a_jobnum" explicit_type "int"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Run the various stages.
+
+May never raise and error"
+      end
+
+      operation 167977 "__run"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "a_os" explicit_type "ostream"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Internal implementation of run"
+      end
+    end
+
+    class 139689 "object_interface"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 156201 "_parts"
+	class_attribute private explicit_type ""
+	multiplicity "*"
+	init_value "{ # record: ( element, title_element, attrs )
+  \"document\" : ( \"<html><body>\", \"</body></html>\", \"h1\"),
+  \"job\" : ( \"div\", \"h2\", {\"class\": \"job\"} ),
+  \"stage\" : ( \"div\", \"h3\", {\"class\": \"stage\"} ),
+  \"sub-stage\" : ( \"div\", \"h4\", {\"class\": \"sub-stage\"} ),
+  \"report\" : (\"div\", \"h3\", {\"class\":\"report\"} ),
+  \"emph\" : (\"em\",),
+  \"table\": (\"table\", None, {\"border\":\"1\"}),
+  \"tablerow\": (\"tr\",),
+  \"tablehead\": (\"th\",),
+  \"tableitem\": (\"td\",),
+  \"par\" : (\"p\", \"em\"),
+  \"divider\" : (\"hr\",),
+  \"debug\" : ( \"pre\", \"em\", {\"class\":\"debug\"}),
+  \"error\" : ( \"div\", \"strong\", {\"class\":\"error\"}),
+  \"code\" : ( \"pre\", \"h4\" ),
+  \"output\" : ( \"pre\", \"h4\")
+}"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "dictionary of HTML document mark_up"
+      end
+
+      attribute 140585 "_children"
+	private type class_ref 139689 // object_interface
+	multiplicity "*"
+	init_value "None"
+	stereotype "list"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The list of children"
+      end
+
+      attribute 140713 "content"
+	private explicit_type "unistr"
+	init_value "u\"\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Unicode string of content"
+      end
+
+      attribute 147241 "__depth"
+	class_attribute private explicit_type "int"
+	init_value "0"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Variable used for pretty printing with __str__"
+      end
+
+      attribute 140457 "_parent"
+	private type class_ref 139689 // object_interface
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The (object_interface) parent object of this object"
+      end
+
+      operation 144937 "add_characters"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "text" explicit_type "unistr"
+	constraint "self._content += text"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "add text to this object iff text is not whitespace
+
+"
+      end
+
+      operation 145065 "add_child"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "child" type class_ref 139689 // object_interface
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Add an object_interface child object to this object
+
+/pre isinstance(child, object_interface)"
+      end
+
+      operation 151593 "end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "function called when object's content has been
+loaded.  In SAX document parsing call this in
+response to the end-element event."
+      end
+
+      operation 153129 "__getitem__"
+	public explicit_return_type "unistr"
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type "unistr"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Attempt to find value for given property."
+      end
+
+      operation 145193 "parent"
+	cpp_virtual public return_type class_ref 139689 // object_interface
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}return self._parent
+"
+	
+	comment "Get this object's parent (should be None for test_suite objects)"
+      end
+
+      operation 149929 "__str__"
+	public explicit_return_type "string"
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Convert object to a string"
+      end
+
+      operation 166057 "start"
+	class_operation public return_type class_ref 144553 // write_helper
+	nparams 3
+	  param in name "elem" explicit_type "string"
+	  param in name "args" explicit_type "dict"
+	    defaultvalue "None"
+	  param in name "a_os" explicit_type "ostream"
+	    defaultvalue "None"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+	comment "Print openning of element and return object that closes element"
+      end
+    end
+
+    class 142249 "option"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Class to manage application arguments"
+      attribute 154665 "value"
+	private explicit_type ""
+	init_value "a_default"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The option value or True/False"
+      end
+
+      operation 163113 "__init__"
+	public explicit_return_type ""
+	nparams 4
+	  param inout name "self" explicit_type ""
+	  param in name "a_flag" explicit_type "string"
+	  param in name "a_has_param" explicit_type "bool"
+	    defaultvalue "False"
+	  param in name "a_default" explicit_type "any"
+	    defaultvalue "False"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}, ${p3}${v3}${)}:
+${docstring}${body}
+"
+	
+      end
+    end
+
+    class 134825 "property"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Meta-object class for name:value pair tuples in XML that will be converted 
+to a python dictionary.
+
+<property @name>value</>"
+      classrelation 137129 // <generalisation>
+	relation 135209 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 137129 // <generalisation>
+	  b parent class_ref 139689 // object_interface
+      end
+
+      attribute 141225 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(u\"property\", lambda name, attr: property.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 141097 "element_name"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"property\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML element name for this type"
+      end
+
+      attribute 140969 "name"
+	private explicit_type "unistr"
+	multiplicity "1"
+	init_value "a_name"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The property's name"
+      end
+
+      attribute 141353 "name_attr"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"name\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute name for this type's 
+\"name\" attribute"
+      end
+
+      operation 145449 "__init__"
+	public return_type class_ref 139689 // object_interface
+	nparams 2
+	  param inout name "self" explicit_type ""
+	  param in name "a_name" explicit_type "unistr"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}super(${class}, ${p0}).__init__()
+${body}
+"
+	
+	comment "Create an instance of property with the given name"
+      end
+
+      operation 145577 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+    end
+
+    class 139817 "property_holder"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 137385 // <generalisation>
+	relation 135465 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 137385 // <generalisation>
+	  b parent class_ref 139689 // object_interface
+      end
+
+      attribute 150697 "_action"
+	private explicit_type "string"
+	init_value "\"\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The set of python commands to perform."
+      end
+
+      attribute 146089 "_dict_lock"
+	private explicit_type "threading.Lock"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Lock to serialise conversion of property dictionary if this object can be accessed
+from several threads (Default is no-threads)"
+      end
+
+      attribute 147369 "_property_list"
+	private explicit_type "{}"
+	multiplicity "1"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The unconverted list of property objects"
+      end
+
+      attribute 150569 "_replace"
+	private explicit_type "dict"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Replacements dictionary for string substitution"
+      end
+
+      operation 154665 "add_action"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "action" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}self._action += action
+"
+	
+	comment "Append action string to current action"
+      end
+
+      operation 147753 "add_child"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "child" type class_ref 139817 // property_holder
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Add a sub object to this object"
+      end
+
+      operation 161321 "add_test"
+	public explicit_return_type "int"
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "a_phrase" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}return ${p0}.parent ().${name} (${p1})
+"
+	
+	comment "Add an acceptance test phrase, return an
+integer that identifies this phrase"
+      end
+
+      operation 167465 "__chkpath"
+	class_operation public explicit_return_type ""
+	nparams 1
+	  param in name "matchobj" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Internal method to normalise any file paths in
+\"PATH{..}\" in input"
+      end
+
+      operation 161577 "fail_test"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "a_id" explicit_type "int"
+	  param in name "a_is_nonfatal" explicit_type "bool"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}self.parent ().${name} (${p1}, ${p2})
+"
+	
+	comment "Indicate test with a_id has failed."
+      end
+
+      operation 153001 "get"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "key" explicit_type ""
+	  param in name "default_val" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+      end
+
+      operation 154921 "get_action"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}return self._action
+"
+	
+	comment "Get action string"
+      end
+
+      operation 147625 "__getitem__"
+	public explicit_return_type "unistr"
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type "unistr"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Attempt to find value for given property.
+
+Programming Note: _replace must be checked first
+to allow manually set values to override values set
+via properties."
+      end
+
+      operation 154409 "make_substitutions"
+	public explicit_return_type "string"
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "phrase" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Replace all %(...)s in phrase using this object as
+the dictionary, repeat until no further changes occur.
+Return result, leave phrase unaltered."
+      end
+
+      operation 161449 "pass_test"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "a_id" explicit_type "int"
+	  param in name "a_is_nonfatal" explicit_type "bool"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}self.parent ().${name} (${p1}, ${p2})
+"
+	
+	comment "Indicate test with a_id has passed."
+      end
+
+      operation 154793 "reset_action"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}self._action = \"\""
+	
+	comment "Reset action string"
+      end
+
+      operation 150057 "__str__"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Add property list to string"
+      end
+
+      operation 154537 "substitutions"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "key" explicit_type "string"
+	  param in name "value" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+	comment "Update the replacement dictionary
+
+if key != None:
+  add_to_dictionary (key, value)
+else: # assume value is {...}
+  set_dictionary_to (value)"
+      end
+    end
+
+    class 129705 "stage"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Arbitrary part of a job that contains the following instruction groups:
+setup     : instructions to prepare for the test
+execute : the instructions to exercise the system
+verify      : instructions to test output of exercise
+cleanup : instructions to remove test system
+
+Run performs the following:
+* run setup verbs
+* run execute verbs
+* run verify verbs
+* if all above passed, run cleanup verbs "
+      classrelation 137641 // <generalisation>
+	relation 135721 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 137641 // <generalisation>
+	  b parent class_ref 139817 // property_holder
+      end
+
+      attribute 144425 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(u\"stage\", lambda name, attr: stage.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 145193 "cleanup_category_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"cleanup\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 144297 "element_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"stage\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 145321 "execute_category_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"execute\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 145449 "setup_category_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"setup\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 145577 "verify_category_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"verify\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 132009 "_cleanup_list"
+	private type class_ref 139945 // verb_list
+	multiplicity "*"
+	init_value "None"
+	stereotype "list"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The ordered list of verbs to cleanup a passed test.
+
+Typical verbs: remove"
+      end
+
+      attribute 131753 "_execute_verbs"
+	private type class_ref 139945 // verb_list
+	multiplicity "*"
+	init_value "None"
+	stereotype "list"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The verbs to use to perform a test
+
+Typical verbs: system, run"
+      end
+
+      attribute 130473 "passed"
+	private explicit_type "bool"
+	init_value "False"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Whether this stage passed or failed."
+      end
+
+      attribute 131625 "_setup_verbs"
+	private type class_ref 139945 // verb_list
+	multiplicity "*"
+	init_value "None"
+	stereotype "list"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The list of verbs to perform for set up.
+
+Typical verbs: checkout, unpack, patch (filelist)"
+      end
+
+      attribute 131881 "_verify_verbs"
+	private type class_ref 139945 // verb_list
+	multiplicity "*"
+	init_value "None"
+	stereotype "list"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The ordered list of verbs to perform the verification
+
+Typical verbs: filelist, filecheck, compare, run"
+      end
+
+      operation 135465 "cleanup"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" type class_ref 129705 // stage
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}self.do_category (stage.cleanup_category_name)
+"
+	
+	comment "Execute the cleanup verb list. This should remove the test suite
+
+Typical verbs: file-list[@type=remove]"
+      end
+
+      operation 155561 "do_category"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "category" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Execute all verb-lists of a particular category."
+      end
+
+      operation 147369 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+
+      operation 129577 "run"
+	cpp_virtual public explicit_return_type "bool"
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Perform script. Return success (1), non-fatal failure (0) or raise
+a RuntimeError for fatal errors"
+      end
+
+      operation 158377 "system_call"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "a_cmd" explicit_type "string"
+	  param in name "a_errmsg" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+	comment "Run a system command, capturing stdout and stderr"
+      end
+    end
+
+    class 145705 "subfile_holder"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Derived class of property holder that can contain \"src\" attribute
+to allow inclusion of sub-files.  Derived classes load the sub-file
+by calling \"load-subfile\"."
+      classrelation 141481 // <generalisation>
+	relation 139561 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 141481 // <generalisation>
+	  b parent class_ref 139817 // property_holder
+      end
+
+      attribute 151977 "_src"
+	private explicit_type "string"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Option attribute value for a sub-file containing
+more elements to place in this object.  None indicates
+that no sub-file has been set."
+      end
+
+      attribute 152105 "src_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"src\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      operation 159657 "load_subfile"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "If this element contained @src then read in the document."
+      end
+
+      operation 167593 "set_src"
+	private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Search attributes for \"src\" attr."
+      end
+
+    end
+
+    class 141097 "subfile_interpreter"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Version of \"interpreter\" class to handle sub-files"
+      classrelation 140329 // <generalisation>
+	relation 138409 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 140329 // <generalisation>
+	  b parent class_ref 138409 // interpreter
+      end
+
+      operation 159913 "__init__"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "self" explicit_type ""
+	  param in name "top" type class_ref 139689 // object_interface
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Create handler for deserialising objects."
+      end
+
+      operation 143017 "startElement"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 3
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type ""
+	  param in name "attr" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+      end
+
+      operation 160041 "endElement"
+	stereotype "private"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "name" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+      end
+    end
+
+    class 128041 "test_suite"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Main class for performing a test suite.
+
+* This object creates a series of test sets called \"job\"s
+* A job is a series of one or more tests that must be run serially.
+* Different jobs can be run in parallel.
+* The test suite is read from an XML description file.
+
+* Dictionary of common properties can be placed in a subfile which will be
+  loaded into the current scope.
+
+<test-suite @src>
+  <property @name>value</>
+  <build>
+    <tool @exe>args</>
+    ...
+  </>
+  <job>...</>
+  ...
+</>"
+      classrelation 141737 // <generalisation>
+	relation 139817 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 141737 // <generalisation>
+	  b parent class_ref 145705 // subfile_holder
+      end
+
+      attribute 148009 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(u\"test-suite\", lambda name, attr: test_suite.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 147881 "element_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"test-suite\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 154921 "file_"
+	class_attribute private type class_ref 142249 // option
+	init_value "option(\"--file\",True)"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The file to read"
+      end
+
+      attribute 155049 "indices"
+	private explicit_type "[]"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The jobs to be run"
+      end
+
+      attribute 145833 "next_job"
+	private explicit_type "int"
+	multiplicity "*"
+	init_value "0"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The index of next job to perform"
+      end
+
+      attribute 145961 "_list_lock"
+	private explicit_type "thread.Lock"
+	multiplicity "1"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The lock needed to manipulate the job cursor in
+multithreaded running."
+      end
+
+      attribute 145705 "qsize"
+	private explicit_type "int"
+	multiplicity "*"
+	init_value "0"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The size of the job queue"
+      end
+
+      attribute 154793 "run_"
+	class_attribute private type class_ref 142249 // option
+	init_value "option(\"--run\",True)"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Program option to run a sub-set of jobs."
+      end
+
+      attribute 147753 "__singleton"
+	class_attribute private type class_ref 128041 // test_suite
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Single test suite object."
+      end
+
+      operation 129833 "do"
+	class_operation public explicit_return_type ""
+	nparams 1
+	  param in name "manager" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Function to pass to each thread"
+      end
+
+      operation 128041 "__init__"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "# build system definitions
+self.tool=[ \"bjam\", \"jam\", \"make\" ]
+self.debug=[ \"debug -d2\", \"-sVARIANT=DEBUG -a -d2\", \"VARIANT=DEBUG -t -v\" ]
+self.clean=[ \"clean -d2\", \"clean -d2\", \"clean -v\" ]
+self.release=[ \"release -d2\", \"-sVARIANT=RELEASE -a -d2\", \"VARIANT=RELEASE -t -v\" ]
+self.install=[ \"\", \"install -sVARIANT=RELEASE -d2\", \"install VARIANT=RELEASE -v\" ]
+# other definitions
+self.bouml=\"/usr/bin/bouml\"
+self.boumldir=\"/usr/lib64/bouml\"
+self.butter=self.boumldir + \"/butter\"
+self.cpp_generator=self.boumldir + \"/cpp_generator\"
+self.manifest=\"MANIFEST\"
+# Check values
+if ! -e self.bouml:
+  raise \"Bouml executable not found at \" + self.bouml
+if ! -d self.boumldir:
+  raise \"Bouml directory not found at \" + self.boumldir
+if ! -e self.butter:
+  raise \"Butter plug-out not found at \" + self.butter
+if ! -e self.cpp_generator:
+  raise \"C++ generator plug-out not found at \" + self.cpp_generator
+
+"
+      end
+
+      operation 163241 "index_"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Create set of indices for job run"
+      end
+
+      operation 128169 "main"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "fname" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "The main function for performing the test suite.
+actions:
+* Read test suite description file (given on cmdline 
+or stdin) to generate the set of jobs.
+* Run the jobs in parallel.
+* Print reports from each job at end.
+
+
+# Remove out directory if it exists
+if -e outdir:
+  unlink (outdir)
+
+# Create build system
+system (self.bouml, project, \"-exec\", self.butter, \"-exit\")
+# create source code
+system (self.bouml, project, \"-exec\", self.cpp_generator, \"-exit\")
+
+# go to build directory and check build system
+olddir = cd(outdir)
+if -e self.manifest:
+  system (\"/bin/sh\", \"-c\", self.manifest)
+
+# attempt to build source
+test_build (self.tool[buildstyle], None)
+# clean
+test_build (self.tool[buildstyle], self.clean[buildstyle])
+# attempt to build source
+test_build (self.tool[buildstyle], self.debug[buildstyle])
+# clean
+test_build (self.tool[buildstyle], self.clean[buildstyle])
+# release
+test_build (self.tool[buildstyle], self.release[buildstyle])
+# install
+if self.install[buildstyle]:
+  test_build (self.tool[buildstyle], self.install[buildstyle])
+"
+      end
+
+      operation 150441 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+
+      operation 148649 "run"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+      end
+    end
+
+    class 131369 "verb"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "An \"atomic\" action performed during a test.  It can be in
+one of four categories: setup, execute, verify and cleanup
+
+<verb @type>
+  <property @name>value</>
+  ...
+</>
+
+See individual types for expected name:value properties"
+      classrelation 137897 // <generalisation>
+	relation 135977 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 137897 // <generalisation>
+	  b parent class_ref 139817 // property_holder
+      end
+
+      attribute 141481 "element_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"verb\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 149417 "_error"
+	class_attribute private explicit_type ""
+	init_value "{ u\"fatal\": \"\"\"raise RuntimeError(r\"%(_message_)s\")\"\"\"
+ , u\"nonfatal\": \"\"\"self.passed = False; print r\"%(_message_)s\" \"\"\"
+ , u\"optional\" : \"\"\"print r\"%(_message_)s\" \"\"\"  }"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "What to do with certain errors"
+      end
+
+      attribute 153513 "test_property_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"test-phrase\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 141609 "type_attr"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"type\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute name for the verb's 
+\"type\" attribute"
+      end
+
+      operation 161193 "end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Base-class version should be called at end of derived class methods. It
+will handle \"test\" property."
+      end
+    end
+
+    class 133033 "verb_checkout"
+      visibility protected 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Gets something from a version control repository or archive
+
+Directly supported types are svn, cvs, tar and zip.  However,
+the program that performs the operation can be specified
+using a property which allows arbitrary systems to be used. 
+
+Properties:
+url          : base url/path of archives
+branch  : branch/archive name
+base     : target base directory
+type      : Type of archive or repository (svn,cvs,tar,zip)
+svn-command : program to handle subversion check-outs (\"svn\")
+cvs-command : program to handle cvs check-outs (\"cvs\")
+For \"tar\" type:
+tar-command : program to handle tar files
+compress : tar's option to indicate compression type (default \"\")
+For \"zip\" type:
+unzip-command  : program to decompress archive (default=\"unzip\")
+to-dir         : flag and location of base output directory (default=\"-d %(base)\")
+
+The templates for the various operations are:
+%(svn-command) co %(location) %(base)
+%(cvs-command) -d %(url) co %(branch) -d %(base)
+%(tar-command) %(compress) -x -f %(location) -D %(base)
+%(unzip-command) %(location) %(to-dir)"
+      classrelation 132905 // <generalisation>
+	relation 131113 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 132905 // <generalisation>
+	  b parent class_ref 131369 // verb
+      end
+
+      attribute 142889 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(verb.element_name, lambda name, attr: verb_checkout.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 150825 "_checkout"
+	class_attribute const_attribute private explicit_type ""
+	init_value "{ u\"svn\": ( \"\"\"%(_cmd_name_)s co %(location)s %(base)s\"\"\", \"\"\"Unable to checkout branch from SVN repository %(location)s\"\"\" )
+, u\"cvs\": ( \"\"\"%(_cmd_name_)s -d %(url)s co %(branch)s -d %(base)s\"\"\", \"\"\"Unable to checkout from CVS branch %(branch)s from repository %(url)s\"\"\" )
+,  u\"tar\": ( \"\"\"%(_cmd_name_)s %(compress)s -x -f %(location)s -D %(base)s\"\"\", \"\"\"Unable to unpack archive %(location)s\"\"\" )
+,  u\"zip\": ( \"\"\"%(_cmd_name_)s %(location)s %(_to_dir_)s\"\"\", \"\"\"Unable to unpack archive %(location)s\"\"\" )
+}"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "How to handle different file/dir types"
+      end
+
+      attribute 142761 "type_value"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"check-out\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute value for this verb's 
+\"type\" attribute"
+      end
+
+      operation 151721 "do_end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Compile the verb's actions"
+      end
+
+      operation 146601 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+    end
+
+    class 133417 "verb_compare"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Perform the most rigourous comparison using some program to compare 
+the contents of a file with some canonical example, the default is to
+use \"diff\". You can specifiy program options, for example using the GNU
+diff option to exclude comparing lines that will always be different such as 
+datestamps and timestamps.  Of course other programs can be used to
+perform other types of tests, eg CRC, file mode etc.
+
+Command phrase:
+%(compare-command) %(compare-args) %(base)/%(leaf) %(compare-base)%(leaf)%(suffix)
+where leaf is a single element in \"location\"
+
+Properties
+compare-command  : The comparison program (default = \"diff\")
+compare-args : Arguments to program (default = \"-q\")
+suffix                 : File suffix to add to file(default = \".canon\")
+base                 : Base directory
+compare-base : Directory with canonical files (defaut = base)
+location            : List of paths for comparison."
+      classrelation 133289 // <generalisation>
+	relation 131497 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 133289 // <generalisation>
+	  b parent class_ref 131369 // verb
+      end
+
+      attribute 143657 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(verb.element_name, lambda name, attr: verb_compare.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 143529 "type_value"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"compare\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute value for this verb's 
+\"type\" attribute"
+      end
+
+      operation 155049 "do_end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "function called when object's content has been fully
+loaded.  In SAX document parsing call this in response
+to the end-element event."
+      end
+
+      operation 146985 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+    end
+
+    class 133545 "verb_filelist"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Perform one of four actions on a set of files or directories. The
+actions are:
+exist       : test if path exists
+nonexist : test if path does not exist
+recreate : remove any existing path and recreate path
+remove  : remove a path
+
+standard properties:
+severity  : (fatal,nonfatal,optional)
+file-type : (directory,file,executable*)
+verify      : action to perform or test (remove,exist,recreate,nonexist)
+location : list of paths to check
+base      : base directory for locations
+
+*currently an executable is treated the same as a file (ie no 
+permission checks)"
+      classrelation 133417 // <generalisation>
+	relation 131625 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 133417 // <generalisation>
+	  b parent class_ref 131369 // verb
+      end
+
+      attribute 143913 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(verb.element_name, lambda name, attr: verb_filelist.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 149289 "_filetype"
+	class_attribute const_attribute private explicit_type ""
+	init_value "{ u\"file\": ( \"\"\"os.path.isfile(r\"%(_path_)s\")\"\"\", \"\"\"os.unlink(r\"%(_path_)s\")\"\"\", \"\"\"os.close(os.open(r\"%(_path_)s\"))\"\"\", r\"\"\"Problem with file (action: %(_action_)s): %(_path_)s\"\"\" )
+, u\"executable\": ( \"\"\"os.path.isfile(r\"%(_path_)s\")\"\"\", \"\"\"os.unlink(r\"%(_path_)s\")\"\"\", \"\"\"os.close(os.open(r\"%(_path_)s\"))\"\"\", r\"\"\"Problem with file (action: %(_action_)s): %(_path_)s\"\"\" )
+,  u\"directory\": ( \"\"\"os.path.isdir(r\"%(_path_)s\")\"\"\", \"\"\"verb_filelist.removedirs(r\"%(_path_)s\")\"\"\", \"\"\"os.makedirs(r\"%(_path_)s\")\"\"\", r\"\"\"Problem with directory (action: %(_action_)s): %(_path_)s\"\"\" )
+}"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "How to handle different file/dir types"
+      end
+
+      attribute 149161 "_verify"
+	class_attribute const_attribute private explicit_type "dict"
+	init_value "{ u\"exist\": \"\"\"if not os.path.exists(r\"%(_path_)s\"):\\n  %(_error_)s\\n\"\"\"
+, u\"nonexist\": \"\"\"if os.path.exists(r\"%(_path_)s\"):\\n  %(_error_)s\\n\"\"\"
+, u\"create\": \"\"\"if not os.path.exists(r\"%(_path_)s\"):\\n  %(_create_)s\\n\"\"\"
+, u\"recreate\": \"\"\"if os.path.exists(r\"%(_path_)s\"):\\n  %(_remove_)s\\n%(_create_)s\\n\"\"\"
+, u\"remove\": \"\"\"%(_remove_)s\\n\"\"\"
+}"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "How to perform different test conditions"
+      end
+
+      attribute 143785 "type_value"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"file-list\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute value for this verb's 
+\"type\" attribute"
+      end
+
+      operation 151849 "do_end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "function called when object's content has been fully
+loaded.  In SAX document parsing call this in response
+to the end-element event."
+      end
+
+      operation 147113 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+
+      operation 156713 "removedirs"
+	class_operation public explicit_return_type ""
+	nparams 1
+	  param in name "a_path" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Remove a path"
+      end
+    end
+
+    class 139945 "verb_list"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Meta-object class for categorising the verb sets in the XML file.
+
+<verb-list @category>(<property>..)*(<verb>...</>)*</>"
+      classrelation 139177 // <generalisation>
+	relation 137257 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 139177 // <generalisation>
+	  b parent class_ref 139817 // property_holder
+      end
+
+      attribute 144809 "element_name"
+	class_attribute private explicit_type "unistr"
+	init_value "u\"verb-list\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 145065 "category_attr"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"category\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute name for the verb-list's 
+\"category\" attribute"
+      end
+
+      attribute 144681 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(u\"verb-list\", lambda name, attr: verb_list.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 144937 "category"
+	private explicit_type "unistr"
+	init_value "a_cat"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      operation 150185 "end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Compile all sub-verb actions into a single action.  Delete
+children at end."
+      end
+
+      operation 148009 "__init__"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "self" explicit_type ""
+	  param in name "a_cat" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+      end
+
+      operation 147881 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+    end
+
+    class 133289 "verb_patch"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Apply a patch (or similar) to something.
+
+command is
+%(patch-command) -d %(base) %(patch-args) %(patch-dir)/%(leaf)%(suffix)
+
+where leaf is a single element of location property
+
+Properties
+patch-command : The comparison program (default = \"patch\")
+patch-args : Arguments to program (default = \"-q\")
+suffix           : File suffix to add to file(default = \".patch\")
+base           : Base directory
+patch-base : Directory with canonical files (defaut = base)
+location       : List of patchs to apply"
+      classrelation 133161 // <generalisation>
+	relation 131369 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 133161 // <generalisation>
+	  b parent class_ref 131369 // verb
+      end
+
+      attribute 143401 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(verb.element_name, lambda name, attr: verb_patch.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 143273 "type_value"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"patch\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute value for this verb's 
+\"type\" attribute"
+      end
+
+      operation 155177 "do_end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "function called when object's content has been fully
+loaded.  In SAX document parsing call this in response
+to the end-element event."
+      end
+
+      operation 146857 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+    end
+
+    class 132905 "verb_run"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Run a piece of inline python code that is the content of this
+element.  It may use \"%(property-name)s\" replacements to 
+access properties of the job."
+      classrelation 132777 // <generalisation>
+	relation 130985 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 132777 // <generalisation>
+	  b parent class_ref 131369 // verb
+      end
+
+      attribute 142633 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(verb.element_name, lambda name, attr: verb_run.make (name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 142505 "type_value"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"run\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute value for this verb's 
+\"type\" attribute"
+      end
+
+      operation 155305 "do_end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "function called when object's content has been fully
+loaded.  In SAX document parsing call this in response
+to the end-element event."
+      end
+
+      operation 146473 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+    end
+
+    class 132777 "verb_system"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Run an arbitrary command using an OS \"system\" call.  The 
+command to execute is given as the XML element's content
+and may include \"$(property-name)s\" replacements to access
+job properties."
+      classrelation 132649 // <generalisation>
+	relation 130857 ---|>
+	  a public
+	    python "${type}"
+	    classrelation_ref 132649 // <generalisation>
+	  b parent class_ref 131369 // verb
+      end
+
+      attribute 142377 "__ctor"
+	class_attribute private type class_ref 139561 // constructor
+	init_value "constructor(verb.element_name, lambda name, attr: verb_system.make(name, attr))"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 141993 "type_value"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"system\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute value for this verb's 
+\"type\" attribute"
+      end
+
+      operation 155433 "do_end_load"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "function called when object's content has been fully
+loaded.  In SAX document parsing call this in response
+to the end-element event."
+      end
+
+      operation 146217 "make"
+	class_operation private return_type class_ref 139689 // object_interface
+	nparams 2
+	  param in name "elemname" explicit_type "unistr"
+	  param in name "elemattr" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "Meta-constructor method"
+      end
+    end
+
+    class 144553 "write_helper"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "This class prints \"end_\" to \"os_\" when it is deleted.  It is intended
+to help ensure that markup like XML/HTML is well formed by 
+creating a object of this type with end_ being a closing tag
+when a start tag is generated."
+      attribute 157993 "end_"
+	private explicit_type "string"
+	init_value "a_end"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "String to print on closing"
+      end
+
+      attribute 158121 "os_"
+	private explicit_type "ostream"
+	init_value "a_os"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      operation 165801 "__del__"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "self" explicit_type ""
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}import sys
+os_ = self.os_ or sys.stdout
+print >>os_, self.end_
+"
+	
+	comment "Terminate section of formatted output"
+      end
+
+      operation 165673 "__init__"
+	public explicit_return_type ""
+	nparams 3
+	  param inout name "self" explicit_type ""
+	  param in name "a_end" explicit_type "string"
+	  param in name "a_os" explicit_type "ostream"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}, ${p2}${v2}${)}:
+${docstring}${body}
+"
+	
+	comment "End section of formatted output"
+      end
+    end
+  end
+
+  deploymentview 128041 "main"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 130345 "test_suite"
+      stereotype "source"
+      python_src "${comment}
+${import}
+import xml.sax, threading, os.path
+
+_DEBUG = False
+if _DEBUG:
+  print \"\"\"<html><body><style type=\"text/css\">pre.debug{color:red}</style>\"\"\"
+
+${definition}
+
+
+if __name__ == \"__main__\":
+  if not _DEBUG:
+    print \"<html><body>\"
+  suite = test_suite ()
+  suite.run ()
+  print \"</body></html>\"
+"
+      associated_classes
+	class_ref 142249 // option
+	class_ref 144553 // write_helper
+	class_ref 139689 // object_interface
+	class_ref 138409 // interpreter
+	class_ref 141097 // subfile_interpreter
+	class_ref 139561 // constructor
+	class_ref 134825 // property
+	class_ref 139817 // property_holder
+	class_ref 145705 // subfile_holder
+	class_ref 131369 // verb
+	class_ref 133033 // verb_checkout
+	class_ref 133417 // verb_compare
+	class_ref 133545 // verb_filelist
+	class_ref 139945 // verb_list
+	class_ref 133289 // verb_patch
+	class_ref 132905 // verb_run
+	class_ref 132777 // verb_system
+	class_ref 129193 // job
+	class_ref 129705 // stage
+	class_ref 128041 // test_suite
+      end
+    end
+
+    artifact 131497 "TODO.txt"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "TODO List:
+
+"
+    end
+  end
+
+  usecaseview 128041 "Run test"
+    //use case diagram settings
+    package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    usecasediagram 129577 "Run test"
+      package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    usecase 128041 "Run test"
+      //use case diagram settings
+      package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+      //sequence diagram settings
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+      //collaboration diagram settings
+      show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+      //object diagram settings
+       write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+      //state diagram settings
+      package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+      show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+      //activity diagram settings
+      package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+      show_infonote default drawing_language default show_stereotype_properties default
+      comment "Use case for running a job:
+
+* * Initialise test system.
+* ** Remove existing test directory.
+* ** Checkout/decompress test system.
+* ** Patch system (opt)
+* * Loop test stages
+* ** Call program being tested.
+* ** Verify result.
+* *** Check filelist
+* *** Check file content or CRC
+* * endloop
+* * Report"
+    end
+  end
+end
