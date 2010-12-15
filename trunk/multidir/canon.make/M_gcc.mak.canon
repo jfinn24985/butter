@@ -1,0 +1,72 @@
+####################################
+##  Definitions for GNU g++ compiler
+####################################
+ifndef M_GCC_MAK
+M_GCC_MAK:=1
+##
+## Define compiler variables once only.
+## 
+CCC:=g++
+FORTRAN:=gfortran
+CPPFLAGS?=
+CCFLAGS+=-Wall -std=c99
+CCCFLAGS+=-Wall -std=c++98
+
+ifeq ($(VARIANT),DEBUG)
+OPTFLAGS+=-O0 -DDEBUG=1
+CCFLAGS+=-pedantic
+CCCFLAGS+=-Weffc++
+else
+OPTFLAGS+=-O2 -march=native
+endif
+
+CCFLAGS+=$(OPTFLAGS)
+CCCFLAGS+=$(OPTFLAGS)
+FORTRANFLAGS+=$(OPTFLAGS)
+LDFLAGS?=
+SHRFLAGS?=-fpic
+
+FORTRANLIBS:=-lgfortran
+OPENMP:=-fopenmp
+
+# internal flags
+compileonly:=-c # need whitespace
+exec_file:=-o # need whitespace
+obj_file:=-o # need whitespace
+arc_file:=
+shr_file:=-o # need whitespace
+
+endif
+# END ONCE-ONLY
+
+define _makedep_
+%$(sufdep): %$(1)
+	set -e; $$(CCC) -MM $$(CPPFLAGS) $$< \
+	| sed 's/\($$*\)$$(sufobj)[ :]*/\1$$(sufobj) $$@ : /g' > $$@;\
+	[ -s $$@ ] || rm -f $$@
+endef
+
+$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))
+_makedep_:=
+
+
+define do_install
+install:: $(1)
+	$$(INSTALL) -d $$($(2)DIR) ; $$(INSTALL) $$($(or $(3),$(2))IFLAGS) $(1) $$($(2)DIR)/$(1)
+endef
+
+define do_shared_library
+$(1) : LDFLAGS+=-shared -Wl,-soname,$(1).$(or $(2),0)
+$(1) : CCFLAGS+=$(SHRFLAGS)
+$(1) : CCCFLAGS+=$(SHRFLAGS)
+endef
+define create_object_group
+-Wl,--start-group $(1) -Wl,--end-group
+endef
+
+###############
+## Editor sugar
+###############
+# Local Variables:
+# mode: makefile
+# End:

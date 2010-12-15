@@ -1,0 +1,52 @@
+# Definition of for loop in local shell.
+define doit
+for %%W in ( $(2) ) do ( $(MAKE) -C %%W $(1) )
+endef
+
+ifndef M_WINNT_MAK
+M_WINNT_MAK:=1
+#############################
+##  Default install locations
+#############################
+PREFIX=$(ROOTDIR)\$(VERSIONDIR)
+EXEC_PREFIX=$(PREFIX)
+BINDIR=$(EXEC_PREFIX)
+SBINDIR=$(EXEC_PREFIX)
+LIBEXECDIR=$(EXEC_PREFIX)
+LIBDIR=$(EXEC_PREFIX)
+DATAROOTDIR=$(PREFIX)
+DATADIR=$(PREFIX)
+SYSCONFDIR=$(PREFIX)
+SHAREDSTATEDIR=$(PREFIX)
+LOCALSTATEDIR=$(PREFIX)
+INCLUDEDIR=$(PREFIX)\include
+LOCALEDIR=$(DATAROOTDIR)\locale
+DOCDIR=$(DATAROOTDIR)\doc
+INFODIR=$(DATAROOTDIR)\info
+MANDIR=$(DATAROOTDIR)\man
+HTMLDIR=$(DOCDIR)
+DVIDIR=$(DOCDIR)
+PDFDIR=$(DOCDIR)
+PSDIR=$(DOCDIR)
+MAN1DIR=$(MANDIR)\man1
+MAN2DIR=$(MANDIR)\man2
+MAN3DIR=$(MANDIR)\man3
+MAN4DIR=$(MANDIR)\man4
+MAN5DIR=$(MANDIR)\man5
+MAN6DIR=$(MANDIR)\man6
+MAN7DIR=$(MANDIR)\man7
+MAN8DIR=$(MANDIR)\man8
+MANNDIR=$(MANDIR)\mann
+
+# Standard Suffixes
+sufobj:=.obj
+sufexe:=.exe
+sufdep:=.dep
+suflib:=.lib
+sufshr:=.dll
+###############
+## Editor sugar
+###############
+# Local Variables:
+# mode: makefile
+# End:

@@ -1,0 +1,95 @@
+#
+# M_sys.mak
+#
+##################################
+# Settings for current environment
+##################################
+
+OS ?= unix
+ifeq ($(origin CC),default)
+CC = gcc
+endif
+VARIANT ?= DEBUG
+
+# Preprocessor flags (defines and include directories)
+#  CPPFLAGS
+# C language flags
+#  CCFLAGS
+# C++ language flags
+#  CCCFLAGS
+# Fortran language flags
+#  FORTRANFLAGS
+# Linker flags
+#  LDFLAGS
+
+# Optimisation/debugging flags
+# are added depending on VARIANT
+#############################
+##  Default install locations
+#############################
+VERSIONDIR:="multidir-1.0"
+
+##########################
+## Include compiler and OS
+##########################
+include $(ROOTDIR)/M_$(OS).mak
+include $(ROOTDIR)/M_$(CC).mak
+
+##############
+## Unify Vars
+##############
+CFLAGS = $(CCFLAGS)
+CXXFLAGS = $(CCCFLAGS)
+FFLAGS = $(FORTANFLAGS)
+FC = $(FORTRAN)
+
+#############################################
+##  Define standard directory descent targets
+#############################################
+export
+unexport dirs
+
+all:: ; $(call doit,all,$(dirs))
+
+install:: ; $(call doit,install,$(dirs))
+
+distclean: doclean
+	$(call doit,distclean,$(dirs))
+	rm -f core core.* $(TARGETS) *~ *.dep
+
+clean: doclean
+	$(call doit,clean,$(dirs))
+
+doclean: 
+	rm -f $(USEROBJ)
+
+######################################################
+##  Example library setup definition for XML libraries
+######################################################
+
+# Make this a one time only definition
+
+ifndef USE_XML_MAK
+USE_XML_MAK:=1
+
+ifdef ($(USE_XML))
+ifeq ($(XMLLIB),EXPAT)
+CPPFLAGS+=-DEXPAT
+LDFLAGS+=-lexpat
+endif
+
+ifeq ($(XMLLIB),XML2)
+CPPFLAGS+=-DXML2 `xml2-config --cflags`
+LDFLAGS+=`xml2-config --libs`
+endif
+
+endif # USE_XML
+
+endif # USE_XML_MAK
+###############
+## Editor sugar
+###############
+# Local Variables:
+# mode: makefile
+# End:
+

@@ -1,0 +1,65 @@
+##########################################
+##  Definitions for Microsoft VC compiler
+#########################################
+ifndef M_CL_MAK
+M_CL_MAK:=1
+
+CCC:=cl
+CXX:=cl
+FORTRAN:=fc
+CPPFLAGS?=
+CCFLAGS+=/Za /errorReport:none
+CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /errorReport:none
+
+ifeq ($(VARIANT),DEBUG)
+OPTFLAGS+=/Od /Zi
+LDFLAGS+=/MTd
+else
+OPTFLAGS+=/O2
+LDFLAGS+=/MT
+endif
+
+CCFLAGS+=$(OPTFLAGS)
+CCCFLAGS+=$(OPTFLAGS)
+FORTRANFLAGS?=
+LDFLAGS+=$(OPTFLAGS)
+
+FORTRANLIBS:=
+OPENMP:=/openmp
+# internal flags
+compileonly:=# No flag need for compilation only
+exec_file:=/Fe
+obj_file:=/Fo
+arc_file:=/OUT:
+shr_file:=/Fe
+
+endif # end of once-only
+
+#  commands to execute (built-in):
+define _makeobj_
+%$$(sufobj): %$(1) ; $$(COMPILE$(1)) $$(obj_file)$$@ $$<
+endef
+
+$(foreach suff,.cc .cpp .cxx,$(eval $(call _makeobj_,$(suff))))
+
+#  commands to create dummy make dependency files
+define _makedep_
+%$(sufdep): %$(1)
+        @echo # Dummy file  $$@
+endef
+
+$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))
+
+_makeobj_:=
+_makedep_:=
+
+define create_object_group
+$(1)
+endef
+
+###############
+## Editor sugar
+###############
+# Local Variables:
+# mode: makefile
+# End:

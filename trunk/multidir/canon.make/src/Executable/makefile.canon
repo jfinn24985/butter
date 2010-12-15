@@ -1,0 +1,33 @@
+##START:version
+#Butter version 1.1beta.36
+##END:version
+##START:date
+#Wed Dec 15 18:42:40 2010
+##END:date
+##START:preamble
+include $(ROOTDIR)/M_sys.mak
+
+LOCALHDRS:=$(USERHDRS)
+LOCALFLAGS:=$(USERFLAGS)
+LOCALLDFLAGS:=$(USERLDFLAGS)
+
+##END:preamble
+##START:target program
+PROGRAMSRC :=  \
+	example_exe.cpp
+PROGRAM_DINC := $(filter %$(sufdep), $(PROGRAMSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(PROGRAMSRC:.c=$(sufdep)))
+-include $(PROGRAM_DINC)
+PROGRAM_OBJ+=$(ROOTDIR)/src/Library/liblibrary$(suflib)
+PROGRAM_OBJ+=$(filter %$(sufobj), $(PROGRAMSRC:.cpp=$(sufobj)))
+USEROBJ+=$(PROGRAM_OBJ)
+
+program$(sufexe) : $(PROGRAM_OBJ) $(PROGRAM_DINC) $(ROOTDIR)/src/Library/liblibrary$(suflib) 
+	$(LINK.cpp) $(OUTPUT_OPTIONS) $(exec_file)program$(sufexe) $(call create_object_group,$(PROGRAM_OBJ))
+
+all :: program$(sufexe)
+TARGETS+=program$(sufexe)
+
+install:: program$(sufexe)
+	$(INSTALL) -d $(BINDIR)
+	$(INSTALL) $(BINIFLAGS) program$(sufexe) $(BINDIR)/program$(sufexe)
+##END:target program

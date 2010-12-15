@@ -1,0 +1,20 @@
+##START:version
+#Butter version 1.1beta.36
+##END:version
+##START:date
+#Wed Dec 15 18:42:40 2010
+##END:date
+##START:preamble
+ROOTDIR := /tmp/multidir/output
+
+include $(ROOTDIR)/M_sys.mak
+
+CPPFLAGS+=-I$(ROOTDIR)/include
+
+##END:preamble
+##START:target Library
+dirs += src/Library
+##END:target Library
+##START:target Executable
+dirs += src/Executable
+##END:target Executable
