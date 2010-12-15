@@ -1,0 +1,20 @@
+##START:version
+#Butter version 1.1beta.36
+##END:version
+##START:date
+#Wed Dec 15 18:50:37 2010
+##END:date
+##START:target program
+set (MULTIDIR_PROGRAM program)
+
+set (MULTIDIR_PROGRAM_SRC 
+	example_exe.cpp)
+add_executable (${MULTIDIR_PROGRAM}
+	${MULTIDIR_PROGRAM_SRC})
+target_link_libraries (${MULTIDIR_PROGRAM}
+	library)
+install (TARGETS ${MULTIDIR_PROGRAM}
+	RUNTIME DESTINATION ${BINDIR}
+	CONFIGURATIONS Release)
+
+##END:target program

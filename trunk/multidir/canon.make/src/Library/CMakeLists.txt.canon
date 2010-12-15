@@ -1,0 +1,20 @@
+##START:version
+#Butter version 1.1beta.36
+##END:version
+##START:date
+#Wed Dec 15 18:50:37 2010
+##END:date
+##START:target library
+set (MULTIDIR_LIBRARY library)
+
+set (MULTIDIR_LIBRARY_SRC 
+	example_lib.cpp)
+add_library (${MULTIDIR_LIBRARY}
+	STATIC ${MULTIDIR_LIBRARY_SRC})
+install (TARGETS ${MULTIDIR_LIBRARY}
+	LIBRARY DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release
+	ARCHIVE DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release)
+
+##END:target library
