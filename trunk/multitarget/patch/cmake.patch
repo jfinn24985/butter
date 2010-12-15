@@ -1,0 +1,13 @@
+Index: multitarget.prj
+===================================================================
+--- multitarget.prj	(revision 52)
++++ multitarget.prj	(working copy)
+@@ -37,6 +37,8 @@
+ 
+   mark_for_import
+   
++  ncouples 1
++  key "butter style" value "cmake"
+   comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
+   classview 128041 "Library"
+     //class diagram settings
