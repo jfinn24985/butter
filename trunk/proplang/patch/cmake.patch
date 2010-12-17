@@ -33,14 +33,6 @@ Index: 128169
 ===================================================================
 --- 128169	(revision 83)
 +++ 128169	(working copy)
-@@ -1,6 +1,6 @@
- format 66
- "Executable" // Executable
--  revision 7
-+  revision 8
-   modified_by 41 "finnerty"
-   // class settings
-   //class diagram settings
 @@ -127,8 +127,8 @@
      artifact 128297 "program"
        stereotype "executable"
@@ -58,7 +50,7 @@ Index: 128169
 -      ncouples 2
 -      key "butter compiler" value "t2t"
 +      ncouples 1
-       key "butter install" value "MANDIR"
+       key "butter install" value "DOCDIR"
        comment "Program
  (C) 2010
 @@ -209,8 +208,8 @@
