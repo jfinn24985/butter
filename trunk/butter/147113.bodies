@@ -1,10 +1,30 @@
 class compound_artifact
-!!!195753.cpp!!!	compound_artifact(inout a_art : UmlArtifact)
+!!!236329.cpp!!!	compound_artifact(inout a_art : UmlArtifact)
 : artifact (a_art)
 , close ()
 , date ()
 , end ()
 , preamble ()
+, style_(butter::style::get_style())
+, targets_ ()
+, target_order_ ()
+, version ()
+{
+#if QT_VERSION < 300L
+  QString tmp_ (a_art.description ());
+#else
+  const QString tmp_ (a_art.description ());
+#endif
+  QTextIStream is_ (&tmp_);
+  deserialise (is_);
+}
+!!!195753.cpp!!!	compound_artifact(inout a_art : UmlArtifact, in a_style : basic_style)
+: artifact (a_art)
+, close ()
+, date ()
+, end ()
+, preamble ()
+, style_(a_style)
 , targets_ ()
 , target_order_ ()
 , version ()
@@ -25,10 +45,9 @@ QTextOStream os_(&desc_);
 serialise (os_);
 if (0 != orig_desc_.compare (desc_))
 {
-  const butter::style &s_ = butter::style::get_style ();
   // Document changed, update version and date
-  version.second = s_.comment_text (item_traits::BUTTER_VERSION);
-  date.second = s_.comment_text (QString (QDateTime::currentDateTime ().toString ()));
+  version.second = style_.comment_text (item_traits::BUTTER_VERSION);
+  date.second = style_.comment_text (QString (QDateTime::currentDateTime ().toString ()));
   QString desc2_;
   QTextOStream os2_(&desc2_);
   serialise (os2_);
@@ -36,7 +55,6 @@ if (0 != orig_desc_.compare (desc_))
 }
 !!!193065.cpp!!!	deserialise(inout a_is : istream) : void
 QString capture_;
-const butter::style & style_ = butter::style::get_style ();
 int state_ = 0; // 0 = unlabelled, 1 = labelled
 string_pair_t * cache_ = NULL;
 for (QString line_ = a_is.readLine ();
@@ -154,7 +172,7 @@ public:
     }
   }
 };
-const butter::compound_artifact tmp_ (a_art);
+const butter::compound_artifact tmp_ (a_art, style_);
 helper_::merge_ (version, tmp_.version);
 helper_::merge_ (date, tmp_.date);
 helper_::merge_ (preamble, tmp_.preamble);
@@ -188,33 +206,32 @@ if (! close.second.isEmpty ())
 class helper_
 {
 public:
-  static void write (QTextStream &a_os_, const string_pair_t & a_cache_, QString a_label_)
+  static void write (QTextStream &a_os_, const string_pair_t & a_cache_, QString a_label_, const butter::basic_style & s_)
   {
-    const butter::style & s_ = (butter::style::get_style ());
     if (! a_cache_.first.isEmpty ())
     {
       a_os_ << a_cache_.first;
     }
     if (! a_cache_.second.isEmpty ())
     {
-      a_os_ << s_.start_phrase << a_label_ << "\n";
+      a_os_ << s_.start_phrase << a_label_ << s_.end_start_phrase << "\n";
       a_os_ << a_cache_.second;
-      a_os_ << s_.end_phrase << a_label_ << "\n";
+      a_os_ << s_.end_phrase << a_label_ << s_.end_end_phrase << "\n";
     }
   }
 };
-helper_::write (a_os, version, butter::item_traits::version_label);
-helper_::write (a_os, date, butter::item_traits::date_label);
-helper_::write (a_os, preamble, butter::item_traits::preamble_label);
+helper_::write (a_os, version, butter::item_traits::version_label, style_);
+helper_::write (a_os, date, butter::item_traits::date_label, style_);
+helper_::write (a_os, preamble, butter::item_traits::preamble_label, style_);
 for (QValueListConstIterator< QString > i_ (target_order_.begin ());
       target_order_.end () != i_;
       ++i_)
 {
   string_pair_t * tmp_ = targets_.find (*i_);
   BUTTER_CHECK (NULL != tmp_, "Error, key in target_order_ not found in targets.");
-  helper_::write (a_os, *tmp_, butter::item_traits::target_label + " " + *i_);
+  helper_::write (a_os, *tmp_, butter::item_traits::target_label + " " + *i_, style_);
 }
-helper_::write (a_os, close, butter::item_traits::close_label);
+helper_::write (a_os, close, butter::item_traits::close_label, style_);
 if (! end.isEmpty ())
 {
   a_os << end;

@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 144
+  revision 150
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -110,6 +110,142 @@ construction document, ie jamfile, makefile, jamroot etc."
     classdiagram 129193 "writer"
       draw_all_relations default hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
+    end
+
+    class 159017 "basic_style"
+      visibility package stereotype "struct"
+      cpp_decl "${comment}${template}struct ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl "${comment}struct ${name} {
+${members}};
+"
+      explicit_switch_type ""
+      
+      comment "POD type for storing basic information about compound_document elements"
+      attribute 161577 "comment_string"
+	const_attribute public explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "beginning of comment string"
+      end
+
+      attribute 199337 "end_comment_string"
+	const_attribute public explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "ending of comment string"
+      end
+
+      attribute 159145 "end_phrase"
+	const_attribute public explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "A string indicating the end of a labelled part.
+
+The actual end-phrase will be
+end_phrase () end_end_phrase or \"end_phrase () {label} end_end_phrase\" where label is
+the name of the part. Note the \"{\" \"}\" are part of phrase."
+      end
+
+      attribute 197801 "end_end_phrase"
+	const_attribute public explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "A string denoting the end-of-line for  the ending point of a part."
+      end
+
+      attribute 159273 "start_phrase"
+	const_attribute public explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "A string denoting the starting point of a part.
+
+The actual start-phrase will be
+\"start_phrase {label} end_start_phrase\" where label is the name of the part.
+Note the \"{\" \"}\" are part of phrase."
+      end
+
+      attribute 197929 "end_start_phrase"
+	const_attribute public explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "A string denoting the end-of-line for  the starting point of a part."
+      end
+
+      operation 235689 "basic_style"
+	public explicit_return_type ""
+	nparams 6
+	  param in name "a_com_start" explicit_type "unistr"
+	  param in name "a_com_end" explicit_type "unistr"
+	  param in name "a_end_phr" explicit_type "unistr"
+	  param in name "a_end_end" explicit_type "unistr"
+	  param in name "a_start_phr" explicit_type "unistr"
+	  param in name "a_start_end" explicit_type "unistr"
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}
+: comment_string(${p0})
+, end_comment_string(${p1})
+, end_phrase(${p2})
+, end_end_phrase(${p3})
+, start_phrase(${p4})
+, end_start_phrase(${p5})
+{}
+"
+	
+	
+	
+	
+      end
+
+      operation 195625 "comment_text"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_text" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Prepend comment indicators to each line of a_text. Also adds a terminal newline if
+a_text does not end in a newline."
+      end
     end
 
     class 133545 "bjam_writer"
@@ -1083,18 +1219,17 @@ the style for this buildfile type."
 , \"##  Default install locations\\n\"
 , \"#############################\\n\"
 , \"set (VERSIONDIR \\\"@@project@@-@@version@@\\\")\\n\"
-, \"\\n\"
-, \"set (EXEC_PREFIX ${CMAKE_INSTALL_PREFIX})\\n\"
-, \"set (BINDIR ${EXEC_PREFIX}/bin)\\n\"
-, \"set (SBINDIR ${EXEC_PREFIX}/sbin)\\n\"
-, \"set (LIBEXECDIR ${EXEC_PREFIX}/libexec)\\n\"
-, \"set (LIBDIR ${EXEC_PREFIX}/lib)\\n\"
-, \"set (DATAROOTDIR ${CMAKE_INSTALL_PREFIX}/share)\\n\"
-, \"set (DATADIR ${CMAKE_INSTALL_PREFIX}/share)\\n\"
-, \"set (SYSCONFDIR /etc)\\n\"
-, \"set (SHAREDSTATEDIR ${CMAKE_INSTALL_PREFIX}/com)\\n\"
-, \"set (LOCALSTATEDIR ${CMAKE_INSTALL_PREFIX}/var)\\n\"
-, \"set (INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)\\n\"
+, \"set (CMAKE_INSTALL_PREFIX installdir)\\n\"
+, \"set (BINDIR bin)\\n\"
+, \"set (SBINDIR sbin)\\n\"
+, \"set (LIBEXECDIR libexec)\\n\"
+, \"set (LIBDIR lib)\\n\"
+, \"set (DATAROOTDIR share)\\n\"
+, \"set (DATADIR share)\\n\"
+, \"set (SYSCONFDIR etc)\\n\"
+, \"set (SHAREDSTATEDIR com)\\n\"
+, \"set (LOCALSTATEDIR var)\\n\"
+, \"set (INCLUDEDIR include)\\n\"
 , \"set (LOCALEDIR ${DATAROOTDIR}/locale)\\n\"
 , \"set (DOCDIR ${DATAROOTDIR}/doc/${VERSIONDIR})\\n\"
 , \"set (INFODIR ${DATAROOTDIR}/info)\\n\"
@@ -1370,7 +1505,14 @@ ${body}}
 	
 	
 	
-	comment "** This method finalises the target entry for a_target."
+	comment "** This method finalises the target entry for a_target.
+
+NOTE: \"Other\" target requires WORKING_DIRECTORY to allow 
+finding of source files. Alternatively, this could be
+avoided by prepending ${CMAKE_CURRENT_SOURCE_DIR} to each 
+source file. Currently WORKING_DIRECTORY is chosen as
+it was felt that it is more obvious to the user and less
+verbose."
       end
 
       operation 231081 "external_target"
@@ -1708,6 +1850,17 @@ Standard build-file form is a compound_artifact with something like
 	comment "The preamble texts"
       end
 
+      attribute 199081 "style_"
+	const_attribute private type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}& ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "reference to style object"
+      end
+
       attribute 159017 "targets_"
 	private type class_ref 148265 // string_pair_t
 	multiplicity "*"
@@ -1745,13 +1898,30 @@ Standard build-file form is a compound_artifact with something like
 	comment "The version texts."
       end
 
-      operation 195753 "compound_artifact"
+      operation 236329 "compound_artifact"
 	public explicit_return_type ""
 	nparams 1
 	  param inout name "a_art" type class_ref 6913 // UmlArtifact
 	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}${)}${volatile};
 "
 	cpp_def "${inline}${class}::${name}${(}${t0} & ${p0}${)}${volatile} 
+${body}
+"
+	
+	
+	
+	
+	comment "Construct and initialise object from a_art"
+      end
+
+      operation 195753 "compound_artifact"
+	public explicit_return_type ""
+	nparams 2
+	  param inout name "a_art" type class_ref 6913 // UmlArtifact
+	  param in name "a_style" type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile} 
 ${body}
 "
 	
@@ -2068,6 +2238,19 @@ the style for this buildfile type."
 , \"endif\\n\"
 , \"VARIANT ?= DEBUG\\n\"
 , \"\\n\"
+, \"# Preprocessor flags (defines and include directories)\\n\"
+, \"#  CPPFLAGS\\n\"
+, \"# C language flags\\n\"
+, \"#  CCFLAGS\\n\"
+, \"# C++ language flags\\n\"
+, \"#  CCCFLAGS\\n\"
+, \"# Fortran language flags\\n\"
+, \"#  FORTRANFLAGS\\n\"
+, \"# Linker flags\\n\"
+, \"#  LDFLAGS\\n\"
+, \"\\n\"
+, \"# Optimisation/debugging flags\\n\"
+, \"# are added depending on VARIANT\\n\"
 , \"#############################\\n\"
 , \"##  Default install locations\\n\"
 , \"#############################\\n\"
@@ -2076,8 +2259,16 @@ the style for this buildfile type."
 , \"##########################\\n\"
 , \"## Include compiler and OS\\n\"
 , \"##########################\\n\"
-, \"include $(ROOTDIR)/M_$(CC).mak\\n\"
 , \"include $(ROOTDIR)/M_$(OS).mak\\n\"
+, \"include $(ROOTDIR)/M_$(CC).mak\\n\"
+, \"\\n\"
+, \"##############\\n\"
+, \"## Unify Vars\\n\"
+, \"##############\\n\"
+, \"CFLAGS = $(CCFLAGS)\\n\"
+, \"CXXFLAGS = $(CCCFLAGS)\\n\"
+, \"FFLAGS = $(FORTRANFLAGS)\\n\"
+, \"FC = $(FORTRAN)\\n\"
 , \"\\n\"
 , \"#############################################\\n\"
 , \"##  Define standard directory descent targets\\n\"
@@ -2091,53 +2282,37 @@ the style for this buildfile type."
 , \"\\n\"
 , \"distclean: doclean\\n\"
 , \"\\t$(call doit,distclean,$(dirs))\\n\"
-, \"\\trm -f core core.* $(TARGETS) *~ *.dep\\n\"
+, \"\\trm -f core core.* $(TARGETS) *~ $(if $(sufdep),*.$(sufdep))\\n\"
 , \"\\n\"
 , \"clean: doclean\\n\"
 , \"\\t$(call doit,clean,$(dirs))\\n\"
 , \"\\n\"
 , \"doclean: \\n\"
-, \"\\trm -f $(USEROBJ)\\n\"
+, \"\\t$(if $(USEROBJ),rm -f $(USEROBJ))\\n\"
 , \"\\n\"
-, \"######################################################\\n\"
-, \"##  Example library setup definition for XML libraries\\n\"
-, \"######################################################\\n\"
+, \"################################################\\n\"
+, \"##  Example link library setup with alternatives\\n\"
+, \"################################################\\n\"
 , \"\\n\"
+, \"# Make this a one time only definition\\n\"
+, \"\\n\"
+, \"ifndef USE_XML_MAK\\n\"
+, \"USE_XML_MAK:=1\\n\"
+, \"\\n\"
+, \"ifdef ($(XMLLIB))\\n\"
 , \"ifeq ($(XMLLIB),EXPAT)\\n\"
-, \"DOMFLAGS:=-DEXPAT\\n\"
-, \"DOMLIBS:=-lexpat\\n\"
+, \"CPPFLAGS+=-DEXPAT\\n\"
+, \"LDFLAGS+=-lexpat\\n\"
 , \"endif\\n\"
 , \"\\n\"
 , \"ifeq ($(XMLLIB),XML2)\\n\"
-, \"DOMFLAGS:=-DXML2 `xml2-config --cflags`\\n\"
-, \"DOMLIBS:=`xml2-config --libs`\\n\"
+, \"CPPFLAGS+=-DXML2 `xml2-config --cflags`\\n\"
+, \"LDFLAGS+=`xml2-config --libs`\\n\"
 , \"endif\\n\"
 , \"\\n\"
-, \"######################\\n\"
-, \"##  Combine flags sets\\n\"
-, \"######################\\n\"
+, \"endif # XMLLIB\\n\"
 , \"\\n\"
-, \"ifeq ($(VARIANT),DEBUG)\\n\"
-, \"VARIANTFLAGS=$(STDDEBUGFLAGS) $(DEBUGFLAGS)\\n\"
-, \"else\\n\"
-, \"VARIANTFLAGS=$(STDOPTFLAGS)\\n\"
-, \"endif\\n\"
-, \"\\n\"
-, \"CCFLAGS=$(VARIANTFLAGS) $(STDCCFLAGS) $(DOMFLAGS) $(USERFLAGS) $(USERHDRS)\\n\"
-, \"CCCFLAGS=$(VARIANTFLAGS) $(STDCCCFLAGS) $(DOMFLAGS) $(USERFLAGS) $(USERHDRS)\\n\"
-, \"FORTRANFLAGS=$(VARIANTFLAGS) $(DOMFLAGS)\\n\"
-, \"LDFLAGS=$(VARIANTFLAGS) $(STDLDFLAGS) $(DOMLIBS) $(USERLDFLAGS)\\n\"
-, \"SHRFLAGS:=$(STDSHRFLAGS)\\n\"
-, \"SHRXFLAGS:=$(STDSHRXFLAGS)\\n\"
-, \"\\n\"
-, \"##############\\n\"
-, \"## Unify Vars\\n\"
-, \"##############\\n\"
-, \"CFLAGS = $(CCFLAGS)\\n\"
-, \"CXXFLAGS = $(CCCFLAGS)\\n\"
-, \"FFLAGS = $(FORTANFLAGS)\\n\"
-, \"FC = $(FORTRAN)\\n\"
-, \"\\n\"
+, \"endif # USE_XML_MAK\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
 , \"###############\\n\"
@@ -2163,46 +2338,69 @@ using this string.
 
       attribute 183209 "default_rules_cl"
 	class_attribute const_attribute private explicit_type "str"
-	init_value "{ \"#########################################\\n\"
+	init_value "{ \"##########################################\\n\"
 , \"##  Definitions for Microsoft VC compiler\\n\"
 , \"#########################################\\n\"
+, \"ifndef M_CL_MAK\\n\"
+, \"M_CL_MAK:=1\\n\"
 , \"\\n\"
 , \"CCC:=cl\\n\"
 , \"CXX:=cl\\n\"
-, \"FORTRAN:=\\n\"
-, \"STDCCFLAGS:=/Za /errorReport:none\\n\"
-, \"STDCCCFLAGS:=/GR /Gm- /EHsc /Za /Zc:forScope /errorReport:none\\n\"
-, \"STDOPTFLAGS:=/O2\\n\"
-, \"STDDEBUGFLAGS:=/Od /Zi\\n\"
-, \"STDLDFLAGS:=/MT\\n\"
-, \"STDSHRFLAGS:=\\n\"
-, \"STDSHRXFLAGS:=\\n\"
+, \"FORTRAN:=fc\\n\"
+, \"CPPFLAGS?=\\n\"
+, \"CCFLAGS+=/Za /errorReport:none\\n\"
+, \"CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /errorReport:none\\n\"
+, \"\\n\"
+, \"ifeq ($(VARIANT),DEBUG)\\n\"
+, \"OPTFLAGS+=/Od /Zi\\n\"
+, \"LDFLAGS+=/MTd\\n\"
+, \"else\\n\"
+, \"OPTFLAGS+=/O2\\n\"
+, \"LDFLAGS+=/MT\\n\"
+, \"endif\\n\"
+, \"\\n\"
+, \"CCFLAGS+=$(OPTFLAGS)\\n\"
+, \"CCCFLAGS+=$(OPTFLAGS)\\n\"
+, \"FORTRANFLAGS?=\\n\"
+, \"LDFLAGS+=$(OPTFLAGS)\\n\"
+, \"\\n\"
 , \"FORTRANLIBS:=\\n\"
 , \"OPENMP:=/openmp\\n\"
-, \"# internal flags\\n\"
-, \"compileonly:=# No flag need for compilation only\\n\"
-, \"outputfile:=/OUT:\\n\"
-, \"OUTPUT_OPTION:=/Fo:\\n\"
 , \"\\n\"
-, \"%.obj: %.cpp\\n\"
+, \"endif # end of once-only\\n\"
+, \"\\n\"
 , \"#  commands to execute (built-in):\\n\"
-, \"	$(COMPILE.cpp) $(OUTPUT_OPTION)$@ $<\\n\"
+, \"define _makeobj_\\n\"
+, \"%$$(sufobj): %$(1) ; $$(COMPILE$(1)) /Fo$$@ $$<\\n\"
+, \"endef\\n\"
 , \"\\n\"
-, \"%.obj: %.cc\\n\"
-, \"#  commands to execute (built-in):\\n\"
-, \"	$(COMPILE.cc) $(OUTPUT_OPTION)$@ $<\\n\"
+, \"$(foreach suff,.c .cc .cpp .cxx,$(eval $(call _makeobj_,$(suff))))\\n\"
 , \"\\n\"
-, \"%.obj: %.c\\n\"
-, \"#  commands to execute (built-in):\\n\"
-, \"	$(COMPILE.c) $(OUTPUT_OPTION)$@ $<\\n\"
+, \"#  commands to create dummy make dependency files\\n\"
+, \"define _makedep_\\n\"
+, \"%$(sufdep): %$(1)\\n\"
+, \"        @echo # Dummy file  $$@\\n\"
+, \"endef\\n\"
 , \"\\n\"
+, \"$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))\\n\"
+, \"\\n\"
+, \"_makeobj_:=\\n\"
+, \"_makedep_:=\\n\"
+, \"\\n\"
+, \"define do_link_exe\\n\"
+, \"$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /Fe$(1) $(2)\\n\"
+, \"endef\\n\\n\"
+, \"define do_link_shr\\n\"
+, \"$(1) : CCFLAGS+=$(SHRFLAGS)\\n\"
+, \"$(1) : CCCFLAGS+=$(SHRFLAGS)\\n\"
+, \"$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /dll /Fe$(1) $(2)\\n\"
+, \"endef\\n\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
 , \"###############\\n\"
 , \"# Local Variables:\\n\"
 , \"# mode: makefile\\n\"
 , \"# End:\\n\"
-, \"\\n\"
 , 0 }
 "
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
@@ -2224,37 +2422,55 @@ using this string.
 	init_value "{ \"####################################\\n\"
 , \"##  Definitions for GNU g++ compiler\\n\"
 , \"####################################\\n\"
+, \"ifndef M_GCC_MAK\\n\"
+, \"M_GCC_MAK:=1\\n\"
+, \"##\\n\"
+, \"## Define compiler variables once only.\\n\"
+, \"## \\n\"
+, \"CCC?=g++\\n\"
+, \"FORTRAN?=gfortran\\n\"
+, \"CPPFLAGS?=\\n\"
+, \"CCFLAGS+=-Wall -std=c99\\n\"
+, \"CCCFLAGS+=-Wall -std=c++98\\n\"
 , \"\\n\"
-, \"## For linux\\n\"
-, \"CCC:=g++\\n\"
-, \"FORTRAN:=gfortran\\n\"
-, \"STDCCFLAGS:=-Wall -std=c99 -pedantic\\n\"
-, \"STDCCCFLAGS:=-Wall -std=c++98 -Weffc++\\n\"
-, \"STDOPTFLAGS:=-O2 -march=native\\n\"
-, \"STDDEBUGFLAGS:=-O0 -Wall -DDEBUG=1\\n\"
-, \"STDLDFLAGS:=\\n\"
-, \"STDSHRFLAGS:=-fpic\\n\"
-, \"STDSHRXFLAGS:=-shared -Wl,-soname,\\n\"
+, \"ifeq ($(VARIANT),DEBUG)\\n\"
+, \"OPTFLAGS+=-O0 -DDEBUG=1\\n\"
+, \"CCFLAGS+=-pedantic\\n\"
+, \"CCCFLAGS+=-Weffc++\\n\"
+, \"else\\n\"
+, \"OPTFLAGS+=-O2 -march=native\\n\"
+, \"endif\\n\"
+, \"\\n\"
+, \"CCFLAGS+=$(OPTFLAGS)\\n\"
+, \"CCCFLAGS+=$(OPTFLAGS)\\n\"
+, \"FORTRANFLAGS+=$(OPTFLAGS)\\n\"
+, \"LDFLAGS?=\\n\"
+, \"SHRFLAGS?=-fpic\\n\"
+, \"\\n\"
 , \"FORTRANLIBS:=-lgfortran\\n\"
 , \"OPENMP:=-fopenmp\\n\"
-, \"# internal flags\\n\"
-, \"compileonly:=-c\\n\"
-, \"outputfile:=-o # need whitspace\\n\"
 , \"\\n\"
-, \"%$(sufdep): %.c\\n\"
-, \"\\tset -e; $(CC) -MM $(CCFLAGS) $< \\\\\\n\"
-, \"\\t| sed 's/\\\\($*\\\\)\\\\$(sufobj)[ :]*/\\\\1$(sufobj) $@ : /g' > $@; \\\\\\n\"
-, \"\\t[ -s $@ ] || rm -f $@\\n\"
+, \"endif\\n\"
+, \"# END ONCE-ONLY\\n\"
 , \"\\n\"
-, \"%$(sufdep): %.cc\\n\"
-, \"\\tset -e; $(CCC) -MM $(CCCFLAGS) $< \\\\\\n\"
-, \"\\t| sed 's/\\\\($*\\\\)\\\\$(sufobj)[ :]*/\\\\1$(sufobj) $@ : /g' > $@; \\\\\\n\"
-, \"\\t[ -s $@ ] || rm -f $@\\n\"
+, \"define _makedep_\\n\"
+, \"%$(sufdep): %$(1)\\n\"
+, \"\\tset -e; $$(CCC) -MM $$(CPPFLAGS) $$< \\\\\\n\"
+, \"\\t| sed 's/\\\\($$*\\\\)$$(sufobj)[ :]*/\\\\1$$(sufobj) $$@ : /g' > $$@;\\\\\\n\"
+, \"\\t[ -s $$@ ] || rm -f $$@\\n\"
+, \"endef\\n\"
 , \"\\n\"
-, \"%$(sufdep): %.cpp\\n\"
-, \"\\tset -e; $(CCC) -MM $(CCCFLAGS) $< \\\\\\n\"
-, \"\\t| sed 's/\\\\($*\\\\)\\\\$(sufobj)[ :]*/\\\\1$(sufobj) $@ : /g' > $@; \\\\\\n\"
-, \"\\t[ -s $@ ] || rm -f $@\\n\"
+, \"$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))\\n\"
+, \"_makedep_:=\\n\"
+, \"\\n\"
+, \"define do_link_exe\\n\"
+, \"$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) -o $(1) -Wl,--start-group $(2) -Wl,--end-group\\n\"
+, \"endef\\n\"
+, \"define do_link_shr\\n\"
+, \"$(1) : CCFLAGS+=$(SHRFLAGS)\\n\"
+, \"$(1) : CCCFLAGS+=$(SHRFLAGS)\\n\"
+, \"$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) -shared -Wl,-soname,$(1) -o $(1) -Wl,--start-group $(2) -Wl,--end-group\\n\"
+, \"endef\\n\"
 , \"\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
@@ -2262,9 +2478,7 @@ using this string.
 , \"# Local Variables:\\n\"
 , \"# mode: makefile\\n\"
 , \"# End:\\n\"
-, \"\\n\"
-, 0 }
-"
+, 0 }"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -2281,60 +2495,74 @@ using this string.
 
       attribute 183081 "default_rules_unix"
 	class_attribute const_attribute private explicit_type "str"
-	init_value "{ \"#############################\\n\"
+	init_value "{ \" # Definition of for loop in local shell.\\n\"
+, \"define doit\\n\"
+, \"for subdir in $(2); do $(MAKE) -C $${subdir}  $(1); done\\n\"
+, \"endef\\n\"
+, \"\\n\"
+, \"# MAKE MOST VARIABLES ONCE-ONLY\\n\"
+, \"ifndef M_UNIX_MAK\\n\"
+, \"M_UNIX_MAK:=1\\n\"
+, \"#############################\\n\"
 , \"##  Default install locations\\n\"
 , \"#############################\\n\"
 , \"PREFIX=$(ROOTDIR)/installdir\\n\"
-, \"EXEC_PREFIX=$(PREFIX)\\n\"
-, \"BINDIR=$(EXEC_PREFIX)/bin\\n\"
-, \"SBINDIR=$(EXEC_PREFIX)/sbin\\n\"
-, \"LIBEXECDIR=$(EXEC_PREFIX)/libexec\\n\"
-, \"LIBDIR=$(EXEC_PREFIX)/lib\\n\"
-, \"DATAROOTDIR=$(PREFIX)/share\\n\"
-, \"DATADIR=$(PREFIX)/share\\n\"
-, \"SYSCONFDIR=/etc\\n\"
-, \"SHAREDSTATEDIR=$(PREFIX)/com\\n\"
-, \"LOCALSTATEDIR=$(PREFIX)/var\\n\"
-, \"INCLUDEDIR=$(PREFIX)/include\\n\"
-, \"LOCALEDIR=$(DATAROOTDIR)/locale\\n\"
-, \"DOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)\\n\"
-, \"INFODIR=$(DATAROOTDIR)/info\\n\"
-, \"MANDIR=$(DATAROOTDIR)/man\\n\"
-, \"HTMLDIR=$(DOCDIR)\\n\"
-, \"DVIDIR=$(DOCDIR)\\n\"
-, \"PDFDIR=$(DOCDIR)\\n\"
-, \"PSDIR=$(DOCDIR)\\n\"
-, \"MAN1DIR=$(MANDIR)/man1\\n\"
-, \"MAN2DIR=$(MANDIR)/man2\\n\"
-, \"MAN3DIR=$(MANDIR)/man3\\n\"
-, \"MAN4DIR=$(MANDIR)/man4\\n\"
-, \"MAN5DIR=$(MANDIR)/man5\\n\"
-, \"MAN6DIR=$(MANDIR)/man6\\n\"
-, \"MAN7DIR=$(MANDIR)/man7\\n\"
-, \"MAN8DIR=$(MANDIR)/man8\\n\"
-, \"MANNDIR=$(MANDIR)/mann\\n\"
+, \"EXEC_PREFIX?=$(PREFIX)\\n\"
+, \"BINDIR?=$(EXEC_PREFIX)/bin\\n\"
+, \"SBINDIR?=$(EXEC_PREFIX)/sbin\\n\"
+, \"LIBEXECDIR?=$(EXEC_PREFIX)/libexec\\n\"
+, \"LIBDIR?=$(EXEC_PREFIX)/lib\\n\"
+, \"DATAROOTDIR?=$(PREFIX)/share\\n\"
+, \"DATADIR?=$(PREFIX)/share\\n\"
+, \"SYSCONFDIR?=$(PREFIX)/etc\\n\"
+, \"SHAREDSTATEDIR?=$(PREFIX)/com\\n\"
+, \"LOCALSTATEDIR?=$(PREFIX)/var\\n\"
+, \"INCLUDEDIR?=$(PREFIX)/include\\n\"
+, \"LOCALEDIR?=$(DATAROOTDIR)/locale\\n\"
+, \"DOCDIR?=$(DATAROOTDIR)/doc/$(VERSIONDIR)\\n\"
+, \"INFODIR?=$(DATAROOTDIR)/info\\n\"
+, \"MANDIR?=$(DATAROOTDIR)/man\\n\"
+, \"HTMLDIR?=$(DOCDIR)\\n\"
+, \"DVIDIR?=$(DOCDIR)\\n\"
+, \"PDFDIR?=$(DOCDIR)\\n\"
+, \"PSDIR?=$(DOCDIR)\\n\"
+, \"MAN1DIR?=$(MANDIR)/man1\\n\"
+, \"MAN2DIR?=$(MANDIR)/man2\\n\"
+, \"MAN3DIR?=$(MANDIR)/man3\\n\"
+, \"MAN4DIR?=$(MANDIR)/man4\\n\"
+, \"MAN5DIR?=$(MANDIR)/man5\\n\"
+, \"MAN6DIR?=$(MANDIR)/man6\\n\"
+, \"MAN7DIR?=$(MANDIR)/man7\\n\"
+, \"MAN8DIR?=$(MANDIR)/man8\\n\"
+, \"MANNDIR?=$(MANDIR)/mann\\n\"
 , \"\\n# Flags for the install targets.\\n\"
-, \"BINIFLAGS:=-m 755\\n\"
-, \"FILEIFLAGS:=-m 644\\n\"
-, \"LIBIFLAGS:=-m 644 \\n\"
-, \"MANIFLAGS:=-m 644\\n\"
+, \"BINIFLAGS?=-m 755\\n\"
+, \"FILEIFLAGS?=-m 644\\n\"
+, \"LIBIFLAGS?=-m 644 \\n\"
+, \"MANIFLAGS?=-m 644\\n\"
+, \"INSTALL?=install\\n\"
 , \"\\n# Standard suffixes\\n\"
 , \"sufobj:=.o\\n\"
 , \"sufexe:=\\n\"
 , \"suflib:=.a\\n\"
-, \"sufshr:=.so.0\\n\"
-, \"sufdep:=.dep\\n\"
-, \"\\n# Definition of for loop in local shell.\\n\"
-, \"define doit\\n\"
-, \"for subdir in $(2); do $(MAKE) -C $${subdir}  $(1); done\\n\"
-, \"endef\\n\"
+, \"sufshr:=.so\\n\"
+, \"sufdep:=.d\\n\"
+, \"\\n# Path separator\\n\"
+, \"SLASH?=/\\n\"
+, \"\\n# END OF ONCE-ONLY.\\n\"
+, \"endif\\n\\n\"
+, \"define do_install\\n\"
+, \"install:: $(1) ; $$(INSTALL) -d $$($(2)DIR) ; $$(INSTALL) $$($(or $(3),$(2))IFLAGS) $(1) $$($(2)DIR)/$(1)\\n\"
+, \"endef\\n\\n\"
+, \"define do_archive\\n\"
+, \"$(1): $(2) ; $$(AR) $$(ARFLAGS) $(1) $(2)\\n\"
+, \"endef\\n\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
 , \"###############\\n\"
 , \"# Local Variables:\\n\"
 , \"# mode: makefile\\n\"
 , \"# End:\\n\"
-, \"\\n\"
 , 0 }
 "
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
@@ -2353,47 +2581,28 @@ using this string.
 
       attribute 183337 "default_rules_winnt"
 	class_attribute const_attribute private explicit_type "str"
-	init_value "{ \"#############################\\n\"
-, \"##  Default install locations\\n\"
-, \"#############################\\n\"
-, \"PREFIX=$(ROOTDIR)\\\\$(VERSIONDIR)\\n\"
-, \"EXEC_PREFIX=$(PREFIX)\\n\"
-, \"BINDIR=$(EXEC_PREFIX)\\n\"
-, \"SBINDIR=$(EXEC_PREFIX)\\n\"
-, \"LIBEXECDIR=$(EXEC_PREFIX)\\n\"
-, \"LIBDIR=$(EXEC_PREFIX)\\n\"
-, \"DATAROOTDIR=$(PREFIX)\\n\"
-, \"DATADIR=$(PREFIX)\\n\"
-, \"SYSCONFDIR=$(PREFIX)\\n\"
-, \"SHAREDSTATEDIR=$(PREFIX)\\n\"
-, \"LOCALSTATEDIR=$(PREFIX)\\n\"
-, \"INCLUDEDIR=$(PREFIX)\\\\include\\n\"
-, \"LOCALEDIR=$(DATAROOTDIR)\\\\locale\\n\"
-, \"DOCDIR=$(DATAROOTDIR)\\\\doc\\n\"
-, \"INFODIR=$(DATAROOTDIR)\\\\info\\n\"
-, \"MANDIR=$(DATAROOTDIR)\\\\man\\n\"
-, \"HTMLDIR=$(DOCDIR)\\n\"
-, \"DVIDIR=$(DOCDIR)\\n\"
-, \"PDFDIR=$(DOCDIR)\\n\"
-, \"PSDIR=$(DOCDIR)\\n\"
-, \"MAN1DIR=$(MANDIR)\\\\man1\\n\"
-, \"MAN2DIR=$(MANDIR)\\\\man2\\n\"
-, \"MAN3DIR=$(MANDIR)\\\\man3\\n\"
-, \"MAN4DIR=$(MANDIR)\\\\man4\\n\"
-, \"MAN5DIR=$(MANDIR)\\\\man5\\n\"
-, \"MAN6DIR=$(MANDIR)\\\\man6\\n\"
-, \"MAN7DIR=$(MANDIR)\\\\man7\\n\"
-, \"MAN8DIR=$(MANDIR)\\\\man8\\n\"
-, \"MANNDIR=$(MANDIR)\\\\mann\\n\"
+	init_value "{ \"# Definition of for loop in local shell.\\n\"
+, \"define doit\\n\"
+, \"for %%W in ( $(2) ) do ( $(MAKE) -C %%W $(1) )\\n\"
+, \"endef\\n\"
+, \"\\n\"
+, \"ifndef M_WINNT_MAK\\n\"
+, \"M_WINNT_MAK:=1\\n\"
 , \"\\n# Standard Suffixes\\n\"
 , \"sufobj:=.obj\\n\"
 , \"sufexe:=.exe\\n\"
 , \"sufdep:=.dep\\n\"
 , \"suflib:=.lib\\n\"
 , \"sufshr:=.dll\\n\"
-, \"\\n# Definition of for loop in local shell.\\n\"
-, \"define doit\\n\"
-, \"for %%W in ( $(2) ) do ( $(MAKE) -C %%W $(1) )\\n\"
+, \"\\n# Path separator\\n\"
+, \"SLASH?=\\\\\\n\"
+, \"\\n# END OF ONCE-ONLY.\\n\"
+, \"endif\\n\\n\"
+, \"define do_install\\n\"
+, \"install:: $(1) ; $$(MKDIR) /P $$($(2)DIR) && $$(COPY) $(1) $$($(2)DIR)/$(1)\\n\"
+, \"endef\\n\\n\"
+, \"define do_archive\\n\"
+, \"$(1): $(2) ; $$(AR) $$(ARFLAGS) $(1) $(2)\\n\"
 , \"endef\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
@@ -2401,7 +2610,6 @@ using this string.
 , \"# Local Variables:\\n\"
 , \"# mode: makefile\\n\"
 , \"# End:\\n\"
-, \"\\n\"
 , 0 }
 "
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
@@ -2790,6 +2998,30 @@ Responsibilites
 	
 	
 	comment "no assign"
+      end
+
+      operation 236457 "process_flags"
+	private explicit_return_type "void"
+	nparams 4
+	  param in name "a_inc_list" explicit_type "unistr"
+	  param in name "a_flag_list" explicit_type "unistr"
+	  param out name "a_cppflags" explicit_type "unistr"
+	  param out name "a_cflags" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} & ${p2}${v2}, ${t3} & ${p3}${v3}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} & ${p2}, ${t3} & ${p3}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
+"
+	
+	
+	
+	comment "Process a_inc_list and a_flag_list into preprocessor
+and compiler flag sets."
       end
 
       operation 162089 "process_hdrs"
@@ -5316,6 +5548,14 @@ factory method for creating style specific build_writers.
 
 People implementing new build-system styles need to edit set_style 
 to add the new build_writer derived class to the system."
+      classrelation 171945 // <generalisation>
+	relation 171177 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 171945 // <generalisation>
+	  b parent class_ref 159017 // basic_style
+      end
+
       classrelation 157993 // <dependency>
 	relation 157225 -_->
 	  a default
@@ -5369,46 +5609,6 @@ to add the new build_writer derived class to the system."
 	
       end
 
-      attribute 161577 "comment_string"
-	const_attribute public explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 159145 "end_phrase"
-	const_attribute public explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "A string indicating the end of a labelled part.
-
-The actual end-phrase will be
-end_phrase () or \"end_phrase () {label}\" where label is
-the name of the part. Note the \"{\" \"}\" are part of phrase."
-      end
-
-      attribute 159273 "start_phrase"
-	const_attribute public explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "A string denoting the starting point of a part.
-
-The actual start-phrase will be
-\"start_phrase ()  {label}\" where label is the name of the part.
-Note the \"{\" \"}\" are part of phrase."
-      end
-
       attribute 162985 "factory_"
 	private type class_ref 149545 // write_factory_fn_t
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -5450,25 +5650,6 @@ ${body}
 	
 	
 	comment "Create a build writer appropriate for the current style."
-      end
-
-      operation 195625 "comment_text"
-	const public explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_text" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Prepend comment indicators to each line of a_text. Also adds a terminal newline if
-a_text does not end in a newline."
       end
 
       operation 196649 "get_style"
@@ -5997,6 +6178,127 @@ ${body}
 	idl ""
       end
     end
+
+    class 158889 "wix_installer"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Class to generate WiX installer document."
+      attribute 199209 "style_"
+	class_attribute const_attribute private type class_ref 159017 // basic_style
+	init_value "(\"<!--\", -->\", \"<!-- START\", \"-->\", \"<!-- END\", \"-->\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The style for wix documents"
+      end
+
+      attribute 197673 "wix_document"
+	private type class_ref 147113 // compound_artifact
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The prototype WIX document"
+      end
+
+      operation 234537 "do_install"
+	public explicit_return_type ""
+	nparams 4
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	  param in name "a_loc_var" explicit_type "unistr"
+	  param in name "a_type" type class_ref 139305 // install_type
+	  param in name "a_isdoc" explicit_type "bool"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "add installation entry"
+      end
+
+      operation 235817 "wix_installer"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "a_project" type class_ref 7937 // UmlPackage
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile} 
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 235945 "~wix_installer"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}${volatile} 
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 236073 "wix_installer"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 158889 // wix_installer
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+"
+	
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 236201 "operator="
+	private return_type class_ref 158889 // wix_installer
+	nparams 1
+	  param in name "source" type class_ref 158889 // wix_installer
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	
+	
+	
+	
+	comment "no assign"
+      end
+    end
   end
 
   deploymentview 128041 "butter"
@@ -6068,19 +6370,19 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 152233 // style
-	artifact_ref 142889 // bouml
-	artifact_ref 165929 // cmake_writer
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 152489 // build_writer
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 132521 // location
-	artifact_ref 154025 // main
 	artifact_ref 135209 // bjam_writer
-	artifact_ref 134057 // qt
-	artifact_ref 150825 // utility
-	artifact_ref 138793 // item_traits
+	artifact_ref 137641 // gmake_writer
 	artifact_ref 136361 // jam_writer
+	artifact_ref 165929 // cmake_writer
+	artifact_ref 154025 // main
+	artifact_ref 132521 // location
+	artifact_ref 150825 // utility
+	artifact_ref 142889 // bouml
+	artifact_ref 152489 // build_writer
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 134057 // qt
+	artifact_ref 138793 // item_traits
+	artifact_ref 152233 // style
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
@@ -6088,93 +6390,93 @@ ${namespace_end}"
     artifact 148393 "butter.plugout"
       stereotype "file"
       associated_artifacts
-	artifact_ref 152233 // style
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 5120 // anItemKind
+	artifact_ref 4992 // aVisibility
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5889 // UmlClassMember
 	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 768 // CppSettings
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 4480 // UmlCom
 	artifact_ref 6273 // UmlArtifact
 	artifact_ref 5505 // UmlAttribute
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 6400 // UmlParameter
+	artifact_ref 5120 // anItemKind
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 5633 // UmlClass
 	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 7297 // UmlNode
-	artifact_ref 6657 // UmlDeploymentDiagram
 	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 1152 // JavaSettings
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 4352 // UmlBaseUseCaseView
 	artifact_ref 640 // UmlBaseClassItem
 	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 4480 // UmlCom
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 4864 // aDirection
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 5633 // UmlClass
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 152489 // build_writer
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 132521 // location
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 154025 // main
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 7169 // UmlItem
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 4992 // aVisibility
-	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 6913 // UmlDiagram
 	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 150825 // utility
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 138793 // item_traits
+	artifact_ref 5249 // UmlFormalParameter
 	artifact_ref 136361 // jam_writer
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 154025 // main
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 132521 // location
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 150825 // utility
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 4864 // aDirection
+	artifact_ref 768 // CppSettings
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 152489 // build_writer
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 7297 // UmlNode
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 7169 // UmlItem
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 138793 // item_traits
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 152233 // style
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter2/butter.pro"
@@ -6630,6 +6932,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_classes
+	class_ref 159017 // basic_style
 	class_ref 148393 // style
       end
     end
@@ -6694,10 +6997,10 @@ ${namespace_end}
     artifact 164777 "test_path"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 150953 // path_test
-	artifact_ref 142889 // bouml
-	artifact_ref 134057 // qt
 	artifact_ref 150825 // utility
+	artifact_ref 142889 // bouml
+	artifact_ref 150953 // path_test
+	artifact_ref 134057 // qt
       end
       comment "Simple program to exercise pathcmp class."
     end

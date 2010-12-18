@@ -1,21 +1,4 @@
 class style
-!!!195625.cpp!!!	comment_text(in a_text : unistr) : unistr
-QString Result;
-QTextOStream os_ (&Result);
-int s_ = 0; // start position
-for (int e_ = a_text.find ('\n', s_); e_ > 0; e_ = a_text.find ('\n', s_))
-{
-  os_ << comment_string;
-  os_ << a_text.mid (s_, e_ - s_);
-  s_ = e_ + 1;
-}
-if (a_text.at (a_text.length () - 1) != '\n')
-{
-  os_ << comment_string;
-  os_ << a_text.mid (s_);
-}
-os_ << '\n';
-return Result;
 !!!196649.cpp!!!	get_style() : style
 BUTTER_REQUIRE (NULL != style_.get (), "Programming error, attempt to get style before it was set.");
 return *style_.get ();
@@ -77,8 +60,6 @@ else
                      , &butter::jam_writer::create));
 }
 !!!198185.cpp!!!	style(in a_comment : unistr, in a_end : unistr, in a_start : unistr, in a_factory : write_factory_fn_t)
-: comment_string (a_comment)
-, end_phrase (a_end)
-, start_phrase (a_start)
+: basic_style (a_comment, "", a_end, "", a_start, "")
 , factory_ (a_factory)
 {}

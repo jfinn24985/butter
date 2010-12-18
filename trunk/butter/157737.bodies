@@ -193,11 +193,14 @@ if (a_type == other)
   {
     a_os << a_ldflags << " ";
   }
-  a_os << "${" << other_type_ << "FLAGS} ${" << this->target_NAME_
-      << "} ${" << this->target_NAME_ << "_SRC})\n\n"
-      << "set_directory_properties (PROPERTIES\n"
-      << "\tADDITIONAL_MAKE_CLEAN_FILES ${"
-      << this->target_NAME_ << "})\n\n";
+  a_os << "${" << other_type_ << "FLAGS} ${CMAKE_CURRENT_BINARY_DIR}/${" << this->target_NAME_
+      << "} ${" << this->target_NAME_ << "_SRC}\t\n"
+      << "WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})\n"
+      << "set_directory_properties (PROPERTIES\n\tADDITIONAL_MAKE_CLEAN_FILES ${"
+      << this->target_NAME_ << "})\n"
+      << "add_custom_target (${" << this->target_NAME_
+      << "}_TARGET ALL\n\tDEPENDS ${" << this->target_NAME_
+      << "})\n";
 }
 else
 {
@@ -369,13 +372,14 @@ if (item_traits::property_search (a_item
     , item_traits::butter_ldflags_name, value_))
 {
   Result = true;
-  os_ << "set (" << this->project_name_ << "_USER_LDFLAGS " << value_ << ")\n";
+  os_ << "set (CMAKE_EXE_LINKER_FLAGS " << value_
+      << "\n\tCACHE STRING \"Project-wide linker flags.\" FORCE)\n";
 }
 if (item_traits::property_search (a_item
     , item_traits::butter_flags_name, value_))
 {
   Result = true;
-  os_ << "set (" << this->project_name_ << "_USER_FLAGS " << value_ << ")\n";
+  os_ << "add_definitions (" << value_ << ")\n";
 }
 if (Result)
 {
