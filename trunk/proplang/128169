@@ -1,6 +1,6 @@
 format 66
 "Executable" // Executable
-  revision 9
+  revision 10
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -153,7 +153,7 @@ Justin Finnerty
 This is a test of building an \"other\" library."
     end
 
-    artifact 131625 "program.1"
+    artifact 131625 "program.man"
       stereotype "library"
       associated_artifacts
 	artifact_ref 131497 // program.t2t

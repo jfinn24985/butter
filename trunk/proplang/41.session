@@ -5,7 +5,7 @@ diagrams
 end
 show_stereotypes
 selected 
-  package_ref 128041 // Library
+  package_ref 128169 // Executable
 open
   deploymentview_ref 129321 // Build
 end
