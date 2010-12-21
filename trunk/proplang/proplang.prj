@@ -1,8 +1,8 @@
 format 66
 "proplang"
-  revision 8
+  revision 9
   modified_by 41 "finnerty"
-  cpp_root_dir "/tmp/proplang/output/include/"
+  cpp_root_dir "output/include/"
 
 
   

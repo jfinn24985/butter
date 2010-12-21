@@ -1,6 +1,6 @@
 format 66
 "Executable" // Executable
-  revision 10
+  revision 11
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -127,8 +127,8 @@ int main (int argc, const char** argv)
     artifact 128297 "program"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128041 // example_exe
 	artifact_ref 128681 // library
+	artifact_ref 128041 // example_exe
       end
       ncouples 4
       key "butter install" value "SBINDIR"
@@ -212,8 +212,7 @@ C     [5] When equal print result and stop
 	artifact_ref 133033 // fortran.f
 	artifact_ref 134313 // fortmain
       end
-      ncouples 4
-      key "butter compiler" value "FORTRAN"
+      ncouples 3
       key "butter flags" value "-DEXE_F_FLAG"
       key "butter include" value "exe_f_include"
       key "butter ldflags" value "-Lexe_f_ldflags -lgfortran"

@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 2
+  revision 3
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -101,5 +101,10 @@ T2TFLAGS+=-toc -t man -o
       comment "using gfortran ;"
     end
 
+    artifact 135593 "t2t.cmake"
+      stereotype "document"
+      associated_artifacts
+      end
+    end
   end
 end

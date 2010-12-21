@@ -5,8 +5,10 @@ diagrams
 end
 show_stereotypes
 selected 
-  package_ref 128169 // Executable
+  package_ref 129 // proplang
 open
+  
+  package_ref 128169 // Executable
   deploymentview_ref 129321 // Build
 end
 end
