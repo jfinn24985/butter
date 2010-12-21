@@ -269,13 +269,21 @@ if (item_traits::property_value (*item_, item_traits::butter_log_name, level_))
 // Initialisation
 std::auto_ptr< location > Result; // The base of the location tree (and return value).
 butter::location * cache_ = NULL; // Cache location pointer used when adding UmlPackages.
-const butter::pathcmp root_dir_ (CppSettings::rootDir ()); // Project root dir.
-log::com.trace (log::warn, "<p><b>Please wait:</b> building target list for project <i>" 
+butter::pathcmp root_dir_ (CppSettings::rootDir ()); // Project root dir.
+log::com.trace (log::warn, "<p><b>Please wait:</b> building target list for project <i>"
         + const_cast< UmlItem& >(a_item).name () + "</i>.</p>");
+BUTTER_ALWAYS(! root_dir_.path ().isEmpty (), "<p><b>Error</b>Project C++ root directory is not set, please set it in the C++ generation dialog.</p>");
 // Ensure root directory exists.
+if (root_dir_.isRelative ())
+{
+  QFileInfo f_ (const_cast< UmlPackage * >(item_)->supportFile());
+  root_dir_.setPath(f_.dir().filePath(root_dir_.path ()));
+}
+log::com.trace (log::debug, "<p>Relative C++ root path expanded to: ["
+        + root_dir_.path () + "].</p>");
 if (! root_dir_.exists ())
 {
-  if (! root_dir_.mkdir (root_dir_.path ()))
+  if (! root_dir_.mkpath ())
   {
     QString msg_ ("<p><b>The project root directory <pre>[");
     msg_.append (root_dir_.path ());
@@ -303,7 +311,7 @@ if (! user_base_path_.isEmpty ())
   // Ensure directory exists.
   if (! base_path_.exists ())
   {
-    if (! base_path_.mkdir (base_path_.path ()))
+    if (! base_path_.mkpath ())
     {
       QString msg_ ("<p><b>The base directory <pre>[");
       msg_.append (base_path_.path ());
@@ -377,7 +385,7 @@ while (! item_stack_.isEmpty ())
     // Ensure directory exists.
     if (! pack_path_.exists ())
     {
-      if (! pack_path_.mkdir (pack_path_.path ()))
+      if (! pack_path_.mkpath ())
       {
         const QString msg_ ("<p><b>A package directory <pre>[" + pack_path_.path () + "]</pre> does not exist and could not be created</b>, please ensure that all packages have usable locations. Running the code generator first may avoid this error.</p>");
         throw std::runtime_error (msg_.utf8 ().data ());
