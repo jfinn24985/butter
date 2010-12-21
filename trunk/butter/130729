@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 84
+  revision 85
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -1069,6 +1069,26 @@ endmacro (add_t2t_target)
  "
     end
 
+    artifact 168361 "version.jam"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "rule svnver
+{
+  ALWAYS $(1) ;
+  NOTFILE $(1) ;
+  Depends all install main lib : $(1) ;
+  Clean clean : $(1) ;
+}
+actions ignore svnver
+{
+  echo \"#define\" $(2) \\\"`svnversion -n /home/finnerty/Office/Projects/butter/butter`\\\" > $(1:S=.new)
+  diff -q $(1) $(1:S=.new) || mv $(1:S=.new) $(1)
+}
+svnver \"include/version.h\" : \"BUTTER_SVN_VERSION_\" ;
+"
+    end
+
     artifact 162601 "RELEASE_NOTES"
       stereotype "document"
       associated_artifacts
@@ -1113,5 +1133,14 @@ October 2008 Release 1.0
 
 First beta release of the \"butter\" build system plug-out."
     end
+
+    artifact 168489 "Jamfile"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "include version.jam ;"
+    end
   end
+
+  package_ref 131881 // Version
 end
