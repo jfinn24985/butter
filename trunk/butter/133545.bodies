@@ -110,7 +110,7 @@ if (! a_cflags.isEmpty ())
   }
   else
   {
-    a_os << "<cxxflags>\"" << a_cflags << "\"\n\t";
+    a_os << "<cxxflags>\"" << a_cflags << "\" <cflags>\"" << a_cflags << "\"\n\t";
   }
 }
 // Handle share/static libraries
@@ -200,7 +200,7 @@ if (! proj_.second.contains ("using "))
   QString tmp_;
   if (item_traits::property_value (a_target, item_traits::butter_buildfile_name, tmp_))
   {
-    // This is a using directive; all definitions are assumed to be in the 
+    // This is a using directive; all definitions are assumed to be in the
     // given jamfile -> reset string
     proj_.second = QString ("#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\nusing " + tmp_ + " ;\n");
   }
@@ -228,7 +228,7 @@ if (! proj_.second.contains ("using "))
         }
         if (! cflags_.isEmpty ())
         {
-          proj_.second.append ("<cxxflags>\"" + cflags_ + "\" ");
+          proj_.second.append ("<cxxflags>\"" + cflags_ + "\" <cflags>\"" + cflags_ + "\" ");
         }
         proj_.second.append (";\n\n");
       }
@@ -242,9 +242,13 @@ QString content_;
 {
   QString base_include_ (a_base.full_path ().create_relative (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project))));
   QTextOStream os_ (&content_);
-  os_ << "# Include local constants\ninclude " << rules_name.section(' ', 0, 0) << " ;\n\n";
+  {
+    const int e_ = rules_name.find(' ');
+    QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
+    os_ << "# Include local constants\ninclude " << name_ << " ;\n\n";
+  }
   os_ << "# Set project's global settings\nproject " << project_name_;
-  os_ << "\n\t:  requirements <debug-symbols>on:<cxxflags>\"-DDEBUG=1\"\n\t";
+  os_ << "\n\t:  requirements <debug-symbols>on:<cxxflags>\"-DDEBUG=1\" <cflags>\"-DDEBUG=1\"\n\t";
   QString link_, flag_; // Needed arguments.
   find_hdr_link (a_project, base_include_, link_, flag_, section_name, false);
   if (! base_include_.isEmpty ())
@@ -262,7 +266,7 @@ QString content_;
   }
   if (! flag_.isEmpty ())
   {
-    os_ << "<cxxflags>\"" << flag_ << "\"\n\t";
+    os_ << "<cxxflags>\"" << flag_ << "\" <cxxflags>\"" << flag_ << "\"\n\t";
   }
   ///////////
   // Handle build directory with default to "build"

@@ -8,6 +8,7 @@ if (a_style == butter::bjam_writer::section_name)
   MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::bjam_writer::comment_string
                      , butter::bjam_writer::end_phrase
                      , butter::bjam_writer::start_phrase
+                     , butter::bjam_writer::section_name
                      , &butter::bjam_writer::create));
   log::com.trace (log::info, "<p>Using style <b>Boost Jam</b></p>");
 }
@@ -16,6 +17,7 @@ else if (a_style == butter::cmake_writer::section_name)
   MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::cmake_writer::comment_string
                      , butter::cmake_writer::end_phrase
                      , butter::cmake_writer::start_phrase
+                     , butter::cmake_writer::section_name
                      , &butter::cmake_writer::create));
   log::com.trace (log::info, "<p>Using style <b>CMake</b></p>");
 }
@@ -24,6 +26,7 @@ else if (a_style == butter::gmake_writer::section_name)
   MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::gmake_writer::comment_string
                      , butter::gmake_writer::end_phrase
                      , butter::gmake_writer::start_phrase
+                     , butter::gmake_writer::section_name
                      , &butter::gmake_writer::create));
   log::com.trace (log::info, "<p>Using style <b>Make</b></p>");
 }
@@ -57,9 +60,10 @@ else
   MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::jam_writer::comment_string
                      , butter::jam_writer::end_phrase
                      , butter::jam_writer::start_phrase
+                     , butter::jam_writer::section_name
                      , &butter::jam_writer::create));
 }
-!!!198185.cpp!!!	style(in a_comment : unistr, in a_end : unistr, in a_start : unistr, in a_factory : write_factory_fn_t)
-: basic_style (a_comment, "", a_end, "", a_start, "")
+!!!198185.cpp!!!	style(in a_comment : unistr, in a_end : unistr, in a_start : unistr, in a_name : unistr, in a_factory : write_factory_fn_t)
+: basic_style (a_comment, "", a_end, "", a_start, "", a_name)
 , factory_ (a_factory)
 {}

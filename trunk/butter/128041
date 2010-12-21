@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 150
+  revision 155
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -204,22 +204,35 @@ Note the \"{\" \"}\" are part of phrase."
 	comment "A string denoting the end-of-line for  the starting point of a part."
       end
 
+      attribute 200489 "name"
+	const_attribute public explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The name of the current style."
+      end
+
       operation 235689 "basic_style"
 	public explicit_return_type ""
-	nparams 6
+	nparams 7
 	  param in name "a_com_start" explicit_type "unistr"
 	  param in name "a_com_end" explicit_type "unistr"
 	  param in name "a_end_phr" explicit_type "unistr"
 	  param in name "a_end_end" explicit_type "unistr"
 	  param in name "a_start_phr" explicit_type "unistr"
 	  param in name "a_start_end" explicit_type "unistr"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}${)}${volatile}
+	  param in name "a_name" explicit_type "unistr"
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}, ${t6} ${p6}${)}${volatile}
 : comment_string(${p0})
 , end_comment_string(${p1})
 , end_phrase(${p2})
 , end_end_phrase(${p3})
 , start_phrase(${p4})
 , end_start_phrase(${p5})
+, name(${p6})
 {}
 "
 	
@@ -1061,6 +1074,25 @@ ${body}}
 and the next \"${\".  If no \"${\" is found then nothing is returned. Used
 to get style specific data from target artifact description fields."
       end
+
+      operation 237609 "find_replace"
+	class_operation public explicit_return_type "void"
+	nparams 3
+	  param inout name "a_str" explicit_type "unistr"
+	  param in name "find_char" explicit_type "char"
+	  param in name "rep_char" explicit_type "char"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract}
+{
+  for (unsigned int i(0); i < ${p0}.length(); ++i)
+  { a_str.constref(i) == ${p1} ? ${p0}.ref(i) = ${p2} : QChar (${p1}); }
+}
+"
+	
+	
+	
+	
+	comment "Replace every occurence of find_char with rep_char in a_str"
+      end
     end
 
     class 157737 "cmake_writer"
@@ -1215,6 +1247,7 @@ the style for this buildfile type."
 	init_value "{ \"#\\n\"
 , \"# local.cmake\\n\"
 , \"#\\n\"
+, \"set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG)\\n\"
 , \"#############################\\n\"
 , \"##  Default install locations\\n\"
 , \"#############################\\n\"
@@ -2259,8 +2292,8 @@ the style for this buildfile type."
 , \"##########################\\n\"
 , \"## Include compiler and OS\\n\"
 , \"##########################\\n\"
-, \"include $(ROOTDIR)/M_$(OS).mak\\n\"
-, \"include $(ROOTDIR)/M_$(CC).mak\\n\"
+, \"include $(ROOTDIR)$(or $(SLASH),/)M_$(OS).mak\\n\"
+, \"include $(ROOTDIR)$(or $(SLASH),/)M_$(CC).mak\\n\"
 , \"\\n\"
 , \"##############\\n\"
 , \"## Unify Vars\\n\"
@@ -2282,13 +2315,13 @@ the style for this buildfile type."
 , \"\\n\"
 , \"distclean: doclean\\n\"
 , \"\\t$(call doit,distclean,$(dirs))\\n\"
-, \"\\trm -f core core.* $(TARGETS) *~ $(if $(sufdep),*.$(sufdep))\\n\"
+, \"\\t$(RM) core core.* $(TARGETS) *~ $(if $(sufdep),*$(sufdep))\\n\"
 , \"\\n\"
 , \"clean: doclean\\n\"
 , \"\\t$(call doit,clean,$(dirs))\\n\"
 , \"\\n\"
 , \"doclean: \\n\"
-, \"\\t$(if $(USEROBJ),rm -f $(USEROBJ))\\n\"
+, \"\\t$(if $(USEROBJ),$(RM) $(USEROBJ))\\n\"
 , \"\\n\"
 , \"################################################\\n\"
 , \"##  Example link library setup with alternatives\\n\"
@@ -2346,13 +2379,15 @@ using this string.
 , \"\\n\"
 , \"CCC:=cl\\n\"
 , \"CXX:=cl\\n\"
+, \"AR:=link\\n\"
+, \"ARFLAGS:= /LIB\\n\"
 , \"FORTRAN:=fc\\n\"
 , \"CPPFLAGS?=\\n\"
 , \"CCFLAGS+=/Za /errorReport:none\\n\"
 , \"CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /errorReport:none\\n\"
 , \"\\n\"
 , \"ifeq ($(VARIANT),DEBUG)\\n\"
-, \"OPTFLAGS+=/Od /Zi\\n\"
+, \"OPTFLAGS+=/Od /Zi /DDEBUG\\n\"
 , \"LDFLAGS+=/MTd\\n\"
 , \"else\\n\"
 , \"OPTFLAGS+=/O2\\n\"
@@ -2378,8 +2413,7 @@ using this string.
 , \"\\n\"
 , \"#  commands to create dummy make dependency files\\n\"
 , \"define _makedep_\\n\"
-, \"%$(sufdep): %$(1)\\n\"
-, \"        @echo # Dummy file  $$@\\n\"
+, \"%$(sufdep): %$(1) ; @echo # Dummy file  $$@\\n\"
 , \"endef\\n\"
 , \"\\n\"
 , \"$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))\\n\"
@@ -2395,6 +2429,9 @@ using this string.
 , \"$(1) : CCCFLAGS+=$(SHRFLAGS)\\n\"
 , \"$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /dll /Fe$(1) $(2)\\n\"
 , \"endef\\n\\n\"
+, \"define do_archive\\n\"
+, \"$(1): $(2) ; $$(AR) $$(ARFLAGS) /OUT:$(1) $(2)\\n\"
+, \"endef\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
 , \"###############\\n\"
@@ -2581,37 +2618,77 @@ using this string.
 
       attribute 183337 "default_rules_winnt"
 	class_attribute const_attribute private explicit_type "str"
-	init_value "{ \"# Definition of for loop in local shell.\\n\"
+	init_value "{ \"# Definition of for loop in local shell.\\n\\n\"
 , \"define doit\\n\"
 , \"for %%W in ( $(2) ) do ( $(MAKE) -C %%W $(1) )\\n\"
 , \"endef\\n\"
 , \"\\n\"
 , \"ifndef M_WINNT_MAK\\n\"
 , \"M_WINNT_MAK:=1\\n\"
+, \"#############################\\n\"
+, \"##  Default install locations\\n\"
+, \"#############################\\n\"
+, \"# Fake installation locations for test installs.\\n\"
+, \"INSTALL_PREFIX?=$(ROOTDIR)\\\\installdir\\\\ProgramFilesFolder\\n\"
+, \"CONFIG_PREFIX?=$(ROOTDIR)\\\\installdir\\\\CommonAppDataFolder\\n\"
+, \"USERCFG_PREFIX?=$(ROOTDIR)\\\\installdir\\\\AppDataFolder\\n\"
+, \"#\\n\"
+, \"# Commonly used installation directories\\n\"
+, \"#\\n\"
+, \"PREFIX?=$(INSTALL_PREFIX)\\\\$(VERSIONDIR)\\n\"
+, \"DATAROOTDIR?=$(CONFIG_PREFIX)\\\\$(VERSIONDIR)\\n\"
+, \"DATADIR?=$(CONFIG_PREFIX)\\\\$(VERSIONDIR)\\n\"
+, \"DOCDIR?=$(PREFIX)\\\\Documentation\\n\"
+, \"#\\n\"
+, \"EXEC_PREFIX?=$(PREFIX)\\n\"
+, \"BINDIR?=$(PREFIX)\\n\"
+, \"SBINDIR?=$(PREFIX)\\n\"
+, \"LIBEXECDIR?=$(PREFIX)\\n\"
+, \"LIBDIR?=$(PREFIX)\\n\"
+, \"SYSCONFDIR?=$(DATAROOTDIR)\\n\"
+, \"SHAREDSTATEDIR?=$(DATAROOTDIR)\\n\"
+, \"LOCALSTATEDIR?=$(DATAROOTDIR)\\n\"
+, \"INCLUDEDIR?=$(PREFIX)\\\\include\\n\"
+, \"LOCALEDIR?=$(DATAROOTDIR)\\\\locale\\n\"
+, \"INFODIR?=$(DOCDIR)\\\\info\\n\"
+, \"MANDIR?=$(DOCDIR)\\\\man\\n\"
+, \"HTMLDIR?=$(DOCDIR)\\\\html\\n\"
+, \"DVIDIR?=$(DOCDIR)\\n\"
+, \"PDFDIR?=$(DOCDIR)\\n\"
+, \"PSDIR?=$(DOCDIR)\\n\"
+, \"MAN1DIR?=$(MANDIR)\\\\man1\\n\"
+, \"MAN2DIR?=$(MANDIR)\\\\man2\\n\"
+, \"MAN3DIR?=$(MANDIR)\\\\man3\\n\"
+, \"MAN4DIR?=$(MANDIR)\\\\man4\\n\"
+, \"MAN5DIR?=$(MANDIR)\\\\man5\\n\"
+, \"MAN6DIR?=$(MANDIR)\\\\man6\\n\"
+, \"MAN7DIR?=$(MANDIR)\\\\man7\\n\"
+, \"MAN8DIR?=$(MANDIR)\\\\man8\\n\"
+, \"MANNDIR?=$(MANDIR)\\\\mann\\n\"
 , \"\\n# Standard Suffixes\\n\"
 , \"sufobj:=.obj\\n\"
 , \"sufexe:=.exe\\n\"
 , \"sufdep:=.dep\\n\"
 , \"suflib:=.lib\\n\"
 , \"sufshr:=.dll\\n\"
+, \"# Programs\\n\"
+, \"MKDIR?=md\\n\"
+, \"COPY?=copy /Y /B /V\\n\"
+, \"RM:=del /F\\n\"
 , \"\\n# Path separator\\n\"
 , \"SLASH?=\\\\\\n\"
 , \"\\n# END OF ONCE-ONLY.\\n\"
 , \"endif\\n\\n\"
 , \"define do_install\\n\"
-, \"install:: $(1) ; $$(MKDIR) /P $$($(2)DIR) && $$(COPY) $(1) $$($(2)DIR)/$(1)\\n\"
+, \"install:: $(1) ; $$(MKDIR) $$($(2)DIR) && $$(COPY) $(1) $$($(2)DIR)/$(1)\\n\"
 , \"endef\\n\\n\"
-, \"define do_archive\\n\"
-, \"$(1): $(2) ; $$(AR) $$(ARFLAGS) $(1) $(2)\\n\"
-, \"endef\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
 , \"###############\\n\"
 , \"# Local Variables:\\n\"
 , \"# mode: makefile\\n\"
 , \"# End:\\n\"
-, 0 }
-"
+, 0 }"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}[]${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -3572,26 +3649,22 @@ ${body}}
 	comment "The (leaf) name of the directory this package is in."
       end
 
-      operation 157609 "location"
+      operation 238889 "location"
 	class_operation cpp_inline public explicit_return_type "unistr"
 	nparams 1
-	  param inout name "a_art" type class_ref 6913 // UmlArtifact
+	  param in name "a_pack" type class_ref 6913 // UmlArtifact
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
 {
-  UmlPackage *l_parent = dynamic_cast< UmlPackage* >(const_cast< ${t0} & >(${p0}).parent ()->parent ());
-  @{PROJECT}_REQUIRE (NULL != l_parent, \"Invalid heirarchy, grandparent of artifact is not a package\");
-  return location (*l_parent);
+  return ${name} (item_traits::package (${p0}));
 }
-
-
+"
+	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
+${body}}
 "
 	
 	
 	
-	
-	comment "The leaf directory name.
-
-\\pre a_art.parent.parent /= UmlPackage"
+	comment "The (leaf) name of the directory this package is in."
       end
 
       attribute 150697 "no_install_value"
@@ -3606,6 +3679,28 @@ ${body}}
 	idl_decl ""
 	comment "Value of he \"butter install\" property to indicate that the target 
 should not be installed."
+      end
+
+      operation 157609 "package"
+	class_operation cpp_inline public return_type class_ref 7937 // UmlPackage
+	nparams 1
+	  param inout name "a_art" type class_ref 6913 // UmlArtifact
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  UmlPackage *Result = dynamic_cast< UmlPackage* >(const_cast< ${t0} & >(${p0}).parent ()->parent ());
+  @{PROJECT}_REQUIRE (NULL != Result, \"Invalid heirarchy, grandparent of artifact is not a package\");
+  return *Result;
+}
+
+
+"
+	
+	
+	
+	
+	comment "Get the parent package of this artifact
+
+\\pre a_art.parent.parent /= UmlPackage"
       end
 
       operation 131881 "print_item"
@@ -3842,7 +3937,7 @@ library targets will be static."
       attribute 193577 "app_data_env_var"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "
-#ifdef _Win32
+#ifdef _WIN32
 \"APPDATA\"
 #else
 \"HOME\"
@@ -3861,7 +3956,7 @@ library targets will be static."
       attribute 193705 "app_data_subdir_name"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "
-#ifdef _Win32
+#ifdef _WIN32
 \"Butter\"
 #else
 \".butter\"
@@ -4177,28 +4272,15 @@ the style for this buildfile type."
 	comment "Text for the a main targets associated sub-targets"
       end
 
-      attribute 155561 "location_flags_"
+      attribute 201641 "grist_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
+	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "The set of flags for the currently processing location"
-      end
-
-      attribute 155433 "location_hdrs_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The set of headers for the currently processing directory."
+	comment "Jam \"Grist\" of the current target location. Set in initialisation."
       end
 
       attribute 174377 "qualified_target_name_"
@@ -4210,6 +4292,29 @@ the style for this buildfile type."
 	python_decl ""
 	idl_decl ""
 	comment "The full target name for the currently processing target (defined in start_target)"
+      end
+
+      attribute 201897 "root_dir_"
+	private type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The root directory of the project."
+      end
+
+      attribute 201769 "target_NAME_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The target name adapted for creating target specific variable names."
       end
 
       operation 209065 "assoc_library"
@@ -4459,9 +4564,10 @@ Responsibilites
 	cpp_def "${inline}${class}::${name}${(}${)}
 : individual_obj_ ()
 , lib_defn_ ()
-, location_flags_ ()
-, location_hdrs_ ()
+, grist_ ()
 , qualified_target_name_ ()
+, root_dir_ ()
+, target_NAME_ ()
 {}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -4502,52 +4608,6 @@ ${body}}
 	comment "no copy"
       end
 
-      operation 176937 "merge_flags"
-	private explicit_return_type "void"
-	nparams 1
-	  param in name "a_flags" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
-{
-  merge_string_list (location_flags_, a_flags);
-}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "The effect of this method is to convert the contents of a_flags 
-into a list of tokens.  This list is merged into the list of
-flags for the current directory, removing duplicate items. The 
-list may not be empty.
-
-\\pre not a_includes.empty"
-      end
-
-      operation 176809 "merge_headers"
-	private explicit_return_type "void"
-	nparams 1
-	  param in name "a_headers" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
-{
-  merge_string_list (location_hdrs_, a_headers);
-}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "The effect of this method is to convert the contents of a_includes 
-into a list of tokens.  These lists are merged into the list of
-includes for the current directory, removing duplicate items. The 
-list may not be empty.
-
-\\pre not a_includes.empty"
-      end
-
       operation 155689 "operator="
 	private return_type class_ref 134697 // jam_writer
 	nparams 1
@@ -4558,26 +4618,6 @@ list may not be empty.
 	
 	
 	comment "no assign"
-      end
-
-      operation 155817 "requirements"
-	class_operation private explicit_return_type "bool"
-	nparams 2
-	  param in name "a_item" type class_ref 7553 // UmlItem
-	  param inout name "a_reqs" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Scan a_item for any requirements, add these to a_req and
-return true if found."
       end
 
       operation 208937 "start_target"
@@ -5690,14 +5730,15 @@ ${body}
 
       operation 198185 "style"
 	public explicit_return_type ""
-	nparams 4
+	nparams 5
 	  param in name "a_comment" explicit_type "unistr"
 	  param in name "a_end" explicit_type "unistr"
 	  param in name "a_start" explicit_type "unistr"
+	  param in name "a_name" explicit_type "unistr"
 	  param in name "a_factory" type class_ref 149545 // write_factory_fn_t
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${v3}${)}${volatile};
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${v4}${)}${volatile};
 "
-	cpp_def "${inline}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)} 
+	cpp_def "${inline}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)} 
 ${body}
 "
 	
@@ -6370,19 +6411,19 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 136361 // jam_writer
-	artifact_ref 165929 // cmake_writer
-	artifact_ref 154025 // main
-	artifact_ref 132521 // location
-	artifact_ref 150825 // utility
 	artifact_ref 142889 // bouml
-	artifact_ref 152489 // build_writer
+	artifact_ref 165929 // cmake_writer
 	artifact_ref 152361 // compound_artifact
+	artifact_ref 154025 // main
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 132521 // location
 	artifact_ref 134057 // qt
-	artifact_ref 138793 // item_traits
+	artifact_ref 150825 // utility
 	artifact_ref 152233 // style
+	artifact_ref 138793 // item_traits
+	artifact_ref 136361 // jam_writer
+	artifact_ref 152489 // build_writer
+	artifact_ref 135209 // bjam_writer
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
@@ -6390,93 +6431,93 @@ ${namespace_end}"
     artifact 148393 "butter.plugout"
       stereotype "file"
       associated_artifacts
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 768 // CppSettings
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 4864 // aDirection
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 5633 // UmlClass
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 1152 // JavaSettings
 	artifact_ref 4992 // aVisibility
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 135209 // bjam_writer
+	artifact_ref 154025 // main
 	artifact_ref 137641 // gmake_writer
 	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 4480 // UmlCom
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 5120 // anItemKind
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 5633 // UmlClass
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 136361 // jam_writer
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 154025 // main
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 132521 // location
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 150825 // utility
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 4864 // aDirection
-	artifact_ref 768 // CppSettings
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 152489 // build_writer
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 7297 // UmlNode
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 512 // UmlBaseActualParameter
 	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 5120 // anItemKind
 	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 7169 // UmlItem
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 6145 // UmlCollaborationDiagram
 	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 138793 // item_traits
 	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 128002 // UmlComponent
+	artifact_ref 132521 // location
+	artifact_ref 7169 // UmlItem
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 150825 // utility
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
 	artifact_ref 152233 // style
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 4480 // UmlCom
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 138793 // item_traits
+	artifact_ref 136361 // jam_writer
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 7297 // UmlNode
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 152489 // build_writer
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 3712 // UmlBasePackage
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter2/butter.pro"
@@ -6774,8 +6815,8 @@ int main(int argc, char ** argv)
   return 0;
 }
 
-#ifdef _WS_WIN_
-#if QT_MISSING_STATIC_NULL
+#ifdef _WIN32
+#if QT_VERSION < 300L
 QStringData * QString::shared_null = 0;
 QString QString::null = QString (0);
 QChar QChar::null = 0;
@@ -6997,10 +7038,10 @@ ${namespace_end}
     artifact 164777 "test_path"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 150825 // utility
 	artifact_ref 142889 // bouml
 	artifact_ref 150953 // path_test
 	artifact_ref 134057 // qt
+	artifact_ref 150825 // utility
       end
       comment "Simple program to exercise pathcmp class."
     end

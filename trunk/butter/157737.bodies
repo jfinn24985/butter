@@ -157,7 +157,7 @@ if (NULL != a_loc.parent ())
   QString tmp_;
   QTextOStream link_os_ (&tmp_);
   link_os_ << "add_subdirectory (";
-  link_os_ << pathcmp(root_dir_.create_relative (a_loc.full_path ())).path_localised ();
+  link_os_ << pathcmp(root_dir_.create_relative (a_loc.full_path ())).path ();
   link_os_ << ")\n";
   a_sys.close.second.append (tmp_);
 }
@@ -172,11 +172,7 @@ if (a_type == other)
   ////////////////
   // Handle "other" library types specially.
   QString other_type_ (this->other_target_type_.upper ());
-#if QT_VERSION < 300L
-  other_type_.replace (QRegExp ("-"), "_");
-#else
-  other_type_.replace ('-', "_");
-#endif
+  this->find_replace (other_type_, '-', '_');
   a_os << "add_custom_command (OUTPUT ${" << this->target_NAME_
       << "}\n\t DEPENDS ${" << this->target_NAME_ << "_SRC} "
       << this->lib_set_
@@ -272,7 +268,7 @@ QString proj_text_;
 {
   QTextOStream proj_os_ (&proj_text_);
   proj_os_ << "include (" << (pathcmp("${CMAKE_SOURCE_DIR}")
-         / this->rules_name).path_localised () << ")\n\n";
+         / this->rules_name).path () << ")\n\n";
 
   const pathcmp base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)));
 
@@ -280,8 +276,7 @@ QString proj_text_;
   {
     proj_os_ << "include_directories ("
        << (pathcmp("${CMAKE_SOURCE_DIR}")
-            / this->root_dir_.create_relative (base_include_))
-                .path_localised ()
+            / this->root_dir_.create_relative (base_include_)).path ()
        << ")\n\n";
   }
   QString reqs_;
@@ -390,11 +385,8 @@ return Result;
 /////////////////
 // Initialise variables for the new target
 const QString target_name_ (const_cast< UmlArtifact& >(a_target).name ());
-#if QT_VERSION < 300L
-this->target_NAME_ = this->project_name_.upper() + "_" + target_name_.upper ().replace (QRegExp("\\."), "");
-#else
-this->target_NAME_ = this->project_name_.upper() + "_" + target_name_.upper ().remove ('.');
-#endif
+this->target_NAME_ = this->project_name_.upper() + "_" + target_name_.upper ();
+this->find_replace (this->target_NAME_, '.', '_');
 this->other_target_type_.truncate (0);    // An "other" target type.
 this->lib_set_.truncate (0);              // Set of included libraries
 this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled
@@ -415,7 +407,7 @@ if (a_type != executable)
 {
   if (! a_build_file.isEmpty ())
   {
-    a_os << "include (" << (pathcmp("${CMAKE_SOURCE_DIR}") / a_build_file).path_localised () << ".cmake)\n\n";
+    a_os << "include (" << (pathcmp("${CMAKE_SOURCE_DIR}") / a_build_file).path () << ".cmake)\n\n";
   }
 }
 

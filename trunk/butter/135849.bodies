@@ -140,9 +140,11 @@ if (! source_extra_.isEmpty ())
 // Need to write the "M_sys" include line.
 QString tmp_;
 QTextOStream desc_os_ (&tmp_);
-
-desc_os_ << "include " << (pathcmp("$(ROOTDIR)") / rules_name.section(' ', 0, 0)).path_localised () << "\n\n";
-
+{
+  const int e_ = rules_name.find(' ');
+  QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
+  desc_os_ << "include " << (pathcmp("$(ROOTDIR)") / name_).path_localised () << "\n\n";
+}
 // Keep parent dir definitions.
 if (NULL != a_loc.parent ())
 {
@@ -164,11 +166,7 @@ if (a_type == other)
   ////////////////
   // Handle "other" library types specially.
   QString other_type_ (this->other_target_type_.upper ());
-#if QT_VERSION < 300L
-  other_type_.replace (QRegExp ("-"), "_");
-#else
-  other_type_.replace ('-', "_");
-#endif
+  this->find_replace (other_type_, '-', '_');
   QString cppflags_, compflags_;
   this->process_flags(a_include, a_cflags, cppflags_, compflags_);
   if (! compflags_.isEmpty ())
@@ -263,10 +261,15 @@ QString init_text_;
 {
   QTextOStream init_os_ (&init_text_);
   this->root_dir_ = a_base.full_path ();
+  this->root_dir_.convertToAbs ();
   BUTTER_CHECK (! root_dir_.path ().isEmpty ()
        , "<p><b>Program error:</b> Project root directory is not set properly.</p>");
   init_os_ << "ROOTDIR := " << root_dir_.path_localised () << "\n\n";
-  init_os_ << "include " << (pathcmp("$(ROOTDIR)") / rules_name.section (' ', 0, 0)).path_localised () << "\n\n";
+  {
+    const int e_ = rules_name.find(' ');
+    QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
+    init_os_ << "include " << (pathcmp("$(ROOTDIR)") / name_).path_localised () << "\n\n";
+  }
   const pathcmp base_include_ (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project)));
 
   // Create list of include directories
@@ -434,11 +437,8 @@ return Result;
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = const_cast< UmlArtifact& >(a_target).name ();
-#if QT_VERSION < 300L
-this->target_NAME_ = this->qualified_target_name_.upper ().replace (QRegExp("\\."), "");
-#else
-this->target_NAME_ = this->qualified_target_name_.upper ().remove ('.');
-#endif
+this->target_NAME_ = this->qualified_target_name_.upper ();
+this->find_replace (this->target_NAME_, '.', '_');
 this->other_target_type_.truncate (0);    // An "other" target type.
 this->lib_set_.truncate (0);              // Set of included libraries
 this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled

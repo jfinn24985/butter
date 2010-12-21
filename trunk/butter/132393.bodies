@@ -624,7 +624,11 @@ for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
           if (! artifact_cursor_->description ().isEmpty ())
           {
             QString document_prop_value_;
-            if (! item_traits::property_value (*artifact_cursor_, item_traits::butter_other_name, document_prop_value_) || document_prop_value_ == "nowrite")
+            item_traits::property_value (*artifact_cursor_
+                , item_traits::butter_other_name, document_prop_value_);
+            if (document_prop_value_.isEmpty ()
+                ||  (document_prop_value_ != "nowrite"
+                  && document_prop_value_ != style::get_style().name))
             {
               QString document_filepath_ = (full_path () / artifact_cursor_->name ()).path_localised ();
               if (! document_prop_value_.isEmpty ())
