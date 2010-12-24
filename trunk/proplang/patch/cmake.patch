@@ -1,94 +1,13 @@
-Index: 129321
-===================================================================
---- 129321	(revision 72)
-+++ 129321	(working copy)
-@@ -1,6 +1,6 @@
- format 66
- "Build" // Build
--  revision 2
-+  revision 3
-   modified_by 41 "finnerty"
-   // class settings
-   //class diagram settings
-@@ -96,10 +96,17 @@
-  "
-     end
- 
-+    artifact 135593 "t2t.cmake"
-+      stereotype "document"
-+      associated_artifacts
-+      end
-+      comment "set (T2T txt2tags)
-+set (T2TFLAGS -toc -t man -o)"
-+    end
-+
-     artifact 134441 "Jamroot"
-       stereotype "document"
-       comment "using gfortran ;"
-     end
--
-   end
- end
-Index: 128169
-===================================================================
---- 128169	(revision 83)
-+++ 128169	(working copy)
-@@ -127,8 +127,8 @@
-     artifact 128297 "program"
-       stereotype "executable"
-       associated_artifacts
--	artifact_ref 128041 // example_exe
- 	artifact_ref 128681 // library
-+	artifact_ref 128041 // example_exe
-       end
-       ncouples 4
-       key "butter install" value "SBINDIR"
-@@ -141,8 +141,7 @@
-       stereotype "document"
-       associated_artifacts
-       end
--      ncouples 2
--      key "butter compiler" value "t2t"
-+      ncouples 1
-       key "butter install" value "DOCDIR"
-       comment "Program
- (C) 2010
-@@ -209,8 +208,8 @@
-     artifact 133161 "fortprog"
-       stereotype "executable"
-       associated_artifacts
--	artifact_ref 133033 // fortran.f
- 	artifact_ref 134313 // fortmain
-+	artifact_ref 133033 // fortran.f
-       end
-       ncouples 4
-       key "butter compiler" value "FORTRAN"
 Index: proplang.prj
 ===================================================================
---- proplang.prj	(revision 72)
+--- proplang.prj	(revision 108)
 +++ proplang.prj	(working copy)
-@@ -1,6 +1,6 @@
- format 66
- "proplang"
--  revision 8
-+  revision 9
-   modified_by 41 "finnerty"
-   cpp_root_dir "/tmp/proplang/output/include/"
- 
-@@ -37,7 +37,7 @@
- 
-   mark_for_import
-   
--  ncouples 7
-+  ncouples 8
-   key "butter base" value ".."
-   key "butter version" value "1.4"
-   key "butter type" value "shared"
-@@ -45,6 +45,7 @@
-   key "butter ldflags" value "-Lproj_ldflags"
+@@ -45,7 +45,7 @@
+   key "butter ldflags" value "$(OPENMP)"
    key "butter build-dir" value "build"
-   key "butter include" value "proj_include include"
+   key "butter include" value "include/exe"
+-  key "butter style" value "unknown"
 +  key "butter style" value "cmake"
-   comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
-   package_ref 128041 // Library
+   comment "Project to test single-directory multiple target use-case for \"butter\" plugout
  
+ Property Settings:
