@@ -1,6 +1,6 @@
 format 66
 "Library" // Library
-  revision 7
+  revision 13
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -140,11 +140,10 @@ ${inlines}
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
-#ifndef BUTTER_EXPORT 
-#define BUTTER_EXPORT 
-#endif
 ${comment}
 ${includes}
+// Defines BUTTER_EXPORT
+#include \"lib.hpp\"
 ${declarations}
 ${namespace_start}
 ${definition}
@@ -154,10 +153,17 @@ ${namespace_end}
       cpp_src "${comment}
 ${includes}
 #include <sstream>
-extern \"C\"
-{
-  unsigned int example_lib_backscan (const char* const, unsigned int, char);
-}
+
+#include \"src.hpp\"
+
+#ifndef LIB_FLAG
+#error compiling __FILE__ without defining LIB_FLAG
+#endif
+
+#ifdef FOR_C_FLAG
+#error compiling __FILE__ with FOR_C_FLAG defined
+#endif
+
 ${namespace_start}
 ${members}
 ${namespace_end}"
@@ -165,47 +171,22 @@ ${namespace_end}"
 	class_ref 128041 // example_lib
       end
       ncouples 3
-      key "butter include" value "src_include"
-      key "butter ldflags" value "-Lsrc_ldflags"
-      key "butter flags" value "-DSRC_FLAGS"
+      key "butter include" value "include/src"
+      key "butter flags" value "-DSRC_FLAG"
+      key "butter ldflags" value "-L$(OUTPUTDIR)/lib/src"
     end
 
     artifact 128681 "library"
       stereotype "library"
       associated_artifacts
-	artifact_ref 129833 // example_c.c
 	artifact_ref 128169 // example_lib
       end
-      ncouples 4
-      key "butter include" value "lib_include"
+      ncouples 5
+      key "butter include" value "include/lib"
       key "butter flags" value "-DLIB_FLAG"
-      key "butter ldflags" value "-Llib_ldflags"
+      key "butter ldflags" value "-lextra_c"
       key "butter install" value "LIBEXECDIR"
-    end
-
-    artifact 129833 "example_c.c"
-      stereotype "document"
-      associated_artifacts
-      end
-      ncouples 4
-      key "butter compiler" value "CC"
-      key "butter flags" value "-DFOR_C_FLAG"
-      key "butter include" value "doc_include"
-      key "butter ldflags" value "-Ldoc_ldflags"
-      comment "/**
-
-Example C source file
-
-**/
-
-unsigned int example_lib_backscan(const char *const src, unsigned int len, char target)
-{
-  for (--len; len >= 0; --len)
-  {
-    if (*(src + len) == target) break;
-  }
-  return len;
-} "
+      key "butter type" value "static"
     end
   end
 end

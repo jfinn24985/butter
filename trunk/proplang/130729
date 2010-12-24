@@ -1,6 +1,6 @@
 format 66
-"Build" // Build
-  revision 5
+"lib" // Test Headers::lib
+  revision 4
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -26,86 +26,65 @@ format 66
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
-  cpp_src_dir ".."
-  deploymentview 129321 "Build"
+  cpp_h_dir "lib"
+  cpp_src_dir "../lib/src"
+  deploymentview 130601 "lib"
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
-    artifact 131753 "t2t.jam"
-      stereotype "document"
-      associated_artifacts
-      end
-      comment "# jam file for text-to-tags (t2t) program
-
-rule t2t
-{
-  local man_ = $(1:S=.man) ;
-  local src_ = $(2) ;
-  Depends all : $(man_) ;
-  MakeLocate $(man_) : $(LOCATE_TARGET) ;
-  SEARCH on $(src_) = $(SEARCH_SOURCE) ;
-  run_t2t $(man_) : $(src_) ;
-  Clean clean : $(man_) ;
-}
-
-actions ignore run_t2t
-{
-  txt2tags  $(T2TFLAGS) -t man -o $(1) -i $(2)
-}
-"
-    end
-
-    artifact 131881 "t2t.bjam"
-      stereotype "document"
-      associated_artifacts
-      end
-      comment "import type ;
-import generators ;
-import feature  ;
-import toolset ;
-import make ;
-
-type.register TEXT2TAGS : t2t ;
-
-# generators.register-standard t2t : TEXT2TAGS : MAN ;
-
-feature.feature t2tflags : : free ;
-
-toolset.flags t2t-action OPTIONS <t2tflags> ;
-
-rule t2t ( name : source  : requirements * )
-{
-  make $(name) : $(source) : @t2t-action : $(requirements) ;
-}
-
-actions t2t-action
-{
-  txt2tags $(OPTIONS) -toc -t man -o $(<) $(>)
-}
-"
-    end
-
-    artifact 132009 "t2t.make"
-      stereotype "document"
-      associated_artifacts
-      end
-      comment "T2T=txt2tags
-T2TFLAGS+=-toc -t man -o
-.man.t2t :
-	$(T2T) $(T2TFLAGS) $< $>
- "
-    end
-
-    artifact 134441 "Jamroot"
-      stereotype "document"
-      comment "using gfortran ;"
-    end
-
-    artifact 135593 "t2t.cmake"
-      stereotype "document"
-      associated_artifacts
+    artifact 136873 "lib"
+      stereotype "source"
+      cpp_h "#ifndef LIB_LIB_HPP_
+#define LIB_LIB_HPP_
+#if !(defined LIB_FLAG || defined EXE_FLAG) 
+#error Included __FILE__ without defining LIB_FLAG or EXE_FLAG
+#endif
+#ifdef _MSC_VER
+#define BUTTER_EXPORT __declspec(dllexport)
+#else
+#define BUTTER_EXPORT 
+#endif
+#endif"
+      associated_classes
       end
     end
 
+    artifact 139689 "libextra_c"
+      stereotype "library"
+      associated_artifacts
+	artifact_ref 129833 // example_c.c
+      end
+    end
+
+    artifact 129833 "example_c.c"
+      stereotype "document"
+      associated_artifacts
+      end
+      ncouples 4
+      key "butter compiler" value "CC"
+      key "butter flags" value "-DFOR_C_FLAG"
+      key "butter include" value "include/doc"
+      key "" value ""
+      comment "/**
+
+Example C source file
+
+**/
+#ifndef EXAMPLE_C_C_
+#define EXAMPLE_C_C_
+#ifndef FOR_C_FLAG
+#error FOR_C_FLAG is not defined in __FILE__
+#endif
+
+unsigned int example_lib_backscan(const char *const src, unsigned int len, char target)
+{
+  for (--len; len >= 0; --len)
+  {
+    if (*(src + len) == target) break;
+  }
+  return len;
+}
+#endif"
+    end
   end
 end

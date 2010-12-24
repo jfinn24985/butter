@@ -3,7 +3,13 @@ class example_lib
 std::ostringstream os_;
 const size_t width_ (get_line_width ());
 const size_t size_ (a_value.size ());
-
+#ifdef SRC_FLAG
+const char sep_l_[] = "[";
+const char sep_r_[] = "]\n";
+#else
+const char sep_l_[] = "<";
+const char sep_r_[] = ">\n";
+#endif
 for (size_t left_ (0);
      left_ < size_;
      left_++)
@@ -11,7 +17,7 @@ for (size_t left_ (0);
   if (width_ > size_ - left_)
   {
     // End of text
-    os_ << "[" << a_value.substr (left_) << "]\n";
+    os_ << sep_l_ << a_value.substr (left_) << sep_r_;
     break;
   }
   // Find
@@ -19,14 +25,14 @@ for (size_t left_ (0);
   // possible results right_ = npos or not
   if (right_ < width_)
   {
-    os_ << "[" << a_value.substr (left_, right_) << "]\n";
+    os_ << sep_l_ << a_value.substr (left_, right_) << sep_r_;
     left_ += right_;
   }
   else
   {
     // no space in left_ --> left_ + width_, find first space after this.
     const size_t right_ (std::min (size_, a_value.find (' ', left_ + width_)));
-    os_ << "[" << a_value.substr (left_, right_ - left_) << "]\n";
+    os_ << sep_l_ << a_value.substr (left_, right_ - left_) << sep_r_;
     left_ += right_;
   }
 }

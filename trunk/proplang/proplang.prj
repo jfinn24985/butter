@@ -1,6 +1,6 @@
 format 66
 "proplang"
-  revision 9
+  revision 15
   modified_by 41 "finnerty"
   cpp_root_dir "output/include/"
 
@@ -37,18 +37,58 @@ format 66
 
   mark_for_import
   
-  ncouples 7
-  key "butter base" value ".."
+  ncouples 8
+  key "butter base" value "."
   key "butter version" value "1.4"
   key "butter type" value "shared"
-  key "butter flags" value "-DPROJ_FLAGS"
-  key "butter ldflags" value "-Lproj_ldflags"
+  key "butter flags" value "-DPROJ_FLAG"
+  key "butter ldflags" value "$(OPENMP)"
   key "butter build-dir" value "build"
-  key "butter include" value "proj_include include"
-  comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
+  key "butter include" value "include/exe"
+  key "butter style" value "unknown"
+  comment "Project to test single-directory multiple target use-case for \"butter\" plugout
+
+Property Settings:
+<table>
+<tr><td>proplang    . base     </td> <td> .                      </td><td>(warning message in trace)</td></tr>
+<tr><td>proplang    . build-dir</td> <td> build                  </td><td>(style dependent)</td></tr>
+<tr><td>program.man . buildfile</td> <td> t2t                    </td><td>include t2t.[style-suff] </td></tr>
+<tr><td>example_c.c . compiler </td> <td> CC                     </td><td>eqxample_c.c:(?fail to compile?)</td></tr>
+<tr><td>fortran.f   . compiler </td> <td> FORTRAN                </td><td>fortran.f:(?fail to compile?)</td></tr>
+<tr><td>program.t2t . compiler </td> <td> t2t                    </td><td>program.t2t:fail to process</td></tr>
+<tr><td>fortprog    . flags    </td> <td> -DEXE_F_FLAG           </td><td>fortmain:fail to compile</td></tr>
+<tr><td>program     . flags    </td> <td> -DEXE_FLAGS            </td><td>example_exe:inc(lib.hpp) + #error </td></tr>
+<tr><td>example_c.c . flags    </td> <td> -DFOR_C_FLAG           </td><td>example_c.c:#error</td></tr>
+<tr><td>library     . flags    </td> <td> -DLIB_FLAGS            </td><td>example_lib:inc(lib.hpp) + #error </td></tr>
+<tr><td>proplang    . flags    </td> <td> -DPROJ_FLAGS           </td><td>example_exe:#error</td></tr>
+<tr><td>example_lib . flags    </td> <td> -DSRC_FLAGS            </td><td>program:changes output</td></tr>
+<tr><td>fortprog    . include  </td> <td> include/doc            </td><td>fortmain:inc(f.hpp)</td></tr>
+<tr><td>example_c.c . include  </td> <td> include/doc            </td><td>example_c.c:fail inc(doc.hpp) </td></tr>
+<tr><td>program     . include  </td> <td> include/exe            </td><td>example_exe:fail inc(exe.hpp) </td></tr>
+<tr><td>library     . include  </td> <td> include/lib            </td><td>example_lib,example_exe:fail inc(lib.hpp) </td></tr>
+<tr><td>proplang    . include  </td> <td> include/project        </td><td>** TODO **</td></tr>
+<tr><td>example_lib . include  </td> <td> include/src            </td><td>example_lib:fail inc(src.hpp) </td></tr>
+<tr><td>program.t2t . install  </td> <td> DOCDIR                 </td><td>exist(*/program.t2t) </td></tr>
+<tr><td>library     . install  </td> <td> LIBEXECDIR             </td><td>exist(*/library.so)</td></tr>
+<tr><td>program.man . install  </td> <td> MAN1DIR                </td><td>exist(*/program.man) </td></tr>
+<tr><td>program     . install  </td> <td> SBINDIR                </td><td>exist(*/program) </td></tr>
+<tr><td>A.library     ldflags  </td> <td> -lextra_c              </td><td>program: fail link  </td></tr>
+<tr><td>X.program     ldflags  </td> <td> -L$(OUTPUTDIR)/lib/exe </td><td>program: fail link</td></tr>
+<tr><td>d.fortran.f   ldflags  </td> <td> $(FORTRANLIBS)         </td><td>fortprog: fail link </td></tr>
+<tr><td>s.example_lib ldflags  </td> <td> -L$(OUTPUTDIR)/lib/src </td><td>program: fail link </td></tr>
+<tr><td>P.proplang    ldflags  </td> <td> $(OPENMP)              </td><td>example_exe:fail compile &amp; program: fail link  </td></tr>
+<tr><td>L.program.man other    </td> <td> t2t                    </td><td>program.t2t:fail to process </td></tr>
+<tr><td>A.library     type     </td> <td> static                 </td><td>libextra_c.a </td></tr>
+<tr><td>P.proplang    type     </td> <td> shared                 </td><td>program requires installdir/lib in LD_LIB_PATH (or rpath) for libextra_c.so</td></tr>
+<tr><td>A.libmain     type     </td> <td> static                 </td><td>libmain.a </td></tr>
+<tr><td>P.proplang    version  </td> <td> 1.4                    </td><td> ** TODO **</td></tr>
+</table>
+"
   package_ref 128041 // Library
 
   package_ref 128169 // Executable
 
   package_ref 129321 // Build
+
+  package_ref 130473 // Test Headers
 end

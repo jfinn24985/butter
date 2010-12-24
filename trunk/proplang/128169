@@ -1,6 +1,6 @@
 format 66
 "Executable" // Executable
-  revision 11
+  revision 17
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -96,7 +96,6 @@ ${inlines}
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
-
 ${comment}
 ${includes}
 ${declarations}
@@ -110,31 +109,31 @@ ${includes}
 #include <fstream>
 #include <iostream>
 #include <string>
+#include \"exe.hpp\"
+#ifndef PROJ_FLAG
+#error PROJ_FLAG is not defined
+#endif
 ${namespace_start}
 ${members}
 ${namespace_end}
-
-int main (int argc, const char** argv)
-{
-  example_exe app_;
-  return app_.main (argc, argv);
-}"
+"
       associated_classes
 	class_ref 128169 // example_exe
       end
+      ncouples 1
+      key "butter ldflags" value "-lmain"
     end
 
     artifact 128297 "program"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128681 // library
 	artifact_ref 128041 // example_exe
+	artifact_ref 128681 // library
       end
-      ncouples 4
+      ncouples 3
       key "butter install" value "SBINDIR"
       key "butter flags" value "-DEXE_FLAG"
-      key "butter include" value "exe_include"
-      key "butter ldflags" value "-Lexe_ldflags"
+      key "butter ldflags" value "-L$(OUTPUTDIR)/lib/exe"
     end
 
     artifact 131497 "program.t2t"
@@ -168,8 +167,9 @@ This is a test of building an \"other\" library."
       stereotype "document"
       associated_artifacts
       end
-      ncouples 1
+      ncouples 2
       key "butter compiler" value "FORTRAN"
+      key "butter ldflags" value "$(FORTRANLIBS)"
       comment "      SUBROUTINE FORTPROG
 
       INTEGER MCOUNT
@@ -212,18 +212,14 @@ C     [5] When equal print result and stop
 	artifact_ref 133033 // fortran.f
 	artifact_ref 134313 // fortmain
       end
-      ncouples 3
+      ncouples 2
       key "butter flags" value "-DEXE_F_FLAG"
-      key "butter include" value "exe_f_include"
-      key "butter ldflags" value "-Lexe_f_ldflags -lgfortran"
+      key "butter include" value "include/doc"
     end
 
     artifact 134313 "fortmain"
       stereotype "source"
-      cpp_src "extern \"C\"
-{
-  void fortprog_();
-}
+      cpp_src "#include \"f.hpp\"
 
 int main(int,char**)
 {

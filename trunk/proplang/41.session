@@ -7,8 +7,14 @@ show_stereotypes
 selected 
   package_ref 129 // proplang
 open
-  
-  package_ref 128169 // Executable
+  class_ref 128041 // example_lib
+  artifact_ref 128681 // library
+  classview_ref 128169 // Executable
+  deploymentview_ref 128169 // Executable
   deploymentview_ref 129321 // Build
+  deploymentview_ref 130473 // src
+  deploymentview_ref 130601 // lib
+  deploymentview_ref 131753 // doc
+  deploymentview_ref 132905 // exe
 end
 end
