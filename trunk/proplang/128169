@@ -1,6 +1,6 @@
 format 66
 "Executable" // Executable
-  revision 17
+  revision 18
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -127,8 +127,8 @@ ${namespace_end}
     artifact 128297 "program"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128041 // example_exe
 	artifact_ref 128681 // library
+	artifact_ref 128041 // example_exe
       end
       ncouples 3
       key "butter install" value "SBINDIR"
@@ -140,8 +140,7 @@ ${namespace_end}
       stereotype "document"
       associated_artifacts
       end
-      ncouples 2
-      key "butter compiler" value "t2t"
+      ncouples 1
       key "butter install" value "DOCDIR"
       comment "Program
 (C) 2010
@@ -209,8 +208,8 @@ C     [5] When equal print result and stop
     artifact 133161 "fortprog"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 133033 // fortran.f
 	artifact_ref 134313 // fortmain
+	artifact_ref 133033 // fortran.f
       end
       ncouples 2
       key "butter flags" value "-DEXE_F_FLAG"
