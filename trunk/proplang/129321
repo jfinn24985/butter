@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 6
+  revision 7
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -101,7 +101,7 @@ T2TFLAGS+=-toc -t man -o
       comment "using gfortran ;
 constant OPENMP : -fopenmp ;
 constant FORTRANLIBS : -lgfortran ;
-constant OUTPUTDIR : $(DEBUG_PREFIX) ;"
+path-constant OUTPUTDIR : installdir ;"
     end
 
     artifact 135593 "t2t.cmake"
