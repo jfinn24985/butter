@@ -4,14 +4,12 @@ diagrams
     1007 319 100 4 0 0
 end
 show_stereotypes
-selected 
-  package_ref 128169 // Executable
+selected artifact_ref 143273 // CMakeLists.txt
 open
   
   package_ref 128041 // Library
   
   package_ref 128169 // Executable
-  
-  package_ref 129321 // Build
+  deploymentview_ref 129321 // Build
 end
 end
