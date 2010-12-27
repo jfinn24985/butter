@@ -1,6 +1,6 @@
 format 66
 "butter"
-  revision 57
+  revision 60
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/butter/include/"
 
@@ -48,7 +48,9 @@ format 66
   key "butter style" value "standard"
   key "butter flags" value "-DWITHCPP -DDEBUG"
   key "butter log-level" value "5"
-  comment "To create the plug-out use 'genpro' on the artifact \"butter/butter/butter.plugout\".
+  comment "TODO: file comparison!!
+
+To create the plug-out use 'genpro' on the artifact \"butter/butter/butter.plugout\".
 
 If you want to try the \"butter\" plugout on this project then change the 
 \"butter.plugout\" artifact's stereotype to <<file>> before running \"butter\".
@@ -61,7 +63,27 @@ the generation settings.
 Project documentation is in Build/config/README.t2t. The 'butter' plugout,
 once made, can be used to create a build-system that converts this to HTML if
 you have the txt2tags program installed.  This is also an example of how to add a
-new target type to the build system."
+new target type to the build system.
+
+\\cond xdoc
+<xdoc:section name=\"paths\">
+<xdoc:subsection name=\"sourcedir\">In user defined properties the 
+location of a file can be interpreted in several ways.  In this plugout
+all styles copy an absolute path or a path beginning with a variable 
+(ie starts with '$') directly into the build file.  If a relative path is used 
+then the style generators have a problem because different build styles
+treat a relative path in different ways.  The solution the plugout uses
+is to assume that all such paths are relative to the root of the project, 
+not relative to the location of the current artifact or package.
+</xdoc:subsection>
+<xdoc:subsection name=\"outputdir\">If you need to explicitly refer
+to a target file created during the build stage a problem
+arises as the location is dependent on factors like the build directory
+setting, the build style and the build variant.  To get around this issue
+you can use the variable $(OUTPUTDIR) as the root of a relative path. The
+styles will then translate the path as needed to access the desired target
+file.</xdoc:variable>
+\\endcond xdoc "
   package_ref 130729 // Build
 
   package_ref 256 // API BASE

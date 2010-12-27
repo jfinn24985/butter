@@ -1,0 +1,36 @@
+class const_token_iterator
+!!!242729.cpp!!!	increment() : void
+this->s_ = this->e_;
+if (this->e_ >= this->orig_.size ()) return;
+if (this->sep_ == this->orig_[this->e_]) this->e_++;
+this->s_ = this->e_;
+std::stack< char_type > quotes_;
+while (this->e_ < this->orig_.size ())
+{
+  const char_type c_ (this->orig_[this->e_]);
+  if (this->esc_ == c_)
+  {
+    this->e_++;
+  }
+  else if (this->is_quote(c_))
+  {
+    if (quotes_.empty () or quotes_.top () != c_)
+    {
+      quotes_.push (c_);
+    }
+    else
+    {
+      quotes_.pop ();
+    }
+  }
+  else if (this->sep_ == c_)
+  {
+    if (quotes_.empty ()) return;
+  }
+  this->e_++;
+}
+if (not quotes_.empty ())
+{
+  throw std::runtime_error ("Unmatched quotes in string: " + this->orig_);
+}
+return;

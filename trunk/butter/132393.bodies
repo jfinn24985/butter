@@ -34,21 +34,22 @@ if (QFile::exists (a_path))
   unsigned int l_cursor (0);  // How far in to the file we are.
   do
   {
-    const unsigned int l_sz (1024);     // The size of the buffer
+    const unsigned int l_sz (32);     // The size of the buffer
     char l_buffer[l_sz];        // Buffer for reading
     const unsigned int l_count (l_dev.readBlock (&l_buffer[0], l_sz));
     if (l_count != 0)
     {
-      Result = (a_str.length () >= l_cursor + l_count
-          && (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, l_count)));
+      Result = (a_str.length () >= l_cursor + l_count)
+          ? (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, l_count))
+          : false;
+      l_cursor += l_count;
+      if (l_dev.atEnd ())
+      {
+        Result = (a_str.length () == l_cursor);
+        break;
+      }
     }
     else
-    {
-      Result = (a_str.length () == l_cursor);
-      break;
-    }
-    l_cursor += l_count;
-    if (l_dev.atEnd ())
     {
       Result = (a_str.length () == l_cursor);
       break;
@@ -261,17 +262,17 @@ BUTTER_REQUIRE (NULL != item_ && NULL == const_cast< UmlItem& >(a_item).parent (
 /////////////////////
 // Set logging level
 QString level_;
-if (item_traits::property_value (*item_, item_traits::butter_log_name, level_))
+if (item_->property_value (item_traits::butter_log_name, level_))
 {
   log::com.level (level_.toInt ());
 }
 /////////////////////
 // Initialisation
 std::auto_ptr< location > Result; // The base of the location tree (and return value).
-butter::location * cache_ = NULL; // Cache location pointer used when adding UmlPackages.
+butter::location* cache_ = NULL; // Cache location pointer used when adding UmlPackages->
 butter::pathcmp root_dir_ (CppSettings::rootDir ()); // Project root dir.
 log::com.trace (log::warn, "<p><b>Please wait:</b> building target list for project <i>"
-        + const_cast< UmlItem& >(a_item).name () + "</i>.</p>");
+        + a_item.name () + "</i>.</p>");
 BUTTER_ALWAYS(! root_dir_.path ().isEmpty (), "<p><b>Error</b>Project C++ root directory is not set, please set it in the C++ generation dialog.</p>");
 // Ensure root directory exists.
 if (root_dir_.isRelative ())
@@ -294,7 +295,7 @@ if (! root_dir_.exists ())
 /////////////////////
 // Set style
 QString style_;
-if (item_traits::property_value (*item_, item_traits::butter_style_name, style_))
+if (item_->property_value (item_traits::butter_style_name, style_))
 {
   butter::style::set_style (style_);
 }
@@ -302,9 +303,9 @@ else
 {
   butter::style::set_style ();
 }
-// * Check and create any user-directed top-level directory.
+//  Check and create any user-directed top-level directory->
 QString user_base_path_;
-item_traits::property_value (a_item, item_traits::butter_base_name, user_base_path_);
+a_item.property_value (item_traits::butter_base_name, user_base_path_);
 if (! user_base_path_.isEmpty ())
 {
   const pathcmp base_path_ (root_dir_ / user_base_path_);
@@ -319,7 +320,7 @@ if (! user_base_path_.isEmpty ())
       throw std::runtime_error (msg_.utf8 ().data ());
     }
   }
-// * Create the initial base location object.
+//  Create the initial base location object->
   MSC_NO_RESET(Result,std::auto_ptr< location >)(new location (base_path_));
 }
 else
@@ -380,7 +381,7 @@ while (! item_stack_.isEmpty ())
     UmlPackage *pack_item_ = dynamic_cast < UmlPackage * >(top_);
     BUTTER_CHECK (NULL != pack_item_, "<p>Item type and class type do not match.</p>");
     // Create the simplest absolute path to package without reference to filesystem
-    const pathcmp pack_path_ (item_traits::dirname (*pack_item_));
+    const pathcmp pack_path_ (pack_item_->src_path ());
     BUTTER_CHECK (! pack_path_.path ().isEmpty (), "<p><b>Programming error:</b> Directory path for a package was found empty</p>");
     // Ensure directory exists.
     if (! pack_path_.exists ())
@@ -469,7 +470,7 @@ while (! item_stack_.isEmpty ())
     {
       print_tmp_ = print_tmp_->parent ();
     }
-    item_traits::print_item (*top_, depth_, log::com.stream ());
+    item_traits::print_item (top_, depth_, log::com->stream ());
   }
 #endif
   // Push any children onto the stack (ensures all objects are checked for keywords)
@@ -632,8 +633,7 @@ for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
           if (! artifact_cursor_->description ().isEmpty ())
           {
             QString document_prop_value_;
-            item_traits::property_value (*artifact_cursor_
-                , item_traits::butter_other_name, document_prop_value_);
+            artifact_cursor_->property_value (item_traits::butter_other_name, document_prop_value_);
             if (document_prop_value_.isEmpty ()
                 ||  (document_prop_value_ != "nowrite"
                   && document_prop_value_ != style::get_style().name))

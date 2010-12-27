@@ -1,42 +1,11 @@
 class item_traits
-!!!133545.cpp!!!	kind_to_string(in a_val : uint) : unistr
-static const char *l_kind[] = {
-"relation"
-, "attribute"
-, "operation"
-, "extra class member"
-, "class"
-, "use case"
-, "component"
-, "node"
-, "artifact"
-, "NC relation"
-, "class diagram"
-, "use case diagram"
-, "sequence diagram"
-, "collaboration diagram"
-, "component diagram"
-, "deployment diagram"
-, "class view"
-, "use case view"
-, "component view"
-, "deployment view"
-, "package"
-, "unknown"
-};
-const unsigned int l_size (sizeof(l_kind)/sizeof(char*));
-if (a_val < 0U || l_size <= a_val)
-{
-  a_val = l_size - 1;
-}
-return l_kind[a_val];
 !!!131881.cpp!!!	print_item(in a_item : UmlItem, in a_depth : uint, inout a_os : ostream) : void
 static const QString title_lbl__ ("[TT] ");
 static const QString watch_lbl__ ("[**] ");
 QString indent__;
 indent__.fill (' ', a_depth);
 a_os << indent__ << title_lbl__ << "Base information\n";
-a_os << indent__ << watch_lbl__ << "name = \"" << const_cast< UmlItem& >(a_item).name () << "\"\n";
+a_os << indent__ << watch_lbl__ << "name = \"" << a_item.name () << "\"\n";
 a_os << indent__ << watch_lbl__ << "depth = \"" << a_depth << "\"\n";
 a_os << indent__ << watch_lbl__ << "stereotype = \"" << const_cast< UmlItem& >(a_item).stereotype () << "\"\n";
 
@@ -87,12 +56,5 @@ if (const_cast< UmlItem& >(a_item).propertyValue (a_key.utf8 (), value_))
 {
   a_value = value_;
   return true;
-}
-return false;
-!!!205353.cpp!!!	property_is(out a_item : UmlItem, in a_key : unistr, in a_value : unistr) : bool
-QCString value_;
-if (const_cast< UmlItem& >(a_item).propertyValue (a_key.utf8 (), value_))
-{
-  return a_value == value_.data ();
 }
 return false;

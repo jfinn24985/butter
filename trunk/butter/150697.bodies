@@ -6,6 +6,10 @@ this->rules_file (a_base, a_project);
 // Start building system
 std::auto_ptr< compound_artifact > system_artifact_ = get_artifact (a_base, static_cast< derived* >(this)->build_file_sysname);
 
+// Set the project root directory
+this->root_dir (a_base.full_path ());
+BUTTER_CHECK (! this->root_dir ().path ().isEmpty ()
+      , "<p><b>Program error:</b> Project root directory is not set properly.</p>");
 // Perform style specific initialisation
 static_cast< derived* >(this)->initialise (a_base, a_project, *system_artifact_);
 
@@ -49,7 +53,7 @@ while (! location_stack_.isEmpty ())
             {
               installable_ = true;
               QString value_;
-              if (item_traits::property_value (art_item_, item_traits::butter_project_name, value_))
+              if (art_item_.property_value (item_traits::butter_project_name, value_))
               {
                 //////////////////////////////////////////////////
                 // Is an external target for project 'value_'.
@@ -59,7 +63,7 @@ while (! location_stack_.isEmpty ())
               {
                 //////////////
                 // Is a local target
-                const QString target_name_ (const_cast< UmlArtifact& >(art_item_).name ());
+                const QString target_name_ (art_item_.name ());
                 QVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(art_item_).associatedArtifacts ());
                 // Only process targets with associated entries.
                 if (! assoc_arts_.isEmpty ())
@@ -69,7 +73,7 @@ while (! location_stack_.isEmpty ())
                     if (stereotype_label_.contains (item_traits::library_stereotype, false))
                     {
                       QString value_;
-                      if (item_traits::property_search (art_item_, item_traits::butter_lib_type_name, value_)
+                      if (art_item_.property_search (item_traits::butter_lib_type_name, value_)
                             && value_ == item_traits::shared_value)
                       {
                         target_type_ = shared_library;
@@ -78,19 +82,19 @@ while (! location_stack_.isEmpty ())
                       {
                         target_type_ = static_library;
                       }
-                      if (item_traits::property_value (art_item_, item_traits::butter_other_name, value_))
+                      if (art_item_.property_value (item_traits::butter_other_name, value_))
                       {
                         target_type_ = other;
                       }
                     }
                     QString compiler_, includes_, compflags_, ldflags_;
-                    item_traits::property_value (art_item_, item_traits::butter_compiler_name, compiler_);
+                    art_item_.property_value (item_traits::butter_compiler_name, compiler_);
                     QTextOStream entry_os_ (&entry_);
                     ///////////////////
                     // Indicate the start of the target entry.
                     {
                       QString buildfile_;
-                      item_traits::property_value (art_item_, item_traits::butter_buildfile_name, buildfile_);
+                      art_item_.property_value (item_traits::butter_buildfile_name, buildfile_);
                       static_cast< derived* >(this)->start_target (art_item_, entry_os_, buildfile_, compiler_, target_type_);
                     }
                     ///////////////////
@@ -163,13 +167,13 @@ while (! location_stack_.isEmpty ())
                 QString install_dir_;              // Location for install: DOCDIR,BINDIR etc
                 install_type install_type_ (build_writer::file); // How the target should be installed
                 // Get the install property
-                item_traits::property_value (art_item_, item_traits::butter_install_name, install_dir_);
+                art_item_.property_value (item_traits::butter_install_name, install_dir_);
                 // For libraries and executables define some defaults.
                 if (stereotype_label_ == item_traits::library_stereotype)
                 {
                   // Check to see if this is an external library
                   QString project_;
-                  if (item_traits::property_value (art_item_, item_traits::butter_project_name, project_))
+                  if (art_item_.property_value (item_traits::butter_project_name, project_))
                   {
                     install_dir_.truncate (0);
                   }
@@ -210,7 +214,7 @@ while (! location_stack_.isEmpty ())
               {
                 if (NULL == top_->parent ())
                 {  // Is local at base, use system_artifact_
-                  system_artifact_->target (const_cast< UmlArtifact& >(art_item_).name ()).second.append (entry_);
+                  system_artifact_->target (art_item_.name ()).second.append (entry_);
                 }
                 else
                 {
@@ -218,7 +222,7 @@ while (! location_stack_.isEmpty ())
                   {
                     current_ = get_artifact (*top_, static_cast< derived* >(this)->build_file_name);
                   }
-                  current_->target (const_cast< UmlArtifact& >(art_item_).name ()).second.append (entry_);
+                  current_->target (art_item_.name ()).second.append (entry_);
                 }
               }
             }
@@ -308,11 +312,11 @@ public:
 };
 
 // Set strings for the project name and version
-const QString project_name_ (const_cast< UmlItem & > (a_project).name ());
+const QString project_name_ (a_project.name ());
 QString version_;
-if (! item_traits::property_value (a_project, item_traits::butter_version_name, version_))
+if (! a_project.property_value (item_traits::butter_version_name, version_))
 {
-  if (! item_traits::property_value (a_project, item_traits::version_name, version_))
+  if (! a_project.property_value (item_traits::version_name, version_))
   {
     version_ = "1.0";
   }
@@ -330,7 +334,7 @@ butter::log::com.trace(butter::log::debug, ("Value of var is: "
 #endif
 if ( !app_data_var.isEmpty() && ! app_data_var.isNull ())
 {
-  QFileInfo app_data_info_((pathcmp(app_data_var)
+  QFileInfo app_data_info_((pathcmp (app_data_var)
     / item_traits::app_data_subdir_name
     / static_cast< derived* >(this)->section_name).path ());
 #ifdef DEBUG
@@ -367,17 +371,18 @@ if ( !app_data_var.isEmpty() && ! app_data_var.isNull ())
 const QString &rules_name_ (static_cast< derived* >(this)->rules_name);
 if (rules_name_.contains(" "))
 {
-  // Is a list of names
-  //
-  const QStringList names_ (QStringList::split(" ", rules_name_));
-  for (unsigned int i_ = 0; i_ < names_.count (); ++i_)
+  // Is a list of names?
+  unsigned int i_ = 0;
+  for (const_token_iterator e_, b_(rules_name_, ' '); b_ != e_; ++b_)
   {
-    if (a_base.find_uml_document (names_[i_]).isEmpty ())
+    const QString name_(*b_);
+    if (not name_.isEmpty ())
     {
-      a_base.create_uml_document (names_[i_])->set_Description (
-         helper_::make_substitutions (
-	    helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], i_)
-	       , project_name_, version_).utf8());
+      a_base.create_uml_document (name_)->set_Description (
+        helper_::make_substitutions (
+            helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], i_)
+              , project_name_, version_).utf8());
+      ++i_; // Only increment i for non-empty names!
     }
   }
 }

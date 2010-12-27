@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 159
+  revision 171
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -400,36 +400,36 @@ the style for this buildfile type."
 , \"# local.jam\\n\"
 , \"#\\n\"
 , \"# Set constants for installation paths\\n\"
-, \"path-constant VERSIONDIR : \\\"@@project@@-@@version@@\\\" ;\\n\"
-, \"path-constant PREFIX : installdir ;\\n\"
-, \"path-constant EXEC_PREFIX : $(PREFIX) ;\\n\"
-, \"path-constant BINDIR : $(EXEC_PREFIX)/bin ;\\n\"
-, \"path-constant SBINDIR : $(EXEC_PREFIX)/sbin ;\\n\"
-, \"path-constant LIBEXECDIR : $(EXEC_PREFIX)/libexec ;\\n\"
-, \"path-constant LIBDIR : $(EXEC_PREFIX)/lib ;\\n\"
-, \"path-constant DATAROOTDIR : $(PREFIX)/share ;\\n\"
-, \"path-constant DATADIR : $(PREFIX)/share ;\\n\"
-, \"path-constant SYSCONFDIR : /etc ;\\n\"
-, \"path-constant SHAREDSTATEDIR : $(PREFIX)/com ;\\n\"
-, \"path-constant LOCALSTATEDIR : $(PREFIX)/var ;\\n\"
-, \"path-constant INCLUDEDIR : $(PREFIX)/include ;\\n\"
-, \"path-constant LOCALEDIR : $(DATAROOTDIR)/locale ;\\n\"
-, \"path-constant DOCDIR : $(DATAROOTDIR)/doc/$(VERSIONDIR) ;\\n\"
-, \"path-constant INFODIR : $(DATAROOTDIR)/info ;\\n\"
-, \"path-constant MANDIR : $(DATAROOTDIR)/man ;\\n\"
-, \"path-constant HTMLDIR : $(DOCDIR) ;\\n\"
-, \"path-constant DVIDIR : $(DOCDIR) ;\\n\"
-, \"path-constant PDFDIR : $(DOCDIR) ;\\n\"
-, \"path-constant PSDIR : $(DOCDIR) ;\\n\"
-, \"path-constant MAN1DIR : $(MANDIR)/man1 ;\\n\"
-, \"path-constant MAN2DIR : $(MANDIR)/man2 ;\\n\"
-, \"path-constant MAN3DIR : $(MANDIR)/man3 ;\\n\"
-, \"path-constant MAN4DIR : $(MANDIR)/man4 ;\\n\"
-, \"path-constant MAN5DIR : $(MANDIR)/man5 ;\\n\"
-, \"path-constant MAN6DIR : $(MANDIR)/man6 ;\\n\"
-, \"path-constant MAN7DIR : $(MANDIR)/man7 ;\\n\"
-, \"path-constant MAN8DIR : $(MANDIR)/man8 ;\\n\"
-, \"path-constant MANNDIR : $(MANDIR)/mann ;\\n\"
+, \"constant VERSIONDIR : \\\"@@project@@-@@version@@\\\" ;\\n\"
+, \"path-constant INSTALL_PREFIX : installdir ;\\n\"
+, \"path-constant DEBUG_PREFIX : installdir ;\\n\"
+, \"constant BINDIR : bin ; # User programs\\n\"
+, \"constant SBINDIR : sbin ; # Administrator only programs\\n\"
+, \"constant LIBEXECDIR : libexec ; # System daemons and system utilities\\n\"
+, \"constant LIBDIR : lib ; # Shared libraries\\n\"
+, \"constant DATAROOTDIR : share/$(VERSIONDIR) ; # Private libraries and static data\\n\"
+, \"constant SYSCONFDIR : etc ; # System wide configuration\\n\"
+, \"constant LOCALSTATEDIR : var ; # System wide shared state\\n\"
+, \"constant INCLUDEDIR : include/$(VERSIONDIR) ; # Public header files\\n\"
+, \"constant LOCALEDIR : share/locale ; # Localisation language files\\n\"
+, \"# Public documentation locations\\n\"
+, \"constant DOCDIR : share/doc/packages/$(VERSIONDIR) ;\\n\"
+, \"constant INFODIR : share/info ;\\n\"
+, \"constant MANDIRPRE : share/man ;\\n\"
+, \"constant HTMLDIR : $(DOCDIR)/html ;\\n\"
+, \"constant DVIDIR : $(DOCDIR) ;\\n\"
+, \"constant PDFDIR : $(DOCDIR) ;\\n\"
+, \"constant PSDIR : $(DOCDIR) ;\\n\"
+, \"constant MANDIR  : $(MANDIRPRE)/man1 ;\\n\"
+, \"constant MAN1DIR : $(MANDIRPRE)/man1 ;\\n\"
+, \"constant MAN2DIR : $(MANDIRPRE)/man2 ;\\n\"
+, \"constant MAN3DIR : $(MANDIRPRE)/man3 ;\\n\"
+, \"constant MAN4DIR : $(MANDIRPRE)/man4 ;\\n\"
+, \"constant MAN5DIR : $(MANDIRPRE)/man5 ;\\n\"
+, \"constant MAN6DIR : $(MANDIRPRE)/man6 ;\\n\"
+, \"constant MAN7DIR : $(MANDIRPRE)/man7 ;\\n\"
+, \"constant MAN8DIR : $(MANDIRPRE)/man8 ;\\n\"
+, \"constant MANNDIR : $(MANDIRPRE)/mann ;\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
 , \"###############\\n\"
@@ -447,20 +447,9 @@ the style for this buildfile type."
 	idl_decl ""
 	comment "This is the default contents of a the rules file (local.jam) If a 
 document artifact with name 'local.jam' is not present when 
-butter is executed with @style='boost' then one will be created
+butter is executed with \\@style='boost' then one will be created
 using this string.
 "
-      end
-
-      attribute 177705 "individual_obj_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Set of sources that need to be individually compiled"
       end
 
       attribute 180521 "is_other_"
@@ -484,17 +473,6 @@ using this string.
 	python_decl ""
 	idl_decl ""
 	comment "This name of the project"
-      end
-
-      attribute 180393 "target_NAME_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The version of the target name to use with variables."
       end
 
       operation 212649 "assoc_library"
@@ -521,7 +499,7 @@ direct and indirect dependencies. "
       end
 
       operation 212777 "assoc_source"
-	private explicit_return_type "void"
+	force_body_gen private explicit_return_type "void"
 	nparams 7
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" explicit_type "ostream"
@@ -549,10 +527,8 @@ direct and indirect dependencies. "
 	private explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${name}${(}${)}${volatile}
-: individual_obj_ ()
-, is_other_ ()
+: is_other_ ()
 , project_name_ ()
-, target_NAME_ ()
 {}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -822,6 +798,14 @@ Actions
 	  b parent class_ref 7937 // UmlPackage
       end
 
+      classrelation 174889 // <dependency>
+	relation 174121 -_->
+	  a package
+	    cpp default "#include in header"
+	    classrelation_ref 174889 // <dependency>
+	  b parent class_ref 161321 // const_token_iterator
+      end
+
       class 139305 "install_type"
 	visibility public stereotype "enum"
 	cpp_decl "${comment}enum ${name} {
@@ -957,6 +941,17 @@ ${items}};
 	end
       end
 
+      attribute 174633 "individual_obj_"
+	protected explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Extra description for objects individually built from source"
+      end
+
       attribute 177577 "other_target_type_"
 	protected explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -965,7 +960,32 @@ ${items}};
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "An \"other\" target library type."
+	comment "An \"other\" target library type name.  This is the name that is used for the
+label/converted for the build rule.  See inidividual styles to see how this
+is used and what requirements there are for supporting it in each style."
+      end
+
+      attribute 204329 "root_dir_"
+	private type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The root directory of the project."
+      end
+
+      attribute 180393 "target_NAME_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The version of the target name to use with variables."
       end
 
       operation 191785 "create_system"
@@ -1093,6 +1113,85 @@ to get style specific data from target artifact description fields."
 	
 	comment "Replace every occurence of find_char with rep_char in a_str"
       end
+
+      operation 244137 "root_dir"
+	const public return_type class_ref 145833 // pathcmp
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type} &${name}${(}${)}${const}${volatile}${abstract}
+{
+  return root_dir_;
+}
+"
+	
+	
+	
+	
+	comment "Get the projects root directory (if set)"
+      end
+
+      operation 244265 "root_dir"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_path" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  root_dir_ = ${p0};
+}
+"
+	
+	
+	
+	
+	comment "Set the project's root directory"
+      end
+
+      operation 244393 "target_NAME"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return target_NAME_;
+}
+"
+	
+	
+	
+	
+	comment "Version of target name for variables (generally
+all uppercase version of target.)"
+      end
+
+      operation 244521 "target_NAME"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  target_NAME_ = to_target_NAME (a_target);
+}"
+	
+	
+	
+	
+	comment "Set the version of target name to value created by to_target_NAME"
+      end
+
+      operation 244777 "to_target_NAME"
+	class_operation public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_target" type class_ref 6913 // UmlArtifact
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}
+}
+"
+	
+	
+	
+	
+	comment "Create the version of target name for variables (generally
+all uppercase version of location + target.)"
+      end
     end
 
     class 157737 "cmake_writer"
@@ -1120,9 +1219,23 @@ XXX_INCLUDE_DIRS
 XXX_COMPILE_FLAGS
 XXX_LINK_LIBRARIES
 
+TODO:
+need to root relative files with CMAKE_SOURCE_DIR
+need to convert $(..) to ${..}
+need to convert $(OUTPUTDIR) to CMAKE_BINARY_DIR
+
 Additionally external library xxx without a local buildfile can be
 found using:
-find_package(Xxx)"
+find_package(Xxx)
+
+\\cond xdoc
+The CMake style does not recognised round brackets, \"(\" and \")\", as
+variable delimiters.  The style generator will replace thes with \"{\" and \"}\"
+in the generated files.
+
+CMake automatically prepends \"lib\" to library targets on some platforms.
+This plugout turns off this automatic behaviour for library targets.
+\\endcond xdoc"
       classrelation 170409 // <realization>
 	relation 169641 -_-|>
 	  a public
@@ -1257,29 +1370,29 @@ the style for this buildfile type."
 , \"set (SBINDIR sbin)\\n\"
 , \"set (LIBEXECDIR libexec)\\n\"
 , \"set (LIBDIR lib)\\n\"
-, \"set (DATAROOTDIR share)\\n\"
-, \"set (DATADIR share)\\n\"
+, \"set (DATADIR share/${VERSIONDIR})\\n\"
 , \"set (SYSCONFDIR etc)\\n\"
 , \"set (SHAREDSTATEDIR com)\\n\"
 , \"set (LOCALSTATEDIR var)\\n\"
 , \"set (INCLUDEDIR include)\\n\"
-, \"set (LOCALEDIR ${DATAROOTDIR}/locale)\\n\"
-, \"set (DOCDIR ${DATAROOTDIR}/doc/${VERSIONDIR})\\n\"
-, \"set (INFODIR ${DATAROOTDIR}/info)\\n\"
-, \"set (MANDIR ${DATAROOTDIR}/man)\\n\"
+, \"set (LOCALEDIR share/locale)\\n\"
+, \"set (DOCDIR share/doc/${VERSIONDIR})\\n\"
+, \"set (INFODIR share/info)\\n\"
+, \"set (MANPRE share/man)\\n\"
 , \"set (HTMLDIR ${DOCDIR})\\n\"
 , \"set (DVIDIR ${DOCDIR})\\n\"
 , \"set (PDFDIR ${DOCDIR})\\n\"
 , \"set (PSDIR ${DOCDIR})\\n\"
-, \"set (MAN1DIR ${MANDIR}/man1)\\n\"
-, \"set (MAN2DIR ${MANDIR}/man2)\\n\"
-, \"set (MAN3DIR ${MANDIR}/man3)\\n\"
-, \"set (MAN4DIR ${MANDIR}/man4)\\n\"
-, \"set (MAN5DIR ${MANDIR}/man5)\\n\"
-, \"set (MAN6DIR ${MANDIR}/man6)\\n\"
-, \"set (MAN7DIR ${MANDIR}/man7)\\n\"
-, \"set (MAN8DIR ${MANDIR}/man8)\\n\"
-, \"set (MANNDIR ${MANDIR}/mann)\\n\"
+, \"set (MANDIR  ${MANPRE}/man1)\\n\"
+, \"set (MAN1DIR ${MANPRE}/man1)\\n\"
+, \"set (MAN2DIR ${MANPRE}/man2)\\n\"
+, \"set (MAN3DIR ${MANPRE}/man3)\\n\"
+, \"set (MAN4DIR ${MANPRE}/man4)\\n\"
+, \"set (MAN5DIR ${MANPRE}/man5)\\n\"
+, \"set (MAN6DIR ${MANPRE}/man6)\\n\"
+, \"set (MAN7DIR ${MANPRE}/man7)\\n\"
+, \"set (MAN8DIR ${MANPRE}/man8)\\n\"
+, \"set (MANNDIR ${MANPRE}/mann)\\n\"
 , \"###############\\n\"
 , \"## Editor sugar\\n\"
 , \"###############\\n\"
@@ -1298,7 +1411,7 @@ the style for this buildfile type."
 	idl_decl ""
 	comment "This is the default contents of a the rules file (M_sys.mak) If a 
 document artifact with name 'M_sys.mak' is not present when 
-butter is executed with @style='make' then one will be created
+butter is executed with \\@style='cmake' then one will be created
 using this string.
 "
       end
@@ -1314,17 +1427,6 @@ using this string.
 	python_decl ""
 	idl_decl ""
 	comment "The name of the rules file."
-      end
-
-      attribute 192937 "individual_obj_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Set of sources that need to be individually compiled"
       end
 
       attribute 193065 "lib_set_"
@@ -1349,30 +1451,6 @@ using this string.
 	comment "The top-level package name"
       end
 
-      attribute 193321 "root_dir_"
-	private type class_ref 145833 // pathcmp
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The root directory of the project."
-      end
-
-      attribute 193449 "target_NAME_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Upper case target-name used to construct make variables
-for use with the target (TARGET_SRC, TARGET_OBJ etc)"
-      end
-
       attribute 194985 "depend_set_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1381,8 +1459,6 @@ for use with the target (TARGET_SRC, TARGET_OBJ etc)"
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "Upper case target-name used to construct make variables
-for use with the target (TARGET_SRC, TARGET_OBJ etc)"
       end
 
       attribute 196137 "is_static_type_"
@@ -1476,6 +1552,42 @@ Responsibilites
  - set compilation for individual "
       end
 
+      operation 231209 "cmake_writer"
+	private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}
+: lib_set_ ()
+, project_name_ ()
+, depend_set_ ()
+, is_static_type_ (false)
+, language_set_ ()
+, sys_buildfile_ ()
+{}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "Create a writer from the top-level a_project
+
+\\pre a_project.parent = nul"
+      end
+
+      operation 231337 "~cmake_writer"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
       operation 230697 "create"
 	stereotype "auto_ptr"
 	class_operation public return_type class_ref 146985 // build_writer
@@ -1565,45 +1677,6 @@ data is written in local-targets directly where it is
 referenced."
       end
 
-      operation 231209 "cmake_writer"
-	private explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${)}
-: individual_obj_ ()
-, lib_set_ ()
-, project_name_ ()
-, root_dir_ ()
-, target_NAME_ ()
-, depend_set_ ()
-, is_static_type_ (false)
-, language_set_ ()
-, sys_buildfile_ ()
-{}
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-	comment "Create a writer from the top-level a_project
-
-\\pre a_project.parent = nul"
-      end
-
-      operation 231337 "~cmake_writer"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
-"
-	
-	
-	
-	
-      end
-
       operation 231465 "cmake_writer"
 	stereotype "copy"
 	private explicit_return_type ""
@@ -1670,6 +1743,26 @@ Responsibilites
  - install (library, executable and document)"
       end
 
+      operation 245929 "mangle"
+	public explicit_return_type "unistr"
+	nparams 1
+	  param in name "input" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Convert input string into CMake allowed string.  This
+means converting () to {} and OUTPUTDIR to 
+CMAKE_BINARY_DIR"
+      end
+
       operation 231849 "operator="
 	private return_type class_ref 157737 // cmake_writer
 	nparams 1
@@ -1697,27 +1790,7 @@ ${body}
 	
 	
 	comment "Update the main buildfile's project entry.  This is called
-in initialise() and when adding a new source language."
-      end
-
-      operation 232105 "requirements"
-	private explicit_return_type "bool"
-	nparams 2
-	  param in name "a_item" type class_ref 7553 // UmlItem
-	  param inout name "a_reqs" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Scan a_item for any requirements, add these to a_req and
-return true if found."
+in initialise() and when adding a new compiler language."
       end
 
       operation 232233 "start_target"
@@ -1792,6 +1865,14 @@ Standard build-file form is a compound_artifact with something like
 	    cpp default "#include in source"
 	    classrelation_ref 154921 // <dependency>
 	  b parent class_ref 137001 // item_traits
+      end
+
+      classrelation 176297 // <dependency>
+	relation 175529 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 176297 // <dependency>
+	  b parent class_ref 145833 // pathcmp
       end
 
       classrelation 155177 // <dependency>
@@ -2127,6 +2208,348 @@ ${body}
       end
     end
 
+    class 161321 "const_token_iterator"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}: public std::iterator< std::forward_iterator_tag, std::string >
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Provide an iterator over the tokens in a string
+
+This class will break a string into tokens on the given separator
+character.  It will ignore separators that are in quotation marks
+or escaped.  An error is thrown if the end of the string is reached
+and no matching closing quote was found."
+      class 161577 "char_type"
+	visibility package stereotype "typedef" explicit_base_type "char"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      class 161705 "string_type"
+	visibility package stereotype "typedef" explicit_base_type "std::string"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      class 161833 "size_type"
+	visibility package stereotype "typedef" explicit_base_type "std::string::size_type"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+      end
+
+      operation 241193 "const_token_iterator"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}
+: orig_()
+, s_(0)
+, e_(0)
+, esc_(0)
+, sep_(0)
+{}"
+	
+	
+	
+	
+      end
+
+      operation 241321 "const_token_iterator"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "orig" type class_ref 161705 // string_type
+	  param in name "sep" type class_ref 161577 // char_type
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}
+: orig_(orig)
+, s_(0)
+, e_(0)
+, esc_('\\\\')
+, sep_(sep)
+{ this->increment(); }"
+	
+	
+	
+	
+      end
+
+      operation 241449 "const_token_iterator"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "orig" type class_ref 161321 // const_token_iterator
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}
+: orig_(orig.orig_)
+, s_(orig.s_)
+, e_(orig.e_)
+, esc_(orig.esc_)
+, sep_(orig.sep_)
+{}"
+	
+	
+	
+	
+      end
+
+      operation 241577 "swap"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "rhs" type class_ref 161321 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract}
+{
+  std::swap(const_cast< string_type& >(this->orig_)
+     		, const_cast< string_type& >(rhs.orig_));
+  std::swap(this->s_, rhs.s_);
+  std::swap(this->e_, rhs.e_);
+  std::swap(const_cast< char_type& >(this->esc_), const_cast< char_type& >(rhs.esc_));
+  std::swap(const_cast< char_type& >(this->sep_), const_cast< char_type& >(rhs.sep_));
+}"
+	
+	
+	
+	
+      end
+
+      operation 241705 "operator ="
+	public return_type class_ref 161321 // const_token_iterator
+	nparams 1
+	  param in name "orig" type class_ref 161321 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract}
+{
+  this->swap (orig);
+  return *this;
+}"
+	
+	
+	
+	
+      end
+
+      operation 241833 "operator ++"
+	public return_type class_ref 161321 // const_token_iterator
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${)}${const}${volatile}${abstract}
+{
+  this->increment();
+  return *this;
+}"
+	
+	
+	
+	
+      end
+
+      operation 241961 "operator ++"
+	public return_type class_ref 161321 // const_token_iterator
+	nparams 1
+	  param in name "" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract}
+{
+  const_token_iterator tmp(*this);
+  this->increment();
+  return tmp;
+}"
+	
+	
+	
+	
+      end
+
+      operation 242089 "operator =="
+	friend public explicit_return_type "bool"
+	nparams 2
+	  param in name "lhs" type class_ref 161321 // const_token_iterator
+	  param in name "rhs" type class_ref 161321 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract}
+{
+     return lhs.at_end ()
+		? rhs.at_end ()
+		: rhs.at_end ()
+			? false
+			: (lhs.s_ == rhs.s_) & (lhs.e_ == rhs.e_)
+				? lhs.orig_ == rhs.orig_
+				: false;
+}"
+	
+	
+	
+	
+      end
+
+      operation 242217 "operator !="
+	friend cpp_inline public explicit_return_type "bool"
+	nparams 2
+	  param in name "lhs" type class_ref 161321 // const_token_iterator
+	  param in name "rhs" type class_ref 161321 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract}
+{
+  return !(lhs == rhs);
+}"
+	
+	
+	
+	
+      end
+
+      operation 242345 "operator ->"
+	const public return_type class_ref 161705 // string_type
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->operator*();
+}"
+	
+	
+	
+	
+      end
+
+      operation 242473 "operator *"
+	const public return_type class_ref 161705 // string_type
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->orig_.substr(this->s_, this->e_ - this->s_);
+}"
+	
+	
+	
+	
+      end
+
+      operation 242601 "at_end"
+	const private explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+      return this->orig_.empty ()
+      		? true
+		: this->s_ >= this->orig_.size (); 
+}"
+	
+	
+	
+	
+      end
+
+      operation 242729 "increment"
+	cpp_inline private explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 242857 "is_quote"
+	class_operation private explicit_return_type "bool"
+	nparams 1
+	  param in name "c" type class_ref 161577 // char_type
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  return (c == '\\'') | (c == '\"') | (c == '`');
+} 
+"
+	
+	
+	
+	
+      end
+
+      operation 244009 "reset"
+	private explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  this->s_ = 0; this->e_ = 0;
+}
+"
+	
+	
+	
+	
+	comment "Reset iterator to the beginning of the contained string"
+      end
+
+      classrelation 173225 // orig_ (<directional composition>)
+	relation 172457 *-->
+	  a role_name "orig_" const_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 173225 // orig_ (<directional composition>)
+	  b parent class_ref 161705 // string_type
+      end
+
+      attribute 203049 "s_"
+	private type class_ref 161833 // size_type
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 203177 "e_"
+	private type class_ref 161833 // size_type
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 173353 // esc_ (<directional composition>)
+	relation 172585 *-->
+	  a role_name "esc_" const_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 173353 // esc_ (<directional composition>)
+	  b parent class_ref 161577 // char_type
+      end
+
+      classrelation 173481 // sep_ (<directional composition>)
+	relation 172713 *-->
+	  a role_name "sep_" const_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 173481 // sep_ (<directional composition>)
+	  b parent class_ref 161577 // char_type
+      end
+    end
+
     class 135849 "gmake_writer"
       visibility package 
       nactuals 1
@@ -2145,11 +2568,107 @@ ${members}}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "Build file writer for gnu make
+      comment "Build file generator for gnu make
 
-Requires \"make\" that supports the following two constructs;
-:=
-include"
+Requires GNU make compatible make, for generic make use the CMake %style
+\\ref cmake_writer .
+
+\\cond xdoc
+<xdoc:section part-of=\"limitation/make\" ><p>The <code>make</code> program
+can not create target dependency graph between directories.  As all the other
+styles do create such a graph, this plugout does not. This can require calling
+make several times to get all targets to link correctly.</p>
+<xdoc:subsection name=\"workaround\" ><p>The initially generated makefile will include targets and
+subdirectories in the order they appear in the project.  Once created, the
+order of target sections in the generated artifact is maintained so manually
+reordering the target sections within a single artifact will change their compilation
+order.</p></xdoc:subsection>
+<xdoc:title>Limitations of the Make style build system</xdoc:title></xdoc:section>
+<xdoc:section part-of=\"extension/build-environ/make\" >
+<xdoc:title>Extending Make style to new compilers and operating
+environments</xdoc:title>
+<p>New compiler and operating systems can be added by creating system makefiles
+like M_gcc.mak and M_unix.mak.  See <xdoc:xref to=\"customisation/build-environ\" >
+customisation section</xdoc:xref> for how to include new system files.
+To be portable you should only specify tools
+that would be available with the standard installations of the new compiler suite or
+operating system. Listed below are the minimal
+set of variables directly used by this style and so must be defined.</p>
+<p>The build system uses the following variables to control the build
+process. The first two select the makefiles with the compiler and operating
+system specific data.  Note the operating system file is always included first,
+so it can not rely on variables that will be set in the compiler file. Alternatively
+the compiler file can <em>override</em> definitions if required. The
+last variable selects the optimisation level
+to use.  These variables must be set on the command line or as environment
+variables or at the top of the first makefile.</p>
+<dl><dt>CC</dt><dd>C compiler</dd>
+<dt>OS</dt><dd>The operating system type, eg unix</dd>
+<dt>VARIANT</dt><dd>The build system expects optimisation flags
+to be added according to the value of this variable. A value of
+<code>RELEASE</code> should add standard optimisation flags to the relevant
+preprocessor and language flags.  A value of <code>DEBUG</code> or undefined or
+an unrecognised value should add debugging flags. Other actions are
+allowed, such as using a dummy install location when set to DEBUG.</dd></dl>
+<p>The build system requires the following variables to be set for
+each compiler suite.  You may also need to set other variables
+that GNU make uses, such as <code>AR</code>, <code>RM</code> and <code>LINK</code>, for the new
+build environment.</p>
+<dl><dt>CCC</dt><dd>C++ compiler</dd>
+<dt>CPPFLAGS</dt><dd>Preprocessor flags</dd>
+<dt>CCFLAGS</dt><dd>C language flags</dd>
+<dt>CCCFLAGS</dt><dd>C++ language flags</dd>
+<dt>LDFLAGS</dt><dd>Linker flags</dd></dl>
+Commonly defined optional variables are.
+<dl><dt>FORTRAN</dt><dd>Fortran compiler </dd>
+<dt>FORTRANFLAGS</dt><dd>Fortran language flags</dd>
+<dt>OPENMP</dt><dd>OpenMP compiler switch</dd></dl>
+<p>The following macros and definitions must be defined
+in either the operating system or compiler definition makefiles.  For how
+to define a makefile macro refer to the GNU make documentation.</p>
+<dl><dt>do_link_exe</dt><dd>Creates an executable. Takes two
+arguments: the program name and a list of objects.</dd>
+<dt>do_link_shr</dt><dd>Creates a shared library. Takes three
+arguments: the library name, a list of objects and an optional
+version number. The prefix <code>lib</code>, used on many unices,
+must <em>not</em> be automatically added.</dd>
+<dt>do_archive</dt><dd>Creates a static library. Takes two
+arguments: the library name and a list of objects. The
+prefix <code>lib</code>, used on many unices,
+must <em>not</em> be automatically added.</dd>
+<dt>do_install</dt><dd>Installs a target.  Takes three arguments: the target
+name, the destination <em>identifier</em> and permission <em>identifier</em>.
+These identifiers are prepended to <code>DIR</code> to form the variable name
+containing the destination directory and to <code>IFLAGS</code> for permissions.
+The third argument is optional if it would be the same as the second. For
+example a the identifier <code>BIN</code> would select the
+<code>$(BINDIR)</code> directory variable or the the <code>$(BINIFLAGS)</code>
+permission variable. The minimum set of directory and permission flags required
+by the make style are:<br />
+<dl><dt>BINDIR, BINIFLAGS</dt><dd>For executable targets</dd>
+<dt>LIBDIR, LIBIFLAGS</dt><dd>For shared library targets</dd>
+<dt>DOCDIR</dt><dd>For documentation targets</dd>
+<dt>MANDIR, MANIFLAGS</dt><dd>For man-page or help targets</dd>
+<dt>FILEIFLAGS</dt><dd>For general file targets</dd>
+</dl></dd>
+<dt>doit</dt><dd>Macro to recursively descend source tree.
+Takes two arguments, the current make target (eg \"clean\")
+and a list of directories. It should call <code>$(MAKE) -C [subdir] [target]</code>
+for each directory in the list.</dd>
+<dt>%$(sufdep): %.[???]</dt><dd>A set of implicit rules for
+creating a dependency file for each source file extension. This
+can be a dummy operation that creates an empty file if the
+dependency information is not required.</dd></dl>
+<p>The following variables for operating system settings
+are expected.</p>
+<dl><dt>sufobj</dt><dd>File suffix of object files</dd>
+<dt>sufexe</dt><dd>File suffix of program</dd>
+<dt>suflib</dt><dd>File suffix of static libraries</dd>
+<dt>sufshr</dt><dd>File suffix of shared librraries</dd>
+<dt>sufdep</dt><dd>File suffix of generated dependency files</dd>
+<dt>SLASH</dt><dd>File path separator</dd></dl>
+</xdoc:section >
+\\endcond xdoc"
       classrelation 164009 // <realization>
 	relation 163241 -_-|>
 	  a public
@@ -2362,9 +2881,9 @@ the style for this buildfile type."
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of a the rules file (M_sys.mak) If a 
-document artifact with name 'M_sys.mak' is not present when 
-butter is executed with @style='make' then one will be created
+	comment "This is the default contents of a the rules file (M_sys.mak).
+If a document artifact with name 'M_sys.mak' is not present when 
+%butter is executed with \\@style='standard' then one will be created
 using this string.
 "
       end
@@ -2447,10 +2966,12 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of a the rules file (makefile.sys) If a 
-document artifact with name 'makefile.sys' is not present when 
-butter is executed with @style='make' then one will be created
+	comment "This is the default contents of the rules file (M_cl.mak) for
+the microsoft compiler. If a 
+document artifact with name 'M_cl.mak' is not present when 
+%butter is executed with \\@style='standard' then one will be created
 using this string.
+
 "
       end
 
@@ -2523,9 +3044,10 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of a the rules file (makefile.sys) If a 
-document artifact with name 'makefile.sys' is not present when 
-butter is executed with @style='make' then one will be created
+	comment "This is the default contents of the rules file (M_gcc.mak) for
+the GNU compiler collection. If a 
+document artifact with name 'M_gcc.mak' is not present when 
+%butter is executed with \\@style='standard' then one will be created
 using this string.
 "
       end
@@ -2534,7 +3056,7 @@ using this string.
 	class_attribute const_attribute private explicit_type "str"
 	init_value "{ \" # Definition of for loop in local shell.\\n\"
 , \"define doit\\n\"
-, \"for subdir in $(2); do $(MAKE) -C $${subdir}  $(1); done\\n\"
+, \"$(if $(2),STATUS=0 ; for subdir in $(2); do $(MAKE) -C $${subdir}  $(1) || STATUS=$$? ; done ; exit $${STATUS})\\n\"
 , \"endef\\n\"
 , \"\\n\"
 , \"# MAKE MOST VARIABLES ONCE-ONLY\\n\"
@@ -2609,10 +3131,12 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of a the rules file (makefile.sys) If a 
-document artifact with name 'makefile.sys' is not present when 
-butter is executed with @style='make' then one will be created
+	comment "This is the default contents of the rules file (M_unix.mak) for
+a UNiX/POSIX like operating system. If a 
+document artifact with name 'M_unix.mak' is not present when 
+%butter is executed with \\@style='standard' then one will be created
 using this string.
+
 "
       end
 
@@ -2620,7 +3144,7 @@ using this string.
 	class_attribute const_attribute private explicit_type "str"
 	init_value "{ \"# Definition of for loop in local shell.\\n\\n\"
 , \"define doit\\n\"
-, \"for %%W in ( $(2) ) do ( $(MAKE) -C %%W $(1) )\\n\"
+, \"$(if $(2), set errorlevel=& set STATUS=0 & for %%W in ( $(2) ) do ( $(MAKE) -C %%W $(1) & if errorlevel ( set STATUS=%errorlevel% ) ) & exit %STATUS%)\\n\"
 , \"endef\\n\"
 , \"\\n\"
 , \"ifndef M_WINNT_MAK\\n\"
@@ -2696,9 +3220,10 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of a the rules file (makefile.sys) If a 
-document artifact with name 'makefile.sys' is not present when 
-butter is executed with @style='make' then one will be created
+	comment "This is the default contents of the rules file (M_Windows_NT.mak) for
+a (post NT) Micrsoft Windows like operating system. If a 
+document artifact with name 'M_Windows_NT.mak' is not present when 
+%butter is executed with \\@style='standard' then one will be created
 using this string.
 "
       end
@@ -2712,6 +3237,10 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+	comment "Null terminated list of the default_rules_[] attributes.
+This is a simple list of the default_rules_[...] attributes, listed
+in the same order as the rules_name attribute. It is only
+used to initialise the default_rules attribute. "
       end
 
       extra_member 145193 ""
@@ -2752,7 +3281,10 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "List of the _all_ the default rules."
+	comment "A list containing _all_ the default rules.
+This is assigned all the default rules concatenated together. The
+rules appear in the order specified by rules_name.
+\\sa default_rules_list"
       end
 
       attribute 144297 "rules_name"
@@ -2765,18 +3297,9 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "The name of the rules file."
-      end
-
-      attribute 176425 "individual_obj_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Set of sources that need to be individually compiled"
+	comment "A space separated list of rule names.
+This style has multiple system buildfiles. This variable contains a space
+separated list of the names of these files."
       end
 
       attribute 176297 "lib_set_"
@@ -2799,30 +3322,6 @@ using this string.
 	python_decl ""
 	idl_decl ""
 	comment "The target name as used by make"
-      end
-
-      attribute 145449 "root_dir_"
-	private type class_ref 145833 // pathcmp
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The root directory of the project."
-      end
-
-      attribute 175913 "target_NAME_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Upper case target-name used to construct make variables
-for use with the target (TARGET_SRC, TARGET_OBJ etc)"
       end
 
       operation 210729 "assoc_library"
@@ -2872,14 +3371,21 @@ ${body}}
 	
 	
 	
-	comment "** This method sets up object for creating a new target entry for a_target.
+	comment " This method sets up object for creating a new target entry for a_target.
 
 Responsibilites
 - Properties
  - doc/source: includes, ldflags, cflags
  - compiler
 - Other
- - set compilation for individual "
+ - set compilation for individual 
+
+\\cond XDOC
+<property style=\"standard\" name=\"include\" on=\"artifact\" subtype=\"stereotype=source\"> Add
+include directories to compilation of this source only.  Any include directories
+needed to compile dependents of this source should be set in this property on
+the target artifact that is associated to the source.</property>
+\\endcond XDOC"
       end
 
       operation 202921 "create"
@@ -2970,11 +3476,8 @@ referenced."
 	cpp_decl "    ${comment}${name}${(}${)}${volatile};
 "
 	cpp_def "${inline}${class}::${name}${(}${)}
-: individual_obj_ ()
-, lib_set_ ()
+: lib_set_ ()
 , qualified_target_name_ ()
-, root_dir_ ()
-, target_NAME_ ()
 {}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -3190,16 +3693,8 @@ ${members}}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "Helper Uml(*) functions and static strings for the butter project.
+      comment "Static strings for the butter project.
 "
-      classrelation 145449 // <dependency>
-	relation 144681 -_->
-	  a package
-	    cpp default "#include in header"
-	    classrelation_ref 145449 // <dependency>
-	  b parent class_ref 1280 // CppSettings
-      end
-
       attribute 150569 "bindir_value"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"BINDIR\")"
@@ -3473,28 +3968,6 @@ a a list of directory names (\\see header_label)
 	comment "The stereotype name for document artifacts."
       end
 
-      operation 138921 "dirname"
-	class_operation public return_type class_ref 145833 // pathcmp
-	nparams 1
-	  param in name "a_pack" type class_ref 7937 // UmlPackage
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
-{
-  static ${type} base_ (CppSettings::rootDir ());
-  if (base_.isRelative ()) {   
-    QFileInfo f_ (const_cast< UmlPackage & >(${p0}).supportFile());
-    base_.setPath(f_.dir().filePath(base_.path ()));
-  }
-  return base_ / ${type} (const_cast< ${t0} &> (${p0}).cppSrcDir ());
-}"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Create the absolute path to the source directory for this package"
-      end
-
       attribute 141737 "executable_stereotype"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"executable\")"
@@ -3554,29 +4027,6 @@ added when necessary. eg:
 HDR=/dir1 /dir2"
       end
 
-      operation 133545 "kind_to_string"
-	class_operation public explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_val" explicit_type "uint"
-	cpp_decl "#ifdef DEBUG
-    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
-#endif"
-	cpp_def "#ifdef DEBUG
-${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
-${body}}
-#endif
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Convert a 'kind' into a string
-
-(Only in non NO_LOG builds)"
-      end
-
       attribute 150313 "libdir_value"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"LIBDIR\")"
@@ -3619,59 +4069,6 @@ eg:
 LINK = -L/my/path -lmylib"
       end
 
-      operation 158889 "hdrname"
-	class_operation cpp_inline public return_type class_ref 145833 // pathcmp
-	nparams 1
-	  param inout name "a_pack" type class_ref 7937 // UmlPackage
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
-{
-  return pathcmp (CppSettings::rootDir ()) / pathcmp (const_cast< ${t0} &> (${p0}).cppHDir ());
-}"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Create the absolute path to the header directory for this package"
-      end
-
-      operation 157737 "location"
-	class_operation cpp_inline public explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_pack" type class_ref 7937 // UmlPackage
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
-{
-  return QDir (const_cast< ${t0} &> (${p0}).cppSrcDir ()).dirName ();
-}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "The (leaf) name of the directory this package is in."
-      end
-
-      operation 238889 "location"
-	class_operation cpp_inline public explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_pack" type class_ref 6913 // UmlArtifact
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
-{
-  return ${name} (item_traits::package (${p0}));
-}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "The (leaf) name of the directory this package is in."
-      end
-
       attribute 150697 "no_install_value"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"NONE\")"
@@ -3684,126 +4081,6 @@ ${body}}
 	idl_decl ""
 	comment "Value of he \"butter install\" property to indicate that the target 
 should not be installed."
-      end
-
-      operation 157609 "package"
-	class_operation cpp_inline public return_type class_ref 7937 // UmlPackage
-	nparams 1
-	  param inout name "a_art" type class_ref 6913 // UmlArtifact
-	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
-{
-  UmlPackage *Result = dynamic_cast< UmlPackage* >(const_cast< ${t0} & >(${p0}).parent ()->parent ());
-  @{PROJECT}_REQUIRE (NULL != Result, \"Invalid heirarchy, grandparent of artifact is not a package\");
-  return *Result;
-}
-
-
-"
-	
-	
-	
-	
-	comment "Get the parent package of this artifact
-
-\\pre a_art.parent.parent /= UmlPackage"
-      end
-
-      operation 131881 "print_item"
-	class_operation public explicit_return_type "void"
-	nparams 3
-	  param in name "a_item" type class_ref 7553 // UmlItem
-	  param in name "a_depth" explicit_type "uint"
-	  param inout name "a_os" explicit_type "ostream"
-	cpp_decl "#ifdef DEBUG
-    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
-#endif"
-	cpp_def "#ifdef DEBUG
-${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-#endif
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Print information about a_item.
-
-(Only in non NO_LOG  builds)"
-      end
-
-      operation 135081 "property_search"
-	class_operation public explicit_return_type "bool"
-	nparams 3
-	  param out name "a_item" type class_ref 7553 // UmlItem
-	  param in name "a_key" explicit_type "unistr"
-	  param inout name "a_value" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
-@{PROJECT}_REQUIRE (! ${p1}.isEmpty (), \"Can not search for an empty key.\");
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Search from a_item to the Project object for the property with a_key. Sets
-a_value and returns if such a property is found.
-
-\\pre not a_key.empty"
-      end
-
-      operation 205225 "property_value"
-	class_operation public explicit_return_type "bool"
-	nparams 3
-	  param out name "a_item" type class_ref 7553 // UmlItem
-	  param in name "a_key" explicit_type "unistr"
-	  param inout name "a_value" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${volatile}${staticnl}{
-@{PROJECT}_REQUIRE (! ${p1}.isEmpty (), \"Can not search for an empty key.\");
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Query a_item for property with a_key. Sets a_value and returns true if such a property is found.
-
-\\pre not a_key.empty"
-      end
-
-      operation 205353 "property_is"
-	class_operation public explicit_return_type "bool"
-	nparams 3
-	  param out name "a_item" type class_ref 7553 // UmlItem
-	  param in name "a_key" explicit_type "unistr"
-	  param in name "a_value" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${staticnl}{
-@{PROJECT}_REQUIRE (! ${p1}.isEmpty (), \"Can not search for an empty key.\");
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Query a_item for property with a_key and return true if it matches a_value. Returns
-false if no property matchs a_key or value does not match.
-
-\\pre not a_key.empty"
       end
 
       attribute 142633 "section_prefix"
@@ -3999,7 +4276,14 @@ ${members}}
       comment "Build file writer for standard jam.
 
 This is the build system writer of choice as is supports the widest range of
-build options."
+build options.
+
+\\cond XDOC
+<style style=\"make\">
+<limitation>The <code>standard</code> jam tool does not provide
+a shared library target. Providing a shared library for this style is on 
+the <link target=\"todo\">TODO list</link>.</limitation>
+\\endcond XDOC"
       classrelation 163881 // <realization>
 	relation 163113 -_-|>
 	  a public
@@ -4255,17 +4539,6 @@ the style for this buildfile type."
 	comment "The name of the jam rules document."
       end
 
-      attribute 174633 "individual_obj_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Extra description for objects individually built from source"
-      end
-
       attribute 174249 "lib_defn_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -4297,29 +4570,6 @@ the style for this buildfile type."
 	python_decl ""
 	idl_decl ""
 	comment "The full target name for the currently processing target (defined in start_target)"
-      end
-
-      attribute 201897 "root_dir_"
-	private type class_ref 145833 // pathcmp
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The root directory of the project."
-      end
-
-      attribute 201769 "target_NAME_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The target name adapted for creating target specific variable names."
       end
 
       operation 209065 "assoc_library"
@@ -4567,12 +4817,9 @@ Responsibilites
 	cpp_decl "    ${comment}${name}${(}${)}${volatile};
 "
 	cpp_def "${inline}${class}::${name}${(}${)}
-: individual_obj_ ()
-, lib_defn_ ()
+: lib_defn_ ()
 , grist_ ()
 , qualified_target_name_ ()
-, root_dir_ ()
-, target_NAME_ ()
 {}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -4688,6 +4935,14 @@ Responsibilities:
  - style
 
 "
+      classrelation 176425 // <dependency>
+	relation 175657 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 176425 // <dependency>
+	  b parent class_ref 1280 // CppSettings
+      end
+
       classrelation 145193 // <dependency>
 	relation 144425 -_->
 	  a default
@@ -5843,6 +6098,14 @@ descendent_link, external_target, initialise and local_target."
 	  b parent class_ref 146985 // build_writer
       end
 
+      classrelation 176169 // <dependency>
+	relation 175401 -_->
+	  a package
+	    cpp default "#include in header"
+	    classrelation_ref 176169 // <dependency>
+	  b parent class_ref 1280 // CppSettings
+      end
+
       classrelation 163113 // <dependency>
 	relation 162345 -_->
 	  a package
@@ -6451,19 +6714,19 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 134057 // qt
-	artifact_ref 152489 // build_writer
-	artifact_ref 138793 // item_traits
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 152233 // style
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 132521 // location
-	artifact_ref 165929 // cmake_writer
-	artifact_ref 142889 // bouml
-	artifact_ref 150825 // utility
-	artifact_ref 152361 // compound_artifact
 	artifact_ref 136361 // jam_writer
+	artifact_ref 134057 // qt
+	artifact_ref 142889 // bouml
 	artifact_ref 154025 // main
+	artifact_ref 132521 // location
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 152489 // build_writer
+	artifact_ref 150825 // utility
+	artifact_ref 165929 // cmake_writer
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 138793 // item_traits
+	artifact_ref 152233 // style
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
@@ -6471,93 +6734,93 @@ ${namespace_end}"
     artifact 148393 "butter.plugout"
       stereotype "file"
       associated_artifacts
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 6145 // UmlCollaborationDiagram
 	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 7169 // UmlItem
 	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 6785 // UmlDeploymentView
 	artifact_ref 7809 // UmlSequenceDiagram
 	artifact_ref 2304 // UmlBaseArtifact
 	artifact_ref 3712 // UmlBasePackage
 	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 152489 // build_writer
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 136361 // jam_writer
+	artifact_ref 6017 // UmlClassView
 	artifact_ref 5120 // anItemKind
-	artifact_ref 138793 // item_traits
-	artifact_ref 135209 // bjam_writer
+	artifact_ref 4993 // UmlActualParameter
 	artifact_ref 3200 // UmlBaseExtraClassMember
 	artifact_ref 768 // CppSettings
-	artifact_ref 152233 // style
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 4480 // UmlCom
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 132521 // location
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 6273 // UmlArtifact
 	artifact_ref 5505 // UmlAttribute
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 4864 // aDirection
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 7297 // UmlNode
+	artifact_ref 7169 // UmlItem
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 5633 // UmlClass
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 154025 // main
 	artifact_ref 4736 // aRelationKind
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 132521 // location
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 137641 // gmake_writer
+	artifact_ref 4864 // aDirection
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 5761 // UmlClassDiagram
 	artifact_ref 3584 // UmlBaseOperation
 	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 7425 // UmlOperation
 	artifact_ref 896 // UmlBaseFormalParameter
 	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 152361 // compound_artifact
 	artifact_ref 3456 // UmlBaseNode
 	artifact_ref 512 // UmlBaseActualParameter
 	artifact_ref 5376 // MiscGlobalCmd
 	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 6529 // UmlComponentView
+	artifact_ref 4608 // UmlSettings
 	artifact_ref 5121 // UmlClassItem
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 5633 // UmlClass
+	artifact_ref 7681 // UmlRelation
 	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 150825 // utility
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 5249 // UmlFormalParameter
 	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 3328 // UmlBaseItem
 	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 1536 // UmlBaseAttribute
 	artifact_ref 128002 // UmlComponent
+	artifact_ref 4096 // UmlBaseUseCase
 	artifact_ref 2944 // UmlBaseDeploymentView
 	artifact_ref 1664 // UmlBaseClass
 	artifact_ref 6144 // JavaSettingsCmd
 	artifact_ref 1280 // UmlTypeSpec
 	artifact_ref 2432 // UmlBaseComponentDiagram
 	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 152361 // compound_artifact
+	artifact_ref 152489 // build_writer
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 150825 // utility
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 7297 // UmlNode
 	artifact_ref 2816 // UmlBaseDeploymentDiagram
 	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 136361 // jam_writer
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 154025 // main
 	artifact_ref 4992 // aVisibility
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 135209 // bjam_writer
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 138793 // item_traits
+	artifact_ref 152233 // style
+	artifact_ref 4480 // UmlCom
+	artifact_ref 6529 // UmlComponentView
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter2/butter.pro"
@@ -6633,6 +6896,30 @@ ${namespace_end}"
       associated_classes
       end
       comment "C++ environment configuration information."
+    end
+
+    artifact 169641 "const_token_iterator"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+${includes}
+// Manual includes
+#include <string>
+#include <stdexcept>
+#include <stack>
+#include <iterator>
+//
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      associated_classes
+	class_ref 161321 // const_token_iterator
+      end
     end
 
     artifact 165929 "cmake_writer"

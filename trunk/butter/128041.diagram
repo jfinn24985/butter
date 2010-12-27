@@ -95,11 +95,6 @@ relationcanvas 139305 relation_ref 144553 // <dependency>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 139433 relation_ref 144681 // <dependency>
-  from ref 138921 z 1999 to ref 129449
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 139817 relation_ref 144809 // <dependency>
   from ref 137385 z 1999 to ref 138921
   no_role_a no_role_b
@@ -216,6 +211,11 @@ relationcanvas 149033 relation_ref 164777 // <dependency>
 end
 relationcanvas 149417 relation_ref 167081 // <generalisation>
   from ref 149161 z 2001 to ref 149289
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 149545 relation_ref 175657 // <dependency>
+  from ref 134825 z 2001 to ref 129449
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

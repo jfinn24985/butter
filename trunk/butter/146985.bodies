@@ -2,15 +2,15 @@ class build_writer
 !!!200233.cpp!!!	find_hdr_link(in a_item : UmlItem, inout a_hdr : unistr, inout a_link : unistr, inout a_flag : unistr, in a_section_label : unistr, in a_not_doc : bool) : void
 // Process any data from properties.
 QString value_;
-if (item_traits::property_value (a_item, item_traits::butter_flags_name, value_))
+if (a_item.property_value (item_traits::butter_flags_name, value_))
 {
   merge_string_list (a_flag, value_);
 }
-if (item_traits::property_value (a_item, item_traits::butter_ldflags_name, value_))
+if (a_item.property_value (item_traits::butter_ldflags_name, value_))
 {
   merge_string_list (a_link, value_);
 }
-if (item_traits::property_value (a_item, item_traits::butter_include_name, value_))
+if (a_item.property_value (item_traits::butter_include_name, value_))
 {
   merge_string_list (a_hdr, value_);
 }
@@ -86,20 +86,31 @@ if (a_list.isEmpty ())
 }
 else
 {
-  // contents do not overlap, split and compare
-  QRegExp split_re_ ("(\\s+)");
-  QStringList list_1_ (QStringList::split (split_re_, a_list, false));
-  QStringList list_2_ (QStringList::split (split_re_, a_addition, false));
-  int l_counter (0); // Guard counter.
-  for (QStringList::Iterator cursor_ = list_2_.begin(); cursor_ != list_2_.end(); ++cursor_,  ++l_counter)
+  for (const_token_iterator e1_, b1_(a_addition, ' '); b1_ != e1_; ++b1_)
   {
-    if (0 == list_1_.contains (*cursor_))
+    const QString new_item_(*b1_);
+    if (not new_item_.isEmpty ())
     {
-       list_1_ += *cursor_;
+      bool match_ (false);
+      for (const_token_iterator e2_, b2_(a_list, ' '); b2_ != e2_; ++b2_)
+      {
+        const QString orig_(*b2_);
+        if (not orig_.isEmpty ())
+        {
+          if (orig_ == new_item_)
+          {
+            match_ = true;
+            break;
+          }
+        }
+      }
+      if (!match_)
+      {
+        a_list.append (" ");
+        a_list.append (new_item_);
+      }
     }
-    if (l_counter >= 100) throw std::runtime_error ("merge_string_list loop counter > 100");
   }
-  a_list = list_1_.join (" ").stripWhiteSpace ();
 }
 !!!192425.cpp!!!	section(in a_section : unistr, in a_desc : unistr) : unistr
 static const QString marker_start_ ("${" + item_traits::section_prefix);
@@ -122,3 +133,10 @@ if (-1 != l_start)
 // else ...
 // Found no section titles --> return empty string
 return Result;
+!!!244777.cpp!!!	to_target_NAME(in a_target : UmlArtifact) : unistr
+QString Result (a_target.package ().filename ());
+Result.append ("_");
+Result.append(const_cast< UmlArtifact& >(a_target).name ());
+find_replace (Result, '.', '_');
+return Result.upper ();
+
