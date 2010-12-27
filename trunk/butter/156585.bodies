@@ -1,7 +1,7 @@
-class cmake_writer
+class cmake_generator
 !!!228905.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 QString project_;
-if (item_traits::property_value (a_target, item_traits::butter_project_name, project_))
+if (butter_constants::property_value (a_target, butter_constants::butter_project_name, project_))
 {
   this->dependency_obj_.append(project_);
 }
@@ -94,7 +94,7 @@ if (! this->dependency_obj_.isEmpty ())
 !!!228265.cpp!!!	external_target(in a_current : location, in a_target : UmlArtifact, inout a_sys : compound_artifact) : void
 // Get project name, if present
 QString value_;
-item_traits::property_value (a_target, item_traits::butter_project_name, value_);
+butter_constants::property_value (a_target, butter_constants::butter_project_name, value_);
 BUTTER_CHECK (! value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact.");
 // Get the external target section
 butter::compound_artifact::string_pair_t & proj_ = a_sys.target (value_);
@@ -104,7 +104,7 @@ if (proj_.second.isEmpty ())
   QTextOStream os_(&proj_.second);
   os_ << "# Include " + value_ + " settings\n\n";
   QString tmp_;
-  if (item_traits::property_value (a_target, item_traits::butter_buildfile_name, tmp_))
+  if (butter_constants::property_value (a_target, butter_constants::butter_buildfile_name, tmp_))
   {
     // Have local definition file
     os_ << "include (" << tmp_ << ")\n";
@@ -134,7 +134,7 @@ BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the 
 this->project_name_ = const_cast< UmlItem& >(a_project).name ().upper();
 QString content_;
 {
-  QString base_include_ (a_base.full_path ().create_relative (item_traits::hdrname (dynamic_cast< const UmlPackage& >(a_project))));
+  QString base_include_ (a_base.full_path ().create_relative (butter_constants::hdrname (dynamic_cast< const UmlPackage& >(a_project))));
   QTextOStream os_ (&content_);
   os_ << "# Include local constants\ninclude (" << rules_name << ")\n\n";
   os_ << "# Set project's global settings\nproject (" << this->project_name_ << ")\n";
@@ -188,9 +188,9 @@ if (! a_isdoc)
 else
   a_os << "FILES ";
 a_os << this->target_NAME_;
-if (a_type == build_writer::bin)
+if (a_type == base_generator::bin)
   a_os << "\n\tRUNTIME";
-if (a_type == build_writer::lib)
+if (a_type == base_generator::lib)
   a_os << "\n\tLIBRARY";
 a_os << "\n\tDESTINATION ${" << a_loc_var
      << "}\n\tCONFIGURATIONS Release )\n\n";
@@ -201,7 +201,7 @@ this->other_target_type_.truncate (0);
 this->individual_obj_.truncate (0);
 this->dependency_obj_.truncate (0);
 {
-  QString target_loc_(item_traits::location (a_target));
+  QString target_loc_(butter_constants::location (a_target));
   if (target_loc_[0] == '.')
     target_loc_ = this->project_name_;
   this->target_NAME_ = (target_loc_ + "_" + QString(const_cast< UmlArtifact& >(a_target).name ())).upper ();
@@ -213,9 +213,9 @@ a_os << "set (" <<  this->target_NAME_ << " " << const_cast< UmlArtifact& >(a_ta
 this->target_NAME_.prepend("${");
 this->target_NAME_.append("}");
 const QString stereotype_ (const_cast< UmlArtifact& >(a_target).stereotype ());
-if (stereotype_ == item_traits::library_stereotype)
+if (stereotype_ == butter_constants::library_stereotype)
 {
-  if (item_traits::property_value (a_target, item_traits::butter_other_name, this->other_target_type_))
+  if (butter_constants::property_value (a_target, butter_constants::butter_other_name, this->other_target_type_))
   {
     if (! a_build_file.isEmpty ())
     {

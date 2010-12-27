@@ -16,19 +16,19 @@ classcanvas 135209 class_ref 6913 // UmlArtifact
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 50 115 2000
 end
-classcanvas 137385 class_ref 133545 // bjam_writer
+classcanvas 137385 class_ref 133545 // bjam_generator
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 690 179 2000
 end
-classcanvas 137897 class_ref 135849 // gmake_writer
+classcanvas 137897 class_ref 135849 // gmake_generator
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 573 170 2000
 end
-classcanvas 138921 class_ref 137001 // item_traits
+classcanvas 138921 class_ref 137001 // butter_constants
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 188 303 2000
 end
-classcanvas 139561 class_ref 134697 // jam_writer
+classcanvas 139561 class_ref 134697 // jam_generator
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 456 165 2004
 end
@@ -40,7 +40,7 @@ packagecanvas 140713
   package_ref 256 // API BASE
     xyzwh 21 209 1989 141 166
 end
-classcanvas 141993 class_ref 146985 // build_writer
+classcanvas 141993 class_ref 146985 // base_generator
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 456 9 2000
 end
@@ -56,7 +56,7 @@ classcanvas 143273 class_ref 5248 // UmlCom
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 67 311 2000
 end
-classcanvas 147241 class_ref 150697 // writer
+classcanvas 147241 class_ref 150697 // generator
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
   xyz 557 65 2005
 end
@@ -180,12 +180,12 @@ relationcanvas 148009 relation_ref 162985 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 148137 relation_ref 163113 // <realization>
-  from ref 139561 z 2006 label "<derived->jam_writer>" xyz 464 123 2006 to ref 147241
+  from ref 139561 z 2006 label "<derived->jam_generator>" xyz 464 123 2006 to ref 147241
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 148393 relation_ref 163241 // <realization>
-  from ref 137897 z 2006 label "<derived->gmake_writer>" xyz 523 130 2006 to ref 147241
+  from ref 137897 z 2006 label "<derived->gmake_generator>" xyz 523 130 2006 to ref 147241
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

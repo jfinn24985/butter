@@ -3,36 +3,36 @@ class style
 BUTTER_REQUIRE (NULL != style_.get (), "Programming error, attempt to get style before it was set.");
 return *style_.get ();
 !!!196777.cpp!!!	set_style(in a_style : unistr = QString()) : void
-if (a_style == butter::bjam_writer::section_name)
+if (a_style == butter::bjam_generator::section_name)
 {
-  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::bjam_writer::comment_string
-                     , butter::bjam_writer::end_phrase
-                     , butter::bjam_writer::start_phrase
-                     , butter::bjam_writer::section_name
-                     , &butter::bjam_writer::create));
+  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::bjam_generator::comment_string
+                     , butter::bjam_generator::end_phrase
+                     , butter::bjam_generator::start_phrase
+                     , butter::bjam_generator::section_name
+                     , &butter::bjam_generator::create));
   log::com.trace (log::info, "<p>Using style <b>Boost Jam</b></p>");
 }
-else if (a_style == butter::cmake_writer::section_name)
+else if (a_style == butter::cmake_generator::section_name)
 {
-  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::cmake_writer::comment_string
-                     , butter::cmake_writer::end_phrase
-                     , butter::cmake_writer::start_phrase
-                     , butter::cmake_writer::section_name
-                     , &butter::cmake_writer::create));
+  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::cmake_generator::comment_string
+                     , butter::cmake_generator::end_phrase
+                     , butter::cmake_generator::start_phrase
+                     , butter::cmake_generator::section_name
+                     , &butter::cmake_generator::create));
   log::com.trace (log::info, "<p>Using style <b>CMake</b></p>");
 }
-else if (a_style == butter::gmake_writer::section_name)
+else if (a_style == butter::gmake_generator::section_name)
 {
-  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::gmake_writer::comment_string
-                     , butter::gmake_writer::end_phrase
-                     , butter::gmake_writer::start_phrase
-                     , butter::gmake_writer::section_name
-                     , &butter::gmake_writer::create));
+  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::gmake_generator::comment_string
+                     , butter::gmake_generator::end_phrase
+                     , butter::gmake_generator::start_phrase
+                     , butter::gmake_generator::section_name
+                     , &butter::gmake_generator::create));
   log::com.trace (log::info, "<p>Using style <b>Make</b></p>");
 }
 else
 {
-  if (a_style != butter::jam_writer::section_name)
+  if (a_style != butter::jam_generator::section_name)
   {
     QString msg_;
     {
@@ -45,10 +45,10 @@ else
       {
         msg_os_ << "<p><b>Warning</b> Style \"<b>" << a_style << "</b>\" does not match unrecognised (";
       }
-      msg_os_ << butter::bjam_writer::section_name;
-      msg_os_ << "|" << butter::jam_writer::section_name;
-      msg_os_ << "|" << butter::cmake_writer::section_name;
-      msg_os_ << "|" << butter::gmake_writer::section_name;
+      msg_os_ << butter::bjam_generator::section_name;
+      msg_os_ << "|" << butter::jam_generator::section_name;
+      msg_os_ << "|" << butter::cmake_generator::section_name;
+      msg_os_ << "|" << butter::gmake_generator::section_name;
       msg_os_ << "), using <i>standard jam</i> as default</p>";
     }
     log::com.trace (log::warn, msg_);
@@ -57,11 +57,11 @@ else
   {
     log::com.trace (log::info, "<p>Using style <b>Standard Jam</b></p>");
   }
-  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::jam_writer::comment_string
-                     , butter::jam_writer::end_phrase
-                     , butter::jam_writer::start_phrase
-                     , butter::jam_writer::section_name
-                     , &butter::jam_writer::create));
+  MSC_NO_RESET(style_, std::auto_ptr< style >)(new style (butter::jam_generator::comment_string
+                     , butter::jam_generator::end_phrase
+                     , butter::jam_generator::start_phrase
+                     , butter::jam_generator::section_name
+                     , &butter::jam_generator::create));
 }
 !!!198185.cpp!!!	style(in a_comment : unistr, in a_end : unistr, in a_start : unistr, in a_name : unistr, in a_factory : write_factory_fn_t)
 : basic_style (a_comment, "", a_end, "", a_start, "", a_name)

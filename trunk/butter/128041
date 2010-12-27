@@ -1,6 +1,6 @@
 format 66
 "butter" // butter
-  revision 171
+  revision 172
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -107,7 +107,7 @@ construction document, ie jamfile, makefile, jamroot etc."
       size A4
     end
 
-    classdiagram 129193 "writer"
+    classdiagram 129193 "generator"
       draw_all_relations default hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
@@ -261,11 +261,11 @@ a_text does not end in a newline."
       end
     end
 
-    class 133545 "bjam_writer"
+    class 133545 "bjam_generator"
       visibility package 
       nactuals 1
-      actual class class_ref 150697 // writer
-        rank 0 value class_ref 133545 // bjam_writer
+      actual class class_ref 150697 // generator
+        rank 0 value class_ref 133545 // bjam_generator
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -279,7 +279,7 @@ ${members}}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "Build file writer for boost-jam.
+      comment "Build file generator for boost-jam.
 
 This is the build system of choice for C++-only projects that use
 the Boost library."
@@ -288,7 +288,7 @@ the Boost library."
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 162985 // <realization>
-	  b parent class_ref 150697 // writer
+	  b parent class_ref 150697 // generator
       end
 
       classrelation 145577 // <dependency>
@@ -296,13 +296,13 @@ the Boost library."
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 145577 // <dependency>
-	  b parent class_ref 137001 // item_traits
+	  b parent class_ref 137001 // butter_constants
       end
 
-      extra_member 130345 "friend writer"
+      extra_member 130345 "friend generator"
 	
 	cpp "// Make out parent a friend.
-friend class writer<bjam_writer>;" ""
+friend class generator<bjam_generator>;" ""
 	java ""
 	php ""
 	python ""
@@ -523,7 +523,7 @@ ${body}}
 direct and indirect dependencies. "
       end
 
-      operation 153385 "bjam_writer"
+      operation 153385 "bjam_generator"
 	private explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${name}${(}${)}${volatile}
@@ -539,7 +539,7 @@ ${body}}
 	
       end
 
-      operation 153513 "~bjam_writer"
+      operation 153513 "~bjam_generator"
 	public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
@@ -550,11 +550,11 @@ ${body}}
 	
       end
 
-      operation 153257 "bjam_writer"
+      operation 153257 "bjam_generator"
 	stereotype "copy"
 	private explicit_return_type ""
 	nparams 1
-	  param in name "source" type class_ref 133545 // bjam_writer
+	  param in name "source" type class_ref 133545 // bjam_generator
 	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -568,13 +568,13 @@ ${body}}
 
       operation 199977 "create"
 	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // build_writer
+	class_operation public return_type class_ref 146985 // base_generator
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
 {
-  std::auto_ptr< ${type} > Result (new bjam_writer);
+  std::auto_ptr< ${type} > Result (new bjam_generator);
   return Result;
 }
 "
@@ -582,7 +582,7 @@ ${body}}
 	
 	
 	
-	comment "Create bjam writer object.s"
+	comment "Create bjam generator object.s"
       end
 
       operation 153001 "descendent_link"
@@ -700,9 +700,9 @@ ${body}}
       end
 
       operation 153129 "operator="
-	private return_type class_ref 133545 // bjam_writer
+	private return_type class_ref 133545 // bjam_generator
 	nparams 1
-	  param in name "source" type class_ref 133545 // bjam_writer
+	  param in name "source" type class_ref 133545 // bjam_generator
 	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
 	
 	
@@ -735,7 +735,7 @@ direct and indirect dependencies. "
       end
     end
 
-    class 146985 "build_writer"
+    class 146985 "base_generator"
       abstract visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit}
 {
@@ -750,11 +750,11 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "The build writer derived classes are responsible for creating a set of build system artifacts
+      comment "The build generator derived classes are responsible for creating a set of build system artifacts
 in a particular style.  These are inserted into the Uml Project where another class is 
 responsible for writing them to the file-system.
 
-The main action takes place in the create_system method.  The writer template class contains
+The main action takes place in the create_system method.  The generator template class contains
 a definitive implementation of this method that attempts to uniformly support all features of the
 program, while calling derived class methods to implement the features for each style. The
 Curiously Recurring Template Idiom is used to avoid virtual methods calls for the style specific 
@@ -779,7 +779,7 @@ Actions
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 154793 // <dependency>
-	  b parent class_ref 137001 // item_traits
+	  b parent class_ref 137001 // butter_constants
       end
 
       classrelation 154665 // <dependency>
@@ -1194,11 +1194,11 @@ all uppercase version of location + target.)"
       end
     end
 
-    class 157737 "cmake_writer"
+    class 157737 "cmake_generator"
       visibility package 
       nactuals 1
-      actual class class_ref 150697 // writer
-        rank 0 value class_ref 157737 // cmake_writer
+      actual class class_ref 150697 // generator
+        rank 0 value class_ref 157737 // cmake_generator
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -1212,7 +1212,7 @@ ${members}}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "Build file writer for cmake
+      comment "Build file generator for cmake
 
 Assumes external library xxx will set variables:
 XXX_INCLUDE_DIRS
@@ -1241,7 +1241,7 @@ This plugout turns off this automatic behaviour for library targets.
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 170409 // <realization>
-	  b parent class_ref 150697 // writer
+	  b parent class_ref 150697 // generator
       end
 
       classrelation 170537 // <dependency>
@@ -1249,7 +1249,7 @@ This plugout turns off this automatic behaviour for library targets.
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 170537 // <dependency>
-	  b parent class_ref 137001 // item_traits
+	  b parent class_ref 137001 // butter_constants
       end
 
       classrelation 170665 // <dependency>
@@ -1260,10 +1260,10 @@ This plugout turns off this automatic behaviour for library targets.
 	  b parent class_ref 151849 // log
       end
 
-      extra_member 146345 "friend writer"
+      extra_member 146345 "friend generator"
 	
 	cpp "// Make out parent a friend.
-friend class writer<cmake_writer>;" ""
+friend class generator<cmake_generator>;" ""
 	java ""
 	php ""
 	python ""
@@ -1284,7 +1284,7 @@ friend class writer<cmake_writer>;" ""
 
       attribute 191273 "build_file_sysname"
 	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(cmake_writer::build_file_name)"
+	init_value "(cmake_generator::build_file_name)"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}& ${name}${value};
 "
 	java_decl ""
@@ -1552,7 +1552,7 @@ Responsibilites
  - set compilation for individual "
       end
 
-      operation 231209 "cmake_writer"
+      operation 231209 "cmake_generator"
 	private explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${name}${(}${)}${volatile};
@@ -1572,12 +1572,12 @@ ${body}}
 	
 	
 	
-	comment "Create a writer from the top-level a_project
+	comment "Create a generator from the top-level a_project
 
 \\pre a_project.parent = nul"
       end
 
-      operation 231337 "~cmake_writer"
+      operation 231337 "~cmake_generator"
 	public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
@@ -1590,13 +1590,13 @@ ${body}}
 
       operation 230697 "create"
 	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // build_writer
+	class_operation public return_type class_ref 146985 // base_generator
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
 {
-  std::auto_ptr< ${type} > Result (new cmake_writer);
+  std::auto_ptr< ${type} > Result (new cmake_generator);
   return Result;
 }
 "
@@ -1604,7 +1604,7 @@ ${body}}
 	
 	
 	
-	comment "Create bjam writer object.s"
+	comment "Create bjam generator object.s"
       end
 
       operation 230825 "descendent_link"
@@ -1677,11 +1677,11 @@ data is written in local-targets directly where it is
 referenced."
       end
 
-      operation 231465 "cmake_writer"
+      operation 231465 "cmake_generator"
 	stereotype "copy"
 	private explicit_return_type ""
 	nparams 1
-	  param in name "source" type class_ref 157737 // cmake_writer
+	  param in name "source" type class_ref 157737 // cmake_generator
 	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -1764,9 +1764,9 @@ CMAKE_BINARY_DIR"
       end
 
       operation 231849 "operator="
-	private return_type class_ref 157737 // cmake_writer
+	private return_type class_ref 157737 // cmake_generator
 	nparams 1
-	  param in name "source" type class_ref 157737 // cmake_writer
+	  param in name "source" type class_ref 157737 // cmake_generator
 	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
 	
 	
@@ -1864,7 +1864,7 @@ Standard build-file form is a compound_artifact with something like
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 154921 // <dependency>
-	  b parent class_ref 137001 // item_traits
+	  b parent class_ref 137001 // butter_constants
       end
 
       classrelation 176297 // <dependency>
@@ -2550,11 +2550,11 @@ ${body}
       end
     end
 
-    class 135849 "gmake_writer"
+    class 135849 "gmake_generator"
       visibility package 
       nactuals 1
-      actual class class_ref 150697 // writer
-        rank 0 value class_ref 135849 // gmake_writer
+      actual class class_ref 150697 // generator
+        rank 0 value class_ref 135849 // gmake_generator
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -2571,7 +2571,7 @@ ${members}}
       comment "Build file generator for gnu make
 
 Requires GNU make compatible make, for generic make use the CMake %style
-\\ref cmake_writer .
+\\ref cmake_generator .
 
 \\cond xdoc
 <xdoc:section part-of=\"limitation/make\" ><p>The <code>make</code> program
@@ -2674,7 +2674,7 @@ are expected.</p>
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 164009 // <realization>
-	  b parent class_ref 150697 // writer
+	  b parent class_ref 150697 // generator
       end
 
       classrelation 145321 // <dependency>
@@ -2682,7 +2682,7 @@ are expected.</p>
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 145321 // <dependency>
-	  b parent class_ref 137001 // item_traits
+	  b parent class_ref 137001 // butter_constants
       end
 
       classrelation 166697 // <dependency>
@@ -2693,10 +2693,10 @@ are expected.</p>
 	  b parent class_ref 151849 // log
       end
 
-      extra_member 130473 "friend writer"
+      extra_member 130473 "friend generator"
 	
 	cpp "// Make out parent a friend.
-friend class writer<gmake_writer>;" ""
+friend class generator<gmake_generator>;" ""
 	java ""
 	php ""
 	python ""
@@ -3273,7 +3273,7 @@ used to initialise the default_rules attribute. "
 
       attribute 138793 "default_rules"
 	class_attribute const_attribute private explicit_type "str"
-	init_value "combine(gmake_writer::default_rules_list)"
+	init_value "combine(gmake_generator::default_rules_list)"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}* ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -3390,13 +3390,13 @@ the target artifact that is associated to the source.</property>
 
       operation 202921 "create"
 	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // build_writer
+	class_operation public return_type class_ref 146985 // base_generator
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
 {
-  std::auto_ptr< ${type} > Result (new gmake_writer);
+  std::auto_ptr< ${type} > Result (new gmake_generator);
   return Result;
 }
 "
@@ -3404,7 +3404,7 @@ the target artifact that is associated to the source.</property>
 	
 	
 	
-	comment "Create bjam writer object.s"
+	comment "Create bjam generator object.s"
       end
 
       operation 161065 "descendent_link"
@@ -3470,7 +3470,7 @@ data is written in local-targets directly where it is
 referenced."
       end
 
-      operation 160553 "gmake_writer"
+      operation 160553 "gmake_generator"
 	private explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${name}${(}${)}${volatile};
@@ -3486,12 +3486,12 @@ ${body}}
 	
 	
 	
-	comment "Create a writer from the top-level a_project
+	comment "Create a generator from the top-level a_project
 
 \\pre a_project.parent = nul"
       end
 
-      operation 160425 "~gmake_writer"
+      operation 160425 "~gmake_generator"
 	public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
@@ -3502,11 +3502,11 @@ ${body}}
 	
       end
 
-      operation 160297 "gmake_writer"
+      operation 160297 "gmake_generator"
 	stereotype "copy"
 	private explicit_return_type ""
 	nparams 1
-	  param in name "source" type class_ref 135849 // gmake_writer
+	  param in name "source" type class_ref 135849 // gmake_generator
 	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -3569,9 +3569,9 @@ Responsibilites
       end
 
       operation 160169 "operator="
-	private return_type class_ref 135849 // gmake_writer
+	private return_type class_ref 135849 // gmake_generator
 	nparams 1
-	  param in name "source" type class_ref 135849 // gmake_writer
+	  param in name "source" type class_ref 135849 // gmake_generator
 	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
 	
 	
@@ -3678,7 +3678,7 @@ Responsibility
       end
     end
 
-    class 137001 "item_traits"
+    class 137001 "butter_constants"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4255,11 +4255,11 @@ library targets will be static."
       end
     end
 
-    class 134697 "jam_writer"
+    class 134697 "jam_generator"
       visibility package 
       nactuals 1
-      actual class class_ref 150697 // writer
-        rank 0 value class_ref 134697 // jam_writer
+      actual class class_ref 150697 // generator
+        rank 0 value class_ref 134697 // jam_generator
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 
@@ -4273,9 +4273,9 @@ ${members}}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "Build file writer for standard jam.
+      comment "Build file generator for standard jam.
 
-This is the build system writer of choice as is supports the widest range of
+This is the build system generator of choice as is supports the widest range of
 build options.
 
 \\cond XDOC
@@ -4289,7 +4289,7 @@ the <link target=\"todo\">TODO list</link>.</limitation>
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 163881 // <realization>
-	  b parent class_ref 150697 // writer
+	  b parent class_ref 150697 // generator
       end
 
       classrelation 145705 // <dependency>
@@ -4297,13 +4297,13 @@ the <link target=\"todo\">TODO list</link>.</limitation>
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 145705 // <dependency>
-	  b parent class_ref 137001 // item_traits
+	  b parent class_ref 137001 // butter_constants
       end
 
-      extra_member 130601 "friend writer"
+      extra_member 130601 "friend generator"
 	
 	cpp "// Make our parent a friend.
-friend class writer<jam_writer>;" ""
+friend class generator<jam_generator>;" ""
 	java ""
 	php ""
 	python ""
@@ -4666,13 +4666,13 @@ if stereotype is \"document\"."
 
       operation 201513 "create"
 	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // build_writer
+	class_operation public return_type class_ref 146985 // base_generator
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
 "
 	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
 {
-  std::auto_ptr< ${type} > Result (new jam_writer);
+  std::auto_ptr< ${type} > Result (new jam_generator);
   return Result;
 }
 "
@@ -4680,7 +4680,7 @@ if stereotype is \"document\"."
 	
 	
 	
-	comment "Create bjam writer object.s"
+	comment "Create bjam generator object.s"
       end
 
       operation 158121 "descendent_link"
@@ -4811,7 +4811,7 @@ Responsibilites
  - install (library, executable and document)"
       end
 
-      operation 154921 "jam_writer"
+      operation 154921 "jam_generator"
 	private explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${name}${(}${)}${volatile};
@@ -4833,7 +4833,7 @@ ${body}}
 \\pre a_project.parent = nul"
       end
 
-      operation 155049 "~jam_writer"
+      operation 155049 "~jam_generator"
 	public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
@@ -4844,11 +4844,11 @@ ${body}}
 	
       end
 
-      operation 155177 "jam_writer"
+      operation 155177 "jam_generator"
 	stereotype "copy"
 	private explicit_return_type ""
 	nparams 1
-	  param in name "source" type class_ref 134697 // jam_writer
+	  param in name "source" type class_ref 134697 // jam_generator
 	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -4861,9 +4861,9 @@ ${body}}
       end
 
       operation 155689 "operator="
-	private return_type class_ref 134697 // jam_writer
+	private return_type class_ref 134697 // jam_generator
 	nparams 1
-	  param in name "source" type class_ref 134697 // jam_writer
+	  param in name "source" type class_ref 134697 // jam_generator
 	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
 	
 	
@@ -4948,7 +4948,7 @@ Responsibilities:
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 145193 // <dependency>
-	  b parent class_ref 137001 // item_traits
+	  b parent class_ref 137001 // butter_constants
       end
 
       classrelation 154409 // <dependency>
@@ -5861,10 +5861,10 @@ ${inlines}
       explicit_switch_type ""
       
       comment "A container object for meta-style related information. This includes a 
-factory method for creating style specific build_writers.
+factory method for creating style specific base_generators.
 
 People implementing new build-system styles need to edit set_style 
-to add the new build_writer derived class to the system."
+to add the new base_generator derived class to the system."
       classrelation 171945 // <generalisation>
 	relation 171177 ---|>
 	  a public
@@ -5878,7 +5878,7 @@ to add the new build_writer derived class to the system."
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 157993 // <dependency>
-	  b parent class_ref 133545 // bjam_writer
+	  b parent class_ref 133545 // bjam_generator
       end
 
       classrelation 170793 // <dependency>
@@ -5886,7 +5886,7 @@ to add the new build_writer derived class to the system."
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 170793 // <dependency>
-	  b parent class_ref 157737 // cmake_writer
+	  b parent class_ref 157737 // cmake_generator
       end
 
       classrelation 161705 // <dependency>
@@ -5894,7 +5894,7 @@ to add the new build_writer derived class to the system."
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 161705 // <dependency>
-	  b parent class_ref 135849 // gmake_writer
+	  b parent class_ref 135849 // gmake_generator
       end
 
       classrelation 165545 // <dependency>
@@ -5910,11 +5910,11 @@ to add the new build_writer derived class to the system."
 	  a default
 	    cpp default "#include in source"
 	    classrelation_ref 159401 // <dependency>
-	  b parent class_ref 134697 // jam_writer
+	  b parent class_ref 134697 // jam_generator
       end
 
       class 149545 "write_factory_fn_t"
-	visibility package stereotype "typedef" base_type class_ref 146985 // build_writer
+	visibility package stereotype "typedef" base_type class_ref 146985 // base_generator
 	cpp_decl "${comment}typedef std::auto_ptr< ${type} > (*${name})();
 "
 	java_decl ""
@@ -5934,7 +5934,7 @@ to add the new build_writer derived class to the system."
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "Method to create build_writer object for this style."
+	comment "Method to create base_generator object for this style."
       end
 
       attribute 163113 "style_"
@@ -5952,7 +5952,7 @@ to add the new build_writer derived class to the system."
 
       operation 196905 "create_writer"
 	stereotype "auto_ptr"
-	const public return_type class_ref 146985 // build_writer
+	const public return_type class_ref 146985 // base_generator
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
 "
@@ -5966,7 +5966,7 @@ ${body}
 	
 	
 	
-	comment "Create a build writer appropriate for the current style."
+	comment "Create a build generator appropriate for the current style."
       end
 
       operation 196649 "get_style"
@@ -6068,7 +6068,7 @@ ${body}
       end
     end
 
-    class 150697 "writer"
+    class 150697 "generator"
       visibility package 
       nformals 1
       formal name "derived" type "class" explicit_default_value ""
@@ -6095,7 +6095,7 @@ descendent_link, external_target, initialise and local_target."
 	  a public
 	    cpp default "${type}"
 	    classrelation_ref 162857 // <generalisation>
-	  b parent class_ref 146985 // build_writer
+	  b parent class_ref 146985 // base_generator
       end
 
       classrelation 176169 // <dependency>
@@ -6111,7 +6111,7 @@ descendent_link, external_target, initialise and local_target."
 	  a package
 	    cpp default "#include in header"
 	    classrelation_ref 163113 // <dependency>
-	  b parent class_ref 137001 // item_traits
+	  b parent class_ref 137001 // butter_constants
       end
 
       classrelation 163241 // <dependency>
@@ -6649,38 +6649,7 @@ ${inlines}
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
-    artifact 135209 "bjam_writer"
-      stereotype "source"
-      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
-#define @{PROJECT}_${NAME}_HPP
-
-${comment}
-#include \"butter/config.h\"
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-// Manual source includes
-#include <qstringlist.h>
-// -
-${namespace_start}
-${members}
-${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
-      associated_classes
-	class_ref 133545 // bjam_writer
-      end
-      comment "Boost Jam writer source file."
-    end
-
-    artifact 152489 "build_writer"
+    artifact 152489 "base_generator"
       stereotype "source"
       cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
 #define @{PROJECT}_${NAME}_HPP
@@ -6706,121 +6675,177 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_classes
-	class_ref 146985 // build_writer
+	class_ref 146985 // base_generator
       end
-      comment "Base writer source file"
+      comment "Base generator source file"
+    end
+
+    artifact 135209 "bjam_generator"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+#include \"butter/config.h\"
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// Manual source includes
+#include <qstringlist.h>
+// -
+${namespace_start}
+${members}
+${namespace_end}"
+      java_src "${comment}
+${package}
+${definition}"
+      associated_classes
+	class_ref 133545 // bjam_generator
+      end
+      comment "Boost Jam generator source file."
     end
 
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 136361 // jam_writer
-	artifact_ref 134057 // qt
-	artifact_ref 142889 // bouml
-	artifact_ref 154025 // main
+	artifact_ref 165929 // cmake_generator
 	artifact_ref 132521 // location
-	artifact_ref 137641 // gmake_writer
+	artifact_ref 136361 // jam_generator
 	artifact_ref 152361 // compound_artifact
-	artifact_ref 152489 // build_writer
-	artifact_ref 150825 // utility
-	artifact_ref 165929 // cmake_writer
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 138793 // item_traits
+	artifact_ref 134057 // qt
 	artifact_ref 152233 // style
+	artifact_ref 150825 // utility
+	artifact_ref 154025 // main
+	artifact_ref 135209 // bjam_generator
+	artifact_ref 137641 // gmake_generator
+	artifact_ref 138793 // butter_constants
+	artifact_ref 152489 // base_generator
+	artifact_ref 142889 // bouml
       end
       comment "Version of the butter plugout for building using the butter plugout."
+    end
+
+    artifact 138793 "butter_constants"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+#include \"butter/config.h\"
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"version.h\"
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 137001 // butter_constants
+      end
     end
 
     artifact 148393 "butter.plugout"
       stereotype "file"
       associated_artifacts
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 136361 // jam_writer
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 5120 // anItemKind
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 768 // CppSettings
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 7169 // UmlItem
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 5633 // UmlClass
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 154025 // main
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 132521 // location
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 137641 // gmake_writer
-	artifact_ref 4864 // aDirection
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 2560 // UmlBaseComponentView
 	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 152489 // build_writer
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 150825 // utility
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 7297 // UmlNode
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 132521 // location
+	artifact_ref 136361 // jam_generator
+	artifact_ref 2304 // UmlBaseArtifact
 	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 4992 // aVisibility
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 135209 // bjam_writer
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 138793 // item_traits
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 4864 // aDirection
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 5120 // anItemKind
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 3840 // UmlBaseRelation
 	artifact_ref 152233 // style
-	artifact_ref 4480 // UmlCom
+	artifact_ref 7297 // UmlNode
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 7169 // UmlItem
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 4992 // aVisibility
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 768 // CppSettings
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 5633 // UmlClass
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 6272 // IdlSettingsCmd
 	artifact_ref 6529 // UmlComponentView
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 150825 // utility
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 154025 // main
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 4480 // UmlCom
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 135209 // bjam_generator
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 137641 // gmake_generator
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 138793 // butter_constants
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 152489 // base_generator
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 5888 // UmlSettingsCmd
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter2/butter.pro"
@@ -6922,7 +6947,7 @@ ${namespace_end}
       end
     end
 
-    artifact 165929 "cmake_writer"
+    artifact 165929 "cmake_generator"
       stereotype "source"
       cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
 #define @{PROJECT}_${NAME}_HPP
@@ -6941,11 +6966,39 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_classes
-	class_ref 157737 // cmake_writer
+	class_ref 157737 // cmake_generator
       end
     end
 
-    artifact 137641 "gmake_writer"
+    artifact 155177 "generator"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+${includes}
+// Manual includes
+// #include <qfile.h>
+#include <qregexp.h>
+#include <stdexcept>
+#include <qstack.h>
+
+// for getenv method
+#include <cstdlib>
+// --
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      associated_classes
+	class_ref 150697 // generator
+      end
+      comment "Intermediate generator template class."
+    end
+
+    artifact 137641 "gmake_generator"
       stereotype "source"
       cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
 #define @{PROJECT}_${NAME}_HPP
@@ -6967,37 +7020,12 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_classes
-	class_ref 135849 // gmake_writer
+	class_ref 135849 // gmake_generator
       end
-      comment "Source for GNU make writer"
+      comment "Source for GNU make generator"
     end
 
-    artifact 138793 "item_traits"
-      stereotype "source"
-      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
-#define @{PROJECT}_${NAME}_HPP
-
-${comment}
-#include \"butter/config.h\"
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-#include \"version.h\"
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_classes
-	class_ref 137001 // item_traits
-      end
-    end
-
-    artifact 136361 "jam_writer"
+    artifact 136361 "jam_generator"
       stereotype "source"
       cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
 #define @{PROJECT}_${NAME}_HPP
@@ -7024,9 +7052,9 @@ ${namespace_end}"
 ${package}
 ${definition}"
       associated_classes
-	class_ref 134697 // jam_writer
+	class_ref 134697 // jam_generator
       end
-      comment "Source file for Jam writer"
+      comment "Source file for Jam generator"
     end
 
     artifact 132521 "location"
@@ -7068,10 +7096,10 @@ ${namespace_end}"
 #include \"UmlItem.h\"
 #include \"UmlPackage.h\"
 #include \"UmlArtifact.h\"
-#include \"butter/build_writer.h\"
+#include \"butter/base_generator.h\"
 #include \"butter/location.h\"
 #include \"butter/style.h\"
-#include \"butter/item_traits.h\"
+#include \"butter/butter_constants.h\"
 
 #include <qtextstream.h>
 #ifdef DEBUG 
@@ -7096,7 +7124,7 @@ int main(int argc, char ** argv)
 
   if (UmlCom::connect(QString(argv[1]).toUInt())) {
     try {
-      UmlCom::trace(\"<b><i>jamfile/makefile</i> generator</b> \" + butter::item_traits::BUTTER_VERSION + \"<br>\");
+      UmlCom::trace(\"<b><i>jamfile/makefile</i> generator</b> \" + butter::butter_constants::BUTTER_VERSION + \"<br>\");
 #ifdef DEBUG
       QString msg_;
       QTextOStream mos_ (&msg_);
@@ -7109,14 +7137,14 @@ int main(int argc, char ** argv)
       mos_ << \"Hit Ok to continue. If you want to debug this application attach to butter process now.\";
 #endif
 #endif
-      QMessageBox msg_box_ (butter::item_traits::BUTTER_VERSION, msg_, QMessageBox::Warning, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton);
+      QMessageBox msg_box_ (butter::butter_constants::BUTTER_VERSION, msg_, QMessageBox::Warning, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton);
       msg_box_.exec ();
 #endif
       BUTTER_CHECK (NULL != UmlPackage::getProject (), \"Error: no project defined!<br>\");
       // Parse the project into a location tree
       std::auto_ptr< butter::location > base_ (butter::location::parse_project (*UmlPackage::getProject ()));
       // Generate the build-system files.
-      std::auto_ptr< butter::build_writer > writer_ (butter::style::get_style ().create_writer ());
+      std::auto_ptr< butter::base_generator > writer_ (butter::style::get_style ().create_writer ());
       writer_->create_system (*base_.get (), *UmlPackage::getProject ());
       // Write the build-system files.
       butter::location::write_documents (*base_.get ());
@@ -7304,6 +7332,17 @@ ${namespace_end}"
       end
     end
 
+    artifact 164777 "test_path"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 134057 // qt
+	artifact_ref 150825 // utility
+	artifact_ref 150953 // path_test
+	artifact_ref 142889 // bouml
+      end
+      comment "Simple program to exercise pathcmp class."
+    end
+
     artifact 150825 "utility"
       stereotype "source"
       cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
@@ -7331,45 +7370,6 @@ ${namespace_end}"
 	class_ref 151849 // log
       end
       comment "Utility classes log and pathcmp"
-    end
-
-    artifact 155177 "writer"
-      stereotype "source"
-      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
-#define @{PROJECT}_${NAME}_HPP
-
-${comment}
-${includes}
-// Manual includes
-// #include <qfile.h>
-#include <qregexp.h>
-#include <stdexcept>
-#include <qstack.h>
-
-// for getenv method
-#include <cstdlib>
-// --
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      associated_classes
-	class_ref 150697 // writer
-      end
-      comment "Intermediate writer template class."
-    end
-
-    artifact 164777 "test_path"
-      stereotype "executable"
-      associated_artifacts
-	artifact_ref 134057 // qt
-	artifact_ref 150953 // path_test
-	artifact_ref 142889 // bouml
-	artifact_ref 150825 // utility
-      end
-      comment "Simple program to exercise pathcmp class."
     end
   end
 end

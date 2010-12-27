@@ -1,7 +1,7 @@
-class bjam_writer
+class bjam_generator
 !!!212649.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 QString project_;
-if (a_target.property_value (item_traits::butter_project_name, project_))
+if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
   a_os << "/" << project_ << "//";
 }
@@ -24,8 +24,8 @@ if (! this->is_other_ && (! a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
   // Add individual obj description
   QString compiler_ ("cxx");
   QTextOStream source_os_ (&individual_);
-  BUTTER_ALWAYS(a_target.property_value (item_traits::butter_compiler_name, compiler_) || ! a_isdoc
-                , ("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
+  BUTTER_ALWAYS(a_target.property_value (butter_constants::butter_compiler_name, compiler_) || ! a_isdoc
+                , ("<p><b>Error:</b> Missing '" + butter_constants::butter_compiler_name
                                 + "' property on " + QString (a_filename)).utf8 ().data ());
   if (compiler_ == "CC") compiler_ = "C";
   if (compiler_ == "FORTRAN") compiler_ = "F";
@@ -144,7 +144,7 @@ case static_library:
       a_os << "\n\t";
     }
     QString headers_;
-    if (a_target.property_value (item_traits::butter_include_name, headers_))
+    if (a_target.property_value (butter_constants::butter_include_name, headers_))
     {
       for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
       {
@@ -179,7 +179,7 @@ case shared_library:
     }
     // Pass only the includes defined on the library to the library user
     QString headers_;
-    if (a_target.property_value (item_traits::butter_include_name, headers_))
+    if (a_target.property_value (butter_constants::butter_include_name, headers_))
     {
       a_os << ": :";
       for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
@@ -219,7 +219,7 @@ if (! this->individual_obj_.isEmpty ())
   // Add variables for flags to use with obj
   a_os << "local " << this->target_NAME () << "HDRS = ";
   QString headers_;
-  if (a_target.property_value (item_traits::butter_include_name, headers_))
+  if (a_target.property_value (butter_constants::butter_include_name, headers_))
   {
     for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
     {
@@ -235,7 +235,7 @@ if (! this->individual_obj_.isEmpty ())
   a_os << ";\n";
   a_os << "local " << this->target_NAME () << "FLAGS = ";
   QString flags_;
-  if (a_target.property_value (item_traits::butter_flags_name, flags_))
+  if (a_target.property_value (butter_constants::butter_flags_name, flags_))
   {
     for (const_token_iterator e_, b_(flags_, ' '); b_ != e_; ++b_)
     {
@@ -252,7 +252,7 @@ if (! this->individual_obj_.isEmpty ())
 !!!152361.cpp!!!	external_target(in a_current : location, in a_target : UmlArtifact, inout a_sys : compound_artifact) : void
 // Get project name, if present
 QString value_;
-a_target.property_value (item_traits::butter_project_name, value_);
+a_target.property_value (butter_constants::butter_project_name, value_);
 BUTTER_CHECK (! value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact.");
 // Get the external target section
 butter::compound_artifact::string_pair_t & proj_ = a_sys.target (value_);
@@ -265,7 +265,7 @@ if (proj_.second.isEmpty ())
 if (! proj_.second.contains ("using "))
 {
   QString tmp_;
-  if (a_target.property_value (item_traits::butter_buildfile_name, tmp_))
+  if (a_target.property_value (butter_constants::butter_buildfile_name, tmp_))
   {
     // This is a using directive; all definitions are assumed to be in the
     // given jamfile -> reset string
@@ -358,7 +358,7 @@ QString content_;
   ///////////
   // Handle build directory with default to "build"
   QString prop_value_;
-  if (a_project.property_value (item_traits::butter_build_dir_name, prop_value_))
+  if (a_project.property_value (butter_constants::butter_build_dir_name, prop_value_))
   {
   os_ << ": build-dir " << prop_value_ <<" ;\n";
   }
@@ -385,9 +385,9 @@ this->is_other_ = (a_type == other);
 ///////////////////////
 // Start target definition
 const QString stereotype_ (const_cast< UmlArtifact& >(a_target).stereotype ());
-if (stereotype_ == item_traits::library_stereotype)
+if (stereotype_ == butter_constants::library_stereotype)
 {
-  if (a_target.property_value (item_traits::butter_other_name, this->other_target_type_))
+  if (a_target.property_value (butter_constants::butter_other_name, this->other_target_type_))
   {
     if (! a_build_file.isEmpty ())
     {
@@ -400,7 +400,7 @@ if (stereotype_ == item_traits::library_stereotype)
     a_os << "lib ";
   }
 }
-else if (stereotype_ == item_traits::executable_stereotype)
+else if (stereotype_ == butter_constants::executable_stereotype)
 {
   a_os << "exe ";
 }

@@ -46,7 +46,7 @@ serialise (os_);
 if (0 != orig_desc_.compare (desc_))
 {
   // Document changed, update version and date
-  version.second = style_.comment_text (item_traits::BUTTER_VERSION);
+  version.second = style_.comment_text (butter_constants::BUTTER_VERSION);
   date.second = style_.comment_text (QString (QDateTime::currentDateTime ().toString ()));
   QString desc2_;
   QTextOStream os2_(&desc2_);
@@ -67,25 +67,25 @@ for (QString line_ = a_is.readLine ();
     {
       if (line_.startsWith (style_.start_phrase))
       {
-        if (line_.contains (QString (butter::item_traits::version_label)))
+        if (line_.contains (QString (butter::butter_constants::version_label)))
         {
           cache_ = &version;
         }
-        else if (line_.contains (QString (butter::item_traits::date_label)))
+        else if (line_.contains (QString (butter::butter_constants::date_label)))
         {
           cache_ = &date;
         }
-        else if (line_.contains (QString (butter::item_traits::preamble_label)))
+        else if (line_.contains (QString (butter::butter_constants::preamble_label)))
         {
           cache_ = &preamble;
         }
-        else if (line_.contains (QString (butter::item_traits::close_label)))
+        else if (line_.contains (QString (butter::butter_constants::close_label)))
         {
           cache_ = &close;
         }
-        else if (line_.contains (QString (butter::item_traits::target_label)))
+        else if (line_.contains (QString (butter::butter_constants::target_label)))
         {
-          QString label_ = line_.mid (line_.find (QString (butter::item_traits::target_label)) + butter::item_traits::target_label.length ());
+          QString label_ = line_.mid (line_.find (QString (butter::butter_constants::target_label)) + butter::butter_constants::target_label.length ());
           cache_ = &target (label_.stripWhiteSpace ());
         }
         else
@@ -220,18 +220,18 @@ public:
     }
   }
 };
-helper_::write (a_os, version, butter::item_traits::version_label, style_);
-helper_::write (a_os, date, butter::item_traits::date_label, style_);
-helper_::write (a_os, preamble, butter::item_traits::preamble_label, style_);
+helper_::write (a_os, version, butter::butter_constants::version_label, style_);
+helper_::write (a_os, date, butter::butter_constants::date_label, style_);
+helper_::write (a_os, preamble, butter::butter_constants::preamble_label, style_);
 for (QValueListConstIterator< QString > i_ (target_order_.begin ());
       target_order_.end () != i_;
       ++i_)
 {
   string_pair_t * tmp_ = targets_.find (*i_);
   BUTTER_CHECK (NULL != tmp_, "Error, key in target_order_ not found in targets.");
-  helper_::write (a_os, *tmp_, butter::item_traits::target_label + " " + *i_, style_);
+  helper_::write (a_os, *tmp_, butter::butter_constants::target_label + " " + *i_, style_);
 }
-helper_::write (a_os, close, butter::item_traits::close_label, style_);
+helper_::write (a_os, close, butter::butter_constants::close_label, style_);
 if (! end.isEmpty ())
 {
   a_os << end;

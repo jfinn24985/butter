@@ -1,4 +1,4 @@
-class writer
+class generator
 !!!151977.cpp!!!	compare_file_to_string(in a_path : string, in a_str : string) : bool
 bool Result (false);
 class helper__
@@ -47,10 +47,10 @@ if (! Result)
 return Result;
 !!!161449.cpp!!!	find_hdr_link(in a_desc : string, inout a_hdr : string, inout a_link : string, inout a_flag : string) : void
 // Get the section.
-QString l_sec (section (item_traits::generic_section, a_desc));
-QRegExp l_hdr_re ("^ *" + item_traits::header_label + " *= *");
-QRegExp l_link_re ("^ *" + item_traits::link_label + " *= *");
-QRegExp l_flag_re ("^ *" + item_traits::flag_label + " *= *");
+QString l_sec (section (butter_constants::generic_section, a_desc));
+QRegExp l_hdr_re ("^ *" + butter_constants::header_label + " *= *");
+QRegExp l_link_re ("^ *" + butter_constants::link_label + " *= *");
+QRegExp l_flag_re ("^ *" + butter_constants::flag_label + " *= *");
 if (! l_sec.isEmpty ())
 {
   QTextIStream l_sec_is (&l_sec);
@@ -76,37 +76,37 @@ if (! l_sec.isEmpty ())
   }
 }
 !!!150313.cpp!!!	build_system(in a_top_loc : location, in a_project : UmlPackage) : void
-std::auto_ptr< writer > l_builder;
+std::auto_ptr< generator > l_builder;
 QCString l_style;
-if (const_cast< UmlPackage& >(a_project).propertyValue (item_traits::butter_style_name, l_style))
+if (const_cast< UmlPackage& >(a_project).propertyValue (butter_constants::butter_style_name, l_style))
 {
-  if (jam_writer::section_name == l_style)
+  if (jam_generator::section_name == l_style)
   {
-    l_builder.reset (new jam_writer (a_project));
+    l_builder.reset (new jam_generator (a_project));
   }
-  else if (gmake_writer::section_name == l_style)
+  else if (gmake_generator::section_name == l_style)
   {
-    l_builder.reset (new gmake_writer (a_project));
+    l_builder.reset (new gmake_generator (a_project));
   }
-  else if (bjam_writer::section_name != l_style)
+  else if (bjam_generator::section_name != l_style)
   {
     QString l_msg;
     QTextOStream l_mos (&l_msg);
     l_mos << "<p>Unrecognised style \"<b>" << l_style << "</b>\", must be one of (";
-    l_mos << bjam_writer::section_name << "|";
-    l_mos << jam_writer::section_name << "|";
-    l_mos << gmake_writer::section_name;
+    l_mos << bjam_generator::section_name << "|";
+    l_mos << jam_generator::section_name << "|";
+    l_mos << gmake_generator::section_name;
     l_mos << ") using <i>boost jam</i></p>";
     UmlCom::trace (l_msg);
   }
 }
 if (NULL == l_builder.get ())
 {
-  l_builder.reset (new bjam_writer (a_project));
+  l_builder.reset (new bjam_generator (a_project));
 }
 l_builder->build_system (a_top_loc);
 !!!140329.cpp!!!	section(in a_section : string, in a_desc : string) : string
-static const QCString l_START ("${" + item_traits::section_prefix);
+static const QCString l_START ("${" + butter_constants::section_prefix);
 const QCString l_phrase (l_START + a_section + "}");
 QCString Result;
 int l_start (a_desc.find (l_phrase));
@@ -137,7 +137,7 @@ for (unsigned int l_i (0); l_i < a_top_loc.documents ().count (); ++l_i)
   if (! a_top_loc.documents ().at (l_i)->description ().isEmpty ())
   {
     QCString l_tmp;
-    if (! a_top_loc.documents ().at (l_i)->propertyValue (item_traits::butter_other_name, l_tmp) || l_tmp == "nowrite")
+    if (! a_top_loc.documents ().at (l_i)->propertyValue (butter_constants::butter_other_name, l_tmp) || l_tmp == "nowrite")
     {
       QCString l_doc_path = a_top_loc.full_path () + QDir::separator () + a_top_loc.documents ().at (l_i)->name ();
       if (! l_tmp.isEmpty ())

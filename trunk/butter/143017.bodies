@@ -21,7 +21,7 @@ location *cpp_root_dir_location__; // Pointer to the location of CppSettings::ro
 std::auto_ptr<location> tree__; // Root of location tree.
 location::find_or_create (CppSettings::rootDir (), tree__, cpp_root_dir_location__, cache__);
 // Move cache__ to base package.
-location::find_or_create (item_traits::dirname (*item__), tree__, cpp_root_dir_location__, cache__);
+location::find_or_create (butter_constants::dirname (*item__), tree__, cpp_root_dir_location__, cache__);
 
 UmlCom::trace ("<p><b>Please wait:</b> building target list for project <i>" + const_cast< UmlItem& >(a_item).name () + "</i>.</p>");
 #ifndef NO_LOG
@@ -59,16 +59,16 @@ while (! item_stack_.isEmpty ())
       if (l_props.currentKey ().contains ("butter"))
       {
         const QCString l_key (l_props.currentKey ());
-        if (l_key != item_traits::butter_base_name
-	   && l_key != item_traits::butter_build_dir_name
-           && l_key != item_traits::butter_buildfile_name
-	   && l_key != item_traits::butter_flags_name
-	   && l_key != item_traits::butter_ldflags_name
-	   && l_key != item_traits::butter_lib_type_name
-	   && l_key != item_traits::butter_other_name
-	   && l_key != item_traits::butter_include_name
-	   && l_key != item_traits::butter_project_name
-	   && l_key != item_traits::butter_style_name)
+        if (l_key != butter_constants::butter_base_name
+	   && l_key != butter_constants::butter_build_dir_name
+           && l_key != butter_constants::butter_buildfile_name
+	   && l_key != butter_constants::butter_flags_name
+	   && l_key != butter_constants::butter_ldflags_name
+	   && l_key != butter_constants::butter_lib_type_name
+	   && l_key != butter_constants::butter_other_name
+	   && l_key != butter_constants::butter_include_name
+	   && l_key != butter_constants::butter_project_name
+	   && l_key != butter_constants::butter_style_name)
         {
           UmlCom::trace ("<p><b>Warning:</b> Item \"" + top__->name () + "\" has property name \"" + l_key + "\" which contains 'butter' but is not a known property name</p>");
         }
@@ -84,7 +84,7 @@ while (! item_stack_.isEmpty ())
       BUTTER_CHECK (NULL != art_item__, "Item type and class type do not match.");
       UmlPackage *pack_item__ = dynamic_cast < UmlPackage * >(top__->parent ()->parent ());
       BUTTER_CHECK (NULL != pack_item__, "Artifact grandparent is not a Package.");
-      const QDir pack_path__ (item_traits::dirname (*pack_item__));
+      const QDir pack_path__ (butter_constants::dirname (*pack_item__));
       if (! cache__->location_for_path (pack_path__))
       {
         location::find_or_create (pack_path__, tree__, cpp_root_dir_location__, cache__);
@@ -96,7 +96,7 @@ while (! item_stack_.isEmpty ())
     {
       UmlPackage *pack_item__ = dynamic_cast < UmlPackage * >(top__);
       BUTTER_CHECK (NULL != pack_item__, "Item type and class type do not match.");
-      const QDir pack_path__ (item_traits::dirname (*pack_item__));
+      const QDir pack_path__ (butter_constants::dirname (*pack_item__));
       if (! cache__->location_for_path (pack_path__))
       {
         location::find_or_create (pack_path__, tree__, cpp_root_dir_location__, cache__);
@@ -131,7 +131,7 @@ if (! tree__->empty ())
   // Remove any empty locations, and attempt to make root equal to
   // any base path property (if set)
   QCString user_base_path__, error_message__;
-  if (! const_cast< UmlItem& >(a_item).propertyValue (item_traits::butter_base_name, user_base_path__))
+  if (! const_cast< UmlItem& >(a_item).propertyValue (butter_constants::butter_base_name, user_base_path__))
   {
     BUTTER_CHECK (user_base_path__.is_empty (), "Property value _not_ set but string is non-empty");
   }

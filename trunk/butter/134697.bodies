@@ -1,7 +1,7 @@
-class jam_writer
+class jam_generator
 !!!209065.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 QString project_;
-if (a_target.property_value (item_traits::butter_project_name, project_))
+if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
   // Is an externally linked library, look only for flags.
 /* {{BEGINDOC
@@ -29,8 +29,8 @@ else
     this->lib_defn_.append (defn_);
   }
 /*  QString libtype_; // Add LOC_TARGET_LDFLAGS variable for static libraries
-  if (a_target.property_search (item_traits::butter_lib_type_name, libtype_)
-      && libtype_ != item_traits::shared_value)*/
+  if (a_target.property_search (butter_constants::butter_lib_type_name, libtype_)
+      && libtype_ != butter_constants::shared_value)*/
   {
 /* {{BEGINDOC
 <property name="ldflags" source="artifact" type="source" style="standard">Add
@@ -49,7 +49,7 @@ ENDDOC}} */
     a_ldflags.append (defn_);
   }
   QString libinc_; // Add include variable for both static and shared libraries
-  if (a_target.property_search (item_traits::butter_include_name, libinc_))
+  if (a_target.property_search (butter_constants::butter_include_name, libinc_))
   {
     a_includes.append (libinc_);
   }
@@ -69,8 +69,8 @@ if (! a_src_flags.isEmpty ())
   if (a_isdoc)
   {
      QString comp_;
-     BUTTER_ALWAYS(a_target.property_value (item_traits::butter_compiler_name, comp_)
-                , ("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
+     BUTTER_ALWAYS(a_target.property_value (butter_constants::butter_compiler_name, comp_)
+                , ("<p><b>Error:</b> Missing '" + butter_constants::butter_compiler_name
                  + "' property on " + a_target.package().filename () + "/" + a_filename).utf8 ().data ());
      if (comp_ == "CC")
      {
@@ -143,7 +143,7 @@ case executable:
   break;
 case other:
   {
-    a_target.property_value (item_traits::butter_other_name, this->other_target_type_);
+    a_target.property_value (butter_constants::butter_other_name, this->other_target_type_);
     a_os << this->other_target_type_ << " " << this->qualified_target_name_  << " :\n\t$("
         << this->target_NAME () << "_SRC) ;\n\n";
     if (! a_ldflags.isEmpty ())
@@ -239,7 +239,7 @@ QString content_;
   //
   // Note that this needs to be above "SubDir" to be available in Jamrules
   QString prop_value_;
-  if (a_project.property_value (item_traits::butter_build_dir_name, prop_value_))
+  if (a_project.property_value (butter_constants::butter_build_dir_name, prop_value_))
   {
     os_ << "BUILDDIR = " << pathcmp(prop_value_).path_localised () <<" ;\n";
   }
@@ -255,7 +255,7 @@ QString content_;
   // Handle user-defined project includes and flag properties
   ////////////
   QString property_value_;
-  a_project.property_value (item_traits::butter_include_name, property_value_);
+  a_project.property_value (butter_constants::butter_include_name, property_value_);
   // Also set an include dir if there is a  difference between the root_dir and the
   // projects hdrDir
   const pathcmp toplevel_include_ (dynamic_cast< const UmlPackage& >(a_project).hdr_path ());
@@ -277,11 +277,11 @@ QString content_;
   {
     os_ << "HDRS += " << property_value_ << " ;\n";
   }
-  if (a_project.property_search (item_traits::butter_ldflags_name, property_value_))
+  if (a_project.property_search (butter_constants::butter_ldflags_name, property_value_))
   {
     os_ << "LINKFLAGS += " << property_value_ << " ;\n";
   }
-  if (a_project.property_search (item_traits::butter_flags_name, property_value_))
+  if (a_project.property_search (butter_constants::butter_flags_name, property_value_))
   {
     os_ << "C++FLAGS += " << property_value_ << " ;\n";
     os_ << "CCFLAGS += " << property_value_ << " ;\n";

@@ -1,4 +1,4 @@
-class gmake_writer
+class gmake_generator
 !!!210729.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 ////////////////////////////////////
 // Define the associations of target
@@ -7,7 +7,7 @@ class gmake_writer
 //
 QString project_;
 QString lib_body_;
-if (a_target.property_value (item_traits::butter_project_name, project_))
+if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
   //////////////////////////////////
   // Is an externally linked library
@@ -37,8 +37,8 @@ else
   {
     lib_fname_ = lib_fname_ / lib_path_;
   }
-  if (a_target.property_search (item_traits::butter_lib_type_name, library_type_)
-      && item_traits::shared_value == library_type_)
+  if (a_target.property_search (butter_constants::butter_lib_type_name, library_type_)
+      && butter_constants::shared_value == library_type_)
   {
     //////////////////////
     // Is a shared library
@@ -73,11 +73,11 @@ ENDDOC}} */
   for (unsigned int i_ = 0; i_ < assoc_arts_.size (); ++i_)
   {
     const QString stereotype_ (assoc_arts_[i_]->stereotype ().data ());
-    if (stereotype_ == item_traits::library_stereotype
-        || stereotype_ == item_traits::source_stereotype)
+    if (stereotype_ == butter_constants::library_stereotype
+        || stereotype_ == butter_constants::source_stereotype)
     {
       QString ldflags_;
-      if (assoc_arts_[i_]->property_value (item_traits::butter_ldflags_name, ldflags_))
+      if (assoc_arts_[i_]->property_value (butter_constants::butter_ldflags_name, ldflags_))
       {
         merge_string_list (a_ldflags, ldflags_);
       }
@@ -141,9 +141,9 @@ to the source.</dd></dl></xdoc:section>
     QString cppflags_, compflags_;
     this->process_flags (a_src_inc, a_src_flags, cppflags_, compflags_);
     QString comp_ ("CCC");
-    BUTTER_ALWAYS(a_target.property_value (item_traits::butter_compiler_name, comp_)
+    BUTTER_ALWAYS(a_target.property_value (butter_constants::butter_compiler_name, comp_)
         || ! a_isdoc
-                  , ("<p><b>Error:</b> Missing '" + item_traits::butter_compiler_name
+                  , ("<p><b>Error:</b> Missing '" + butter_constants::butter_compiler_name
                                   + "' property on " + QString (a_filename)).utf8 ().data ());
     if (! cppflags_.isEmpty ())
     {
@@ -300,7 +300,7 @@ QString init_text_;
 
   // Create list of include directories
   QString inc_;
-  a_project.property_value (item_traits::butter_include_name, inc_);
+  a_project.property_value (butter_constants::butter_include_name, inc_);
   if (!root_dir ().equality (base_include_))
   {
     inc_.append(" " + root_dir ().create_relative (base_include_));
@@ -308,7 +308,7 @@ QString init_text_;
 
   // Get list of flags
   QString flags_;
-  a_project.property_search (item_traits::butter_flags_name, flags_);
+  a_project.property_search (butter_constants::butter_flags_name, flags_);
 
   // Process flags into preprocessor and compiler sets
   process_flags (inc_, flags_, inc_, flags_);
@@ -324,7 +324,7 @@ QString init_text_;
 
   // Get linker flags
   QString linkflag_;
-  if (a_project.property_search (item_traits::butter_ldflags_name, linkflag_))
+  if (a_project.property_search (butter_constants::butter_ldflags_name, linkflag_))
   {
     init_os_ << "LDFLAGS+=" << linkflag_ << "\n";
   }
@@ -439,17 +439,17 @@ bool Result (false);
 QString l_tmp;
 QString l_section;
 QTextOStream l_os (&l_section);
-if (a_item.property_value (item_traits::butter_include_name, l_tmp))
+if (a_item.property_value (butter_constants::butter_include_name, l_tmp))
 {
   Result = true;
   l_os << "USERHDRS := $(USERHDRS) " << process_hdrs (l_tmp) << "\n";
 }
-if (a_item.property_search (item_traits::butter_ldflags_name, l_tmp))
+if (a_item.property_search (butter_constants::butter_ldflags_name, l_tmp))
 {
   Result = true;
   l_os << "USERLDFLAGS := $(USERLDFLAGS) " << l_tmp << "\n";
 }
-if (a_item.property_search (item_traits::butter_flags_name, l_tmp))
+if (a_item.property_search (butter_constants::butter_flags_name, l_tmp))
 {
   Result = true;
   l_os << "USERFLAGS := $(USERFLAGS) " << l_tmp << "\n";
@@ -486,7 +486,7 @@ case shared_library:
   this->qualified_target_name_.append ("$(sufshr)");
   break;
 case other:
-  a_target.property_value (item_traits::butter_other_name, this->other_target_type_);
+  a_target.property_value (butter_constants::butter_other_name, this->other_target_type_);
   break;
 }
 

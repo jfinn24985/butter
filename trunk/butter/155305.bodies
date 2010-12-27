@@ -1,4 +1,4 @@
-class base_writer
+class base_generator
 !!!201129.cpp!!!	compare_file_to_string(in a_path : string, in a_str : string) : bool
 bool Result (false);
 class helper__

@@ -1,4 +1,4 @@
-class writer
+class generator
 !!!208809.cpp!!!	create_system(inout a_base : location, in a_project : UmlItem) : void
 // Check for top-level system build-file document, create it from template.
 this->rules_file (a_base, a_project);
@@ -48,12 +48,12 @@ while (! location_stack_.isEmpty ())
             const QString stereotype_label_ (const_cast< UmlArtifact& >(art_item_).stereotype ());
             bool installable_ (false);
             target_type target_type_ (executable); // The target's type, set to exe then change if library etc
-            if (stereotype_label_.contains (item_traits::executable_stereotype, false)
-                || stereotype_label_.contains (item_traits::library_stereotype, false))
+            if (stereotype_label_.contains (butter_constants::executable_stereotype, false)
+                || stereotype_label_.contains (butter_constants::library_stereotype, false))
             {
               installable_ = true;
               QString value_;
-              if (art_item_.property_value (item_traits::butter_project_name, value_))
+              if (art_item_.property_value (butter_constants::butter_project_name, value_))
               {
                 //////////////////////////////////////////////////
                 // Is an external target for project 'value_'.
@@ -70,11 +70,11 @@ while (! location_stack_.isEmpty ())
                 {
                   QString entry_;           // The target entry
                   {
-                    if (stereotype_label_.contains (item_traits::library_stereotype, false))
+                    if (stereotype_label_.contains (butter_constants::library_stereotype, false))
                     {
                       QString value_;
-                      if (art_item_.property_search (item_traits::butter_lib_type_name, value_)
-                            && value_ == item_traits::shared_value)
+                      if (art_item_.property_search (butter_constants::butter_lib_type_name, value_)
+                            && value_ == butter_constants::shared_value)
                       {
                         target_type_ = shared_library;
                       }
@@ -82,19 +82,19 @@ while (! location_stack_.isEmpty ())
                       {
                         target_type_ = static_library;
                       }
-                      if (art_item_.property_value (item_traits::butter_other_name, value_))
+                      if (art_item_.property_value (butter_constants::butter_other_name, value_))
                       {
                         target_type_ = other;
                       }
                     }
                     QString compiler_, includes_, compflags_, ldflags_;
-                    art_item_.property_value (item_traits::butter_compiler_name, compiler_);
+                    art_item_.property_value (butter_constants::butter_compiler_name, compiler_);
                     QTextOStream entry_os_ (&entry_);
                     ///////////////////
                     // Indicate the start of the target entry.
                     {
                       QString buildfile_;
-                      art_item_.property_value (item_traits::butter_buildfile_name, buildfile_);
+                      art_item_.property_value (butter_constants::butter_buildfile_name, buildfile_);
                       static_cast< derived* >(this)->start_target (art_item_, entry_os_, buildfile_, compiler_, target_type_);
                     }
                     ///////////////////
@@ -103,12 +103,12 @@ while (! location_stack_.isEmpty ())
                     {
                       UmlArtifact *const current_art_ = assoc_arts_.at (i_);
                       const QString stereotype_ (current_art_->stereotype ().data ());
-                      if (stereotype_ == item_traits::library_stereotype)
+                      if (stereotype_ == butter_constants::library_stereotype)
                       {
                         static_cast< derived* >(this)->assoc_library (*current_art_, entry_os_
                                             , includes_, ldflags_, compflags_);
                       }
-                      else if (stereotype_ == item_traits::source_stereotype)
+                      else if (stereotype_ == butter_constants::source_stereotype)
                       {
                         QString src_inc_, src_flags_;
                         find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, static_cast< derived* >(this)->section_name, true); // Pass link flags to target
@@ -119,7 +119,7 @@ while (! location_stack_.isEmpty ())
                                             , src_flags_
                                             , false);
                       }
-                      else if (stereotype_ == item_traits::document_stereotype)
+                      else if (stereotype_ == butter_constants::document_stereotype)
                       {
                         QString src_inc_, src_flags_;
                         find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, static_cast< derived* >(this)->section_name, true); // Pass link flags to target
@@ -160,51 +160,51 @@ while (! location_stack_.isEmpty ())
             }
             //////////////
             // Handle installables
-            if (installable_ || stereotype_label_.contains (item_traits::document_stereotype, false))
+            if (installable_ || stereotype_label_.contains (butter_constants::document_stereotype, false))
             {
               QString entry_;           // The install entry
               {
                 QString install_dir_;              // Location for install: DOCDIR,BINDIR etc
-                install_type install_type_ (build_writer::file); // How the target should be installed
+                install_type install_type_ (base_generator::file); // How the target should be installed
                 // Get the install property
-                art_item_.property_value (item_traits::butter_install_name, install_dir_);
+                art_item_.property_value (butter_constants::butter_install_name, install_dir_);
                 // For libraries and executables define some defaults.
-                if (stereotype_label_ == item_traits::library_stereotype)
+                if (stereotype_label_ == butter_constants::library_stereotype)
                 {
                   // Check to see if this is an external library
                   QString project_;
-                  if (art_item_.property_value (item_traits::butter_project_name, project_))
+                  if (art_item_.property_value (butter_constants::butter_project_name, project_))
                   {
                     install_dir_.truncate (0);
                   }
                   else
                   {
-                    install_type_ = build_writer::lib;
+                    install_type_ = base_generator::lib;
                     if (install_dir_.isEmpty ())
                     {
-                      install_dir_ = item_traits::libdir_value;
+                      install_dir_ = butter_constants::libdir_value;
                     }
                     else
                     {
                       /////////////
                       // Reset install type to file to handle "other" targets
-                      if (install_dir_ != item_traits::libdir_value
-                         && target_type_ == build_writer::other)
+                      if (install_dir_ != butter_constants::libdir_value
+                         && target_type_ == base_generator::other)
                       {
-                        install_type_ = build_writer::file;
+                        install_type_ = base_generator::file;
                       }
                     }
                   }
                 }
-                else if (stereotype_label_ == item_traits::executable_stereotype)
+                else if (stereotype_label_ == butter_constants::executable_stereotype)
                 {
-                  install_type_ = build_writer::bin;
+                  install_type_ = base_generator::bin;
                   if (install_dir_.isEmpty ())
                   {
-                    install_dir_ = item_traits::bindir_value;
+                    install_dir_ = butter_constants::bindir_value;
                   }
                 }
-                if (! install_dir_.isEmpty () && install_dir_ != item_traits::no_install_value)
+                if (! install_dir_.isEmpty () && install_dir_ != butter_constants::no_install_value)
                 {
                   QTextOStream entry_os_ (&entry_);
                   static_cast< derived* >(this)->install_target (art_item_, entry_os_, install_dir_, install_type_, ! installable_);
@@ -314,9 +314,9 @@ public:
 // Set strings for the project name and version
 const QString project_name_ (a_project.name ());
 QString version_;
-if (! a_project.property_value (item_traits::butter_version_name, version_))
+if (! a_project.property_value (butter_constants::butter_version_name, version_))
 {
-  if (! a_project.property_value (item_traits::version_name, version_))
+  if (! a_project.property_value (butter_constants::version_name, version_))
   {
     version_ = "1.0";
   }
@@ -324,18 +324,18 @@ if (! a_project.property_value (item_traits::butter_version_name, version_))
 
 // See if the user has defined some defaults for themselves for this style.
 //
-const char *const var_ = getenv (item_traits::app_data_env_var.utf8());
+const char *const var_ = getenv (butter_constants::app_data_env_var.utf8());
 const QString app_data_var (var_ == NULL? "" : var_);
 #ifdef DEBUG
 butter::log::com.trace(butter::log::debug, ("Looking for env var: "
-     + item_traits::app_data_env_var).utf8());
+     + butter_constants::app_data_env_var).utf8());
 butter::log::com.trace(butter::log::debug, ("Value of var is: "
      + app_data_var).utf8());
 #endif
 if ( !app_data_var.isEmpty() && ! app_data_var.isNull ())
 {
   QFileInfo app_data_info_((pathcmp (app_data_var)
-    / item_traits::app_data_subdir_name
+    / butter_constants::app_data_subdir_name
     / static_cast< derived* >(this)->section_name).path ());
 #ifdef DEBUG
   butter::log::com.trace(butter::log::debug, ("Full path is: "

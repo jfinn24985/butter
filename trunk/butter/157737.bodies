@@ -1,4 +1,4 @@
-class cmake_writer
+class cmake_generator
 !!!230441.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 ////////////////////////////////////
 // Define the associations of target
@@ -6,7 +6,7 @@ class cmake_writer
 // to sources and libraries
 //
 QString project_;
-if (a_target.property_value (item_traits::butter_project_name, project_))
+if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
   //////////////////////////////////
   // Is an externally linked library
@@ -41,8 +41,8 @@ else
 
   // Get any flags that we might need
   QString library_type_;
-  if (a_target.property_search (item_traits::butter_lib_type_name, library_type_)
-      && item_traits::static_value == library_type_)
+  if (a_target.property_search (butter_constants::butter_lib_type_name, library_type_)
+      && butter_constants::static_value == library_type_)
   {
     //////////////////////
     // Is a static library so we need to get
@@ -51,11 +51,11 @@ else
     for (unsigned int i_ = 0; i_ < assoc_arts_.size (); ++i_)
     {
       const QString stereotype_ (assoc_arts_[i_]->stereotype ().data ());
-      if (stereotype_ == item_traits::library_stereotype
-          || stereotype_ == item_traits::source_stereotype)
+      if (stereotype_ == butter_constants::library_stereotype
+          || stereotype_ == butter_constants::source_stereotype)
       {
         QString ldflags_;
-        if (assoc_arts_[i_]->property_value (item_traits::butter_ldflags_name, ldflags_))
+        if (assoc_arts_[i_]->property_value (butter_constants::butter_ldflags_name, ldflags_))
         {
           merge_string_list (a_ldflags, ldflags_);
         }
@@ -124,7 +124,7 @@ if (a_isdoc)
 {
   // Check if user has set the language,
   // if not assume it will be autodetected
-  a_target.property_value (item_traits::butter_compiler_name, comp_);
+  a_target.property_value (butter_constants::butter_compiler_name, comp_);
 }
 
 if (! a_src_flags.isEmpty () || ! comp_.isEmpty())
@@ -297,7 +297,7 @@ QString proj_text_;
   const pathcmp base_include_ (dynamic_cast< const UmlPackage& >(a_project).hdr_path ());
   {
     QString hdrs_;
-    a_project.property_value (item_traits::butter_include_name, hdrs_);
+    a_project.property_value (butter_constants::butter_include_name, hdrs_);
     if (! this->root_dir ().equality (base_include_))
     {
       if (!hdrs_.isEmpty ())
@@ -326,7 +326,7 @@ QString proj_text_;
   }
   {
     QString link_;
-    if (a_project.property_search (item_traits::butter_ldflags_name, link_))
+    if (a_project.property_search (butter_constants::butter_ldflags_name, link_))
     {
       proj_os_ << "set (CMAKE_EXE_LINKER_FLAGS " << mangle(link_)
       << "\n\tCACHE STRING \"Project-wide linker flags.\" FORCE)\n";
@@ -334,7 +334,7 @@ QString proj_text_;
   }
   {
     QString flag_;
-    if (a_project.property_search (item_traits::butter_flags_name, flag_))
+    if (a_project.property_search (butter_constants::butter_flags_name, flag_))
     {
       proj_os_ << "add_definitions (" << mangle(flag_) << ")\n";
     }
@@ -345,14 +345,14 @@ a_sys.target(this->project_name_).second = proj_text_;
 const QString target_name_(a_isdoc ?  a_target.name() : "${" + this->target_NAME () + "}");
 switch (a_type)
 {
-case build_writer::bin:
+case base_generator::bin:
 {
   a_os << "install (TARGETS " << target_name_
   << "\n\tRUNTIME DESTINATION ${" << a_loc_var << "}"
   << "\n\tCONFIGURATIONS Release)\n\n";
   break;
 }
-case build_writer::lib:
+case base_generator::lib:
 {
   QString shard_, statd_;
   if (this->is_static_type_)
@@ -372,8 +372,8 @@ case build_writer::lib:
   << "\n\tCONFIGURATIONS Release)\n\n";
   break;
 }
-case build_writer::file:
-case build_writer::man:
+case base_generator::file:
+case base_generator::man:
 {
   a_os << "install (FILES " << target_name_
   << "\n\tDESTINATION ${" << a_loc_var << "}"
@@ -483,7 +483,7 @@ this->other_target_type_.truncate (0);    // An "other" target type.
 this->lib_set_.truncate (0);              // Set of included libraries
 this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled
 this->depend_set_.truncate (0);        // local targets
-this->is_static_type_ = (a_type == build_writer::static_library);
+this->is_static_type_ = (a_type == base_generator::static_library);
 ///////////////////////////////////////////
 // Define the characteristics of the target
 //
@@ -491,7 +491,7 @@ this->is_static_type_ = (a_type == build_writer::static_library);
 //
 if (a_type == other)
 {
-  a_target.property_value (item_traits::butter_other_name, this->other_target_type_);
+  a_target.property_value (butter_constants::butter_other_name, this->other_target_type_);
 }
 
 // Handle target specific include file for library types only

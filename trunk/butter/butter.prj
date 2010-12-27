@@ -1,6 +1,6 @@
 format 66
 "butter"
-  revision 60
+  revision 61
   modified_by 41 "finnerty"
   cpp_root_dir "/tmp/butter/include/"
 
@@ -48,9 +48,7 @@ format 66
   key "butter style" value "standard"
   key "butter flags" value "-DWITHCPP -DDEBUG"
   key "butter log-level" value "5"
-  comment "TODO: file comparison!!
-
-To create the plug-out use 'genpro' on the artifact \"butter/butter/butter.plugout\".
+  comment "To create the plug-out use 'genpro' on the artifact \"butter/butter/butter.plugout\".
 
 If you want to try the \"butter\" plugout on this project then change the 
 \"butter.plugout\" artifact's stereotype to <<file>> before running \"butter\".
@@ -62,8 +60,8 @@ the generation settings.
 
 Project documentation is in Build/config/README.t2t. The 'butter' plugout,
 once made, can be used to create a build-system that converts this to HTML if
-you have the txt2tags program installed.  This is also an example of how to add a
-new target type to the build system.
+you have the txt2tags python script installed.  This is also an example of how 
+the plugout can be used with a new target type.
 
 \\cond xdoc
 <xdoc:section name=\"paths\">

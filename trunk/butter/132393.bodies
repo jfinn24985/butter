@@ -164,7 +164,7 @@ if (NULL == Result)
   name_.append ("</b>.</p>");
   throw std::runtime_error (name_.utf8 ().data ());
 }
-Result->set_Stereotype (item_traits::document_stereotype.utf8 ());
+Result->set_Stereotype (butter_constants::document_stereotype.utf8 ());
 return Result;
 !!!187689.cpp!!!	find(inout a_location : location, in a_path : pathcmp) : location
 butter::pathcmp const parent_path_ (a_location->full_path ());
@@ -209,7 +209,7 @@ for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
         UmlItem *const artifact_cursor_ = deploy_cursor_->children ().at (k_);
         if (anArtifact == artifact_cursor_->kind ()
             && a_name == artifact_cursor_->name ().data ()
-            && item_traits::document_stereotype == artifact_cursor_->stereotype ().data ())
+            && butter_constants::document_stereotype == artifact_cursor_->stereotype ().data ())
         {
           if (Result.count () == Result.size ())
           {
@@ -262,7 +262,7 @@ BUTTER_REQUIRE (NULL != item_ && NULL == const_cast< UmlItem& >(a_item).parent (
 /////////////////////
 // Set logging level
 QString level_;
-if (item_->property_value (item_traits::butter_log_name, level_))
+if (item_->property_value (butter_constants::butter_log_name, level_))
 {
   log::com.level (level_.toInt ());
 }
@@ -295,7 +295,7 @@ if (! root_dir_.exists ())
 /////////////////////
 // Set style
 QString style_;
-if (item_->property_value (item_traits::butter_style_name, style_))
+if (item_->property_value (butter_constants::butter_style_name, style_))
 {
   butter::style::set_style (style_);
 }
@@ -305,7 +305,7 @@ else
 }
 //  Check and create any user-directed top-level directory->
 QString user_base_path_;
-a_item.property_value (item_traits::butter_base_name, user_base_path_);
+a_item.property_value (butter_constants::butter_base_name, user_base_path_);
 if (! user_base_path_.isEmpty ())
 {
   const pathcmp base_path_ (root_dir_ / user_base_path_);
@@ -331,7 +331,7 @@ cache_ = Result.get ();
 
 #ifdef DEBUG
 log::com.debug_log ((root_dir_ / butter::pathcmp("butter.log")).path ());
-log::com.stream () << "##\n## BEGIN LOG FOR " << item_traits::BUTTER_VERSION << "\n##\n";
+log::com.stream () << "##\n## BEGIN LOG FOR " << butter_constants::BUTTER_VERSION << "\n##\n";
 #endif
 ///////////////////////////////////
 // Walk through the UmlItems.
@@ -354,20 +354,20 @@ while (! item_stack_.isEmpty ())
         if (current_prop_.currentKey ().contains ("butter"))
         {
           const QString current_key_ (current_prop_.currentKey ().data ());
-          if (current_key_ != item_traits::butter_base_name
-            && current_key_ != item_traits::butter_build_dir_name
-            && current_key_ != item_traits::butter_buildfile_name
-            && current_key_ != item_traits::butter_compiler_name
-            && current_key_ != item_traits::butter_flags_name
-            && current_key_ != item_traits::butter_install_name
-            && current_key_ != item_traits::butter_ldflags_name
-            && current_key_ != item_traits::butter_lib_type_name
-            && current_key_ != item_traits::butter_log_name
-            && current_key_ != item_traits::butter_other_name
-            && current_key_ != item_traits::butter_include_name
-            && current_key_ != item_traits::butter_project_name
-            && current_key_ != item_traits::butter_style_name
-            && current_key_ != item_traits::butter_version_name)
+          if (current_key_ != butter_constants::butter_base_name
+            && current_key_ != butter_constants::butter_build_dir_name
+            && current_key_ != butter_constants::butter_buildfile_name
+            && current_key_ != butter_constants::butter_compiler_name
+            && current_key_ != butter_constants::butter_flags_name
+            && current_key_ != butter_constants::butter_install_name
+            && current_key_ != butter_constants::butter_ldflags_name
+            && current_key_ != butter_constants::butter_lib_type_name
+            && current_key_ != butter_constants::butter_log_name
+            && current_key_ != butter_constants::butter_other_name
+            && current_key_ != butter_constants::butter_include_name
+            && current_key_ != butter_constants::butter_project_name
+            && current_key_ != butter_constants::butter_style_name
+            && current_key_ != butter_constants::butter_version_name)
           {
             log::com.trace (log::warn, "<p><b>Warning:</b> Item \"" + QString (top_->name ().data ()) + "\" has property name \"" + current_key_ + "\" which contains 'butter' but is not a known property name</p>");
           }
@@ -470,7 +470,7 @@ while (! item_stack_.isEmpty ())
     {
       print_tmp_ = print_tmp_->parent ();
     }
-    item_traits::print_item (top_, depth_, log::com->stream ());
+    top_->print(depth_, log::com.stream ());
   }
 #endif
   // Push any children onto the stack (ensures all objects are checked for keywords)
@@ -627,13 +627,13 @@ for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
       {
         UmlItem *const artifact_cursor_ = deploy_cursor_->children ().at (k_);
         if (anArtifact == artifact_cursor_->kind ()
-            && item_traits::document_stereotype == artifact_cursor_->stereotype ().data ())
+            && butter_constants::document_stereotype == artifact_cursor_->stereotype ().data ())
         {
           // Only write non-empty docs.
           if (! artifact_cursor_->description ().isEmpty ())
           {
             QString document_prop_value_;
-            artifact_cursor_->property_value (item_traits::butter_other_name, document_prop_value_);
+            artifact_cursor_->property_value (butter_constants::butter_other_name, document_prop_value_);
             if (document_prop_value_.isEmpty ()
                 ||  (document_prop_value_ != "nowrite"
                   && document_prop_value_ != style::get_style().name))

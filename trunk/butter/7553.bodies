@@ -28,13 +28,9 @@ static const char *kind_as_string_[] = {
 , "package"
 , "unknown"
 };
-const unsigned int size_ (sizeof(kind_as_string_)/sizeof(char*));
-anItemKind our_kind_ (const_cast< UmlItem* >(this)->kind ());
-if (our_kind_ < 0U || size_ <= our_kind_)
-{
-  our_kind_ = size_ - 1;
-}
-return kind_as_string_[our_kind_];
+static const unsigned int size_ (sizeof(kind_as_string_)/sizeof(char*));
+const unsigned int our_kind_ (const_cast< UmlItem* >(this)->kind ());
+return kind_as_string_[(our_kind_ < 0U || size_ <= our_kind_) ? size_ - 1 : our_kind_];
 !!!131881.cpp!!!	print(in a_depth : uint, inout a_os : ostream) : void
 static const QString title_lbl__ ("[TT] ");
 static const QString watch_lbl__ ("[**] ");
@@ -46,7 +42,7 @@ a_os << indent__ << watch_lbl__ << "depth = \"" << a_depth << "\"\n";
 a_os << indent__ << watch_lbl__ << "stereotype = \"" << stereotype () << "\"\n";
 
 int kind_ (const_cast< UmlItem& >(*this).kind ());
-a_os << indent__ << watch_lbl__ << "kind = \"" << item_traits::kind_to_string (kind_) << "\" [" << kind_ << "]\n";
+a_os << indent__ << watch_lbl__ << "kind = \"" << kind_as_string () << "\" [" << kind_ << "]\n";
 a_os << indent__ << watch_lbl__ << "description = \"" << description () << "\"\n";
 
 QDict< QCString > l_properties (properties ());
