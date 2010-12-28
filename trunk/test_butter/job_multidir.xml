@@ -21,8 +21,8 @@
         </verb>
       </verb-list>
       <verb-list category="execute" >Generate the build system and the source code
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec cpp_generator -exit</verb>
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec butter -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >
@@ -37,12 +37,6 @@
           <property name="verify" >exist</property>
           <property name="location" >example_exe.cpp %(mainfile)s</property>
         </verb>
-        <verb type="compare" >
-          <property name="error" >nonfatal</property>
-          <property name="compare-base" >%(base-dir)s/%(project)s/canon.%(build-tool)s</property>
-          <property name="location" >src/Executable/%(mainfile)s</property>
-          <property name="test-phrase">1.1.3 Build file in sub-directory 1 compares to canon</property>
-        </verb>
         <verb type="file-list" >
           <property name="base" >%(local-base)s/include/Library</property>
           <property name="file-type" >file</property>
@@ -55,23 +49,12 @@
           <property name="verify" >exist</property>
           <property name="location" >example_lib.cpp %(mainfile)s</property>
         </verb>
-        <verb type="compare" >
-          <property name="error" >nonfatal</property>
-          <property name="compare-base" >%(base-dir)s/%(project)s/canon.%(build-tool)s</property>
-          <property name="location" >src/Library/%(mainfile)s</property>
-          <property name="test-phrase">1.1.3 Build file in sub-directory 2 compares to canon</property>
-        </verb>
         <verb type="file-list" >
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(basefile)s %(sysfile)s</property>
         </verb>
-        <verb type="compare" >
-          <property name="error" >nonfatal</property>
-          <property name="compare-base" >%(base-dir)s/%(project)s/canon.%(build-tool)s</property>
-          <property name="location" >%(basefile)s %(sysfile)s</property>
-          <property name="test-phrase">1.1.3 Root build files compare to canon</property>
-        </verb>
+        <property name="test-phrase">1.1.3 Build files created in root and sub directories</property>
       </verb-list>
     </stage>
     <stage>Perform compilation and test compilation success
@@ -95,19 +78,12 @@
           <property name="location" >%(library-name)s</property>
           <property name="test-phrase">2.1.2 Library built</property>
         </verb>
-       <verb type="file-list" >
-          <property name="error" >optional</property>
-          <property name="base" >%(local-base)s/%(build-dir)s/src/Library</property>
-          <property name="file-type" >file</property>
-          <property name="verify" >nonexist</property>
-          <property name="location" >example_lib.o example_c.o</property>
-          <property name="test-phrase">2.1.2 Temporary object files for library deleted</property>
-        </verb>
-       </verb-list>
+      </verb-list>
     </stage>
     <stage>Test run the executable.
       <verb-list category="execute" >Run &quot;program&quot;
-        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
+        <property name="library-path" >%(build-dir)s/src/Library%(build-var)s</property>
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >
@@ -118,8 +94,8 @@
         <verb type="compare" >
           <property name="compare-base" >%(base)s</property>
           <property name="location" >output</property>
-          <property name="test-phrase">2.1.1 Program output matchs canon</property>
         </verb>
+        <property name="test-phrase">2.1.1 Program output exists and matchs canon</property>
       </verb-list>
     </stage>
     <stage>Clean-up stage

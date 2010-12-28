@@ -21,8 +21,8 @@
 
       </verb-list>
       <verb-list category="execute" >Generate the build system and the source code
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec cpp_generator -exit</verb>
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec butter -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >
@@ -37,13 +37,6 @@
           <property name="verify" >exist</property>
           <property name="location" >example_exe.cpp %(mainfile)s</property>
         </verb>
-        <verb type="compare" >
-	  <property name="error" >optional</property>
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
-          <property name="compare-base" >%(base-dir)s/%(project)s/canon.%(build-tool)s</property>
-          <property name="location" >src/Executable/%(mainfile)s</property>
-          <property name="test-phrase">1.1.3 Build file in sub-dir 1 matchs canon</property>
-        </verb>
         <verb type="file-list" >
           <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/include/Library</property>
           <property name="file-type" >file</property>
@@ -56,26 +49,13 @@
           <property name="verify" >exist</property>
           <property name="location" >example_lib.cpp example_c.c %(mainfile)s</property>
         </verb>
-        <verb type="compare" >
-	  <property name="error" >optional</property>
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
-          <property name="compare-base" >%(base-dir)s/%(project)s/canon.%(build-tool)s</property>
-          <property name="location" >src/Library/%(mainfile)s</property>
-          <property name="test-phrase">1.1.3 Build file in sub-dir 2 matchs canon</property>
-        </verb>
         <verb type="file-list" >
           <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(basefile)s %(sysfile)s</property>
         </verb>
-        <verb type="compare" >
-          <property name="error" >optional</property>
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
-          <property name="compare-base" >%(base-dir)s/%(project)s/canon.%(build-tool)s</property>
-          <property name="location" >%(basefile)s %(sysfile)s</property>
-          <property name="test-phrase">1.1.3 Project build files in match canon</property>
-        </verb>
+        <property name="test-phrase">1.1.3 Project build files and non-c++ source files created</property>
       </verb-list>
     </stage>
     <stage>Perform compilation and test compilation success
@@ -101,20 +81,13 @@
           <property name="location" >%(library-name)s</property>
           <property name="test-phrase">2.1.2 Compiled library target</property>
         </verb>
-       <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s/src/Library%(build-var)s</property>
-          <property name="error" >nonfatal</property>
-          <property name="file-type" >file</property>
-          <property name="verify" >nonexist</property>
-          <property name="location" >example_lib.o example_c.o</property>
-          <property name="test-phrase">2.1.2 Temporary object file for library target removed</property>
-        </verb>
        </verb-list>
     </stage>
     <stage>Test run the executable.
       <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
       <verb-list category="execute" >Run &quot;program&quot;
-        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
+	      <property name="library-path" >%(build-dir)s/src/Library%(build-var)s</property>
+        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct output has been produced
         <verb type="file-list" >

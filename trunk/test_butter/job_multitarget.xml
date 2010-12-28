@@ -21,19 +21,15 @@
       </verb-list>
       <verb-list category="execute" >
         Generate the build system and the source code
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec cpp_generator -exit</verb>
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec butter -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >example_exe.hpp example_exe.cpp example_lib.hpp example_lib.cpp %(basefile)s %(sysfile)s</property>
-        </verb>
-        <verb type="compare" >
-	  <property name="error" >optional</property>
-          <property name="location" >%(basefile)s %(sysfile)s</property>
-          <property name="test-phrase">1.1.3 Build files match canon</property>
+          <property name="test-phrase">1.1.3 Build files created</property>
         </verb>
       </verb-list>
     </stage>
@@ -53,7 +49,8 @@
     </stage>
     <stage>Test run the executable.
       <verb-list category="execute" >Run &quot;program&quot;
-        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s ./%(build-dir)s/%(exe-name)s lorem.txt > output %(cmdsep)s popd</verb>
+	  <property name="library-path" >%(base)s/%(build-dir)s</property>
+	  <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(base)s/%(build-dir)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >
