@@ -14,7 +14,7 @@ if not patch_dir_:
 self.substitutions( None, { u"_patch_": patch_, u"_patch_args_": args_, u"_path_": None, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")]
 , u"_base_": base_ } )
 
-phrase_ = u"""self.system_call(r"%(_patch_)s -d %(_base_)s %(_patch_args_)s %(_path_)s", r\"\"\"%(_error_)s\"\"\")\n"""
+phrase_ = u"""self.system_call(r\"\"\"%(_patch_)s -d %(_base_)s %(_patch_args_)s %(_path_)s\"\"\", r\"\"\"%(_error_)s\"\"\")\n"""
 
 # Build python evaluation string
 self.reset_action ()

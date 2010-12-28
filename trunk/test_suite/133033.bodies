@@ -3,7 +3,7 @@ class verb_checkout
 # Build python evaluation string
 type_ = self.make_substitutions(self.get (u"type", u"svn"))
 ( cmd_, msg_ ) = verb_checkout._checkout[type_]
-phrase_ = u"""self.system_call (r"%(_command_)s", r\"\"\"%(_error_)s\"\"\")\n"""
+phrase_ = u"""self.system_call (r\"\"\"%(_command_)s\"\"\", r\"\"\"%(_error_)s\"\"\")\n"""
 todir_ = self.get (u"to-dir", u"-d %(base)s")
 cmd_name_ = self.get (type_ + u"-command", type_)
 self.substitutions(None, { u"_command_": cmd_, u"_message_": msg_, u"_to_dir_": todir_, u"_error_":  verb._error[self.get (u"error",u"fatal")], u"_cmd_name_": cmd_name_ } )

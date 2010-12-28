@@ -1,5 +1,5 @@
 class verb_list
-!!!150185.python!!!	end_load(in self : )
+!!!150185.python!!!	do_end_load(in self : )
 # Run each verb list with quit on fail
 if self._children:
   for item_ in self._children:
@@ -7,7 +7,7 @@ if self._children:
       self.add_action(item_.get_action ())
       self.add_action(u"\n")
   self._children = None
-
+# super(verb_list, self).end_load ()
 if _DEBUG:
   tmp_ = self.start("debug", {"#title":"List of verbs data"})
   print self.get_action ()

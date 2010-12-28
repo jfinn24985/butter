@@ -44,8 +44,16 @@ test_suite.__singleton = self
 pass
 !!!163241.python!!!	index_(in self : ) : void
 import re
+self.indices = range(self.qsize)
 if test_suite.run_.value:
   self.indices = map(int,re.findall("\d\d*", test_suite.run_.value))
+if test_suite.property_.value:
+  (name, value) = test_suite.property_.value.split('=',2)
+  old_index_ = self.indices
+  self.indices = []
+  for i in old_index_:
+    if self._children[i].get(name,"") == value:
+      self.indices.append(i)
 if _DEBUG:
   tmp_ = self.start("debug", {"#title":"in use job indices"})
   print self.indices
@@ -85,6 +93,6 @@ if 0 < self.qsize:
     for n_ in range(num_threads_ - 1):
       thread_pool_[n_].join ()
   import sys
-  for i_ in self.indices or range(self.qsize):
+  for i_ in self.indices:
     self._children[i_].report(sys.stdout, i_)
 pass

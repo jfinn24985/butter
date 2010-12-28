@@ -2,4 +2,20 @@ class property
 !!!145577.python!!!	make(in elemname : unistr, in elemattr : dict) : object_interface
 assert elemname == property.element_name
 assert elemattr.has_key(property.name_attr)
-return property(elemattr[property.name_attr])
+Result = property(elemattr[property.name_attr])
+if  elemattr.has_key(property.if_attr):
+  ( Result.if_property, Result.if_value ) = elemattr[property.if_attr].split ("=", 2)
+return Result
+!!!169129.python!!!	conditional(in a_dict : dict) : bool
+if self.if_property: # Check for dependencies
+need_match = True # Do we match or not match value?
+chk = self.if_value
+if chk[0] == '!':
+  chk = chk[1:]
+  need_match = False
+value = a_dict.get (self.if_property, None)
+if value:
+  return (value == chk) == need_match
+else:
+  return not need_match # Need match to add
+return True

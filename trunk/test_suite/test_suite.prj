@@ -1,8 +1,8 @@
 format 66
-"butter_test"
-  revision 33
+"test_suite"
+  revision 38
   modified_by 41 "finnerty"
-  python_root_dir "/tmp/test_suite/"
+  python_root_dir "../Archive/"
 
 
   
@@ -1038,6 +1038,28 @@ to a python dictionary.
 	comment "The property's name"
       end
 
+      attribute 162089 "if_property"
+	private explicit_type "string"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 162217 "if_value"
+	private explicit_type "string"
+	init_value "None"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
       attribute 141353 "name_attr"
 	class_attribute private explicit_type "unistr"
 	multiplicity "1"
@@ -1050,6 +1072,20 @@ to a python dictionary.
 	idl_decl ""
 	comment "The XML attribute name for this type's 
 \"name\" attribute"
+      end
+
+      attribute 161961 "if_attr"
+	class_attribute private explicit_type "unistr"
+	multiplicity "1"
+	init_value "u\"if\""
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "The XML attribute name for this type's 
+\"if\" attribute"
       end
 
       operation 145449 "__init__"
@@ -1081,6 +1117,22 @@ ${docstring}${body}
 "
 	
 	comment "Meta-constructor method"
+      end
+
+      operation 169129 "conditional"
+	public explicit_return_type "bool"
+	nparams 2
+	  param in name "self" explicit_type ""
+	  param in name "a_dict" explicit_type "dict"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}, ${p1}${v1}${)}:
+${docstring}${body}
+"
+	
+	comment "checks if this is a conditional property and if the
+condition is met from the given dictionary."
       end
     end
 
@@ -1276,6 +1328,40 @@ ${docstring}${body}
 Programming Note: _replace must be checked first
 to allow manually set values to override values set
 via properties."
+      end
+
+      attribute 159401 "__format_re"
+	class_attribute const_attribute private explicit_type "string"
+	init_value "re.compile(\"(%\\([^(]*?\\)s)+\")"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "import re
+${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 159529 "__path_re"
+	class_attribute const_attribute private explicit_type "regex"
+	init_value "re.compile(\"PATH\\{([^}]*)\\}\")"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+      end
+
+      attribute 159657 "__envvar_re"
+	class_attribute const_attribute private explicit_type "regex"
+	init_value "re.compile(\"ENVVAR\\{([^}]*)\\}\")"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
       end
 
       operation 154409 "make_substitutions"
@@ -1685,7 +1771,6 @@ ${docstring}${body}
 	
 	comment "Search attributes for \"src\" attr."
       end
-
     end
 
     class 141097 "subfile_interpreter"
@@ -1864,6 +1949,18 @@ ${docstring}${members}
 	idl_decl ""
 	comment "The lock needed to manipulate the job cursor in
 multithreaded running."
+      end
+
+      attribute 160809 "property_"
+	class_attribute private type class_ref 142249 // option
+	init_value "option(\"--prop\",True)"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl "${comment}${self}${name} = ${value}
+"
+	idl_decl ""
+	comment "Option to select jobs by property."
       end
 
       attribute 145705 "qsize"
@@ -2275,11 +2372,17 @@ perform other types of tests, eg CRC, file mode etc.
 
 Command phrase:
 %(compare-command) %(compare-args) %(base)/%(leaf) %(compare-base)%(leaf)%(suffix)
+or
+%(search-command) %(search-args) %(search-phrase) %(base)/%(leaf)
 where leaf is a single element in \"location\"
 
 Properties
+type : compare | search
 compare-command  : The comparison program (default = \"diff\")
 compare-args : Arguments to program (default = \"-q\")
+search-command  : The search program (default = \"grep\")
+search-args : Arguments to program (default = \"\")
+search-regex : Regular expression to search for (required)
 suffix                 : File suffix to add to file(default = \".canon\")
 base                 : Base directory
 compare-base : Directory with canonical files (defaut = base)
@@ -2397,10 +2500,11 @@ permission checks)"
 
       attribute 149289 "_filetype"
 	class_attribute const_attribute private explicit_type ""
-	init_value "{ u\"file\": ( \"\"\"os.path.isfile(r\"%(_path_)s\")\"\"\", \"\"\"os.unlink(r\"%(_path_)s\")\"\"\", \"\"\"os.close(os.open(r\"%(_path_)s\"))\"\"\", r\"\"\"Problem with file (action: %(_action_)s): %(_path_)s\"\"\" )
-, u\"executable\": ( \"\"\"os.path.isfile(r\"%(_path_)s\")\"\"\", \"\"\"os.unlink(r\"%(_path_)s\")\"\"\", \"\"\"os.close(os.open(r\"%(_path_)s\"))\"\"\", r\"\"\"Problem with file (action: %(_action_)s): %(_path_)s\"\"\" )
+	init_value "{ u\"file\": ( \"\"\"(os.path.isfile(r\"%(_path_)s\") or verb_filelist.findfile(r\"%(_path_)s\"))\"\"\", \"\"\"os.unlink(r\"%(_path_)s\")\"\"\", \"\"\"os.close(os.open(r\"%(_path_)s\"))\"\"\", r\"\"\"Problem with file (action: %(_action_)s): %(_path_)s\"\"\" )
+, u\"executable\": ( \"\"\"(os.path.isfile(r\"%(_path_)s\") or verb_filelist.findfile(r\"%(_path_)s\"))\"\"\", \"\"\"os.unlink(r\"%(_path_)s\")\"\"\", \"\"\"os.close(os.open(r\"%(_path_)s\"))\"\"\", r\"\"\"Problem with file (action: %(_action_)s): %(_path_)s\"\"\" )
 ,  u\"directory\": ( \"\"\"os.path.isdir(r\"%(_path_)s\")\"\"\", \"\"\"verb_filelist.removedirs(r\"%(_path_)s\")\"\"\", \"\"\"os.makedirs(r\"%(_path_)s\")\"\"\", r\"\"\"Problem with directory (action: %(_action_)s): %(_path_)s\"\"\" )
-}"
+}
+"
 	cpp_decl ""
 	java_decl ""
 	php_decl ""
@@ -2412,12 +2516,13 @@ permission checks)"
 
       attribute 149161 "_verify"
 	class_attribute const_attribute private explicit_type "dict"
-	init_value "{ u\"exist\": \"\"\"if not os.path.exists(r\"%(_path_)s\"):\\n  %(_error_)s\\n\"\"\"
-, u\"nonexist\": \"\"\"if os.path.exists(r\"%(_path_)s\"):\\n  %(_error_)s\\n\"\"\"
+	init_value "{ u\"exist\": \"\"\"if not (os.path.exists(r\"%(_path_)s\") or verb_filelist.findfile(r\"%(_path_)s\")):\\n  %(_error_)s\\n\"\"\"
+, u\"nonexist\": \"\"\"if (os.path.exists(r\"%(_path_)s\") or verb_filelist.findfile(r\"%(_path_)s\")):\\n  %(_error_)s\\n\"\"\"
 , u\"create\": \"\"\"if not os.path.exists(r\"%(_path_)s\"):\\n  %(_create_)s\\n\"\"\"
 , u\"recreate\": \"\"\"if os.path.exists(r\"%(_path_)s\"):\\n  %(_remove_)s\\n%(_create_)s\\n\"\"\"
 , u\"remove\": \"\"\"%(_remove_)s\\n\"\"\"
-}"
+}
+"
 	cpp_decl ""
 	java_decl ""
 	php_decl ""
@@ -2472,6 +2577,20 @@ ${docstring}${body}
 	comment "Meta-constructor method"
       end
 
+      operation 169257 "findfile"
+	class_operation public explicit_return_type ""
+	nparams 1
+	  param in name "a_path" explicit_type "string"
+	
+	
+	
+	python_def "${@}${static}${abstract}def ${name}${(}${p0}${v0}${)}:
+${docstring}${body}
+"
+	
+	comment "Test if file exists in a leaf directory."
+      end
+
       operation 156713 "removedirs"
 	class_operation public explicit_return_type ""
 	nparams 1
@@ -2501,12 +2620,12 @@ ${docstring}${members}
       comment "Meta-object class for categorising the verb sets in the XML file.
 
 <verb-list @category>(<property>..)*(<verb>...</>)*</>"
-      classrelation 139177 // <generalisation>
-	relation 137257 ---|>
+      classrelation 142889 // <generalisation>
+	relation 140969 ---|>
 	  a public
 	    python "${type}"
-	    classrelation_ref 139177 // <generalisation>
-	  b parent class_ref 139817 // property_holder
+	    classrelation_ref 142889 // <generalisation>
+	  b parent class_ref 131369 // verb
       end
 
       attribute 144809 "element_name"
@@ -2556,7 +2675,7 @@ ${docstring}${members}
 	idl_decl ""
       end
 
-      operation 150185 "end_load"
+      operation 150185 "do_end_load"
 	public explicit_return_type ""
 	nparams 1
 	  param in name "self" explicit_type ""
@@ -2934,14 +3053,14 @@ import xml.sax, threading, os.path
 
 _DEBUG = False
 if _DEBUG:
-  print \"\"\"<html><body><style type=\"text/css\">pre.debug{color:red}</style>\"\"\"
+  print \"\"\"<html encoding='UTF-8'><body><style type=\"text/css\">pre.debug{color:red}</style>\"\"\"
 
 ${definition}
 
 
 if __name__ == \"__main__\":
   if not _DEBUG:
-    print \"<html><body>\"
+    print \"<html encoding='UTF-8'><body>\"
   suite = test_suite ()
   suite.run ()
   print \"</body></html>\"

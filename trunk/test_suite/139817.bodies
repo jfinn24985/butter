@@ -29,19 +29,24 @@ if self._replace:
 if self._property_list:
   for _nv in self._property_list:
     if name == _nv.name:
-      return _nv.content
+      if _nv.conditional (self):
+        return _nv.content
 # not in this object, try parent
 if None != self.parent ():
   return self.parent ().__getitem__ (name)
-# If not found return None
-raise None
+# If no parent return None
+return None
 
 !!!154409.python!!!	make_substitutions(in self : , in phrase : string) : string
 tmp1_ = phrase
-while 0 != tmp1_.count ("%"):
+while self.__format_re.search (tmp1_):
   tmp1_ = tmp1_ % self
-import re
-return re.sub("PATH\{([^}]*)\}",property_holder.__chkpath, tmp1_)
+import os
+if os.name == "nt":
+  return self.__path_re.sub(self.__chkpath, self.__envvar_re.sub(r"%\1%", tmp1_))
+else:
+  return self.__path_re.sub(self.__chkpath, self.__envvar_re.sub(r"${\1}", tmp1_))
+pass
 !!!150057.python!!!	__str__(in self : )
 Result = super(property_holder, self).__str__()
 if self._property_list:

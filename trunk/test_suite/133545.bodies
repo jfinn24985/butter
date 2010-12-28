@@ -46,6 +46,16 @@ if elemattr[verb.type_attr] == verb_filelist.type_value:
   return verb_filelist()
 else:
   return None
+!!!169257.python!!!	findfile(in a_path : string)
+dir = os.path.dirname(a_path)
+leaf = os.path.basename(a_path)
+if not os.path.exists(dir):
+  return False
+"""Look for subdirs"""
+for root_, dirs_, files_ in os.walk(dir, False):
+  if 0 == len(dirs_) and leaf in files_:
+    return True
+return False
 !!!156713.python!!!	removedirs(in a_path : string)
 if os.path.exists(a_path):
   for root_, dirs_, files_ in os.walk(a_path, False):

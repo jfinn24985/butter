@@ -9,18 +9,34 @@ The output of this function:
 only check for existence
 """
 # Build replacement dictionary and phrase for this type
-compare_ = self.get (u"compare-command", u"diff")
-args_ = self.get (u"compare-args", u"-q")
-suffix_ = self.get (u"suffix", u".canon")
-msg_ = u"""File %(_path1_)s does not compare equal to canonical file %(_path2_)s%(_suffix_)s"""
+type_ = self.get (u"type", u"compare")
 base1_ = self.make_substitutions(self[u"base"])
-base2_ = self.make_substitutions(self.get(u"compare-base", u""))
-if not base2_:
-  base2_ = base1_
-# Initialise the object-specific substitution dictionary
-self.substitutions( None, { u"_compare_": compare_, u"_compare_args_": args_, u"_path1_": None, u"_path2_": None, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")], u"_suffix_": suffix_ } )
-
-phrase_ = u"""self.system_call(r"%(_compare_)s %(_compare_args_)s %(_path1_)s %(_path2_)s%(_suffix_)s", r\"\"\"%(_error_)s\"\"\")\n"""
+base2_ = None
+msg_ = None
+phrase_ = None
+# Settings for "diff"
+if type_ == u"compare":
+  compare_ = self.get (u"compare-command", u"diff")
+  args_ = self.get (u"compare-args", u"")
+  suffix_ = self.get (u"suffix", u".canon")
+  msg_ = u"""File %(_path1_)s does not compare equal to canonical file %(_path2_)s%(_suffix_)s"""
+  phrase_ = u"""self.system_call(r\"\"\"%(_compare_)s %(_compare_args_)s %(_path1_)s %(_path2_)s%(_suffix_)s\"\"\", r\"\"\"%(_error_)s\"\"\")\n"""
+  base2_ = self.make_substitutions(self.get(u"compare-base", u""))
+  if not base2_:
+    base2_ = base1_
+  # Initialise the object-specific substitution dictionary
+  self.substitutions( None, { u"_compare_": compare_, u"_compare_args_": args_, u"_path1_": None, u"_path2_": None, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")], u"_suffix_": suffix_ } )
+else: # assume grep!
+  search_ = self.get (u"search-command", u"grep")
+  args_ = self.get (u"search-args", u"")
+  regex_ = self.get (u"search-regex", None)
+  if not regex_:
+    raise RuntimeError("""No "search-regex" set for search""")
+  msg_ = u"""No lines in file %(_path1_)s match regular expression %(_regex_)s"""
+  phrase_ = u"""self.system_call(r\"\"\"%(_search_)s %(_search_args_)s %(_regex_)s %(_path1_)s\"\"\", r\"\"\"%(_error_)s\"\"\")\n"""
+  # Initialise the object-specific substitution dictionary
+  self.substitutions( None, { u"_search_": search_, u"_search_args_": args_, u"_path1_": None, u"_regex_": regex_, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")] } )
+  phrase_ = u"""self.system_call(r\"\"\"%(_search_)s %(_search_args_)s "%(_regex_)s" %(_path1_)s\"\"\", r\"\"\"%(_error_)s\"\"\")\n"""
 
 # Build python evaluation string
 self.reset_action ()
@@ -28,7 +44,8 @@ self.reset_action ()
 for leaf_ in self[u"location"].split(u" "):
   # update dictionary for current file
   self.substitutions(u"_path1_", os.path.normpath(os.path.join(base1_, leaf_)))
-  self.substitutions(u"_path2_", os.path.normpath(os.path.join(base2_, leaf_)))
+  if base2_:
+    self.substitutions(u"_path2_", os.path.normpath(os.path.join(base2_, leaf_)))
   self.substitutions(u"_message_", self.make_substitutions(msg_))
   # append actions
   self.add_action (self.make_substitutions(phrase_))

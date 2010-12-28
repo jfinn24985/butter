@@ -41,8 +41,9 @@ return self.passed
 !!!158377.python!!!	system_call(in self : , in a_cmd : string, in a_errmsg : string)
 import sys, subprocess
 proc_ = subprocess.Popen(a_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-res_ = proc_.wait ()
-sys.stdout.write(proc_.stdout.read())
-if res_:
+( res_out, res_err ) = proc_.communicate ()
+assert None == res_err, "Got unexpected output on redirected stderr: " + res_err
+sys.stdout.write(res_out)
+if proc_.returncode:
   exec a_errmsg
 pass

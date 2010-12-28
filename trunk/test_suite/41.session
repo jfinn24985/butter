@@ -1,16 +1,17 @@
-window_sizes 1409 873 351 1052 547 239
+window_sizes 881 787 351 524 461 239
 diagrams
-  active  sequencediagram_ref 128169 // test job
-    1052 547 100 4 0 0
-  classdiagram_ref 128425 // overview
-    993 461 100 4 674 0
+  active  classdiagram_ref 128425 // overview
+    1052 547 100 4 494 0
 end
 show_stereotypes
-selected artifact_ref 131497 // TODO.txt
+selected 
+package_ref 129 // test_suite
 open
   classdiagram_ref 128425 // overview
   collaborationdiagram_ref 128041 // test run
   sequencediagram_ref 128169 // test job
+  attribute_ref 162089 // if_property
+  attribute_ref 162217 // if_value
   artifact_ref 130345 // test_suite
   usecase_ref 128041 // Run test
 end
