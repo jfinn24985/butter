@@ -4,6 +4,7 @@
 
 #include "butter/generator.h"
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qtextstream.h>
 #include <memory>
 #include "butter/base_generator.h"

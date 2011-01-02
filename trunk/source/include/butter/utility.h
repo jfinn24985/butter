@@ -128,7 +128,7 @@ friend bool operator==(const pathcmp &a_lhs, const pathcmp &a_rhs)
      * Create a copy of the path string that has all the separators replaced 
      * by some arbitrary string "a_trans".
      */
-    QString path_convert(QString a_trans);
+    QString path_convert(QString a_trans) const;
 
     /**
      * Default ctor

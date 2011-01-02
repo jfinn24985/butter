@@ -178,7 +178,7 @@ class base_generator
      */
     void root_dir(const pathcmp & a_path)
     {
-      root_dir_ = a_path;
+      root_dir_ = a_path.absPath ();
     }
 
     /**

@@ -434,8 +434,8 @@ if (rules_name_.contains(" "))
   unsigned int i_ = 0;
   for (const_token_iterator e_, b_(rules_name_, ' '); b_ != e_; ++b_)
   {
-    const QString name_(*b_);
-    if (not name_.isEmpty ())
+    const QString name_(b_->c_str ());
+    if (! name_.isEmpty ())
     {
       a_base.create_uml_document (name_)->set_Description (
         helper_::make_substitutions (

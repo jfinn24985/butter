@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <stack>
 #include <iterator>
+#include <qstring.h>
 //
 namespace butter {
 
@@ -29,13 +30,25 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
 
     const_token_iterator()
     : orig_()
+	, tmp_()
     , s_(0)
     , e_(0)
     , esc_(0)
     , sep_(0)
     {}
+#if QT_VERSION < 300L
+	const_token_iterator(QString orig, QChar sep)
+    : orig_(orig.latin1 ())
+	, tmp_()
+    , s_(0)
+    , e_(0)
+    , esc_('\\')
+    , sep_(sep.latin1 ())
+    { this->increment(); }
+#endif
     const_token_iterator(string_type orig, char_type sep)
     : orig_(orig)
+	, tmp_()
     , s_(0)
     , e_(0)
     , esc_('\\')
@@ -52,6 +65,7 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
     {
       std::swap(const_cast< string_type& >(this->orig_)
          		, const_cast< string_type& >(rhs.orig_));
+      std::swap(this->tmp_, rhs.tmp_);
       std::swap(this->s_, rhs.s_);
       std::swap(this->e_, rhs.e_);
       std::swap(const_cast< char_type& >(this->esc_), const_cast< char_type& >(rhs.esc_));
@@ -87,13 +101,21 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
     {
       return !(lhs == rhs);
     }
-    string_type operator ->() const
+    const string_type* const operator ->() const
     {
-      return this->operator*();
+	  this->operator*();
+      return &this->tmp_;
     }
-    string_type operator *() const
+    const string_type& operator *() const
     {
-      return this->orig_.substr(this->s_, this->e_ - this->s_);
+	  if (this->tmp_.empty ())
+	  {
+		 if (this->s_ != this->e_)
+		 {
+			 this->tmp_ = this->orig_.substr(this->s_, this->e_ - this->s_);
+		 }
+	  }
+      return this->tmp_;
     }
 
   private:
@@ -118,6 +140,7 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
     }
 
     const string_type orig_;
+	mutable string_type tmp_;
 
     size_type s_;
 
@@ -133,8 +156,9 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
 inline void const_token_iterator::increment() 
 {
 this->s_ = this->e_;
-if (this->e_ >= this->orig_.size ()) return;
-if (this->sep_ == this->orig_[this->e_]) this->e_++;
+	if (! this->tmp_.empty ()) { this->tmp_.clear (); }
+	if (this->e_ >= this->orig_.size ()) { return; }
+	if (this->sep_ == this->orig_[this->e_]) { this->e_++; }
 this->s_ = this->e_;
 std::stack< char_type > quotes_;
 while (this->e_ < this->orig_.size ())
@@ -146,7 +170,7 @@ while (this->e_ < this->orig_.size ())
   }
   else if (this->is_quote(c_))
   {
-    if (quotes_.empty () or quotes_.top () != c_)
+    if (quotes_.empty () || quotes_.top () != c_)
     {
       quotes_.push (c_);
     }
@@ -161,7 +185,7 @@ while (this->e_ < this->orig_.size ())
   }
   this->e_++;
 }
-if (not quotes_.empty ())
+if (! quotes_.empty ())
 {
   throw std::runtime_error ("Unmatched quotes in string: " + this->orig_);
 }
@@ -171,4 +195,9 @@ return;
 
 
 } // namespace butter
+
+namespace std {
+	inline void swap(butter::const_token_iterator & lhs, butter::const_token_iterator & rhs)
+	{ lhs.swap (rhs); }
+}
 #endif
