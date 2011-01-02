@@ -1,4 +1,4 @@
-
+#include <cstring>
 #include "butter/location.h"
 #include "bouml/CppSettings.h"
 #include "butter/butter_constants.h"
@@ -60,7 +60,7 @@ if (QFile::exists (a_path))
     if (l_count != 0)
     {
       Result = (a_str.length () >= l_cursor + l_count)
-          ? (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, l_count))
+          ? (0 == strncmp (&l_buffer[0], a_str.data () + l_cursor, l_count))
           : false;
       l_cursor += l_count;
       if (l_dev.atEnd ())
@@ -707,7 +707,7 @@ for (unsigned int i_ = 0; i_ < packages_.count (); ++i_)
                 ||  (document_prop_value_ != "nowrite"
                   && document_prop_value_ != style::get_style().name))
             {
-              QString document_filepath_ = (full_path () / artifact_cursor_->name ()).path_localised ();
+              QString document_filepath_ = (full_path () / artifact_cursor_->name ()).path ();
               if (! document_prop_value_.isEmpty ())
               {
                 document_filepath_ += "." + document_prop_value_;

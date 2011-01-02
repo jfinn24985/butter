@@ -5,6 +5,7 @@
 #include "bouml/UmlCom.h"
 
 #include <stdexcept>
+#include <stack>
 #include <qregexp.h>
 namespace butter {
 
@@ -180,14 +181,14 @@ while (true)
 
 bool pathcmp::mkpath() const 
 {
-QStringList stack_; // Stores needed path
+std::stack < QString > stack_; // Stores needed path
 QString path_ (normalise (path ()));  // Current path as string
 QDir cursor_;  // Current path
 log::com.trace (log::debug, ("<p>Creating path [" + path_ + "]</p>").utf8());
 int left_ (path_.findRev (default_separator_));
 for ( ; (!cursor_.exists (path_, true)) & (!path_.isEmpty ()) & (left_ > 0); )
 {
-  stack_.push_back(path_.mid (left_ + 1));
+  stack_.push (path_.mid (left_ + 1));
   path_.truncate (left_);
   left_ = path_.findRev (default_separator_);
 }
@@ -195,19 +196,18 @@ cursor_.cd (path_, true);
 #ifdef DEBUG
 log::com.trace (log::debug, ("<p>Found path [" + path_ + "] exists </p>").utf8());
 #endif
-for ( ; !stack_.isEmpty ()
-         && cursor_.mkdir (stack_.back (), false)
-         && cursor_.cd (stack_.back (), false)
-      ; stack_.pop_back ()) {} // Empty loop
-return stack_.isEmpty ();
-
+for ( ; !stack_.empty ()
+         && cursor_.mkdir (stack_.top (), false)
+         && cursor_.cd (stack_.top (), false)
+      ; stack_.pop ()) {} // Empty loop
+return stack_.empty ();
 }
 
 QString pathcmp::normalise_(QString a_path)
 {
   return a_path.replace (QRegExp("\\\\"), default_separator_);
 }
-QString pathcmp::path_convert(QString a_trans) 
+QString pathcmp::path_convert(QString a_trans) const
 {
 return path ().replace (QRegExp (default_separator_), a_trans);
 

@@ -80,13 +80,7 @@ const char * cmake_generator::default_rules[] = { "#\n"
 , "set (MAN6DIR ${MANPRE}/man6)\n"
 , "set (MAN7DIR ${MANPRE}/man7)\n"
 , "set (MAN8DIR ${MANPRE}/man8)\n"
-, "set (MANNDIR ${MANPRE}/mann)\n"
-, "###############\n"
-, "## Editor sugar\n"
-, "###############\n"
-, "# Local Variables:\n"
-, "# mode: makefile\n"
-, "# End:\n"
+, "set (MANNDIR ${MANPRE}/mann)\n\n"
 , "\n"
 , 0 }
 ;
@@ -199,7 +193,7 @@ if (! a_src_inc.isEmpty ())
     user_obj_ << "\ninclude_directories (";
     for (const_token_iterator e_, b_(a_src_inc, ' '); e_ != b_; ++b_)
     {
-      const QString val_(*b_);
+      const QString val_(b_->c_str ());
       if (!val_.isEmpty ())
       {
         if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
@@ -383,7 +377,7 @@ else
     a_os << "\ninclude_directories (";
     for (const_token_iterator e_, b_(a_include, ' '); e_ != b_; ++b_)
     {
-      const QString val_(*b_);
+      const QString val_(b_->c_str ());
       if (!val_.isEmpty ())
       {
         if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
@@ -435,7 +429,7 @@ QString proj_text_;
       proj_os_ << "\ninclude_directories (";
       for (const_token_iterator e_, b_(hdrs_, ' '); e_ != b_; ++b_)
       {
-        const QString val_(*b_);
+        const QString val_(b_->c_str ());
         if (!val_.isEmpty ())
         {
           if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
@@ -543,7 +537,7 @@ for (unsigned int cursor_(0); cursor_ < input.length (); ++cursor_)
   case '"':
   case '`':
   {
-    if (quotes_.empty () or quotes_.top () != c_)
+    if (quotes_.empty () || quotes_.top () != c_)
     {
       quotes_.push (c_);
     }
@@ -560,7 +554,7 @@ for (unsigned int cursor_(0); cursor_ < input.length (); ++cursor_)
   }
   case right_paren_:
   {
-    if (quotes_.empty () or quotes_.top () != c_)
+    if (quotes_.empty () || quotes_.top () != c_)
     {
       input[cursor_] = '}';
     }
@@ -575,9 +569,9 @@ for (unsigned int cursor_(0); cursor_ < input.length (); ++cursor_)
   }
 }
 
-if (not quotes_.empty ())
+if (! quotes_.empty ())
 {
-  throw std::runtime_error ("<p><b>Error</b> Unmatched quotes in string: " + input + "</p>");
+  throw std::runtime_error ("<p><b>Error</b> Unmatched quotes in string: " + std::string(input) + "</p>");
 }
 while (true)
 {

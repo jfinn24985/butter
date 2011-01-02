@@ -1,7 +1,8 @@
 
 #include "butter/butter_constants.h"
 
-#include "version.h"
+//#include "version.h"
+#define BUTTER_SVN_VERSION_ "110" 
 namespace butter {
 
 /**

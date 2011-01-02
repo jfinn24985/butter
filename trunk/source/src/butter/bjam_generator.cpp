@@ -56,6 +56,7 @@ const char * bjam_generator::default_rules[] = { "#\n"
 , "constant VERSIONDIR : \"@@project@@-@@version@@\" ;\n"
 , "path-constant INSTALL_PREFIX : installdir ;\n"
 , "path-constant DEBUG_PREFIX : installdir ;\n"
+, "if $(UNIX) {\n"
 , "constant BINDIR : bin ; # User programs\n"
 , "constant SBINDIR : sbin ; # Administrator only programs\n"
 , "constant LIBEXECDIR : libexec ; # System daemons and system utilities\n"
@@ -83,12 +84,39 @@ const char * bjam_generator::default_rules[] = { "#\n"
 , "constant MAN7DIR : $(MANDIRPRE)/man7 ;\n"
 , "constant MAN8DIR : $(MANDIRPRE)/man8 ;\n"
 , "constant MANNDIR : $(MANDIRPRE)/mann ;\n"
-, "###############\n"
-, "## Editor sugar\n"
-, "###############\n"
-, "# Local Variables:\n"
-, "# mode: makefile\n"
-, "# End:\n"
+, "}\n"
+, "else if $(NT) {\n"
+, "# path-constant INSTALL_PREFIX : $(ProgramFiles)$(SLASH)$(VERSIONDIR) ;\n\n"
+, "constant BINDIR :  ; # User programs\n"
+, "constant SBINDIR :  ; # Administrator only programs\n"
+, "constant LIBEXECDIR :  ; # System daemons and system utilities\n"
+, "constant LIBDIR :  ; # Shared libraries\n"
+, "constant DATAROOTDIR :  ; # Private libraries and static data\n"
+, "constant SYSCONFDIR : config ; # System wide configuration\n"
+, "constant LOCALSTATEDIR : $(ALLUSERSPROFILE)$(SLASH)$(VERSIONDIR) ; # System wide shared state\n"
+, "constant INCLUDEDIR : include ; # Public header files\n"
+, "constant LOCALEDIR : locale ; # Localisation language files\n"
+, "constant INCLUDEDIR : $(PREFIX)$(SLASH)include ;\n"
+, "constant LOCALEDIR : $(PREFIX)$(SLASH)locale ;\n"
+, "# Public documentation locations\n"
+, "constant DOCDIR : $(PREFIX) ;\n"
+, "constant INFODIR : $(DOCDIR)$(SLASH)info ;\n"
+, "constant MANPRE : $(DOCDIR)$(SLASH)man ;\n"
+, "constant HTMLDIR : $(DOCDIR)$(SLASH)html ;\n"
+, "constant DVIDIR : $(DOCDIR)$(SLASH)doc ;\n"
+, "constant PDFDIR : $(DOCDIR)$(SLASH)doc ;\n"
+, "constant PSDIR : $(DOCDIR)$(SLASH)doc ;\n"
+, "constant MANDIR : $(MANPRE) ;\n"
+, "constant MAN1DIR : $(MANPRE) ;\n"
+, "constant MAN2DIR : $(MANPRE) ;\n"
+, "constant MAN3DIR : $(MANPRE) ;\n"
+, "constant MAN4DIR : $(MANPRE) ;\n"
+, "constant MAN5DIR : $(MANPRE) ;\n"
+, "constant MAN6DIR : $(MANPRE) ;\n"
+, "constant MAN7DIR : $(MANPRE) ;\n"
+, "constant MAN8DIR : $(MANPRE) ;\n"
+, "constant MANNDIR : $(MANPRE) ;\n"
+, "}\n"
 , "\n"
 , 0 };
 
@@ -130,8 +158,8 @@ if (! this->is_other_ && (! a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
   {
     for (const_token_iterator e_, b_(a_src_inc, ' '); b_ != e_; ++b_)
     {
-      const QString path_(*b_);
-      if (not path_.isEmpty ())
+      const QString path_(b_->c_str ());
+      if (! path_.isEmpty ())
       {
         source_os_ << "<include>";
         if (QDir::isRelativePath (path_)) source_os_ << "$(topdir)/";
@@ -192,8 +220,8 @@ if (! a_include.isEmpty ())
 {
   for (const_token_iterator e_, b_(a_include, ' '); b_ != e_; ++b_)
   {
-    const QString flag_(*b_);
-    if (not flag_.isEmpty ())
+    const QString flag_(b_->c_str ());
+    if (! flag_.isEmpty ())
     {
       a_os << "<include>";
       if (QDir::isRelativePath (flag_)) a_os << "$(topdir)/";
@@ -210,8 +238,8 @@ if (! a_cflags.isEmpty ())
     const QString name_ ("<" + this->other_target_type_ + "flags>\"");
     for (const_token_iterator e_, b_(a_cflags, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << name_ << flag_ << "\" ";
       }
@@ -222,8 +250,8 @@ if (! a_cflags.isEmpty ())
   {
     for (const_token_iterator e_, b_(a_cflags, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << "<cxxflags>\"" << flag_ << "\" " << "<cflags>\"" << flag_ << "\"\n\t";
       }
@@ -241,8 +269,8 @@ case static_library:
       // Put linker and include flags as pass-to-user
       for (const_token_iterator e_, b_(a_ldflags, ' '); b_ != e_; ++b_)
       {
-        const QString flag_(*b_);
-        if (not flag_.isEmpty ())
+        const QString flag_(b_->c_str ());
+        if (! flag_.isEmpty ())
         {
           a_os << "<linkflags>\"" << flag_ << "\" ";
         }
@@ -254,8 +282,8 @@ case static_library:
     {
       for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
       {
-        const QString flag_(*b_);
-        if (not flag_.isEmpty ())
+        const QString flag_(b_->c_str ());
+        if (! flag_.isEmpty ())
         {
           a_os << "<include>";
           if (QDir::isRelativePath (flag_)) a_os << "$(topdir)/";
@@ -275,8 +303,8 @@ case shared_library:
       // Use linker flags but pass on any headers.
       for (const_token_iterator e_, b_(a_ldflags, ' '); b_ != e_; ++b_)
       {
-        const QString flag_(*b_);
-        if (not flag_.isEmpty ())
+        const QString flag_(b_->c_str ());
+        if (! flag_.isEmpty ())
         {
           a_os << "<linkflags>\"" << flag_ << "\" ";
         }
@@ -290,8 +318,8 @@ case shared_library:
       a_os << ": :";
       for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
       {
-        const QString flag_(*b_);
-        if (not flag_.isEmpty ())
+        const QString flag_(b_->c_str ());
+        if (! flag_.isEmpty ())
         {
           a_os << "<include>";
           if (QDir::isRelativePath (flag_)) a_os << "$(topdir)/";
@@ -308,8 +336,8 @@ case other:
   {
     for (const_token_iterator e_, b_(a_ldflags, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << "<linkflags>\"" << flag_ << "\" ";
       }
@@ -329,8 +357,8 @@ if (! this->individual_obj_.isEmpty ())
   {
     for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << "<include>";
         if (QDir::isRelativePath (flag_)) a_os << "$(topdir)/";
@@ -345,8 +373,8 @@ if (! this->individual_obj_.isEmpty ())
   {
     for (const_token_iterator e_, b_(flags_, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << "<cxxflags>\"" << flag_ << "\" " << "<cflags>\"" << flag_ << "\"\n\t";
       }
@@ -432,8 +460,8 @@ QString content_;
   {
     for (const_token_iterator e_, b_(base_include_, ' '); b_ != e_; ++b_)
     {
-      const QString path_(*b_);
-      if (not path_.isEmpty ())
+      const QString path_(b_->c_str ());
+      if (! path_.isEmpty ())
       {
         os_ << "<include>";
         if (QDir::isRelativePath (path_)) os_ << "$(topdir)/";
@@ -446,8 +474,8 @@ QString content_;
   {
     for (const_token_iterator e_, b_(link_, ' '); b_ != e_; ++b_)
     {
-      const QString path_(*b_);
-      if (not path_.isEmpty ())
+      const QString path_(b_->c_str ());
+      if (! path_.isEmpty ())
       {
         os_ << "<linkflags>\"" << path_ << "\" ";
       }
@@ -458,8 +486,8 @@ QString content_;
   {
     for (const_token_iterator e_, b_(flag_, ' '); b_ != e_; ++b_)
     {
-      const QString path_(*b_);
-      if (not path_.isEmpty ())
+      const QString path_(b_->c_str ());
+      if (! path_.isEmpty ())
       {
         os_ << "<cxxflags>\"" << path_ << "\" <cflags>\""<< path_ << "\"\n\t";
       }

@@ -116,14 +116,14 @@ else
 {
   for (const_token_iterator e1_, b1_(a_addition, ' '); b1_ != e1_; ++b1_)
   {
-    const QString new_item_(*b1_);
-    if (not new_item_.isEmpty ())
+    const QString new_item_(b1_->c_str ());
+    if (! new_item_.isEmpty ())
     {
       bool match_ (false);
       for (const_token_iterator e2_, b2_(a_list, ' '); b2_ != e2_; ++b2_)
       {
-        const QString orig_(*b2_);
-        if (not orig_.isEmpty ())
+        const QString orig_(b2_->c_str ());
+        if (! orig_.isEmpty ())
         {
           if (orig_ == new_item_)
           {
@@ -173,7 +173,6 @@ QString base_generator::to_target_NAME(const ::UmlArtifact & a_target)
   Result.append(const_cast< UmlArtifact& >(a_target).name ());
   find_replace (Result, '.', '_');
   return Result.upper ();
-  
 
 }
 
