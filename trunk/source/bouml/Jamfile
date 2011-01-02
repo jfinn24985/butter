@@ -1,0 +1,101 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Fri Dec 10 15:15:40 2010
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/src/bouml ;
+
+SubDir TOP src bouml ;
+
+
+SUBDIRC++FLAGS += -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT  ;
+
+SUBDIRHDRS += ${QTDIR}/include ;
+##END:preamble
+##START:target bouml
+Library <bouml>libbouml$(SUFLIB) :
+	<bouml>UmlBaseDeployment.cpp
+	<bouml>UmlClassDiagram.cpp
+	<bouml>UmlBaseOperation.cpp
+	<bouml>CppSettingsCmd.cpp
+	<bouml>UmlBaseFormalParameter.cpp
+	<bouml>UmlBaseActualParameter.cpp
+	<bouml>UmlBaseNode.cpp
+	<bouml>UmlClassItem.cpp
+	<bouml>MiscGlobalCmd.cpp
+	<bouml>OnInstanceCmd.cpp
+	<bouml>UmlComponentView.cpp
+	<bouml>UmlUseCaseView.cpp
+	<bouml>UmlBaseComponentView.cpp
+	<bouml>UmlClass.cpp
+	<bouml>UmlBuiltin.cpp
+	<bouml>UmlComponent.cpp
+	<bouml>UmlBaseItem.cpp
+	<bouml>UmlBaseNcRelation.cpp
+	<bouml>UmlBaseAttribute.cpp
+	<bouml>UmlBaseUseCase.cpp
+	<bouml>UmlBaseClass.cpp
+	<bouml>UmlBaseDeploymentView.cpp
+	<bouml>JavaSettingsCmd.cpp
+	<bouml>UmlBaseComponentDiagram.cpp
+	<bouml>ClassGlobalCmd.cpp
+	<bouml>UmlTypeSpec.cpp
+	<bouml>UmlRelation.cpp
+	<bouml>UmlBaseDeploymentDiagram.cpp
+	<bouml>UmlBaseClassDiagram.cpp
+	<bouml>UmlPackage.cpp
+	<bouml>UmlDeploymentView.cpp
+	<bouml>aVisibility.cpp
+	<bouml>UmlBaseDiagram.cpp
+	<bouml>UmlCollaborationDiagram.cpp
+	<bouml>UmlBaseClassView.cpp
+	<bouml>UmlNcRelation.cpp
+	<bouml>UmlUseCase.cpp
+	<bouml>UmlComponentDiagram.cpp
+	<bouml>UmlBaseClassMember.cpp
+	<bouml>UmlStereotype.cpp
+	<bouml>UmlBaseSequenceDiagram.cpp
+	<bouml>UmlBaseComponent.cpp
+	<bouml>UmlItem.cpp
+	<bouml>UmlBaseRelation.cpp
+	<bouml>IdlSettingsCmd.cpp
+	<bouml>UmlBasePackage.cpp
+	<bouml>UmlSequenceDiagram.cpp
+	<bouml>UmlBaseArtifact.cpp
+	<bouml>PackageGlobalCmd.cpp
+	<bouml>anItemKind.cpp
+	<bouml>UmlActualParameter.cpp
+	<bouml>CppSettings.cpp
+	<bouml>UmlBaseExtraClassMember.cpp
+	<bouml>UmlParameter.cpp
+	<bouml>UmlFormalParameter.cpp
+	<bouml>UmlCom.cpp
+	<bouml>UmlSettingsCmd.cpp
+	<bouml>UmlSettings.cpp
+	<bouml>UmlArtifact.cpp
+	<bouml>IdlSettings.cpp
+	<bouml>UmlAttribute.cpp
+	<bouml>UmlBaseClassItem.cpp
+	<bouml>UmlOperation.cpp
+	<bouml>UmlBaseCollaborationDiagram.cpp
+	<bouml>JavaSettings.cpp
+	<bouml>CmdFamily.cpp
+	<bouml>UmlBaseUseCaseDiagram.cpp
+	<bouml>UmlClassMember.cpp
+	<bouml>UmlClassView.cpp
+	<bouml>aRelationKind.cpp
+	<bouml>UmlUseCaseDiagram.cpp
+	<bouml>UmlNode.cpp
+	<bouml>UmlDiagram.cpp
+	<bouml>UmlBaseUseCaseView.cpp
+	<bouml>aDirection.cpp
+	<bouml>UmlExtraClassMember.cpp
+	<bouml>UmlDeploymentDiagram.cpp
+	;
+
+BOUML_BOUMLLIBS = -L${QTDIR}/lib64 -lqt-mt -lm ;
+
+InstallLib $(LIBDIR) : <bouml>libbouml$(SUFLIB) ;
+##END:target bouml

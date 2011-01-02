@@ -1,0 +1,63 @@
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Fri Dec 10 15:15:40 2010
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/src/butter ;
+
+SubDir TOP src butter ;
+
+
+SUBDIRC++FLAGS += -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT  ;
+
+SUBDIRHDRS += ${QTDIR}/include ;
+##END:preamble
+##START:target butter
+Main <butter>butter$(SUFEXE) :
+	<butter>utility.cpp
+	<butter>jam_generator.cpp
+	<butter>compound_artifact.cpp
+	<butter>build_generator.cpp
+	<butter>cmake_generator.cpp
+	<butter>style.cpp
+	<butter>location.cpp
+	<butter>butter_constants.cpp
+	<butter>bjam_generator.cpp
+	<butter>main.cpp
+	<butter>gmake_generator.cpp
+	;
+
+LINKLIBS on <butter>butter$(SUFEXE) += $(BOUML_BOUMLLIBS) -L${QTDIR}/lib64 -lqt-mt -lm ;
+LinkLibraries <butter>butter$(SUFEXE) :
+	 <bouml>libbouml$(SUFLIB) 
+	;
+
+switch $(VARIANT)
+{
+case DEBUG : 
+  File <butter>butter_debug$(SUFEXE) : <butter>butter$(SUFEXE) ;
+  LOCATE on <butter>butter_debug$(SUFEXE) = $(LOCATE_SOURCE) ;
+  InstallBin /tmp : <butter>butter_debug$(SUFEXE) ;
+case *     : 
+  File  <butter>butter_test$(SUFEXE) : <butter>butter$(SUFEXE) ;
+  LOCATE on <butter>butter_test$(SUFEXE) = $(LOCATE_SOURCE) ;
+  InstallBin /tmp : <butter>butter_test$(SUFEXE) ;
+}
+##END:target butter
+##START:target test_path
+Main <butter>test_path$(SUFEXE) :
+	<butter>utility.cpp
+	<butter>path_test.cpp
+	;
+
+LINKLIBS on <butter>test_path$(SUFEXE) += $(BOUML_BOUMLLIBS) -L${QTDIR}/lib64 -lqt-mt -lm ;
+LinkLibraries <butter>test_path$(SUFEXE) :
+	 <bouml>libbouml$(SUFLIB) 
+	;
+
+C++FLAGS on <butter>path_test$(SUFOBJ) += -fopenmp ;
+
+InstallBin $(BINDIR) : <butter>test_path$(SUFEXE) ;
+##END:target test_path

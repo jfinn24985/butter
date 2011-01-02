@@ -1,0 +1,3 @@
+
+#include "bouml/UmlStereotype.h"
+
