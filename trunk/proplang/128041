@@ -173,7 +173,7 @@ ${namespace_end}"
       ncouples 3
       key "butter include" value "include/src"
       key "butter flags" value "-DSRC_FLAG"
-      key "butter ldflags" value "-L$(OUTPUTDIR)/stage/bin"
+      key "butter ldflags" value "-Lstage/bin"
     end
 
     artifact 128681 "library"

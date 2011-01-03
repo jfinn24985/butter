@@ -133,7 +133,7 @@ ${namespace_end}
       ncouples 3
       key "butter install" value "BIN"
       key "butter flags" value "-DEXE_FLAG"
-      key "butter ldflags" value "-L$(OUTPUTDIR)/stage/share"
+      key "butter ldflags" value "-Lstage/share"
     end
 
     artifact 131497 "program.t2t"
