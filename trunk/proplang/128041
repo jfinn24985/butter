@@ -1,6 +1,6 @@
 format 66
 "Library" // Library
-  revision 13
+  revision 14
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -185,7 +185,7 @@ ${namespace_end}"
       key "butter include" value "include/lib"
       key "butter flags" value "-DLIB_FLAG"
       key "butter ldflags" value "-lextra_c"
-      key "butter install" value "LIBEXECDIR"
+      key "butter install" value "LIB"
       key "butter type" value "static"
     end
   end
