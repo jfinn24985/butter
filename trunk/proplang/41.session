@@ -5,7 +5,7 @@ diagrams
 end
 show_stereotypes
 selected 
-  package_ref 128041 // Library
+  package_ref 130473 // Test Property
 open
 end
 end
