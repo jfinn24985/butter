@@ -1,6 +1,6 @@
 format 66
 "Library" // Library
-  revision 14
+  revision 15
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -173,7 +173,7 @@ ${namespace_end}"
       ncouples 3
       key "butter include" value "include/src"
       key "butter flags" value "-DSRC_FLAG"
-      key "butter ldflags" value "-L$(OUTPUTDIR)/lib/src"
+      key "butter ldflags" value "-L$(OUTPUTDIR)/stage/bin"
     end
 
     artifact 128681 "library"

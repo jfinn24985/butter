@@ -1,6 +1,6 @@
 format 66
 "Executable" // Executable
-  revision 20
+  revision 21
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -133,7 +133,7 @@ ${namespace_end}
       ncouples 3
       key "butter install" value "BIN"
       key "butter flags" value "-DEXE_FLAG"
-      key "butter ldflags" value "-L$(OUTPUTDIR)/lib/exe"
+      key "butter ldflags" value "-L$(OUTPUTDIR)/stage/share"
     end
 
     artifact 131497 "program.t2t"
