@@ -2,7 +2,6 @@
 #define BUTTER_BUTTER_CONSTANTS_HPP
 
 
-#include "butter/config.h"
 #include <qstring.h>
 
 namespace butter {

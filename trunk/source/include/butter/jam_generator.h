@@ -4,14 +4,13 @@
 /**
  * Source file for Jam generator
  */
-#include "butter/config.h"
 #include "butter/generator.h"
 #include <qstring.h>
 #include <qtextstream.h>
+
 #include <memory>
 #include "butter/base_generator.h"
 
-namespace butter { class butter_constants; } 
 class UmlArtifact;
 namespace butter { class compound_artifact; } 
 namespace butter { class location; } 
@@ -86,7 +85,7 @@ friend class generator<jam_generator>;
      * - Properties
      *  - associated includes, ldflags, cflags
      */
-    void assoc_library(const ::UmlArtifact & a_target, QTextStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags);
+    void assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags);
 
     /**
      * ** This method sets up object for creating a new target entry for a_target.
@@ -98,7 +97,7 @@ friend class generator<jam_generator>;
      * - Other
      *  - set compilation for individual 
      */
-    void assoc_source(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc);
+    void assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc);
 
 
   public:
@@ -107,7 +106,7 @@ friend class generator<jam_generator>;
      * a_is_source is true of a_source stereotype is "source" and false
      * if stereotype is "document".
      */
-    void check_properties(bool a_is_source, const ::UmlArtifact & a_source, QTextStream & a_os);
+    void check_properties(bool a_is_source, const ::UmlArtifact & a_source, ::QTextOStream & a_os);
 
     /**
      * Create bjam generator object.s
@@ -126,7 +125,7 @@ friend class generator<jam_generator>;
     /**
      * ** This method finalises the target entry for a_target.
      */
-    void end_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type);
+    void end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type);
 
     /**
      * In this style external targets are not used, external library 
@@ -161,7 +160,7 @@ friend class generator<jam_generator>;
      * - Properties
      *  - install (library, executable and document)
      */
-    void install_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc);
+    void install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc);
 
     /**
      * Main ctor, takes top-level a_project.
@@ -200,7 +199,7 @@ friend class generator<jam_generator>;
      *  - executable
      *  - non-standard target
      */
-    void start_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type);
+    void start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type);
 
 };
 

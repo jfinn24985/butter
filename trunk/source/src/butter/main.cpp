@@ -1,5 +1,5 @@
 #include <qapplication.h>
- 
+
 #include "UmlCom.h"
 #include "UmlItem.h"
 #include "UmlPackage.h"
@@ -8,17 +8,15 @@
 #include "butter/location.h"
 #include "butter/style.h"
 #include "butter/butter_constants.h"
+#include "butter/config.h"
 
 #include <qtextstream.h>
-#ifdef DEBUG 
 #include <qmessagebox.h>
 #ifdef __unix__
 #include <unistd.h>
-#else
+#endif
 #ifdef _WIN32
 #include <Windows.h>
-#endif
-#endif
 #endif
 
 // the program is called with the socket port number in argument
@@ -30,24 +28,29 @@ int main(int argc, char ** argv)
 
   QApplication a(argc, argv);
 
-  if (UmlCom::connect(QString(argv[1]).toUInt())) {
-    try {
+  if (UmlCom::connect(QString(argv[1]).toUInt()))
+  {
+    try
+    {
       UmlCom::trace("<b><i>jamfile/makefile</i> generator</b> " + butter::butter_constants::BUTTER_VERSION + "<br>");
-#ifdef DEBUG
-      QString msg_;
-      QTextOStream mos_ (&msg_);
+      if (DEBUG)
+      {
+        QString msg_;
+        QTextOStream mos_ (&msg_);
 #ifdef __unix__
-      mos_ << "Hit Ok to continue. If you want to debug this application attach to process [pid=" << getpid () << "] before continuing.";
+        mos_ << "Hit Ok to continue. If you want to debug this application attach to process [pid="
+	 << getpid () << "] before continuing.";
 #else
 #ifdef _WIN32
-      mos_ << "Hit Ok to continue. If you want to debug this application attach to process [Id=" << GetCurrentProcessId () << "] before continuing.";
+        mos_ << "Hit Ok to continue. If you want to debug this application attach to process [Id="
+	 << GetCurrentProcessId () << "] before continuing.";
 #else
-      mos_ << "Hit Ok to continue. If you want to debug this application attach to butter process now.";
+        mos_ << "Hit Ok to continue. If you want to debug this application attach to butter process now.";
 #endif
 #endif
-      QMessageBox msg_box_ (butter::butter_constants::BUTTER_VERSION, msg_, QMessageBox::Warning, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton);
-      msg_box_.exec ();
-#endif
+        QMessageBox msg_box_ (butter::butter_constants::BUTTER_VERSION, msg_, QMessageBox::Warning, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton);
+        msg_box_.exec ();
+      }
       BUTTER_CHECK (NULL != UmlPackage::getProject (), "Error: no project defined!<br>");
       // Parse the project into a location tree
       std::auto_ptr< butter::location > base_ (butter::location::parse_project (*UmlPackage::getProject ()));
@@ -61,18 +64,20 @@ int main(int argc, char ** argv)
     {
       UmlCom::trace(a_err.what ());
     }
-    catch (const char * a_what) {
+    catch (const char * a_what)
+    {
       UmlCom::trace(a_what);
     }
-    catch (...) {
+    catch (...)
+    {
       UmlCom::trace("Caught unknown exception.");
     }
 
     UmlCom::trace("<b><i>jamfile/makefile</i> generator</b> complete<br>");
-   // must be called to cleanly inform that all is done
+    // must be called to cleanly inform that all is done
     UmlCom::bye();
   }
-  
+
   UmlCom::close();
   return 0;
 }

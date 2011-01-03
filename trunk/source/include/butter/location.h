@@ -2,12 +2,12 @@
 #define BUTTER_LOCATION_HPP
 
 
-#include "butter/config.h"
 #include "butter/utility.h"
 #include <qvector.h>
 #include <qstring.h>
 #include <memory>
 #include <qtextstream.h>
+
 
 class CppSettings;
 namespace butter { class butter_constants; } 
@@ -193,15 +193,13 @@ class location {
       return path_;
     }
 
-#ifdef DEBUG
     /**
- * This descends the location tree writing debug information to
- * a_os as it goes.
- * 
- * (Only if NO_LOG is undefined)
- */
-void serialize(QTextStream & a_os) const;
-#endif
+     * This descends the location tree writing debug information to
+     * a_os as it goes.
+     * 
+     * (Only if NO_LOG is undefined)
+     */
+    void serialize(::QTextOStream & a_os) const;
     /**
      * Write all UML documents for this and descendent locations.
      * 

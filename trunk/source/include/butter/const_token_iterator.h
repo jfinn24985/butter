@@ -7,7 +7,9 @@
 #include <stdexcept>
 #include <stack>
 #include <iterator>
+#if QT_VERSION < 300L
 #include <qstring.h>
+#endif
 //
 namespace butter {
 
@@ -30,25 +32,25 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
 
     const_token_iterator()
     : orig_()
-	, tmp_()
+    , tmp_()
     , s_(0)
     , e_(0)
     , esc_(0)
     , sep_(0)
     {}
 #if QT_VERSION < 300L
-	const_token_iterator(QString orig, QChar sep)
-    : orig_(orig.latin1 ())
-	, tmp_()
-    , s_(0)
-    , e_(0)
-    , esc_('\\')
-    , sep_(sep.latin1 ())
-    { this->increment(); }
+    const_token_iterator(QString orig, char_type sep)
+: orig_(orig.latin1())
+, tmp_()
+, s_(0)
+, e_(0)
+, esc_('\\')
+, sep_(sep.latin1())
+{ this->increment(); }
 #endif
     const_token_iterator(string_type orig, char_type sep)
     : orig_(orig)
-	, tmp_()
+    , tmp_()
     , s_(0)
     , e_(0)
     , esc_('\\')
@@ -56,6 +58,7 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
     { this->increment(); }
     const_token_iterator(const const_token_iterator & orig)
     : orig_(orig.orig_)
+    , tmp_(orig.tmp_)
     , s_(orig.s_)
     , e_(orig.e_)
     , esc_(orig.esc_)
@@ -103,18 +106,17 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
     }
     const string_type* const operator ->() const
     {
-	  this->operator*();
-      return &this->tmp_;
+      return &(this->operator*());
     }
     const string_type& operator *() const
     {
-	  if (this->tmp_.empty ())
-	  {
-		 if (this->s_ != this->e_)
-		 {
-			 this->tmp_ = this->orig_.substr(this->s_, this->e_ - this->s_);
-		 }
-	  }
+      if (this->tmp_.empty ())
+      {
+        if (this->s_ != this->e_)
+        {
+          this->tmp_ = this->orig_.substr(this->s_, this->e_ - this->s_);
+        }
+      }
       return this->tmp_;
     }
 
@@ -122,8 +124,8 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
     bool at_end() const
     {
           return this->orig_.empty ()
-          		? true
-    		: this->s_ >= this->orig_.size (); 
+                ? true
+                : this->s_ >= this->orig_.size (); 
     }
     inline void increment();
     static bool is_quote(const char_type c)
@@ -140,7 +142,8 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
     }
 
     const string_type orig_;
-	mutable string_type tmp_;
+
+    mutable string_type tmp_;
 
     size_type s_;
 
@@ -155,10 +158,10 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
 
 inline void const_token_iterator::increment() 
 {
-this->s_ = this->e_;
-	if (! this->tmp_.empty ()) { this->tmp_.clear (); }
-	if (this->e_ >= this->orig_.size ()) { return; }
-	if (this->sep_ == this->orig_[this->e_]) { this->e_++; }
+// Bouml preserved body begin 0003B429
+if (! this->tmp_.empty ()) { this->tmp_.clear (); }
+if (this->e_ >= this->orig_.size ()) { this->s_ = this->e_; return; }
+if (this->sep_ == this->orig_[this->e_]) { this->e_++; }
 this->s_ = this->e_;
 std::stack< char_type > quotes_;
 while (this->e_ < this->orig_.size ())
@@ -190,6 +193,7 @@ if (! quotes_.empty ())
   throw std::runtime_error ("Unmatched quotes in string: " + this->orig_);
 }
 return;
+// Bouml preserved body end 0003B429
 
 }
 

@@ -2,17 +2,20 @@
  * Source file for Jam generator
  */
 #include "butter/jam_generator.h"
-#include "butter/butter_constants.h"
 #include "bouml/UmlArtifact.h"
 #include "butter/compound_artifact.h"
 #include "butter/location.h"
 #include "bouml/UmlItem.h"
 
 // Manual source includes
-#include <qstringlist.h>
 #include <qregexp.h>
+#include "butter/config.h"
 // -
 namespace butter {
+
+static QString const section_name ("standard");
+extern butter::basic_style const jam_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::jam_generator::create);
+
 
 const QString jam_generator::build_file_name("Jamfile");
 
@@ -48,71 +51,20 @@ const char * jam_generator::default_rules[] = { "#\n"
 , "##  Default install locations\n"
 , "##\n"
 , "#############################\n"
-, "VERSIONDIR = \"@@project@@-@@version@@\" ;\n"
 , "PREFIX = installdir ;\n"
-, "\nif $(UNIX)  {\n"
-, "PREFIX ?= /usr/local ;\n"
-, "BINDIR = $(PREFIX)$(SLASH)bin ;\n"
-, "SBINDIR = $(PREFIX)$(SLASH)sbin ;\n"
-, "LIBDIR = $(PREFIX)$(SLASH)lib ;\n"
-, "SHAREDIR = $(PREFIX)$(SLASH)share ;\n"
-, "SYSCONFDIR = $(PREFIX)$(SLASH)etc ;\n"
-, "SHAREDSTATEDIR = $(PREFIX)$(SLASH)com ;\n"
-, "LOCALSTATEDIR = $(PREFIX)$(SLASH)var ;\n"
-, "INCLUDEDIR = $(PREFIX)$(SLASH)include ;\n"
-, "LOCALEDIR = $(SHAREDIR)$(SLASH)locale ;\n"
-, "DOCDIR = $(SHAREDIR)$(SLASH)doc$(SLASH)packages$(SLASH)$(VERSIONDIR) ;\n"
-, "INFODIR = $(SHAREDIR)$(SLASH)info ;\n"
-, "MANPRE = $(SHAREDIR)$(SLASH)man ;\n"
-, "HTMLDIR = $(DOCDIR) ;\n"
-, "DVIDIR = $(DOCDIR) ;\n"
-, "PDFDIR = $(DOCDIR) ;\n"
-, "PSDIR = $(DOCDIR) ;\n"
-, "MANDIR = $(MANPRE)$(SLASH)man1 ;\n"
-, "MAN1DIR = $(MANPRE)$(SLASH)man1 ;\n"
-, "MAN2DIR = $(MANPRE)$(SLASH)man2 ;\n"
-, "MAN3DIR = $(MANPRE)$(SLASH)man3 ;\n"
-, "MAN4DIR = $(MANPRE)$(SLASH)man4 ;\n"
-, "MAN5DIR = $(MANPRE)$(SLASH)man5 ;\n"
-, "MAN6DIR = $(MANPRE)$(SLASH)man6 ;\n"
-, "MAN7DIR = $(MANPRE)$(SLASH)man7 ;\n"
-, "MAN8DIR = $(MANPRE)$(SLASH)man8 ;\n"
-, "MANNDIR = $(MANPRE)$(SLASH)mann ;\n"
-, "}\n"
-, "else if $(NT) {\n"
-, "PREFIX ?= $(ProgramFiles)$(SLASH)$(VERSIONDIR) ;\n"
-, "BINDIR = $(PREFIX) ;\n"
-, "SBINDIR = $(PREFIX) ;\n"
-, "LIBDIR = $(PREFIX) ;\n"
-, "SHAREDIR = $(PREFIX) ;\n"
-, "SYSCONFDIR = $(ALLUSERSPROFILE)$(SLASH)$(VERSIONDIR) ;\n"
-, "SHAREDSTATEDIR = $(SYSCONFDIR) ;\n"
-, "LOCALSTATEDIR = $(SYSCONFDIR) ;\n"
-, "INCLUDEDIR = $(PREFIX)$(SLASH)include ;\n"
-, "LOCALEDIR = $(PREFIX)$(SLASH)locale ;\n"
-, "DOCDIR = $(PREFIX) ;\n"
-, "INFODIR = $(DOCDIR)$(SLASH)info ;\n"
-, "MANPRE = $(DOCDIR)$(SLASH)man ;\n"
-, "HTMLDIR = $(DOCDIR)$(SLASH)html ;\n"
-, "DVIDIR = $(DOCDIR)$(SLASH)doc ;\n"
-, "PDFDIR = $(DOCDIR)$(SLASH)doc ;\n"
-, "PSDIR = $(DOCDIR)$(SLASH)doc ;\n"
-, "MANDIR  = $(MANPRE) ;\n"
-, "MAN1DIR = $(MANPRE) ;\n"
-, "MAN2DIR = $(MANPRE) ;\n"
-, "MAN3DIR = $(MANPRE) ;\n"
-, "MAN4DIR = $(MANPRE) ;\n"
-, "MAN5DIR = $(MANPRE) ;\n"
-, "MAN6DIR = $(MANPRE) ;\n"
-, "MAN7DIR = $(MANPRE) ;\n"
-, "MAN8DIR = $(MANPRE) ;\n"
-, "MANNDIR = $(MANPRE) ;\n"
-, "}\n"
+, "BINDIR = $(PREFIX)/bin ;\n"
+, "DATADIR = $(PREFIX)/share ;\n"
+, "DOCDIR = $(DATADIR)/doc ;\n"
+, "HTMLDIR = $(DATADIR)/html ;\n"
+, "INCDIR = $(PREFIX)/include ;\n"
+, "LIBDIR = $(PREFIX)/bin ;\n"
+, "MANDIR = $(DATADIR)/man1 ;\n"
+, "\n"
 , "######################################################\n"
 , "##\n"
-, "##  Example definitions for compiler suite (TOOLSETs)\n"
+, "##  Example definitions for compiler suite (TOOLSETS)\n"
 , "##  It is possible to add definitions here or in a\n"
-, "##  separate file \"$(TOOLSET).jam\", the NOCARE rules\n"
+, "##  separate file \"$(TOOLSET).jam\", the NOCARE rule\n"
 , "##  tells jam not to worry if file does not exist.\n"
 , "## \n"
 , "######################################################\n"
@@ -124,31 +76,31 @@ const char * jam_generator::default_rules[] = { "#\n"
 , "CC = gcc ;\n"
 , "C++ = g++ ;\n"
 , "FORTRAN = gfortran ;\n"
+, "LINK = $(C++) ;\n"
 , "CCFLAGS += -Wall -std=c99 ;\n"
 , "C++FLAGS += -Wall -std=c++98 ;\n"
-, "CPPFLAGS += ;\n"
 , "SHRFLAGS = -fpic ;\n"
 , "switch $(VARIANT)\n"
 , "{\n"
 , "case RELEASE :\n"
-, "  OPTIM += -march=native ;\n"
+, "  OPTIM += -O2 -march=native -DDEBUG=0 ;\n"
 , "case * :\n"
 , "  OPTIM = -O0 -ggdb -DDEBUG=1 ;\n"
 , "  CCFLAGS += -pedantic ;\n"
-, "  C++FLAGS += -Weffc++ ;\n"
+, "  C++FLAGS += ; # -Weffc++ ;\n"
 , "}\n"
-, "FORTRANFLAGS = -Wall -c ;\n"
-, "LINKFLAGS = ;\n"
+, "FORTRANFLAGS += -Wall -c ;\n"
+, "LINKFLAGS += $(OPTIM) ;\n"
 , "OPENMP = -fopenmp ;\n"
-, "FORTRANLIBS = -lgfortran ;\n"
+, "FORTRANLIBS += -lgfortran ;\n"
 , "}\n"
 , "\n"
-, "###################################################\n"
+, "##################################################\n"
 , "##\n"
 , "##  Example of how you might define a set of\n"
 , "##  \"standard\" flags for libraries you use often.\n"
-, "## \n"
-, "###################################################\n"
+, "##\n"
+, "##################################################\n"
 , "##\n"
 , "##switch $(GUILIB)\n"
 , "##{\n"
@@ -156,43 +108,35 @@ const char * jam_generator::default_rules[] = { "#\n"
 , "##  CCFLAGS += `pkg-config gtkmm-2.4 --cflags` ;\n"
 , "##  C++FLAGS += `pkg-config gtkmm-2.4 --cflags` ;\n"
 , "##  LINKFLAGS += `pkg-config gtkmm-2.4 --libs` ;\n"
-, "##  \n"
+, "##\n"
 , "##case MOTIF :\n"
 , "##  CCFLAGS += -I/usr/include ;\n"
 , "##  C++FLAGS += -I/usr/include ;\n"
 , "##  LINKFLAGS += -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;\n"
-, "##  \n"
+, "##\n"
 , "##case QT3 :\n"
 , "##  CCFLAGS += -I$(QTDIR)/include ;\n"
 , "##  C++FLAGS += -I$(QTDIR)/include ;\n"
 , "##  LINKFLAGS += -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;\n"
-, "##  \n"
-, "##case * :\n"
 , "##\n"
+, "##case * :\n"
 , "##}\n"
 , "##\n"
-, "#################################\n"
-, "##\n"
-, "##  Define the \"standard\" flags\n"
-, "## \n"
-, "#################################\n"
-, "\n"
-, "LINKFLAGS += $(OPTIM) ;\n"
-, "LINK = $(C++) ;\n"
 , "\n"
 , "# Set variable for variant-specific build-dir handling\n"
 , "BASE_LOCATE_TARGET = $(BUILDDIR)$(SLASH)$(VARIANT) ;\n"
 , "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;\n"
-, "\n"
-, 0 };
+, 0 }
+;
 
 /**
  * The name of the jam rules document.
  */
 const QString jam_generator::rules_name("Jamrules");
 
-void jam_generator::assoc_library(const ::UmlArtifact & a_target, QTextStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) 
+void jam_generator::assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) 
 {
+// Bouml preserved body begin 000330A9
 QString project_;
 if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
@@ -247,11 +191,13 @@ ENDDOC}} */
     a_includes.append (libinc_);
   }
 }
+// Bouml preserved body end 000330A9
 
 }
 
-void jam_generator::assoc_source(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) 
+void jam_generator::assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) 
 {
+// Bouml preserved body begin 00033129
 ///////////////////////////
 // Description for individual objects (optional)
 QString source_;
@@ -295,11 +241,14 @@ if (! source_.isEmpty ())
 /////////////
 // Add source to target
 a_os << this->grist_ << a_filename << "\n\t";
+// Bouml preserved body end 00033129
 
 }
 
-void jam_generator::check_properties(bool a_is_source, const ::UmlArtifact & a_source, QTextStream & a_os) 
+void jam_generator::check_properties(bool a_is_source, const ::UmlArtifact & a_source, ::QTextOStream & a_os) 
 {
+// Bouml preserved body begin 000323A9
+// Bouml preserved body end 000323A9
 
 }
 
@@ -311,6 +260,7 @@ std::auto_ptr< base_generator > jam_generator::create()
 }
 
 void jam_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) {
+// Bouml preserved body begin 000269A9
 // Need to write the TOP line.
 if (NULL != a_loc.parent ())
 {
@@ -332,10 +282,12 @@ if (NULL != a_loc.parent ())
   // Add definition to top-level
   a_sys.close.second.append ("SubInclude TOP " + dir_line_ + " ;\n");
 }
+// Bouml preserved body end 000269A9
 }
 
-void jam_generator::end_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) 
+void jam_generator::end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) 
 {
+// Bouml preserved body begin 000331A9
 ////////////////
 // End target source variable
 a_os << ";\n\n";
@@ -443,11 +395,13 @@ if (! this->individual_obj_.isEmpty ())
 {
   a_os << this->individual_obj_ << "\n";
 }
+// Bouml preserved body end 000331A9
 
 }
 
 void jam_generator::initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys) 
 {
+// Bouml preserved body begin 000262A9
 BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
 
 QString content_;
@@ -507,11 +461,13 @@ QString content_;
   }
 }
 a_sys.preamble.second = content_;
+// Bouml preserved body end 000262A9
 
 }
 
-void jam_generator::install_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
+void jam_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
 {
+// Bouml preserved body begin 00033229
 static const char * install_cmd_[] =
 {
   "InstallBin"
@@ -529,6 +485,7 @@ else
   a_os << this->qualified_target_name_;
 }
 a_os << " ;\n";
+// Bouml preserved body end 00033229
 }
 
 jam_generator::jam_generator()
@@ -537,8 +494,9 @@ jam_generator::jam_generator()
 , qualified_target_name_ ()
 {}
 
-void jam_generator::start_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) 
+void jam_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) 
 {
+// Bouml preserved body begin 00033029
 ////////////////////////
 // Initialise state for writing a new target entry
 if (this->grist_.isEmpty ())
@@ -589,6 +547,7 @@ this->other_target_type_.truncate (0);
 //////////////////////
 // Start entry
 a_os << this->target_NAME () << "_SRC =\n\t";
+// Bouml preserved body end 00033029
 
 }
 

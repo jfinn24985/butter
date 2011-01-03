@@ -7,7 +7,7 @@
 #include <qvaluelist.h>
 #include <qtextstream.h>
 
-#include "butter/config.h"
+
 // Manual includes
 #include <utility>
 // --
@@ -118,7 +118,7 @@ class compound_artifact
      * The version, date, preamble and close are read as-is. Unlabelled sections preceding
      * targets are read, but the content of the target section is left blank.
      */
-    void deserialise(QTextIStream & a_is);
+    void deserialise(::QTextIStream & a_is);
 
 
   public:
@@ -158,7 +158,7 @@ class compound_artifact
     /**
      * Output the parts into a_os
      */
-    void serialise(QTextStream & a_os) const;
+    void serialise(::QTextOStream & a_os) const;
 
     /**
      * Get a reference to the text for target with a_label. Insert if necessary

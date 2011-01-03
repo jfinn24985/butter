@@ -2,16 +2,20 @@
  * Boost Jam generator source file.
  */
 #include "butter/bjam_generator.h"
-#include "butter/butter_constants.h"
+#include "butter/basic_style.h"
 #include "bouml/UmlArtifact.h"
 #include "butter/compound_artifact.h"
 #include "butter/location.h"
 #include "bouml/UmlItem.h"
 
 // Manual source includes
-#include <qstringlist.h>
+#include "butter/config.h"
 // -
 namespace butter {
+
+static QString const section_name ("boost");
+extern butter::basic_style const bjam_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::bjam_generator::create);
+
 
 /**
  * The default leaf filename for the current style
@@ -22,21 +26,6 @@ const QString bjam_generator::build_file_name("Jamfile");
  * The default leaf filename for the current style
  */
 const QString bjam_generator::build_file_sysname("Jamroot");
-
-/**
- * Comment line prefix
- */
-const QString bjam_generator::comment_string("#");
-
-const QString bjam_generator::end_phrase("##END:");
-
-const QString bjam_generator::start_phrase("##START:");
-
-/**
- * The label for description 'sections' and the value of 
- * the style for this buildfile type.
- */
-const QString bjam_generator::section_name("boost");
 
 /**
  * The name of the project rules file.
@@ -53,74 +42,21 @@ const char * bjam_generator::default_rules[] = { "#\n"
 , "# local.jam\n"
 , "#\n"
 , "# Set constants for installation paths\n"
-, "constant VERSIONDIR : \"@@project@@-@@version@@\" ;\n"
+, "import path ;\n"
 , "path-constant INSTALL_PREFIX : installdir ;\n"
-, "path-constant DEBUG_PREFIX : installdir ;\n"
-, "if $(UNIX) {\n"
 , "constant BINDIR : bin ; # User programs\n"
-, "constant SBINDIR : sbin ; # Administrator only programs\n"
-, "constant LIBEXECDIR : libexec ; # System daemons and system utilities\n"
-, "constant LIBDIR : lib ; # Shared libraries\n"
-, "constant DATAROOTDIR : share/$(VERSIONDIR) ; # Private libraries and static data\n"
-, "constant SYSCONFDIR : etc ; # System wide configuration\n"
-, "constant LOCALSTATEDIR : var ; # System wide shared state\n"
-, "constant INCLUDEDIR : include/$(VERSIONDIR) ; # Public header files\n"
-, "constant LOCALEDIR : share/locale ; # Localisation language files\n"
-, "# Public documentation locations\n"
-, "constant DOCDIR : share/doc/packages/$(VERSIONDIR) ;\n"
-, "constant INFODIR : share/info ;\n"
-, "constant MANDIRPRE : share/man ;\n"
-, "constant HTMLDIR : $(DOCDIR)/html ;\n"
-, "constant DVIDIR : $(DOCDIR) ;\n"
-, "constant PDFDIR : $(DOCDIR) ;\n"
-, "constant PSDIR : $(DOCDIR) ;\n"
-, "constant MANDIR  : $(MANDIRPRE)/man1 ;\n"
-, "constant MAN1DIR : $(MANDIRPRE)/man1 ;\n"
-, "constant MAN2DIR : $(MANDIRPRE)/man2 ;\n"
-, "constant MAN3DIR : $(MANDIRPRE)/man3 ;\n"
-, "constant MAN4DIR : $(MANDIRPRE)/man4 ;\n"
-, "constant MAN5DIR : $(MANDIRPRE)/man5 ;\n"
-, "constant MAN6DIR : $(MANDIRPRE)/man6 ;\n"
-, "constant MAN7DIR : $(MANDIRPRE)/man7 ;\n"
-, "constant MAN8DIR : $(MANDIRPRE)/man8 ;\n"
-, "constant MANNDIR : $(MANDIRPRE)/mann ;\n"
-, "}\n"
-, "else if $(NT) {\n"
-, "# path-constant INSTALL_PREFIX : $(ProgramFiles)$(SLASH)$(VERSIONDIR) ;\n\n"
-, "constant BINDIR :  ; # User programs\n"
-, "constant SBINDIR :  ; # Administrator only programs\n"
-, "constant LIBEXECDIR :  ; # System daemons and system utilities\n"
-, "constant LIBDIR :  ; # Shared libraries\n"
-, "constant DATAROOTDIR :  ; # Private libraries and static data\n"
-, "constant SYSCONFDIR : config ; # System wide configuration\n"
-, "constant LOCALSTATEDIR : $(ALLUSERSPROFILE)$(SLASH)$(VERSIONDIR) ; # System wide shared state\n"
-, "constant INCLUDEDIR : include ; # Public header files\n"
-, "constant LOCALEDIR : locale ; # Localisation language files\n"
-, "constant INCLUDEDIR : $(PREFIX)$(SLASH)include ;\n"
-, "constant LOCALEDIR : $(PREFIX)$(SLASH)locale ;\n"
-, "# Public documentation locations\n"
-, "constant DOCDIR : $(PREFIX) ;\n"
-, "constant INFODIR : $(DOCDIR)$(SLASH)info ;\n"
-, "constant MANPRE : $(DOCDIR)$(SLASH)man ;\n"
-, "constant HTMLDIR : $(DOCDIR)$(SLASH)html ;\n"
-, "constant DVIDIR : $(DOCDIR)$(SLASH)doc ;\n"
-, "constant PDFDIR : $(DOCDIR)$(SLASH)doc ;\n"
-, "constant PSDIR : $(DOCDIR)$(SLASH)doc ;\n"
-, "constant MANDIR : $(MANPRE) ;\n"
-, "constant MAN1DIR : $(MANPRE) ;\n"
-, "constant MAN2DIR : $(MANPRE) ;\n"
-, "constant MAN3DIR : $(MANPRE) ;\n"
-, "constant MAN4DIR : $(MANPRE) ;\n"
-, "constant MAN5DIR : $(MANPRE) ;\n"
-, "constant MAN6DIR : $(MANPRE) ;\n"
-, "constant MAN7DIR : $(MANPRE) ;\n"
-, "constant MAN8DIR : $(MANPRE) ;\n"
-, "constant MANNDIR : $(MANPRE) ;\n"
-, "}\n"
+, "constant DATADIR : share ; # Private libraries and static data\n"
+, "constant DOCDIR : [ path.join share doc ] ;\n"
+, "constant HTMLDIR : [ path.join share html ] ;\n"
+, "constant INCDIR : include ;\n"
+, "constant LIBDIR : bin ; # Shared libraries\n"
+, "constant MANDIR  : [ path.join share man1 ] ;\n"
 , "\n"
-, 0 };
+, 0 }
+;
 
-void bjam_generator::assoc_library(const ::UmlArtifact & a_target, QTextStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) {
+void bjam_generator::assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) {
+// Bouml preserved body begin 00033EA9
 QString project_;
 if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
@@ -138,9 +74,10 @@ else
 a_os << a_target.name () << "\n\t";
 /////////////
 // Note. Header/link information is imported with library in boost jam.
+// Bouml preserved body end 00033EA9
 }
 
-void bjam_generator::assoc_source(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) {
+void bjam_generator::assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) {
 QString individual_;
 if (! this->is_other_ && (! a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
 {
@@ -196,6 +133,7 @@ std::auto_ptr< base_generator > bjam_generator::create()
 }
 
 void bjam_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) {
+// Bouml preserved body begin 000255A9
 // Add ourself to the system artifact (if not the top-level).
 if (NULL != a_loc.parent ())
 {
@@ -209,9 +147,11 @@ if (NULL != a_loc.parent ())
   os_ << "build-project " << dir_line_ << " ;\n\n";
   a_sys.close.second.append (tmp_);
 }
+// Bouml preserved body end 000255A9
 }
 
-void bjam_generator::end_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) {
+void bjam_generator::end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) {
+// Bouml preserved body begin 00033FA9
 ///////////////////////
 // end target definition
 a_os << ":\n\t"; // End sources.
@@ -383,9 +323,11 @@ if (! this->individual_obj_.isEmpty ())
   a_os << " ;\n\n";
   a_os << this->individual_obj_;
 }
+// Bouml preserved body end 00033FA9
 }
 
 void bjam_generator::external_target(const location & a_current, const ::UmlArtifact & a_target, compound_artifact & a_sys) {
+// Bouml preserved body begin 00025329
 // Get project name, if present
 QString value_;
 a_target.property_value (butter_constants::butter_project_name, value_);
@@ -438,9 +380,11 @@ if (! proj_.second.contains ("using "))
     }
   }
 }
+// Bouml preserved body end 00025329
 }
 
 void bjam_generator::initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys) {
+// Bouml preserved body begin 000254A9
 BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
 this->project_name_ = a_project.name ();
 QString content_;
@@ -452,8 +396,9 @@ QString content_;
     QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
     os_ << "# Include local constants\npath-constant topdir : . ;\ninclude " << name_ << " ;\n\n";
   }
-  os_ << "# Set project's global settings\nproject " << project_name_;
-  os_ << "\n\t:  requirements <debug-symbols>on:<define>\"DEBUG=1\"\n\t";
+  os_ << "# Set project's global settings\nproject " << project_name_
+      << "\n\t: requirements <debug-symbols>on:<define>\"DEBUG=1\""
+      << "\n\t<debug-symbols>off:<define>\"DEBUG=0\"\n\t";
   QString link_, flag_; // Needed arguments.
   find_hdr_link (a_project, base_include_, link_, flag_, section_name, false);
   if (! base_include_.isEmpty ())
@@ -507,19 +452,23 @@ QString content_;
   }
 }
 a_sys.preamble.second = content_;
+// Bouml preserved body end 000254A9
 }
 
-void bjam_generator::install_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
+void bjam_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
 {
+// Bouml preserved body begin 00034029
 const QString name_ (a_target.name ());
 a_os << "install install_" << name_ << " : " << name_
         << " : <variant>release:<location>$(INSTALL_PREFIX)/$(" << a_loc_var << ") \n\t\t"
       << "<variant>debug:<location>$(DEBUG_PREFIX)/\""
       << root_dir ().create_relative (a_target.package ().src_path ()) << "\" ;\n";
+// Bouml preserved body end 00034029
 
 }
 
-void bjam_generator::start_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
+void bjam_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
+// Bouml preserved body begin 00033D29
 ////////////////////////
 // Reset variables
 this->other_target_type_.truncate (0);
@@ -549,6 +498,7 @@ else if (stereotype_ == butter_constants::executable_stereotype)
   a_os << "exe ";
 }
 a_os << a_target.name () << " :\n\t";
+// Bouml preserved body end 00033D29
 }
 
 

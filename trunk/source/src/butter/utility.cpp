@@ -7,10 +7,12 @@
 #include <stdexcept>
 #include <stack>
 #include <qregexp.h>
+#include "butter/config.h"
 namespace butter {
 
 QString pathcmp::create_common(const pathcmp & a_other) const 
 {
+// Bouml preserved body begin 0002D6A9
 const QString lhs_ = absPath ();
 const QString rhs_ = a_other.absPath ();
 const int sz1_ = lhs_.length ();
@@ -33,11 +35,13 @@ for (int c_ = 0; c_ < sz_; ++c_)
 }
 // Matched all of smaller path.
 return lhs_.left (sz_);
+// Bouml preserved body end 0002D6A9
 
 }
 
 QString pathcmp::create_relative(const pathcmp & a_target) const 
 {
+// Bouml preserved body begin 0002D7A9
 QString Result;
 #ifndef NO_ARRAY_INITIALISER
 const char sep_[4] = { '.', '.', default_separator_[0], '\0' };
@@ -98,11 +102,13 @@ else
   Result.truncate (Result.length () - 1);
 }
 return Result;
+// Bouml preserved body end 0002D7A9
 
 }
 
 bool pathcmp::equality(const pathcmp& a_rhs) const 
 {
+// Bouml preserved body begin 0002D5A9
 const QString lhs_ = absPath ();
 const QString rhs_ = a_rhs.absPath ();
 // Do simple comparison first
@@ -136,11 +142,13 @@ default:
   break;
 }
 return false;
+// Bouml preserved body end 0002D5A9
 
 }
 
 bool pathcmp::has_subpath(const pathcmp & a_rhs) const 
 {
+// Bouml preserved body begin 0002D629
 // simple test that a subdirs path string must have longer pathname
 const QString lhs_ = absPath ();
 const QString rhs_ = a_rhs.absPath ();
@@ -151,11 +159,13 @@ if (Result)
   Result = rhs_.startsWith (lhs_);
 }
 return Result;
+// Bouml preserved body end 0002D629
 
 }
 
 QString pathcmp::leaf_at(unsigned int a_count) const 
 {
+// Bouml preserved body begin 0002D3A9
 int s_ = 0, e_ = 0; // start, end counter
 QString path_ (path ());
 while (true)
@@ -176,11 +186,13 @@ while (true)
   s_ = e_ + 1;
   --a_count;
 }
+// Bouml preserved body end 0002D3A9
 
 }
 
 bool pathcmp::mkpath() const 
 {
+// Bouml preserved body begin 0003A9A9
 std::stack < QString > stack_; // Stores needed path
 QString path_ (normalise (path ()));  // Current path as string
 QDir cursor_;  // Current path
@@ -193,23 +205,28 @@ for ( ; (!cursor_.exists (path_, true)) & (!path_.isEmpty ()) & (left_ > 0); )
   left_ = path_.findRev (default_separator_);
 }
 cursor_.cd (path_, true);
-#ifdef DEBUG
-log::com.trace (log::debug, ("<p>Found path [" + path_ + "] exists </p>").utf8());
-#endif
+if (DEBUG)
+{
+  log::com.trace (log::debug, ("<p>Found path [" + path_ + "] exists </p>").utf8());
+}
 for ( ; !stack_.empty ()
          && cursor_.mkdir (stack_.top (), false)
          && cursor_.cd (stack_.top (), false)
       ; stack_.pop ()) {} // Empty loop
 return stack_.empty ();
+// Bouml preserved body end 0003A9A9
+
 }
 
 QString pathcmp::normalise_(QString a_path)
 {
   return a_path.replace (QRegExp("\\\\"), default_separator_);
 }
-QString pathcmp::path_convert(QString a_trans) const
+QString pathcmp::path_convert(QString a_trans) const 
 {
+// Bouml preserved body begin 00034D29
 return path ().replace (QRegExp (default_separator_), a_trans);
+// Bouml preserved body end 00034D29
 
 }
 
@@ -223,60 +240,64 @@ const char pathcmp::default_separator_[2] = "/";
  */
 const char pathcmp::other_separator_[2] = "\\";
 
-void log::trace(log::log_levels a_lvl, const char * a_msg) 
-{
-  if (level_ >= a_lvl) UmlCom::trace (a_msg);
-}
 /**
  * Exemplar
  */
 log log::com;
-#ifdef DEBUG
-
 void log::debug_log(const char * a_fname) 
 {
-MSC_NO_RESET (debug_file_,std::auto_ptr< QFile >)(new QFile (a_fname));
+BUTTER_ALWAYS (DEBUG, "Programming error: attempt to set debug log in release build");
+// Bouml preserved body begin 00032A29
+debug_file_ = std::auto_ptr< QFile >(new QFile (a_fname));
 if (! debug_file_->open (IO_WriteOnly))
 {
   QString msg_ ("<p>Unable to open log file for read/writing: ");
   msg_.append (debug_file_->name ());
   msg_.append ("</p>");
-  MSC_NO_RESET (debug_os_, std::auto_ptr< QTextStream >)(); // Reset stream
+  debug_os_ = std::auto_ptr< QTextOStream >(); // Reset stream
   throw std::runtime_error (msg_.utf8 ().data ());
 }
 else
 {
-  MSC_NO_RESET (debug_os_, std::auto_ptr< QTextStream >)(new QTextStream (debug_file_.get ()));
+  debug_os_ = std::auto_ptr< QTextOStream >(new QTextOStream (debug_file_->handle ()));
 }
+// Bouml preserved body end 00032A29
 
 }
-
-#ifdef _WIN32_EXTRA
-
 log::~log() 
 {
-  // NOTE: This will only be called during program exit.
+// Bouml preserved body begin 00036729
+// NOTE: This will only be called during program exit.
 
-  // For some reason under WIN32 we get a violation error, when we
-  // reset the pointer, so here we call the dtor and then release
-  // the pointers.
-if (NULL != debug_os_.get ())
+// For some reason under WIN32 we get a violation error, when we
+// reset the pointer, so here we call the dtor and then release
+// the pointers.
+if (DEBUG)
 {
-  debug_os_->~QTextStream ();
-  debug_os_.release ();
+  if (NULL != debug_os_.get ())
+  {
+    debug_os_->~QTextStream ();
+    debug_os_.release ();
+  }
+  if (NULL != debug_file_.get ())
+  {
+    debug_file_->flush ();
+    debug_file_->~QFile ();
+    debug_file_.release ();
+  }
 }
-if (NULL != debug_file_.get ())
+// Bouml preserved body end 00036729
+
+}
+
+::QTextOStream & log::stream() const 
 {
-  debug_file_->flush ();
-  debug_file_->~QFile ();
-  debug_file_.release ();
+  BUTTER_ALWAYS (DEBUG, "Programming error: attempt to get debug log in release build");
+  return *debug_os_;
 }
-
+void log::trace(log::log_levels a_lvl, const char * a_msg) 
+{
+  if (level_ >= a_lvl) UmlCom::trace (a_msg);
 }
-
-#endif // _WIN32_EXTRA
-
-#endif // DEBUG
-
 
 } // namespace butter

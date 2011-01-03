@@ -16,17 +16,18 @@ SUBDIRHDRS += ${QTDIR}/include ;
 ##END:preamble
 ##START:target butter
 Main <butter>butter$(SUFEXE) :
-	<butter>utility.cpp
-	<butter>jam_generator.cpp
-	<butter>compound_artifact.cpp
-	<butter>build_generator.cpp
-	<butter>cmake_generator.cpp
-	<butter>style.cpp
-	<butter>location.cpp
-	<butter>butter_constants.cpp
+	<butter>base_generator.cpp
+	<butter>basic_style.cpp
 	<butter>bjam_generator.cpp
-	<butter>main.cpp
+	<butter>butter_constants.cpp
+	<butter>cmake_generator.cpp
+	<butter>compound_artifact.cpp
 	<butter>gmake_generator.cpp
+	<butter>jam_generator.cpp
+	<butter>location.cpp
+	<butter>main.cpp
+	<butter>style.cpp
+	<butter>utility.cpp
 	;
 
 LINKLIBS on <butter>butter$(SUFEXE) += $(BOUML_BOUMLLIBS) -L${QTDIR}/lib64 -lqt-mt -lm ;

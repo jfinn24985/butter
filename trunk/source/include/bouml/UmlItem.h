@@ -7,6 +7,7 @@
 #include <qstring.h>
 #include <qtextstream.h>
 
+
 /**
  *  This class is a mother class for all the other Uml* classes, this
  *  allows to generalize their management, declare virtual operations etc ...
@@ -22,27 +23,23 @@ class UmlItem : public UmlBaseItem {
     {
       return const_cast< UmlItem& >(*this).UmlBaseItem::description ();
     }
-#ifdef DEBUG
     /**
- * Convert a 'kind' into a string
- * 
- * (Only in non NO_LOG builds)
- */
-QString kind_as_string() const;
-#endif
+     * Convert a 'kind' into a string
+     * 
+     * (Only in non NO_LOG builds)
+     */
+    QString kind_as_string() const;
+
     QCString name() const
     {
       return const_cast< UmlItem& >(*this).UmlBaseItem::name ();
     }
 
-#ifdef DEBUG
     /**
- * Print information about a_item.
- * 
- * (Only in non NO_LOG  builds)
- */
-void print(unsigned int a_depth, QTextStream & a_os);
-#endif
+     * Print information about a_item.
+     */
+    void print(unsigned int a_depth, QTextOStream & a_os);
+
     /**
      * Search from a_item to the Project object for the property with a_key. Sets
      * a_value and returns if such a property is found.

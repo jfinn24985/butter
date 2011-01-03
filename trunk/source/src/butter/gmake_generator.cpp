@@ -2,17 +2,19 @@
  * Source for GNU make generator
  */
 #include "butter/gmake_generator.h"
-#include "butter/butter_constants.h"
-#include "butter/utility.h"
 #include "bouml/UmlArtifact.h"
 #include "butter/compound_artifact.h"
 #include "butter/location.h"
 #include "bouml/UmlItem.h"
 
 // Manual source includes
-#include <qstringlist.h>
+#include "butter/config.h"
 // -
 namespace butter {
+
+static QString const section_name ("make");
+extern butter::basic_style const gmake_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::gmake_generator::create);
+
 
 /**
  * The default leaf filename for the current style
@@ -23,21 +25,6 @@ const QString gmake_generator::build_file_name("makefile");
  * The default leaf filename for the current style
  */
 const QString gmake_generator::build_file_sysname("makefile");
-
-/**
- * Comment line prefix
- */
-const QString gmake_generator::comment_string("#");
-
-const QString gmake_generator::end_phrase("##END:");
-
-const QString gmake_generator::start_phrase("##START:");
-
-/**
- * The label for description 'sections' and the value of 
- * the style for this buildfile type.
- */
-const QString gmake_generator::section_name("make");
 
 /**
  * This is the default contents of a the rules file (M_sys.mak).
@@ -71,10 +58,6 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
 , "\n"
 , "# Optimisation/debugging flags\n"
 , "# are added depending on VARIANT\n"
-, "#############################\n"
-, "##  Default install locations\n"
-, "#############################\n"
-, "VERSIONDIR:=\"@@project@@-@@version@@\"\n"
 , "\n"
 , "##########################\n"
 , "## Include compiler and OS\n"
@@ -133,7 +116,7 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
 , "##  endif # XMLLIB\n"
 , "##  \n"
 , "##  endif # USE_XML_MAK\n"
-, "##  \n"
+, "\n"
 , 0 }
 ;
 
@@ -157,11 +140,11 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "ARFLAGS:= /LIB\n"
 , "FORTRAN:=fc\n"
 , "CPPFLAGS?=\n"
-, "CCFLAGS+=/Za /errorReport:none\n"
-, "CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /errorReport:none\n"
+, "CCFLAGS+=/Za /nologo /errorReport:none\n"
+, "CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /nologo /errorReport:none\n"
 , "\n"
 , "ifeq ($(VARIANT),DEBUG)\n"
-, "OPTFLAGS+=/Od /Zi /DDEBUG\n"
+, "OPTFLAGS+=/Od /Zi\n"
 , "LDFLAGS+=/MTd\n"
 , "else\n"
 , "OPTFLAGS+=/O2\n"
@@ -178,9 +161,9 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "\n"
 , "endif # end of once-only\n"
 , "\n"
-, "# slightly modify the built-in commands:\n"
+, "#  commands to execute (built-in):\n"
 , "COMPILE.c = $(CC) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
-, "COMPILE.cc = $(CXX) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
+, "COMPILE.cc = $(CXX) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
 , "define _makeobj_\n"
 , "%$$(sufobj): %$(1) ; $$(COMPILE$(1))$$@ $$<\n"
 , "endef\n"
@@ -241,7 +224,7 @@ const char * gmake_generator::default_rules_gcc[] = { "#########################
 , "CCFLAGS+=-pedantic\n"
 , "CCCFLAGS+=-Weffc++\n"
 , "else\n"
-, "OPTFLAGS+=-O2 -march=native\n"
+, "OPTFLAGS+=-O2 -march=native -DDEBUG=0\n"
 , "endif\n"
 , "\n"
 , "CCFLAGS+=$(OPTFLAGS)\n"
@@ -274,7 +257,8 @@ const char * gmake_generator::default_rules_gcc[] = { "#########################
 , "$(1) : CCCFLAGS+=$(SHRFLAGS)\n"
 , "$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) -shared -Wl,-soname,$(1) -o $(1) -Wl,--start-group $(2) -Wl,--end-group\n"
 , "endef\n\n"
-, 0 };
+, 0 }
+;
 
 /**
  * This is the default contents of the rules file (M_unix.mak) for
@@ -296,34 +280,13 @@ const char * gmake_generator::default_rules_unix[] = { " # Definition of for loo
 , "##  Default install locations\n"
 , "#############################\n"
 , "PREFIX=$(ROOTDIR)/installdir\n"
-, "EXEC_PREFIX?=$(PREFIX)\n"
-, "BINDIR?=$(EXEC_PREFIX)/bin\n"
-, "SBINDIR?=$(EXEC_PREFIX)/sbin\n"
-, "LIBEXECDIR?=$(EXEC_PREFIX)/libexec\n"
-, "LIBDIR?=$(EXEC_PREFIX)/lib\n"
-, "DATAROOTDIR?=$(PREFIX)/share\n"
-, "DATADIR?=$(PREFIX)/share\n"
-, "SYSCONFDIR?=$(PREFIX)/etc\n"
-, "SHAREDSTATEDIR?=$(PREFIX)/com\n"
-, "LOCALSTATEDIR?=$(PREFIX)/var\n"
+, "BINDIR?=$(PREFIX)/bin\n"
+, "LIBDIR?=$(PREFIX)/bin\n"
 , "INCLUDEDIR?=$(PREFIX)/include\n"
-, "LOCALEDIR?=$(DATAROOTDIR)/locale\n"
-, "DOCDIR?=$(DATAROOTDIR)/doc/$(VERSIONDIR)\n"
-, "INFODIR?=$(DATAROOTDIR)/info\n"
-, "MANDIR?=$(DATAROOTDIR)/man\n"
-, "HTMLDIR?=$(DOCDIR)\n"
-, "DVIDIR?=$(DOCDIR)\n"
-, "PDFDIR?=$(DOCDIR)\n"
-, "PSDIR?=$(DOCDIR)\n"
-, "MAN1DIR?=$(MANDIR)/man1\n"
-, "MAN2DIR?=$(MANDIR)/man2\n"
-, "MAN3DIR?=$(MANDIR)/man3\n"
-, "MAN4DIR?=$(MANDIR)/man4\n"
-, "MAN5DIR?=$(MANDIR)/man5\n"
-, "MAN6DIR?=$(MANDIR)/man6\n"
-, "MAN7DIR?=$(MANDIR)/man7\n"
-, "MAN8DIR?=$(MANDIR)/man8\n"
-, "MANNDIR?=$(MANDIR)/mann\n"
+, "DATADIR?=$(PREFIX)/share\n"
+, "DOCDIR?=$(DATADIR)/doc\n"
+, "MANDIR?=$(DATADIR)/man1\n"
+, "HTMLDIR?=$(DATADIR)/html\n"
 , "\n# Flags for the install targets.\n"
 , "BINIFLAGS?=-m 755\n"
 , "FILEIFLAGS?=-m 644\n"
@@ -358,7 +321,7 @@ const char * gmake_generator::default_rules_unix[] = { " # Definition of for loo
  */
 const char * gmake_generator::default_rules_winnt[] = { "# Definition of for loop in local shell.\n\n"
 , "define doit\n"
-, "if \"$(2)\" NEQ \"\" for %%W in ( $(2) ) do \"$(subst /,\\,$(MAKE))\" -C %%W $(1)\n"
+, "IF \"$(2)\" NEQ \"\" FOR %%W IN ( $(2) ) DO \"$(subst /,\\,$(MAKE))\" -C %%W $(1)\n"
 , "endef\n"
 , "\n"
 , "ifndef M_WINNT_MAK\n"
@@ -366,43 +329,14 @@ const char * gmake_generator::default_rules_winnt[] = { "# Definition of for loo
 , "#############################\n"
 , "##  Default install locations\n"
 , "#############################\n"
-, "# Fake installation locations for test installs.\n"
-, "INSTALL_PREFIX?=$(ROOTDIR)\\installdir\\ProgramFilesFolder\n"
-, "CONFIG_PREFIX?=$(ROOTDIR)\\installdir\\CommonAppDataFolder\n"
-, "USERCFG_PREFIX?=$(ROOTDIR)\\installdir\\AppDataFolder\n"
-, "#\n"
-, "# Commonly used installation directories\n"
-, "#\n"
-, "PREFIX?=$(INSTALL_PREFIX)\\$(VERSIONDIR)\n"
-, "DATAROOTDIR?=$(CONFIG_PREFIX)\\$(VERSIONDIR)\n"
-, "DATADIR?=$(CONFIG_PREFIX)\\$(VERSIONDIR)\n"
-, "DOCDIR?=$(PREFIX)\\Documentation\n"
-, "#\n"
-, "EXEC_PREFIX?=$(PREFIX)\n"
-, "BINDIR?=$(PREFIX)\n"
-, "SBINDIR?=$(PREFIX)\n"
-, "LIBEXECDIR?=$(PREFIX)\n"
-, "LIBDIR?=$(PREFIX)\n"
-, "SYSCONFDIR?=$(DATAROOTDIR)\n"
-, "SHAREDSTATEDIR?=$(DATAROOTDIR)\n"
-, "LOCALSTATEDIR?=$(DATAROOTDIR)\n"
+, "PREFIX?=$(ROOTDIR)\\installdir\n"
+, "BINDIR?=$(PREFIX)\\bin\n"
+, "DATADIR?=$(PREFIX)\\share\n"
+, "DOCDIR?=$(DATADIR)\\doc\n"
+, "HTMLDIR?=$(DATADIR)\\html\n"
 , "INCLUDEDIR?=$(PREFIX)\\include\n"
-, "LOCALEDIR?=$(DATAROOTDIR)\\locale\n"
-, "INFODIR?=$(DOCDIR)\\info\n"
-, "MANDIR?=$(DOCDIR)\\man\n"
-, "HTMLDIR?=$(DOCDIR)\\html\n"
-, "DVIDIR?=$(DOCDIR)\n"
-, "PDFDIR?=$(DOCDIR)\n"
-, "PSDIR?=$(DOCDIR)\n"
-, "MAN1DIR?=$(MANDIR)\\man1\n"
-, "MAN2DIR?=$(MANDIR)\\man2\n"
-, "MAN3DIR?=$(MANDIR)\\man3\n"
-, "MAN4DIR?=$(MANDIR)\\man4\n"
-, "MAN5DIR?=$(MANDIR)\\man5\n"
-, "MAN6DIR?=$(MANDIR)\\man6\n"
-, "MAN7DIR?=$(MANDIR)\\man7\n"
-, "MAN8DIR?=$(MANDIR)\\man8\n"
-, "MANNDIR?=$(MANDIR)\\mann\n"
+, "LIBDIR?=$(PREFIX)\\lib\n"
+, "MANDIR?=$(DATADIR)\\man1\n"
 , "\n# Standard Suffixes\n"
 , "sufobj:=.obj\n"
 , "sufexe:=.exe\n"
@@ -410,9 +344,9 @@ const char * gmake_generator::default_rules_winnt[] = { "# Definition of for loo
 , "suflib:=.lib\n"
 , "sufshr:=.dll\n"
 , "# Programs\n"
-, "MKDIR?=md\n"
-, "COPY?=copy /Y /B /V\n"
-, "RM:=-del /F\n"
+, "MKDIR?=MD\n"
+, "COPY?=COPY /Y /B /V\n"
+, "RM:=-DEL /F\n"
 , "\n# Path separator\n"
 , "SLASH?=\\\n"
 , "\n# END OF ONCE-ONLY.\n"
@@ -420,7 +354,8 @@ const char * gmake_generator::default_rules_winnt[] = { "# Definition of for loo
 , "define do_install\n"
 , "install:: $(1) ; IF NOT EXIST $$($(2)DIR) ( $$(MKDIR) $$($(2)DIR) )\n\t$$(COPY) $(1) $$($(2)DIR)\\$(1)\n"
 , "endef\n\n"
-, 0 };
+, 0 }
+;
 
 /**
  * Null terminated list of the default_rules_[] attributes.
@@ -463,7 +398,8 @@ const char ** gmake_generator::default_rules = combine(gmake_generator::default_
  */
 const QString gmake_generator::rules_name("M_sys.mak M_cl.mak M_gcc.mak M_unix.mak M_Windows_NT.mak");
 
-void gmake_generator::assoc_library(const ::UmlArtifact & a_target, QTextStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) {
+void gmake_generator::assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) {
+// Bouml preserved body begin 00033729
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -560,9 +496,11 @@ ENDDOC}} */
       , ignored_cflags_, section_name, true);
 }
 this->lib_set_.append (lib_body_);
+// Bouml preserved body end 00033729
 }
 
-void gmake_generator::assoc_source(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) {
+void gmake_generator::assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) {
+// Bouml preserved body begin 000337A9
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -627,6 +565,7 @@ if (! source_extra_.isEmpty ())
   this->individual_obj_.append ("\n");
   this->individual_obj_.append (source_extra_);
 }
+// Bouml preserved body end 000337A9
 }
 
 std::auto_ptr< base_generator > gmake_generator::create()
@@ -638,6 +577,7 @@ std::auto_ptr< base_generator > gmake_generator::create()
 
 void gmake_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) 
 {
+// Bouml preserved body begin 00027529
 // Need to write the "M_sys" include line.
 QString tmp_;
 QTextOStream desc_os_ (&tmp_);
@@ -657,10 +597,12 @@ if (NULL != a_loc.parent ())
 }
 a_art.preamble.second.append (tmp_);
 
+// Bouml preserved body end 00027529
 
 }
 
-void gmake_generator::end_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) {
+void gmake_generator::end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) {
+// Bouml preserved body begin 00033829
 ////////////////////////////////
 // Finalise target build instructions
 //
@@ -762,6 +704,7 @@ else
 
 a_os << "\nall :: " << this->qualified_target_name_ << "\n";
 a_os << "TARGETS+=" << this->qualified_target_name_ << "\n\n";
+// Bouml preserved body end 00033829
 }
 
 gmake_generator::gmake_generator()
@@ -771,6 +714,7 @@ gmake_generator::gmake_generator()
 
 void gmake_generator::initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys) 
 {
+// Bouml preserved body begin 00027429
 // The include dir is the difference between the current fullpath and the
 // top-projects hdrDir
 QString init_text_;
@@ -817,11 +761,13 @@ QString init_text_;
   }
 }
 a_sys.preamble.second = init_text_;
+// Bouml preserved body end 00027429
 
 }
 
-void gmake_generator::install_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
+void gmake_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
 {
+// Bouml preserved body begin 000338A9
 static const char * install_flag_[] =
 {
   "BIN"
@@ -850,19 +796,22 @@ if (a_loc_var != install_flag_ [a_type])
    a_os << "," << install_flag_ [a_type];
 }
 a_os << "))\n\n";
+// Bouml preserved body end 000338A9
 
 }
 
 void gmake_generator::process_flags(QString a_inc_list, QString a_flag_list, QString & a_cppflags, QString & a_cflags) 
 {
+// Bouml preserved body begin 00039BA9
 QTextOStream cppos_ (&a_cppflags);
 QTextOStream flagos_ (&a_cflags);
 if (! a_inc_list.isEmpty())
 {
-  QStringList list_ (QStringList::split (" ", a_inc_list));
-  for (unsigned int i_ (0); i_ < list_.count (); ++i_)
+  for (const_token_iterator e1_, b1_(a_inc_list.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
   {
-    const QString item_ ((*list_.at (i_)).stripWhiteSpace ());
+    const QString item_(b1_->c_str ());
+    BUTTER_CHECK (! item_.isEmpty ()
+                  , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
     if ('$' != item_[0] && QDir::isRelativePath (item_))
     {
       cppos_ << "-I" << (pathcmp("$(ROOTDIR)") / item_).path_localised () << " ";
@@ -875,10 +824,11 @@ if (! a_inc_list.isEmpty())
 }
 if (! a_flag_list.isEmpty())
 {
-  QStringList list_ (QStringList::split (" ", a_flag_list));
-  for (unsigned int i_ (0); i_ < list_.count (); ++i_)
+  for (const_token_iterator e1_, b1_(a_flag_list.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
   {
-    const QString item_ ((*list_.at (i_)).stripWhiteSpace ());
+    const QString item_(b1_->c_str ());
+    BUTTER_CHECK (! item_.isEmpty ()
+                  , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
     if (item_.length() <= 2)
     {
       flagos_ << item_ << " ";
@@ -911,32 +861,36 @@ if (! a_flag_list.isEmpty())
     }
   }
 }
+// Bouml preserved body end 00039BA9
 
 }
 
 QString gmake_generator::process_hdrs(QString a_inc_list)
 {
+// Bouml preserved body begin 00027929
 QString Result;
-QTextOStream l_os (&Result);
-QStringList l_list (QStringList::split (" ", a_inc_list));
-for (unsigned int l_i (0); l_i < l_list.count (); ++l_i)
 {
-  const QString l_item ((*l_list.at (l_i)).stripWhiteSpace ());
-  if ('$' != l_item[0] && QDir::isRelativePath (l_item))
+  QTextOStream os_ (&Result);
+  for (const_token_iterator e1_, b1_(a_inc_list.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
   {
-    l_os << "-I$(ROOTDIR)/" << l_item << " ";
-  }
-  else
-  {
-    l_os << "-I" << l_item << " ";
+    const QString item_(b1_->c_str ());
+    if ('$' != item_[0] && QDir::isRelativePath (item_))
+    {
+      os_ << "-I$(ROOTDIR)/" << item_ << " ";
+    }
+    else
+    {
+      os_ << "-I" << item_ << " ";
+    }
   }
 }
-
-return QString (Result);
+return Result;
+// Bouml preserved body end 00027929
 }
 
 bool gmake_generator::requirements(const ::UmlItem & a_item, QString & a_reqs)
 {
+// Bouml preserved body begin 000275A9
 bool Result (false);
 QString l_tmp;
 QString l_section;
@@ -961,9 +915,11 @@ if (Result)
   a_reqs = l_section;
 }
 return Result;
+// Bouml preserved body end 000275A9
 }
 
-void gmake_generator::start_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
+void gmake_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
+// Bouml preserved body begin 000336A9
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = a_target.name ();
@@ -1009,6 +965,7 @@ if (a_type != executable)
 //////////////////
 // Start the source file associations
 a_os << this->target_NAME () << "SRC := ";
+// Bouml preserved body end 000336A9
 }
 
 

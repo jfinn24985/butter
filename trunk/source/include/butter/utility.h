@@ -11,8 +11,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 
-#include "butter/config.h"
-#include <qdir.h>
+
 class UmlCom;
 
 namespace butter {
@@ -204,8 +203,22 @@ class log
 
     };
 
+    /**
+     * Exemplar
+     */
+    static log com;
 
   private:
+    /**
+     * File for debugging information. 
+     */
+    std::auto_ptr< QFile > debug_file_;
+
+    /**
+     * Output stream for debug builds. 
+     */
+    std::auto_ptr< ::QTextOStream > debug_os_;
+
     /**
      * The current logging level. (default is 'warn')
      */
@@ -213,6 +226,22 @@ class log
 
 
   public:
+    /**
+     * Open a_fname file for debug messages. (Only present with debug builds.)
+     */
+    void debug_log(const char * a_fname);
+
+    /**
+     * Is it possible to write debug messages.
+     */
+    bool is_debug() const
+    {
+      return DEBUG && NULL != debug_os_.get ();
+    }
+
+    /**
+     * Get the logging level
+     */
     int level() const
     {
       return level_;
@@ -227,72 +256,33 @@ class log
     }
         
 
-    void trace(log_levels a_lvl, const char * a_msg);
-
-    /**
-     * Exemplar
-     */
-    static log com;
 
   private:
     log()
-    : level_(warn)
-#ifdef DEBUG
-    , debug_file_ ()
+    : debug_file_ ()
     , debug_os_ ()
-#endif
+    , level_(warn)
     {}
-
-#ifdef DEBUG
-
-    /**
-     * File for debugging information. (Only present with debug builds.)
-     */
-    std::auto_ptr< QFile > debug_file_;
-
-    /**
-     * Output stream for debug builds. (Only present with debug builds.)
-     */
-    std::auto_ptr< QTextStream > debug_os_;
 
 
   public:
-    /**
-     * Open a_fname file for debug messages. (Only present with debug builds.)
-     */
-    void debug_log(const char * a_fname);
-
-    /**
-     * Gget reference to debug stream. (Only present with debug builds.)
-     * 
-     * Calling this method before debug_log(filename) is undefined. This can
-     * be tested with is_debug
-     * \pre is_debug
-     */
-    QTextStream & stream() const
-    {
-      return *debug_os_;
-    }
-
-    /**
-     * Is it possible to write debug messages. (Only present with debug builds.)
-     */
-    bool is_debug() const
-    {
-      return NULL != debug_os_.get ();
-    }
-
-#ifdef _WIN32_EXTRA
-
     /**
      * Dtor to ensure correct order of deconstructing stream and file
      */
     ~log();
 
-#endif // _WIN32_EXTRA
-
-#endif // DEBUG
-
+    /**
+     * Get reference to debug stream. (Only present with debug builds.)
+     * 
+     * Calling this method before debug_log(filename) is undefined. This can
+     * be tested with is_debug
+     * \pre is_debug
+     */
+    ::QTextOStream & stream() const;
+    /**
+     * Write a message to the trace window
+     */
+    void trace(log_levels a_lvl, const char * a_msg);
 
 
 };

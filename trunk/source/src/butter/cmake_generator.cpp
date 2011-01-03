@@ -1,13 +1,16 @@
 
 #include "butter/cmake_generator.h"
-#include "butter/butter_constants.h"
-#include "butter/utility.h"
 #include "butter/compound_artifact.h"
 #include "bouml/UmlArtifact.h"
 #include "butter/location.h"
 #include "bouml/UmlItem.h"
 
+#include "butter/config.h"
 namespace butter {
+
+static QString const section_name ("cmake");
+extern butter::basic_style const cmake_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::cmake_generator::create);
+
 
 /**
  * The default leaf filename for the current style
@@ -25,21 +28,6 @@ const QString& cmake_generator::build_file_sysname(cmake_generator::build_file_n
 const QString cmake_generator::cmake_minimum_required_("cmake_minimum_required(VERSION 2.6)");
 
 /**
- * Comment line prefix
- */
-const QString cmake_generator::comment_string("#");
-
-const QString cmake_generator::end_phrase("##END:");
-
-const QString cmake_generator::start_phrase("##START:");
-
-/**
- * The label for description 'sections' and the value of 
- * the style for this buildfile type.
- */
-const QString cmake_generator::section_name("cmake");
-
-/**
  * This is the default contents of a the rules file (M_sys.mak) If a 
  * document artifact with name 'M_sys.mak' is not present when 
  * butter is executed with \@style='cmake' then one will be created
@@ -48,39 +36,19 @@ const QString cmake_generator::section_name("cmake");
 const char * cmake_generator::default_rules[] = { "#\n"
 , "# local.cmake\n"
 , "#\n"
-, "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG)\n"
+, "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG=1)\n"
+, "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS DEBUG=0)\n"
 , "#############################\n"
 , "##  Default install locations\n"
 , "#############################\n"
-, "set (VERSIONDIR \"@@project@@-@@version@@\")\n"
 , "set (CMAKE_INSTALL_PREFIX installdir)\n"
 , "set (BINDIR bin)\n"
-, "set (SBINDIR sbin)\n"
-, "set (LIBEXECDIR libexec)\n"
-, "set (LIBDIR lib)\n"
-, "set (DATADIR share/${VERSIONDIR})\n"
-, "set (SYSCONFDIR etc)\n"
-, "set (SHAREDSTATEDIR com)\n"
-, "set (LOCALSTATEDIR var)\n"
+, "set (DATADIR share)\n"
+, "set (DOCDIR share/doc)\n"
+, "set (HTMLDIR share/html)\n"
 , "set (INCLUDEDIR include)\n"
-, "set (LOCALEDIR share/locale)\n"
-, "set (DOCDIR share/doc/${VERSIONDIR})\n"
-, "set (INFODIR share/info)\n"
-, "set (MANPRE share/man)\n"
-, "set (HTMLDIR ${DOCDIR})\n"
-, "set (DVIDIR ${DOCDIR})\n"
-, "set (PDFDIR ${DOCDIR})\n"
-, "set (PSDIR ${DOCDIR})\n"
-, "set (MANDIR  ${MANPRE}/man1)\n"
-, "set (MAN1DIR ${MANPRE}/man1)\n"
-, "set (MAN2DIR ${MANPRE}/man2)\n"
-, "set (MAN3DIR ${MANPRE}/man3)\n"
-, "set (MAN4DIR ${MANPRE}/man4)\n"
-, "set (MAN5DIR ${MANPRE}/man5)\n"
-, "set (MAN6DIR ${MANPRE}/man6)\n"
-, "set (MAN7DIR ${MANPRE}/man7)\n"
-, "set (MAN8DIR ${MANPRE}/man8)\n"
-, "set (MANNDIR ${MANPRE}/mann)\n\n"
+, "set (LIBDIR bin)\n"
+, "set (MANDIR share/man)\n"
 , "\n"
 , 0 }
 ;
@@ -90,7 +58,8 @@ const char * cmake_generator::default_rules[] = { "#\n"
  */
 const QString cmake_generator::rules_name("local.cmake");
 
-void cmake_generator::assoc_library(const ::UmlArtifact & a_target, QTextStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) {
+void cmake_generator::assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) {
+// Bouml preserved body begin 00038429
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -157,9 +126,11 @@ else
   QString src_flags_;
   find_hdr_link (a_target, a_includes, a_ldflags, src_flags_, section_name, true);
 }
+// Bouml preserved body end 00038429
 }
 
-void cmake_generator::assoc_source(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) {
+void cmake_generator::assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) {
+// Bouml preserved body begin 000384A9
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -194,7 +165,7 @@ if (! a_src_inc.isEmpty ())
     for (const_token_iterator e_, b_(a_src_inc, ' '); e_ != b_; ++b_)
     {
       const QString val_(b_->c_str ());
-      if (!val_.isEmpty ())
+      if (! val_.isEmpty ())
       {
         if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
         {
@@ -254,6 +225,7 @@ if (! a_src_flags.isEmpty () || ! comp_.isEmpty())
   }
   this->individual_obj_.append (user_extra_);
 }
+// Bouml preserved body end 000384A9
 }
 
 cmake_generator::cmake_generator()
@@ -274,6 +246,7 @@ std::auto_ptr< base_generator > cmake_generator::create()
 
 void cmake_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) 
 {
+// Bouml preserved body begin 000385A9
 // Keep parent dir definitions.
 if (NULL != a_loc.parent ())
 {
@@ -286,10 +259,12 @@ if (NULL != a_loc.parent ())
   a_sys.close.second.append (tmp_);
 }
 
+// Bouml preserved body end 000385A9
 
 }
 
-void cmake_generator::end_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) {
+void cmake_generator::end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) {
+// Bouml preserved body begin 00038629
 ////////////////////////////////
 // Finalise target build instructions
 //
@@ -397,10 +372,12 @@ else
   }
 }
 
+// Bouml preserved body end 00038629
 }
 
 void cmake_generator::initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys) 
 {
+// Bouml preserved body begin 000388A9
 BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
 this->project_name_ = a_project.name ().upper ();
 this->sys_buildfile_ = &a_sys;
@@ -459,11 +436,13 @@ QString proj_text_;
   }
 }
 a_sys.target(this->project_name_).second = proj_text_;
+// Bouml preserved body end 000388A9
 
 }
 
-void cmake_generator::install_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
+void cmake_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
 {
+// Bouml preserved body begin 00038929
 const QString target_name_(a_isdoc ?  a_target.name() : "${" + this->target_NAME () + "}");
 switch (a_type)
 {
@@ -503,11 +482,13 @@ case base_generator::man:
   break;
 }
 }
+// Bouml preserved body end 00038929
 
 }
 
 QString cmake_generator::mangle(QString input) 
 {
+// Bouml preserved body begin 0003C0A9
 const char dollar_('$');
 const char escape_('\\');
 const char left_paren_('(');
@@ -571,7 +552,7 @@ for (unsigned int cursor_(0); cursor_ < input.length (); ++cursor_)
 
 if (! quotes_.empty ())
 {
-  throw std::runtime_error ("<p><b>Error</b> Unmatched quotes in string: " + std::string(input) + "</p>");
+  throw std::runtime_error ("<p><b>Error</b> Unmatched quotes in string: " + std::string(input.utf8()) + "</p>");
 }
 while (true)
 {
@@ -583,11 +564,13 @@ while (true)
 }
 return input;
 
+// Bouml preserved body end 0003C0A9
 
 }
 
 void cmake_generator::preamble() 
 {
+// Bouml preserved body begin 00038FA9
 if (this->sys_buildfile_->preamble.second.isEmpty ()
      || ! this->language_set_.isEmpty ())
 {
@@ -605,10 +588,12 @@ if (this->sys_buildfile_->preamble.second.isEmpty ()
   }
   this->sys_buildfile_->preamble.second = init_text_;
 }
+// Bouml preserved body end 00038FA9
 
 }
 
-void cmake_generator::start_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
+void cmake_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
+// Bouml preserved body begin 00038B29
 /////////////////
 // Initialise variables for the new target
 this->target_NAME (a_target);
@@ -640,6 +625,7 @@ if (a_type != executable)
 // Start the source file associations
 a_os << "set (" << this->target_NAME () << " " << a_target.name () << ")\n\n";
 a_os << "set (" << this->target_NAME () << "_SRC ";
+// Bouml preserved body end 00038B29
 }
 
 

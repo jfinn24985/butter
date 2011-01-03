@@ -5,6 +5,7 @@
  * Intermediate generator template class.
  */
 #include "butter/base_generator.h"
+#include "butter/const_token_iterator.h"
 #include "bouml/CppSettings.h"
 #include "butter/butter_constants.h"
 #include "butter/compound_artifact.h"
@@ -16,11 +17,10 @@
 
 // Manual includes
 // #include <qfile.h>
+#include <qtextstream.h>
 #include <qregexp.h>
 #include <stdexcept>
 #include <qstack.h>
-
-// for getenv method
 #include <cstdlib>
 // --
 namespace butter {
@@ -54,6 +54,7 @@ class generator : public base_generator
 template<class derived>
 void generator<derived>::create_system(location & a_base, const ::UmlItem & a_project) 
 {
+// Bouml preserved body begin 00032FA9
 // Check for top-level system build-file document, create it from template.
 this->rules_file (a_base, a_project);
 
@@ -62,10 +63,10 @@ std::auto_ptr< compound_artifact > system_artifact_ = get_artifact (a_base, stat
 
 // Set the project root directory
 this->root_dir (a_base.full_path ());
-BUTTER_CHECK (! this->root_dir ().path ().isEmpty ()
-      , "<p><b>Program error:</b> Project root directory is not set properly.</p>");
 // Perform style specific initialisation
 static_cast< derived* >(this)->initialise (a_base, a_project, *system_artifact_);
+// Get a reference to the current style.
+const butter::style &style_ = butter::style::get_style ();
 
 //////////////
 // Process the project, handling items as we go.
@@ -165,7 +166,7 @@ while (! location_stack_.isEmpty ())
                       else if (stereotype_ == butter_constants::source_stereotype)
                       {
                         QString src_inc_, src_flags_;
-                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, static_cast< derived* >(this)->section_name, true); // Pass link flags to target
+                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name, true); // Pass link flags to target
                         static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
                                             , current_art_->name () + "." + CppSettings::sourceExtension ()
                                             , current_art_->name ()
@@ -176,7 +177,7 @@ while (! location_stack_.isEmpty ())
                       else if (stereotype_ == butter_constants::document_stereotype)
                       {
                         QString src_inc_, src_flags_;
-                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, static_cast< derived* >(this)->section_name, true); // Pass link flags to target
+                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name, true); // Pass link flags to target
                         QString basename_ (current_art_->name ());
                         const int dot_ (basename_.findRev ('.'));
                         if (-1 != dot_) basename_.truncate (dot_);
@@ -190,7 +191,7 @@ while (! location_stack_.isEmpty ())
                     }
                     ////////////////////
                     // End target
-                    find_hdr_link (art_item_, includes_, ldflags_, compflags_, static_cast< derived* >(this)->section_name, false); // Pass link flags to target
+                    find_hdr_link (art_item_, includes_, ldflags_, compflags_, style_.name, false); // Pass link flags to target
                     static_cast< derived* >(this)->end_target (art_item_, entry_os_
                                             , includes_, ldflags_, compflags_, compiler_, target_type_);
                   }
@@ -291,17 +292,17 @@ while (! location_stack_.isEmpty ())
   {
     // add the inter-file link
     static_cast< derived* >(this)->descendent_link (*current_.get (), *system_artifact_, *top_);
-    // Close the build file
-    // MSC_NO_RESET(current_, std::auto_ptr< compound_artifact >)();
   }
 }
 
+// Bouml preserved body end 00032FA9
 
 }
 
 template<class derived>
 void generator<derived>::rules_file(location & a_base, const ::UmlItem & a_project) 
 {
+// Bouml preserved body begin 000374A9
 // Helper functions for managing rules files.
 class helper_
 {
@@ -330,11 +331,11 @@ public:
       const char **line_ = &a_list[0];
       for ( ; 0 != index; --index)
       {
-   	for ( ; 0 != *line_; ++line_)
+        for ( ; 0 != *line_; ++line_)
         {
           // do nothing
-	}
-	++line_;
+        }
+        ++line_;
       }
       for ( ; 0 != *line_; ++line_)
       {
@@ -350,19 +351,19 @@ public:
       QFile input_file_(a_name);
       if (!input_file_.open (IO_ReadOnly))
       {
-	const QString error_("Unable to open text file for reading: ");
+        const QString error_("Unable to open text file for reading: ");
         throw std::runtime_error((error_ + a_name).utf8().data());
       }
       while (!input_file_.atEnd ())
       {
         const int sz_ = 1024;
         char buf_[1024];
-	const int read_sz_ (input_file_.readBlock(&buf_[0], sz_));
-	if (0 > read_sz_)
-	{
-	  const QString error_("Reading of file failed for: ");
+        const int read_sz_ (input_file_.readBlock(&buf_[0], sz_));
+        if (0 > read_sz_)
+        {
+          const QString error_("Reading of file failed for: ");
           throw std::runtime_error((error_ + a_name).utf8().data());
-	}
+        }
         result.append(QString::fromUtf8(buf_, read_sz_));
       }
     }
@@ -385,29 +386,32 @@ if (! a_project.property_value (butter_constants::butter_version_name, version_)
 //
 const char *const var_ = getenv (butter_constants::app_data_env_var.utf8());
 const QString app_data_var (var_ == NULL? "" : var_);
-#ifdef DEBUG
-butter::log::com.trace(butter::log::debug, ("Looking for env var: "
-     + butter_constants::app_data_env_var).utf8());
-butter::log::com.trace(butter::log::debug, ("Value of var is: "
-     + app_data_var).utf8());
-#endif
+if (DEBUG)
+{
+  butter::log::com.trace(butter::log::debug, ("Looking for env var: "
+                         + butter_constants::app_data_env_var).utf8());
+  butter::log::com.trace(butter::log::debug, ("Value of var is: "
+                         + app_data_var).utf8());
+}
 if ( !app_data_var.isEmpty() && ! app_data_var.isNull ())
 {
   QFileInfo app_data_info_((pathcmp (app_data_var)
-    / butter_constants::app_data_subdir_name
-    / static_cast< derived* >(this)->section_name).path ());
-#ifdef DEBUG
-  butter::log::com.trace(butter::log::debug, ("Full path is: "
-      + app_data_info_.absFilePath()).utf8());
-#endif
+                            / butter_constants::app_data_subdir_name
+                            / style::get_style().name).path ());
+  if (DEBUG)
+  {
+    butter::log::com.trace(butter::log::debug, ("Full path is: "
+                           + app_data_info_.absFilePath()).utf8());
+  }
   if (app_data_info_.exists ()
       && app_data_info_.isReadable()
       && app_data_info_.isDir ())
   {
-#ifdef DEBUG
-    butter::log::com.trace(butter::log::debug
-        , "Path exists, is readable and is a directory");
-#endif
+    if (DEBUG)
+    {
+      butter::log::com.trace(butter::log::debug
+                             , "Path exists, is readable and is a directory");
+    }
     // For each file in directory create a UML document
     //
     QDir app_data_(app_data_info_.absFilePath());
@@ -418,8 +422,8 @@ if ( !app_data_var.isEmpty() && ! app_data_var.isNull ())
       {
         a_base.create_uml_document (app_data_[i_])->set_Description (
           helper_::make_substitutions (
-		helper_::file_to_string(app_data_.absFilePath(app_data_[i_]))
-		     , project_name_, version_).utf8());
+            helper_::file_to_string(app_data_.absFilePath(app_data_[i_]))
+            , project_name_, version_).utf8());
       }
     }
   }
@@ -439,8 +443,8 @@ if (rules_name_.contains(" "))
     {
       a_base.create_uml_document (name_)->set_Description (
         helper_::make_substitutions (
-            helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], i_)
-              , project_name_, version_).utf8());
+          helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], i_)
+          , project_name_, version_).utf8());
       ++i_; // Only increment i for non-empty names!
     }
   }
@@ -450,12 +454,13 @@ else
   if (a_base.find_uml_document (rules_name_).isEmpty ())
   {
     a_base.create_uml_document (rules_name_)->set_Description (
-       helper_::make_substitutions (
-         helper_::list_to_string(
-           &static_cast< derived* >(this)->default_rules[0], 0)
-           , project_name_, version_).utf8());
+      helper_::make_substitutions (
+        helper_::list_to_string(
+          &static_cast< derived* >(this)->default_rules[0], 0)
+        , project_name_, version_).utf8());
   }
 }
+// Bouml preserved body end 000374A9
 
 }
 

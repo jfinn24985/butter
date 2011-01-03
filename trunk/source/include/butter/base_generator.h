@@ -4,19 +4,16 @@
 /**
  * Base generator source file
  */
-#include "butter/const_token_iterator.h"
 #include <qstring.h>
-#include "butter/utility.h"
 #include <memory>
 
-#include "butter/config.h"
-namespace butter { class log; } 
 namespace butter { class butter_constants; } 
-class UmlArtifact;
-class UmlPackage;
+namespace butter { class const_token_iterator; } 
+namespace butter { class pathcmp; } 
 namespace butter { class location; } 
 class UmlItem;
 namespace butter { class compound_artifact; } 
+class UmlArtifact;
 
 namespace butter {
 
@@ -106,7 +103,7 @@ class base_generator
     /**
      * The root directory of the project.
      */
-    pathcmp root_dir_;
+    std::auto_ptr< pathcmp > root_dir_;
 
     /**
      * The version of the target name to use with variables.
@@ -170,16 +167,13 @@ class base_generator
      */
     const pathcmp &root_dir() const
     {
-      return root_dir_;
+      return *root_dir_.get ();
     }
 
     /**
      * Set the project's root directory
      */
-    void root_dir(const pathcmp & a_path)
-    {
-      root_dir_ = a_path.absPath ();
-    }
+    void root_dir(const pathcmp & a_path);
 
     /**
      * Version of target name for variables (generally
@@ -202,6 +196,9 @@ class base_generator
      * all uppercase version of location + target.)
      */
     static QString to_target_NAME(const ::UmlArtifact & a_target);
+    explicit base_generator();
+
+    virtual ~base_generator();
 
 };
 

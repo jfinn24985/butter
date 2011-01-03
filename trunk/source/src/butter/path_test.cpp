@@ -6,10 +6,10 @@ void do_path_test (QString const& a1, QString const& a2, QString const& a3, QStr
 {
 try {
 #ifdef _MSC_VER
-  int i;
+  unsigned int i;
 #define MSC_NO_INT
 #else
-#define MSC_NO_INT int
+#define MSC_NO_INT unsigned int
 #endif
   butter::pathcmp p1, p2;
   std::cerr << "Created empty path\n";

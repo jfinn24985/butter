@@ -7,11 +7,10 @@
 #include "butter/generator.h"
 #include <qstring.h>
 #include <qtextstream.h>
+
 #include <memory>
 #include "butter/base_generator.h"
 
-namespace butter { class butter_constants; } 
-namespace butter { class log; } 
 class UmlArtifact;
 namespace butter { class compound_artifact; } 
 namespace butter { class location; } 
@@ -136,21 +135,6 @@ friend class generator<gmake_generator>;
      */
     static const QString build_file_sysname;
 
-    /**
-     * Comment line prefix
-     */
-    static const QString comment_string;
-
-    static const QString end_phrase;
-
-    static const QString start_phrase;
-
-    /**
-     * The label for description 'sections' and the value of 
-     * the style for this buildfile type.
-     */
-    static const QString section_name;
-
 
   private:
     /**
@@ -239,7 +223,7 @@ friend class generator<gmake_generator>;
      * - Properties
      *  - associated includes, ldflags, cflags
      */
-    void assoc_library(const ::UmlArtifact & a_target, QTextStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags);
+    void assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags);
 
     /**
      *  This method sets up object for creating a new target entry for a_target.
@@ -258,7 +242,7 @@ friend class generator<gmake_generator>;
      * the target artifact that is associated to the source.</property>
      * \endcond XDOC
      */
-    void assoc_source(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc);
+    void assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc);
 
 
   public:
@@ -277,7 +261,7 @@ friend class generator<gmake_generator>;
     /**
      * ** This method finalises the target entry for a_target.
      */
-    void end_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type);
+    void end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type);
 
     /**
      * In this style external targets are not used, external library 
@@ -316,7 +300,7 @@ friend class generator<gmake_generator>;
      * - Properties
      *  - install (library, executable and document)
      */
-    void install_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc);
+    void install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc);
 
     /**
      * no assign
@@ -355,7 +339,7 @@ friend class generator<gmake_generator>;
      *  - executable
      *  - non-standard target
      */
-    void start_target(const ::UmlArtifact & a_target, QTextStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type);
+    void start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type);
 
 };
 
