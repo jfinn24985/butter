@@ -1,5 +1,5 @@
 class bjam_generator
-!!!212649.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+!!!212649.cpp!!!	assoc_library(in a_target : UmlArtifact, inout a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 QString project_;
 if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
@@ -17,7 +17,7 @@ else
 a_os << a_target.name () << "\n\t";
 /////////////
 // Note. Header/link information is imported with library in boost jam.
-!!!212777.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+!!!212777.cpp!!!	assoc_source(in a_target : UmlArtifact, inout a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 QString individual_;
 if (! this->is_other_ && (! a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
 {
@@ -35,8 +35,8 @@ if (! this->is_other_ && (! a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
   {
     for (const_token_iterator e_, b_(a_src_inc, ' '); b_ != e_; ++b_)
     {
-      const QString path_(*b_);
-      if (not path_.isEmpty ())
+      const QString path_(b_->c_str ());
+      if (! path_.isEmpty ())
       {
         source_os_ << "<include>";
         if (QDir::isRelativePath (path_)) source_os_ << "$(topdir)/";
@@ -77,7 +77,7 @@ if (NULL != a_loc.parent ())
   os_ << "build-project " << dir_line_ << " ;\n\n";
   a_sys.close.second.append (tmp_);
 }
-!!!212905.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!212905.cpp!!!	end_target(in a_target : UmlArtifact, inout a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ///////////////////////
 // end target definition
 a_os << ":\n\t"; // End sources.
@@ -86,8 +86,8 @@ if (! a_include.isEmpty ())
 {
   for (const_token_iterator e_, b_(a_include, ' '); b_ != e_; ++b_)
   {
-    const QString flag_(*b_);
-    if (not flag_.isEmpty ())
+    const QString flag_(b_->c_str ());
+    if (! flag_.isEmpty ())
     {
       a_os << "<include>";
       if (QDir::isRelativePath (flag_)) a_os << "$(topdir)/";
@@ -104,8 +104,8 @@ if (! a_cflags.isEmpty ())
     const QString name_ ("<" + this->other_target_type_ + "flags>\"");
     for (const_token_iterator e_, b_(a_cflags, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << name_ << flag_ << "\" ";
       }
@@ -116,8 +116,8 @@ if (! a_cflags.isEmpty ())
   {
     for (const_token_iterator e_, b_(a_cflags, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << "<cxxflags>\"" << flag_ << "\" " << "<cflags>\"" << flag_ << "\"\n\t";
       }
@@ -135,8 +135,8 @@ case static_library:
       // Put linker and include flags as pass-to-user
       for (const_token_iterator e_, b_(a_ldflags, ' '); b_ != e_; ++b_)
       {
-        const QString flag_(*b_);
-        if (not flag_.isEmpty ())
+        const QString flag_(b_->c_str ());
+        if (! flag_.isEmpty ())
         {
           a_os << "<linkflags>\"" << flag_ << "\" ";
         }
@@ -148,8 +148,8 @@ case static_library:
     {
       for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
       {
-        const QString flag_(*b_);
-        if (not flag_.isEmpty ())
+        const QString flag_(b_->c_str ());
+        if (! flag_.isEmpty ())
         {
           a_os << "<include>";
           if (QDir::isRelativePath (flag_)) a_os << "$(topdir)/";
@@ -169,8 +169,8 @@ case shared_library:
       // Use linker flags but pass on any headers.
       for (const_token_iterator e_, b_(a_ldflags, ' '); b_ != e_; ++b_)
       {
-        const QString flag_(*b_);
-        if (not flag_.isEmpty ())
+        const QString flag_(b_->c_str ());
+        if (! flag_.isEmpty ())
         {
           a_os << "<linkflags>\"" << flag_ << "\" ";
         }
@@ -184,8 +184,8 @@ case shared_library:
       a_os << ": :";
       for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
       {
-        const QString flag_(*b_);
-        if (not flag_.isEmpty ())
+        const QString flag_(b_->c_str ());
+        if (! flag_.isEmpty ())
         {
           a_os << "<include>";
           if (QDir::isRelativePath (flag_)) a_os << "$(topdir)/";
@@ -202,8 +202,8 @@ case other:
   {
     for (const_token_iterator e_, b_(a_ldflags, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << "<linkflags>\"" << flag_ << "\" ";
       }
@@ -223,8 +223,8 @@ if (! this->individual_obj_.isEmpty ())
   {
     for (const_token_iterator e_, b_(headers_, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << "<include>";
         if (QDir::isRelativePath (flag_)) a_os << "$(topdir)/";
@@ -239,8 +239,8 @@ if (! this->individual_obj_.isEmpty ())
   {
     for (const_token_iterator e_, b_(flags_, ' '); b_ != e_; ++b_)
     {
-      const QString flag_(*b_);
-      if (not flag_.isEmpty ())
+      const QString flag_(b_->c_str ());
+      if (! flag_.isEmpty ())
       {
         a_os << "<cxxflags>\"" << flag_ << "\" " << "<cflags>\"" << flag_ << "\"\n\t";
       }
@@ -314,16 +314,17 @@ QString content_;
     QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
     os_ << "# Include local constants\npath-constant topdir : . ;\ninclude " << name_ << " ;\n\n";
   }
-  os_ << "# Set project's global settings\nproject " << project_name_;
-  os_ << "\n\t:  requirements <debug-symbols>on:<define>\"DEBUG=1\"\n\t";
+  os_ << "# Set project's global settings\nproject " << project_name_
+      << "\n\t: requirements <debug-symbols>on:<define>\"DEBUG=1\""
+      << "\n\t<debug-symbols>off:<define>\"DEBUG=0\"\n\t";
   QString link_, flag_; // Needed arguments.
   find_hdr_link (a_project, base_include_, link_, flag_, section_name, false);
   if (! base_include_.isEmpty ())
   {
     for (const_token_iterator e_, b_(base_include_, ' '); b_ != e_; ++b_)
     {
-      const QString path_(*b_);
-      if (not path_.isEmpty ())
+      const QString path_(b_->c_str ());
+      if (! path_.isEmpty ())
       {
         os_ << "<include>";
         if (QDir::isRelativePath (path_)) os_ << "$(topdir)/";
@@ -336,8 +337,8 @@ QString content_;
   {
     for (const_token_iterator e_, b_(link_, ' '); b_ != e_; ++b_)
     {
-      const QString path_(*b_);
-      if (not path_.isEmpty ())
+      const QString path_(b_->c_str ());
+      if (! path_.isEmpty ())
       {
         os_ << "<linkflags>\"" << path_ << "\" ";
       }
@@ -348,8 +349,8 @@ QString content_;
   {
     for (const_token_iterator e_, b_(flag_, ' '); b_ != e_; ++b_)
     {
-      const QString path_(*b_);
-      if (not path_.isEmpty ())
+      const QString path_(b_->c_str ());
+      if (! path_.isEmpty ())
       {
         os_ << "<cxxflags>\"" << path_ << "\" <cflags>\""<< path_ << "\"\n\t";
       }
@@ -369,13 +370,13 @@ QString content_;
   }
 }
 a_sys.preamble.second = content_;
-!!!213033.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
+!!!213033.cpp!!!	install_target(in a_target : UmlArtifact, inout a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
 const QString name_ (a_target.name ());
 a_os << "install install_" << name_ << " : " << name_
         << " : <variant>release:<location>$(INSTALL_PREFIX)/$(" << a_loc_var << ") \n\t\t"
       << "<variant>debug:<location>$(DEBUG_PREFIX)/\""
       << root_dir ().create_relative (a_target.package ().src_path ()) << "\" ;\n";
-!!!212265.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!212265.cpp!!!	start_target(in a_target : UmlArtifact, inout a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////////////
 // Reset variables
 this->other_target_type_.truncate (0);

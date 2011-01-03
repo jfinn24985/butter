@@ -32,35 +32,39 @@ static const unsigned int size_ (sizeof(kind_as_string_)/sizeof(char*));
 const unsigned int our_kind_ (const_cast< UmlItem* >(this)->kind ());
 return kind_as_string_[(our_kind_ < 0U || size_ <= our_kind_) ? size_ - 1 : our_kind_];
 !!!131881.cpp!!!	print(in a_depth : uint, inout a_os : ostream) : void
-static const QString title_lbl__ ("[TT] ");
-static const QString watch_lbl__ ("[**] ");
-QString indent__;
-indent__.fill (' ', a_depth);
-a_os << indent__ << title_lbl__ << "Base information\n";
-a_os << indent__ << watch_lbl__ << "name = \"" << name () << "\"\n";
-a_os << indent__ << watch_lbl__ << "depth = \"" << a_depth << "\"\n";
-a_os << indent__ << watch_lbl__ << "stereotype = \"" << stereotype () << "\"\n";
-
-int kind_ (const_cast< UmlItem& >(*this).kind ());
-a_os << indent__ << watch_lbl__ << "kind = \"" << kind_as_string () << "\" [" << kind_ << "]\n";
-a_os << indent__ << watch_lbl__ << "description = \"" << description () << "\"\n";
-
-QDict< QCString > l_properties (properties ());
-
-QDictIterator < QCString > l_props (l_properties);
-
-if (l_props.isEmpty ())
+if (DEBUG)
 {
-  a_os << indent__ << title_lbl__ << "No Properties\n";
-}
-else
-{
-  a_os << indent__ << title_lbl__ << "Properties (# = " << l_props.count () << ")\n";
-  for (; l_props.current (); ++l_props)
+  static const QString title_lbl_ ("[TT] ");
+  static const QString watch_lbl_ ("[**] ");
+  QString indent_;
+  indent_.fill (' ', a_depth);
+  a_os << indent_ << title_lbl_ << "Base information\n";
+  a_os << indent_ << watch_lbl_ << "name = \"" << name () << "\"\n";
+  a_os << indent_ << watch_lbl_ << "depth = \"" << a_depth << "\"\n";
+  a_os << indent_ << watch_lbl_ << "stereotype = \"" << stereotype () << "\"\n";
+
+  int kind_ (const_cast< UmlItem& >(*this).kind ());
+  a_os << indent_ << watch_lbl_ << "kind = \"" << kind_as_string () << "\" [" << kind_ << "]\n";
+  a_os << indent_ << watch_lbl_ << "description = \"" << description () << "\"\n";
+
+  QDict< QCString > properties_ (properties ());
+
+  QDictIterator < QCString > props_ (properties_);
+
+  if (props_.isEmpty ())
   {
-    a_os << indent__ << watch_lbl__ << "[" << l_props.currentKey () << "] = \"" << *(l_props.current ()) << "\"\n";
+    a_os << indent_ << title_lbl_ << "No Properties\n";
   }
-  a_os << indent__ << title_lbl__ << "End Properties\n";
+  else
+  {
+    a_os << indent_ << title_lbl_ << "Properties (# = " << props_.count () << ")\n";
+    for (; props_.current (); ++props_)
+    {
+      a_os << indent_ << watch_lbl_ << "[" << props_.currentKey () << "] = \""
+	 << *(props_.current ()) << "\"\n";
+    }
+    a_os << indent_ << title_lbl_ << "End Properties\n";
+  }
 }
 !!!135081.cpp!!!	property_search(in a_key : unistr, inout a_value : unistr) : bool
 UmlItem *item_ = const_cast< UmlItem* >(this);

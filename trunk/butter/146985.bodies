@@ -59,7 +59,7 @@ if (a_loc.packages ().count () > 0)
   // If any documents found
   if (! docs_.isEmpty ())
   {
-    MSC_NO_RESET (Result, std::auto_ptr< compound_artifact >)(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
+    Result = std::auto_ptr< compound_artifact >(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
     for (unsigned int k_ = 1; k_ < docs_.count (); ++k_)
     {
       UmlItem * item_ = docs_.at (k_);
@@ -76,26 +76,26 @@ if (NULL == Result.get ())
 {
   // This will throw an error if no packages exist.
   // Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
-  MSC_NO_RESET (Result, std::auto_ptr< compound_artifact >)(new compound_artifact (*a_loc.create_uml_document (a_name)));
+  Result = std::auto_ptr< compound_artifact >(new compound_artifact (*a_loc.create_uml_document (a_name)));
 }
 return Result;
 !!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
 if (a_list.isEmpty ())
 {
-  a_list = a_addition.stripWhiteSpace ();
+  a_list = a_addition.simplifyWhiteSpace ();
 }
 else
 {
-  for (const_token_iterator e1_, b1_(a_addition, ' '); b1_ != e1_; ++b1_)
+  for (const_token_iterator e1_, b1_(a_addition.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
   {
-    const QString new_item_(*b1_);
-    if (not new_item_.isEmpty ())
+    const QString new_item_(b1_->c_str ());
+    if (! new_item_.isEmpty ())
     {
       bool match_ (false);
       for (const_token_iterator e2_, b2_(a_list, ' '); b2_ != e2_; ++b2_)
       {
-        const QString orig_(*b2_);
-        if (not orig_.isEmpty ())
+        const QString orig_(b2_->c_str ());
+        if (! orig_.isEmpty ())
         {
           if (orig_ == new_item_)
           {
@@ -139,4 +139,3 @@ Result.append ("_");
 Result.append(const_cast< UmlArtifact& >(a_target).name ());
 find_replace (Result, '.', '_');
 return Result.upper ();
-

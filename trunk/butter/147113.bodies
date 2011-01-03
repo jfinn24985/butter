@@ -86,7 +86,7 @@ for (QString line_ = a_is.readLine ();
         else if (line_.contains (QString (butter::butter_constants::target_label)))
         {
           QString label_ = line_.mid (line_.find (QString (butter::butter_constants::target_label)) + butter::butter_constants::target_label.length ());
-          cache_ = &target (label_.stripWhiteSpace ());
+          cache_ = &target (label_.simplifyWhiteSpace ());
         }
         else
         {

@@ -38,7 +38,7 @@ classcanvas 132649 class_ref 158889 // wix_installer
 end
 classcanvas 132777 class_ref 159017 // basic_style
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
-  xyz 557 260 2000
+  xyz 35 333 2000
 end
 classcanvas 133033 class_ref 160169 // rpm_installer
   draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
@@ -73,21 +73,6 @@ relationcanvas 129705 relation_ref 163241 // <realization>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
-relationcanvas 131113 relation_ref 157225 // <dependency>
-  from ref 130985 z 2007 to ref 128169
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 131241 relation_ref 160937 // <dependency>
-  from ref 130985 z 2007 to ref 128425
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 131369 relation_ref 158633 // <dependency>
-  from ref 130985 z 2007 to ref 128681
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
 relationcanvas 131497 relation_ref 162985 // <dependency>
   from ref 128937 z 2001 to ref 130985
   no_role_a no_role_b
@@ -95,11 +80,6 @@ relationcanvas 131497 relation_ref 162985 // <dependency>
 end
 relationcanvas 131881 relation_ref 169641 // <realization>
   from ref 131753 z 2001 label "<derived->cmake_generator>" xyz 279 198 2001 to ref 128937
-  no_role_a no_role_b
-  no_multiplicity_a no_multiplicity_b
-end
-relationcanvas 132137 relation_ref 170025 // <dependency>
-  from ref 130985 z 2019 to ref 131753
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
@@ -125,6 +105,16 @@ relationcanvas 133673 relation_ref 174121 // <dependency>
 end
 relationcanvas 133929 relation_ref 175401 // <dependency>
   from ref 128937 z 2001 to ref 133801
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134057 relation_ref 176809 // <dependency>
+  from ref 128937 z 2001 to ref 133161
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134185 relation_ref 176937 // <dependency>
+  from ref 128169 z 2007 to ref 132777
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

@@ -1,6 +1,6 @@
 format 66
 "Qt" // External::Qt
-  revision 15
+  revision 16
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -47,6 +47,32 @@ format 66
       visibility package 
       cpp_external cpp_decl "${name}
 #include <qdir.h>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 162985 "QTextOStream"
+      visibility package 
+      cpp_external cpp_decl "${name}
+#include <qtextstream.h>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 163113 "QTextIStream"
+      visibility package 
+      cpp_external cpp_decl "${name}
+#include <qtextstream.h>
 "
       java_decl ""
       php_decl ""

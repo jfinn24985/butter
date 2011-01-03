@@ -1,6 +1,6 @@
 format 66
 "API USER" // API USER
-  revision 46
+  revision 49
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -862,13 +862,10 @@ ${body}}
       operation 133545 "kind_as_string"
 	const public explicit_return_type "unistr"
 	nparams 0
-	cpp_decl "#ifdef DEBUG
-    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
-#endif"
-	cpp_def "#ifdef DEBUG
-${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
 ${body}}
-#endif
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
@@ -899,16 +896,14 @@ ${body}}
 	public explicit_return_type "void"
 	nparams 2
 	  param in name "a_depth" explicit_type "uint"
-	  param inout name "a_os" explicit_type "ostream"
-	cpp_decl "#ifdef DEBUG
-    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
-#endif"
-	cpp_def "#ifdef DEBUG
-${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}
+	  param inout name "a_os" type class_ref 162985 // QTextOStream
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}
 {
+  BUTTER_ALWAYS (DEBUG, \"Programming error: attempt to get debug information in release build\");
 ${body}
 }
-#endif
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
@@ -916,9 +911,7 @@ ${body}}
 	
 	
 	
-	comment "Print information about a_item.
-
-(Only in non NO_LOG  builds)"
+	comment "Print information about a_item."
       end
 
       operation 135081 "property_search"
@@ -1499,84 +1492,84 @@ Do not forget to modify Main !"
     artifact 142889 "bouml"
       stereotype "library"
       associated_artifacts
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 4864 // aDirection
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 134057 // qt
-	artifact_ref 5120 // anItemKind
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 7297 // UmlNode
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 7169 // UmlItem
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 4992 // aVisibility
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 768 // CppSettings
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 5633 // UmlClass
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 6529 // UmlComponentView
+	artifact_ref 6016 // CppSettingsCmd
 	artifact_ref 5889 // UmlClassMember
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 134057 // qt
 	artifact_ref 1792 // UmlBaseClassDiagram
 	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 4480 // UmlCom
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 6145 // UmlCollaborationDiagram
 	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 5505 // UmlAttribute
 	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 5633 // UmlClass
+	artifact_ref 7681 // UmlRelation
 	artifact_ref 6528 // UmlBuiltin
 	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 7297 // UmlNode
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 7169 // UmlItem
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 768 // CppSettings
+	artifact_ref 4992 // aVisibility
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 5120 // anItemKind
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 512 // UmlBaseActualParameter
 	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 4480 // UmlCom
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 4864 // aDirection
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 1664 // UmlBaseClass
       end
       comment "  Reference all the components used to made a C++ executable,
   used by 'genpro' to produce a .pro file allowing to produce a Makefile
@@ -2085,12 +2078,10 @@ ${namespace_end}
 ${includes}
 #include \"UmlCom.h\"
 #include \"UmlPackage.h\"
+#include \"butter/config.h\"
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_classes
 	class_ref 7553 // UmlItem
       end

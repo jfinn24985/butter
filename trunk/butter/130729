@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 85
+  revision 90
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -1139,6 +1139,303 @@ First beta release of the \"butter\" build system plug-out."
       associated_artifacts
       end
       comment "include version.jam ;"
+    end
+
+    artifact 170793 "install_reference.t2t"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "Common settings for installation targets of all styles
+Butter plugout @@version@@
+%!date
+
+= Introduction =
+
+This section is a reference to how this plugout creates an installation
+process for your project. The modern process for installing a project
+generally involves an installation packager.  However, this version of the
+plugout does not support these directly, relying on the primitive install
+features of each of the build tools.  Therefore the current ``install``
+build target should be considered more of a tool to copy project files
+into a well-defined location than a real installation process.
+
+**NOTE** Support for the WiX and RPM packaging systems is set as a
+new feature for the next release of the plugout! This new feature will
+be backwards compatible with the following.
+
+= Install keywords =[ref_install]
+
+Where a particular UML artefact is installed is controlled by the
+target type unless over-ridden by the ``butter install`` UML artefact
+property. Only UML artefacts with the ``executable`` or ``library``
+stereotype will automatically be installed. The ``butter install``
+property can contain an actual path or one of the following keywords.
+
+:noinstall
+ Turns off automatic installation of ``executable`` or ``library``
+ stereotype artefacts.
+
+:BIN
+ For program executable files. This is the default location for UML
+ artefacts with the ``executable`` stereotype.
+
+:DATA
+ For configuration and static data files. This is the default location
+ for UML artefacts with the ``library`` stereotype and ``static`` type.
+
+:DOC
+ For documentation files that are not HTML or man pages.
+
+:HTML
+ For HTML documentation.
+
+:INC
+ For header files.
+
+:LIB
+ For dynamic link libraries. This is the default location for UML
+ artefacts with the ``library`` stereotype and ``shared`` type.
+
+:MAN
+ For man pages.
+
+
+== Installation layout ==
+
+These default locations are statically defined in the system-settings
+build files generated for each style.  The UML artefacts representing
+these build files can be edited in each bouml project to suit your needs.
+At this time the plugout has no mechanism to change these locations
+consistently across styles.
+
+All ``install`` targets put artefacts into a directory tree based on a
+directory called ``installdir`` created in the project`s root directory.
+
+```
++-+ installdir
+  +- bin //BIN// //LIB//
+  +- include //INC//
+  +-+ share //DATA//
+    +- doc //DOC//
+    +- html //HTML//
+    +- man1 //MAN//
+```
+
+
+= Future directions =
+
+When the packaging programs WiX and RPM become supported directly by the
+plugout the current keywords will be mapped to locations based on the
+package manager and its primary operating system target as shown below.
+In the following diagrams the label VERSIONDIR should be read as a
+combination of the project's name and the ``butter version`` property of
+the UML project or default of ``1.0``. The format is ``name-version``
+It is also envisaged that more installation keywords will be introduced
+to better support a real installation process.
+
+
+For the RPM packager the default locations for these keywords are:
+```
++-+ RPM_PREFIX
+  + bin //BIN//
+  + include/VERSIONDIR //INC//
+  + lib //LIB//
+  +-+ share/VERSIONDIR //DATA//
+    +-+ doc/packages/VERSIONDIR //DOC//
+      +- html //HTML//
+    +-+ man
+      +- man1 //MAN// //MAN1//
+      +- man(n) //MAN(n)//
+```
+
+For WiX packager the default locations for these keywords are:
+```
++-+ %ProgramFiles% 
+  +-+ VERSIONDIR //BIN// //LIB// //DATA//
+    +- include //INC//
+    +-+ documentation //DOC//
+      +- html //HTML//
+      +- man //MAN// ... //MAN(n)//
+```
+
+
+"
+    end
+
+    artifact 171945 "variant_reference.t2t"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "Common settings for build variants of all styles
+Butter plugout @@version@@
+%!date
+
+
+= Introduction =
+
+The plugout directly supports two variants; a ``debug`` and a ``release``
+variant.  The default build variant is ``debug``.  The actual name of
+the variant is style specific, in most styles you specify something like
+``VARIANT=DEBUG`` in all upper case.  The exception is boost style
+where you specify ``variant=debug`` in all lower case.
+
+:Debug
+ The ``debug`` variant is expected to have none or minimal optimisation
+ and to include debugging information in the compiled artefacts.
+
+:Release
+ The ``release`` variant is expected to have good optimisation (generally
+ -O2 or /O2) and not include debugging information.
+
+
+The build systems have the following common targets with each variant.
+
+://default// or all
+ The default target will build all targets in the project. The ``boost``
+ style does not have a separate ``install`` process and performs the
+ installation actions after successfully building all targets.
+
+:install
+ Default action is to copy project files into the ``installdir`` directory
+ tree. See the discussion of installation settings for more information.
+
+:clean
+ What exactly is removed is to some extent style dependent. In general
+ the plugout expects only object artefacts actually created with the
+ current variant to be removed.  The ``boost`` and ``standard`` jam
+ styles will also remove target artefacts.
+
+:distclean
+ For the gmake style, the ``clean`` target removes only object artefacts
+ created by the current variant. The ``distclean`` target is provided
+ to additionally remove targets artefacts, make dependency files, ``core``
+ files and files with names ending in ``~``.
+
+
+= Variant specific notes =
+
+== Debug variant ==
+
+The user can expect the DEBUG preprocessor macro to be defined as ``1``
+during compilation in all build styles. 
+
+== Release variant ==
+
+The user can expect the DEBUG preprocessor macro to be defined as ``0``. 
+**Note** that the DEBUG macro is defined as ``0`` not  ``undefined``.
+
+
+"
+    end
+
+    artifact 173097 "variables_reference.t2t"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "Build variable common to all styles
+Butter plugout @@version@@
+%!date
+
+= Introduction =
+
+It is difficult to write style and operating system neutral 
+build rules for a number of reasons.  This plugout makes
+sure the following variables are defined for each style and
+operating system to help make writing build system rules 
+more portable.
+
+The general form to use in UML artefact properties is shown
+in the following.  The plugout knows when these need to be
+transcribed for a particular build style, for example the
+cmake style requires curly braces ``{}`` instead of ``()``.
+If you write them directly into a build artefact you need
+to do the transcription yourself.
+
+== General use variables ==
+
+These variables are available for use in build files and 
+properties.
+ 
+:$(SLASH)
+ This is defined to the operating system specific path separator.
+ Most Windows build tools and compilers can handle paths with unix
+ ``/`` path separator, but commands simple commands like DEL do
+ not. Furthermore, Windows paths on unix are usually scrambled
+ because ``\\`` is interpreted as an escape character.
+
+:BIN DATA DOC HTML INC LIB MAN
+ Labels for the ``install`` property that translate to variables
+ representing installation path. The path variables add ``DIR`` onto the
+ name, so xxx becomes $(xxxDIR). You can use the $(xxxDIR) variables in
+ your own build rules.
+
+
+== Internal use variables ==
+
+The following variables are used when writing build system files
+for new compilers or operating environments. They may differ in
+letter case between styles so are not suitable to be used in
+UML object properties.  Users can put them in style specific build
+rules and must check for the correct letter case for each particular
+style. 
+
+:$(sufdep)
+ (gmake generator only) suffix for a generated dependency makefile
+
+:$(sufexe)
+  suffix for a binary executable
+
+:$(suflib)
+  suffix for a static library
+
+:$(sufobj)
+  suffix for an object file
+
+:$(sufshr)
+  suffix for a dynamic link library.
+
+
+
+"
+    end
+
+    artifact 174377 "customisation_reference.t2t"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "Build variable common to all styles
+Butter plugout @@version@@
+%!date
+
+= Defining new toolsets =
+
+When defining a new toolset note the following expectations:
+
+* The debug variant expects debugging symbols to be included in the
+build process.
+* The release variant expects no debugging symbols
+* The DEBUG preprocessor macro will be set to 1 for debug variants
+and 0 for release. It must always be defined."
+    end
+
+    artifact 175529 "feature_list.t2t"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "Build variable common to all styles
+Butter plugout @@version@@
+%!date
+
+== Features of version 1.1 ==
+
+
+== Planned future features ==
+
+* Direct support for project installation using WiX or RPM
+package managers.
+
+* The Boost project are currently changing their build system.
+The new system will to be supported"
     end
   end
 

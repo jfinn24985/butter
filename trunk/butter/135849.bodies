@@ -364,10 +364,11 @@ QTextOStream cppos_ (&a_cppflags);
 QTextOStream flagos_ (&a_cflags);
 if (! a_inc_list.isEmpty())
 {
-  QStringList list_ (QStringList::split (" ", a_inc_list));
-  for (unsigned int i_ (0); i_ < list_.count (); ++i_)
+  for (const_token_iterator e1_, b1_(a_inc_list.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
   {
-    const QString item_ ((*list_.at (i_)).stripWhiteSpace ());
+    const QString item_(b1_->c_str ());
+    BUTTER_CHECK (! item_.isEmpty ()
+                  , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
     if ('$' != item_[0] && QDir::isRelativePath (item_))
     {
       cppos_ << "-I" << (pathcmp("$(ROOTDIR)") / item_).path_localised () << " ";
@@ -380,10 +381,11 @@ if (! a_inc_list.isEmpty())
 }
 if (! a_flag_list.isEmpty())
 {
-  QStringList list_ (QStringList::split (" ", a_flag_list));
-  for (unsigned int i_ (0); i_ < list_.count (); ++i_)
+  for (const_token_iterator e1_, b1_(a_flag_list.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
   {
-    const QString item_ ((*list_.at (i_)).stripWhiteSpace ());
+    const QString item_(b1_->c_str ());
+    BUTTER_CHECK (! item_.isEmpty ()
+                  , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
     if (item_.length() <= 2)
     {
       flagos_ << item_ << " ";
@@ -418,22 +420,22 @@ if (! a_flag_list.isEmpty())
 }
 !!!162089.cpp!!!	process_hdrs(in a_inc_list : unistr) : unistr
 QString Result;
-QTextOStream l_os (&Result);
-QStringList l_list (QStringList::split (" ", a_inc_list));
-for (unsigned int l_i (0); l_i < l_list.count (); ++l_i)
 {
-  const QString l_item ((*l_list.at (l_i)).stripWhiteSpace ());
-  if ('$' != l_item[0] && QDir::isRelativePath (l_item))
+  QTextOStream os_ (&Result);
+  for (const_token_iterator e1_, b1_(a_inc_list.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
   {
-    l_os << "-I$(ROOTDIR)/" << l_item << " ";
-  }
-  else
-  {
-    l_os << "-I" << l_item << " ";
+    const QString item_(b1_->c_str ());
+    if ('$' != item_[0] && QDir::isRelativePath (item_))
+    {
+      os_ << "-I$(ROOTDIR)/" << item_ << " ";
+    }
+    else
+    {
+      os_ << "-I" << item_ << " ";
+    }
   }
 }
-
-return QString (Result);
+return Result;
 !!!161193.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr) : bool
 bool Result (false);
 QString l_tmp;

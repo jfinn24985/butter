@@ -241,11 +241,11 @@ QString content_;
   QString prop_value_;
   if (a_project.property_value (butter_constants::butter_build_dir_name, prop_value_))
   {
-    os_ << "BUILDDIR = " << pathcmp(prop_value_).path_localised () <<" ;\n";
+    os_ << "BUILDDIR = " << pathcmp(prop_value_).path_convert ("$(SLASH)") <<" ;\n";
   }
   else
   {
-    os_ << "BUILDDIR = " << this->root_dir ().path_localised () <<" ;\n";
+    os_ << "BUILDDIR = " << this->root_dir ().path_convert ("$(SLASH)") <<" ;\n";
   }
   //////////////
   // Set this as top location and bring in Jamrules.
