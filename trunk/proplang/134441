@@ -1,6 +1,6 @@
 format 66
 "Test Library Shared" // Test Library Shared
-  revision 2
+  revision 3
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -31,7 +31,7 @@ format 66
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
-    artifact 147241 "squareroot"
+    artifact 147241 "squareshare"
       stereotype "library"
       associated_artifacts
 	artifact_ref 128041 // example_lib
@@ -49,7 +49,7 @@ Test of properties
     artifact 147625 "shared_sqr"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 147241 // squareroot
+	artifact_ref 147241 // squareshare
 	artifact_ref 147369 // lib_main
       end
       comment "Version that uses the shared library, should not 

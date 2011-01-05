@@ -1,7 +1,6 @@
 window_sizes 856 787 353 497 319 381
 show_stereotypes
-selected 
-package_ref 129 // proplang
+selected artifact_ref 147241 // squareshare
 open
   classview_ref 128041 // Flag test
   artifact_ref 128681 // source_test
@@ -11,7 +10,7 @@ open
   artifact_ref 133161 // fortprog
   artifact_ref 128041 // example_lib
   artifact_ref 147369 // lib_main
-  artifact_ref 128297 // squareroot
+  artifact_ref 128297 // squarestatic
   deploymentview_ref 134313 // Shared Lib
   deploymentview_ref 129321 // Build
   artifact_ref 144425 // macros
