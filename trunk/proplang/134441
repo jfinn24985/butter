@@ -1,6 +1,6 @@
 format 66
 "Test Library Shared" // Test Library Shared
-  revision 1
+  revision 2
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -46,7 +46,7 @@ Test of properties
 !! Should install to LIB !!"
     end
 
-    artifact 147625 "stared_sqr"
+    artifact 147625 "shared_sqr"
       stereotype "executable"
       associated_artifacts
 	artifact_ref 147241 // squareroot
