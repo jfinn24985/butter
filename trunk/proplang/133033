@@ -1,6 +1,6 @@
 format 66
 "exe" // Test Property::exe
-  revision 4
+  revision 6
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -55,13 +55,5 @@ int main (int argc, const char** argv)
       end
     end
 
-    artifact 140969 "libmain"
-      stereotype "library"
-      associated_artifacts
-	artifact_ref 140841 // exe
-      end
-      ncouples 1
-      key "butter type" value "static"
-    end
   end
 end

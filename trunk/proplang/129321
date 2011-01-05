@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 10
+  revision 12
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -39,18 +39,18 @@ format 66
 
 rule t2t
 {
-  local man_ = $(1:S=.man) ;
+  local doc_ = $(1) ;
   local src_ = $(2) ;
-  Depends all : $(man_) ;
-  MakeLocate $(man_) : $(LOCATE_TARGET) ;
+  Depends all : $(doc_) ;
+  MakeLocate $(doc_) : $(LOCATE_TARGET) ;
   SEARCH on $(src_) = $(SEARCH_SOURCE) ;
-  run_t2t $(man_) : $(src_) ;
-  Clean clean : $(man_) ;
+  run_t2t $(doc_) : $(src_) ;
+  Clean clean : $(doc_) ;
 }
 
 actions ignore run_t2t
 {
-  txt2tags  $(T2TFLAGS) -t man -o $(1) -i $(2)
+  txt2tags  $(T2TFLAGS) -o $(1) -i $(2)
 }
 "
     end
@@ -80,7 +80,7 @@ rule t2t ( name : source  : requirements * )
 
 actions t2t-action
 {
-  txt2tags $(OPTIONS) -toc -t man -o $(<) $(>)
+  txt2tags $(OPTIONS) -o $(<) $(>)
 }
 "
     end
@@ -90,7 +90,7 @@ actions t2t-action
       associated_artifacts
       end
       comment "T2T=txt2tags
-T2TFLAGS+=-toc -t man -o
+T2TFLAGS?=
 .man.t2t :
 	$(T2T) $(T2TFLAGS) $< $>
  "
@@ -108,7 +108,7 @@ constant FORTRANLIBS : -lgfortran ;"
       associated_artifacts
       end
       comment "set (T2T txt2tags)
-set (T2TFLAGS -t man -o)
+set (T2TFLAGS -o)
 "
     end
 
@@ -119,5 +119,6 @@ set (T2TFLAGS -t man -o)
       comment "set (OPENMP -fopenmp)
 set (FORTRANLIBS -lgfortran)"
     end
+
   end
 end

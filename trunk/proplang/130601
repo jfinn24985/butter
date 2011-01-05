@@ -1,6 +1,6 @@
 format 66
-"src" // Test Headers::src
-  revision 2
+"src" // Test Property::src
+  revision 3
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -31,25 +31,32 @@ format 66
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
-    artifact 136745 "src"
+    artifact 144425 "macros"
       stereotype "source"
-      cpp_h "#ifndef SRC_SRC_HPP_
-#define SRC_SRC_HPP_
-#ifdef __cplusplus
-extern \"C\"
-{
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+${comment}
+
+#include <iostream>
+#include <string>
+
+#define @{PROJECT}_TEST_DEFINE_A(testdefstr,testdef,result) do{ const std::string y_(testdefstr) ; const bool fail_ = (y_ == #testdef); std::cout << (fail_ ? \"fail \" : \"pass \") << y_ << \"\\n\"; result += (fail_ ? 1 : 0); } while(0)
+#define @{PROJECT}_TEST_DEFINE(testdef,result) @{PROJECT}_TEST_DEFINE_A(#testdef,testdef,result)
+
+
 #endif
-
-unsigned int example_lib_backscan(const char *const src, unsigned int len, char target);
-
-#ifdef __cplusplus
-}
-#endif
-
-
-#endif"
+"
       associated_classes
       end
+      comment "Header that defines macros used in testing.
+
+@{PROJECT}_TEST_DEFINE(arg1,arg2)
+
+Macro tests if the preprocessor token arg1 is defined.  It prints a
+message \"pass/fail arg1\" to stderr.  If arg1 is not defined [or defined
+to be itself as a string ie \"arg1\" !] the value 1 is added to arg2.
+"
     end
+
   end
 end

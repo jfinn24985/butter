@@ -1,11 +1,23 @@
-window_sizes 1350 787 338 1006 319 381
+window_sizes 856 787 353 497 319 381
 diagrams
   active  classdiagram_ref 128041 // Overview
-    1007 319 100 4 0 0
+    497 319 100 4 0 172
 end
 show_stereotypes
-selected 
-  package_ref 130473 // Test Property
 open
+  classview_ref 128041 // Flag test
+  artifact_ref 128681 // source_test
+  deploymentview_ref 128169 // Executable
+  artifact_ref 134313 // fortmain
+  artifact_ref 133033 // fortran.f
+  artifact_ref 133161 // fortprog
+  artifact_ref 128041 // example_lib
+  artifact_ref 147369 // lib_main
+  artifact_ref 128297 // squareroot
+  deploymentview_ref 134313 // Shared Lib
+  deploymentview_ref 129321 // Build
+  artifact_ref 144425 // macros
+  deploymentview_ref 130601 // lib
+  deploymentview_ref 132905 // exe
 end
 end

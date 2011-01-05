@@ -1,6 +1,6 @@
 format 66
 "proplang"
-  revision 15
+  revision 18
   modified_by 41 "finnerty"
   cpp_root_dir "output/include/"
 
@@ -37,7 +37,7 @@ format 66
 
   mark_for_import
   
-  ncouples 8
+  ncouples 9
   key "butter base" value "."
   key "butter version" value "1.4"
   key "butter type" value "shared"
@@ -46,6 +46,7 @@ format 66
   key "butter build-dir" value "build"
   key "butter include" value "include/exe"
   key "butter style" value "unknown"
+  key "PROJECT" value "PROPLANG"
   comment "Project to test single-directory multiple target use-case for \"butter\" plugout
 
 Property Settings:
@@ -84,11 +85,17 @@ Property Settings:
 <tr><td>P.proplang    version  </td> <td> 1.4                    </td><td> ** TODO **</td></tr>
 </table>
 "
-  package_ref 128041 // Library
+  package_ref 128041 // Test include/flags Properties
 
-  package_ref 128169 // Executable
+  package_ref 128169 // Test Library:other
+
+  package_ref 134313 // Test Non-C++ code
+
+  package_ref 134185 // Test Library static
+
+  package_ref 134441 // Test Library Shared
 
   package_ref 129321 // Build
 
-  package_ref 130473 // Test Headers
+  package_ref 130473 // Test Property
 end

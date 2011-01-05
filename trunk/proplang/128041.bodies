@@ -1,39 +1,12 @@
-class example_lib
-!!!128169.cpp!!!	format(in a_value : string) : string
-std::ostringstream os_;
-const size_t width_ (get_line_width ());
-const size_t size_ (a_value.size ());
-#ifdef SRC_FLAG
-const char sep_l_[] = "[";
-const char sep_r_[] = "]\n";
-#else
-const char sep_l_[] = "<";
-const char sep_r_[] = ">\n";
-#endif
-for (size_t left_ (0);
-     left_ < size_;
-     left_++)
-{
-  if (width_ > size_ - left_)
-  {
-    // End of text
-    os_ << sep_l_ << a_value.substr (left_) << sep_r_;
-    break;
-  }
-  // Find
-  const size_t right_ (example_lib_backscan (a_value.data () + left_, width_,' '));
-  // possible results right_ = npos or not
-  if (right_ < width_)
-  {
-    os_ << sep_l_ << a_value.substr (left_, right_) << sep_r_;
-    left_ += right_;
-  }
-  else
-  {
-    // no space in left_ --> left_ + width_, find first space after this.
-    const size_t right_ (std::min (size_, a_value.find (' ', left_ + width_)));
-    os_ << sep_l_ << a_value.substr (left_, right_ - left_) << sep_r_;
-    left_ += right_;
-  }
-}
-return os_.str ();
+class test_source
+!!!128169.cpp!!!	main(in argc : int, in argv : char) : int
+int counter; // <- The number of missing flags
+
+// Test SRC_FLAG
+PROPLANG_TEST_DEFINE(SRC_FLAG, counter);
+PROPLANG_TEST_DEFINE(EXE_FLAG, counter);
+PROPLANG_TEST_DEFINE(PROJ_FLAG, counter);
+PROPLANG_TEST_DEFINE(LIB_LIB_HPP_, counter);
+PROPLANG_TEST_DEFINE(EXE_EXE_HPP_, counter);
+
+return (counter ? 1 : 0);

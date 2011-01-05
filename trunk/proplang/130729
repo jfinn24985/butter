@@ -1,6 +1,6 @@
 format 66
-"lib" // Test Headers::lib
-  revision 4
+"lib" // Test Property::lib
+  revision 6
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -49,42 +49,5 @@ format 66
       end
     end
 
-    artifact 139689 "libextra_c"
-      stereotype "library"
-      associated_artifacts
-	artifact_ref 129833 // example_c.c
-      end
-    end
-
-    artifact 129833 "example_c.c"
-      stereotype "document"
-      associated_artifacts
-      end
-      ncouples 4
-      key "butter compiler" value "CC"
-      key "butter flags" value "-DFOR_C_FLAG"
-      key "butter include" value "include/doc"
-      key "" value ""
-      comment "/**
-
-Example C source file
-
-**/
-#ifndef EXAMPLE_C_C_
-#define EXAMPLE_C_C_
-#ifndef FOR_C_FLAG
-#error FOR_C_FLAG is not defined in __FILE__
-#endif
-
-unsigned int example_lib_backscan(const char *const src, unsigned int len, char target)
-{
-  for (--len; len >= 0; --len)
-  {
-    if (*(src + len) == target) break;
-  }
-  return len;
-}
-#endif"
-    end
   end
 end

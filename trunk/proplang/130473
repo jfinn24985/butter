@@ -1,6 +1,6 @@
 format 66
 "Test Property" // Test Property
-  revision 4
+  revision 5
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -30,8 +30,6 @@ format 66
   package_ref 130601 // src
 
   package_ref 130729 // lib
-
-  package_ref 131881 // doc
 
   package_ref 133033 // exe
 end

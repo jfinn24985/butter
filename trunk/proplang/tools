@@ -31,3 +31,4 @@ tool "Deploy classes" "deplcl" ClassView
 tool "Global Change" "global_change" Project Package ClassView DeploymentView
 tool "Uml projection" "uml_proj" Project Package ClassView
 tool "Build System Generate" "butter" Project
+tool "BS2" "/tmp/butter_test" Project

@@ -1,0 +1,287 @@
+format 66
+"Test Library static" // Test Library static
+  revision 1
+  modified_by 41 "finnerty"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  cpp_src_dir "../src"
+  deploymentview 134441 "Common to both lib tests"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 128041 "example_lib"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+${comment}
+
+// Calculate square root using Newton/Raphson
+double square_root_nr (double x);
+
+// Calculate square root using Halley
+double square_root_halley (double x);
+
+// Compare Newton/Raphson, Halley and math lib sqrt
+void compare_algorithm (double val, int repeats);
+
+
+#endif
+"
+      cpp_src "${comment}
+
+#include <cmath>
+#include <cfloat>
+static const double  cutoff_ = (100 * DBL_EPSILON);
+/*
+  Newton/Raphson
+  f(a) = x - a^2 = 0
+  f'(a) = -2a
+
+  a_1 = a_0 - f'(a_0)/f(a_0)
+  a_1 = a_0 + (x - a^2)/2a
+*/
+double square_root_nr (double x)
+{
+  const double x_ = x;
+  x /= 2.;
+  for (; fabs (x * x - x_) > cutoff_
+       ; x += (x_ - (x*x)) / (2. * x))
+    {}
+  return x;
+}
+/*
+  Use Halley's method to calculate square root using
+
+ f(a) = x - a*a = 0
+ f'(a) = -2*a
+ f\"(a) = -2
+
+ a_1 = a_0 - {2 x f(a) x f'(a) } / { 2 x f'(a)^2 - f(a) y f\"(a) }
+
+ a_1 = a_0 + {2 * a * (X - a^2)} / { 3 * a^2 + X }
+*/
+double square_root_halley (double x)
+{
+  const double x_ = x;
+  x /= 2.;
+  for (; fabs (x * x - x_) > cutoff_
+       ; x += 2 * x * (x_ - (x*x)) / ((3*x*x) + x_))
+    { }
+  return x;
+}
+
+
+extern \"C\"
+{
+#include <sys/time.h>
+}
+extern \"C\"
+{
+#include <sys/resource.h>
+}
+#include <iostream>
+#include <string>
+#include <boost/format.hpp>
+namespace
+{
+/* Create an object that write its lifetime timing details and a message when it goes out of scope.  */
+class timer
+{
+private:
+  /* The interval of time (in micro secs) as represented from the
+    gettimeofday function.  */
+  timeval time_interval_[2];
+
+  /* The resources used */
+  rusage time_usage_[2];
+
+  /* A message associated with this interval.  */
+  const std::string msg_;
+
+  /* The target output stream */
+  std::ostream & os_;
+public:
+  /* Create timer object with a_label text and a_target stream */
+  timer(const std::string & a_label, std::ostream & a_target)
+      : time_interval_ () , time_usage_(), msg_ (a_label) , os_ (a_target)
+  {
+    gettimeofday(&time_interval_[0], NULL);
+    getrusage (RUSAGE_SELF, &time_usage_[0]);
+  }
+
+  /* Prints lifetime details and label text to the stream given in the constructor.  */
+  ~timer()
+  {
+    gettimeofday(&time_interval_[1], NULL);
+    getrusage (RUSAGE_SELF, &time_usage_[1]);
+    class helper
+    {
+    public:
+      static void print_ (timeval t1, const timeval &t2, std::ostream &out) /* pure */
+      {
+        t1.tv_sec = t1.tv_sec -t2.tv_sec;
+        t1.tv_usec = t1.tv_usec -t2.tv_usec;
+        if (t1.tv_usec < 0)
+        {
+          --t1.tv_sec;
+          t1.tv_usec += 1000000;
+        };
+        out << boost::format (\"%|3|.%|04| \")
+        % t1.tv_sec
+        % (t1.tv_usec%1000000/100);
+      }
+    };
+    helper::print_ (time_interval_[1], time_interval_[0], os_);
+    helper::print_ (time_usage_[1].ru_utime, time_usage_[0].ru_utime, os_);
+    helper::print_ (time_usage_[1].ru_stime, time_usage_[0].ru_stime, os_);
+    os_ << boost::format (\" %|5| %|5| \") % (time_usage_[1].ru_minflt - time_usage_[0].ru_minflt) % (time_usage_[1].ru_majflt - time_usage_[0].ru_majflt);
+    os_ << msg_ << \"\\n\";
+  }
+  static const std::string spacer;
+
+  /**
+   * Print table header for timing information
+   */
+  static void title(std::ostream & a_os)
+  {
+    a_os << \"_____Time in seconds______   Context Sw \\n\";
+    a_os << \" Elapsed     User   System    min   maj \\n\";
+  }
+private:
+  /* no copy */
+  timer(const timer & source);
+
+  /* no assign */
+  timer & operator=(const timer & source);
+};
+
+const std::string timer::spacer = \"                                        \";
+}; // end anon namespace
+
+void compare_algorithm (double val, int repeats)
+{
+  volatile double val_ = val; // Attempt to avoid opt away fn calls
+  timer::title(std::cout);
+  {
+    double result_;
+    timer x(\"Halley algorithm\", std::cout);
+    for (int i=0;i<repeats;++i) result_ = square_root_halley(val_);
+    std::cout << timer::spacer << result_ << \" : E \" << (val_ - (result_*result_)) << \"\\n\";
+  }
+
+  {
+    double result_;
+    timer x(\"Newton/Raphson algorithm\", std::cout);
+    for (int i=0;i<repeats;++i) result_ = square_root_nr(val_);
+    std::cout << timer::spacer << result_ << \" : E \" << (val_ - (result_*result_)) << \"\\n\";
+  }
+
+  {
+    double result_;
+    timer x(\"Lib function\", std::cout);
+    for (int i=0;i<repeats;++i) result_ = sqrt(val_);
+    std::cout << timer::spacer << result_ << \" : E \" << (val_ - (result_*result_)) << \"\\n\";
+  }
+}
+"
+      associated_classes
+      end
+      ncouples 1
+      key "butter ldflags" value "-lm"
+      comment "Source file for a simple library.
+"
+    end
+
+    artifact 147369 "lib_main"
+      stereotype "source"
+      cpp_src "#include \"example_lib.hpp\"
+
+#include <iostream>
+#include <cstdlib>
+
+
+int main(int argc, char** argv)
+{
+
+  std::cout << \"\\tUsage: program <sqr> <repeats>\\n\\n\";
+  if (argc < 3) return 1;
+  char *p;
+  const double val_ = strtod(argv[1], &p);
+  if (p == argv[1])
+  {
+    std::cerr << \"First argument was not a number.\\n\";
+    return 1;
+  }
+  const int rep_ = static_cast< int >(strtol(argv[2], &p, 10));
+  if (p == argv[1])
+  {
+    std::cerr << \"First argument was not a number.\\n\";
+    return 1;
+  }
+  compare_algorithm (val_, rep_);
+  return 0;
+}
+"
+      associated_classes
+      end
+      comment "Main function to use square root library
+"
+    end
+  end
+
+  deploymentview 134057 "Static lib"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 128297 "squareroot"
+      stereotype "library"
+      associated_artifacts
+	artifact_ref 128041 // example_lib
+      end
+      ncouples 1
+      key "butter type" value "static"
+      comment "
+Test of properties
+
+<umlartifact<<library>>:squareroot> butter type: static
+!! Should install to DATA !!
+
+Pass on ldflag to users!!
+<umlartifact<<source>>:example_lib> butter ldflags: -lm (patch for VisualC math lib??)"
+    end
+
+    artifact 147497 "static_sqr"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 128297 // squareroot
+	artifact_ref 147369 // lib_main
+      end
+      comment "Version that uses the shared library, will
+need to be linked with -lm
+
+<umlartifact<<source>>:example_lib> butter ldflags: -lm (patch for VisualC math lib??)"
+    end
+  end
+end

@@ -1,6 +1,6 @@
 format 66
-"doc" // Test Headers::doc
-  revision 2
+"Test Non-C++ code" // Test Non-C++ code
+  revision 1
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -26,40 +26,85 @@ format 66
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
-  cpp_h_dir "doc"
-  deploymentview 131753 "doc"
+  cpp_src_dir "../src"
+  deploymentview 134185 "Non-C++ code"
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
-    artifact 139561 "doc"
+    artifact 134313 "fortmain"
       stereotype "source"
-      cpp_h "#ifndef DOC_DOC_HPP_
-#define DOC_DOC_HPP_
-#ifndef EXAMPLE_C_C_
-#error can only include __FILE__ from example_c.c
-#endif
-#endif"
-      associated_classes
-      end
-    end
-
-    artifact 142121 "f"
-      stereotype "source"
-      cpp_h "#ifndef DOC_F_HPP_
-#define DOC_F_HPP_
-
-#ifdef EXE_F_FLAG
-extern \"C\"
+      cpp_src "extern \"C\"
 {
   void fortprog_();
 }
-#else
-#error EXE_F_FLAG is undefined
-#endif
 
-#endif"
+int main(int,char**)
+{
+  fortprog_();
+  return 0;
+}
+"
       associated_classes
       end
+      comment "Dummy file to allow Fortran program to compile using Boost Jam"
+    end
+
+    artifact 133033 "fortran.f"
+      stereotype "document"
+      associated_artifacts
+      end
+      ncouples 2
+      key "butter compiler" value "FORTRAN"
+      key "butter ldflags" value "$(FORTRANLIBS)"
+      comment "      SUBROUTINE FORTPROG
+
+      INTEGER MCOUNT
+      DOUBLE PRECISION RPRES1, RPRES2
+
+      PRINT *, \"== Program Exercise 2 ==\"
+
+C     Find out the capacity of the cells of the computer that you
+C     will be using during your study of Fortran
+
+C     [1] Initialise the test number
+      RPRES1 = 1.0
+
+C     [2] Loop (for a maximum of 30)
+      DO MCOUNT = 1,30
+
+C     [3] Create a second number close to test number
+         RPRES2 = RPRES1 + (0.1**(MCOUNT))
+
+
+C     [4] Test if the numbers are \"equal\"
+         IF ( RPRES1 .EQ. RPRES2 ) THEN
+
+C     [5] When equal print result and stop
+            PRINT *, RPRES1, \" .EQ.\", RPRES2, \" Precision is \", MCOUNT
+            STOP
+         ELSE
+            PRINT *, RPRES1, \" .NE.\", RPRES2
+         ENDIF
+      ENDDO
+
+      PRINT *, \"Precision is greater than \", MCOUNT
+
+      END"
+    end
+
+    artifact 133161 "fortprog"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 133033 // fortran.f
+	artifact_ref 134313 // fortmain
+      end
+      comment "For this program to compile requires:
+
+<UmlArtifact<<document>>:fortran.f>butter compiler: FORTRAN
+
+<UmlArtifact<<document>>:fortran.f>butter ldflags: $(FORTRANLIBS)
+!! Note FORTRANLIBS needs to be defined somewhere !!
+"
     end
   end
 end
