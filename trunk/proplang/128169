@@ -1,6 +1,6 @@
 format 66
 "Test Library:other" // Test Library:other
-  revision 24
+  revision 25
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -78,7 +78,7 @@ This is a test of building an \"other\" library."
       key "butter other" value "t2t"
       key "butter buildfile" value "t2t"
       key "butter install" value "HTML"
-      key "butter flags" value "-toc -t html"
+      key "butter flags" value "-toc -t\\ html"
       comment "For this file to be compiled requires:
 
 <umlartifact<<library>>:program.man>butter other: t2t
@@ -88,6 +88,5 @@ This is a test of building an \"other\" library."
 !! use of install keyword !!
 "
     end
-
   end
 end

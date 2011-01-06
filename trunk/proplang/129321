@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 15
+  revision 16
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -65,13 +65,23 @@ import make ;
 if ! $(.t2t_initialized)
 {
 .t2t_initialized = true ;
+.default_t2tflags = -t html ;
 feature t2tflags : : free ;
 flags t2t OPTIONS <t2tflags> ;
+
+rule t2t
+{
+  if ! $(OPTIONS)
+  {
+    OPTIONS = $(.default_t2tflags) ;
+  }
 }
 
 actions t2t
 {
-  txt2tags $(OPTIONS:E=-t html) -o $(<) $(>)
+  txt2tags $(OPTIONS) -o $(<) $(>)
+}
+
 }"
     end
 
