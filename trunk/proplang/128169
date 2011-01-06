@@ -55,7 +55,7 @@ This is a test of building an \"other\" library."
       key "butter other" value "t2t"
       key "butter install" value "MAN"
       key "butter buildfile" value "t2t"
-      key "butter flags" value "-t man"
+      key "butter flags" value "\"-t man\""
       comment "For this file to be compiled requires:
 
 <umlartifact<<library>>:program.man>butter other: t2t
@@ -78,7 +78,7 @@ This is a test of building an \"other\" library."
       key "butter other" value "t2t"
       key "butter buildfile" value "t2t"
       key "butter install" value "HTML"
-      key "butter flags" value "--toc -t\\ html"
+      key "butter flags" value "--toc \"-t html\""
       comment "For this file to be compiled requires:
 
 <umlartifact<<library>>:program.man>butter other: t2t
