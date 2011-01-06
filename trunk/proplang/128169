@@ -78,11 +78,11 @@ This is a test of building an \"other\" library."
       key "butter other" value "t2t"
       key "butter buildfile" value "t2t"
       key "butter install" value "HTML"
-      key "butter flags" value "-toc -t\\ html"
+      key "butter flags" value "--toc -t\\ html"
       comment "For this file to be compiled requires:
 
 <umlartifact<<library>>:program.man>butter other: t2t
-<umlartifact<<library>>:program.man>butter flags: -t man
+<umlartifact<<library>>:program.man>butter flags: --toc -t\\ man
 <umlartifact<<library>>:program.man>butter buildfile: t2t
 <umlartifact<<library>>:program.man>butter install: HTML
 !! use of install keyword !!
