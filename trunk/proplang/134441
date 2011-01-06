@@ -38,6 +38,13 @@ format 66
       end
     end
 
+    artifact 148905 "lib_main_shr"
+      stereotype "source"
+      cpp_src "#include \"lib_main.cpp\""
+      associated_classes
+      end
+    end
+
     artifact 147241 "squareshare"
       stereotype "library"
       associated_artifacts
@@ -56,7 +63,7 @@ Test of properties
     artifact 147625 "shared_sqr"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 147369 // lib_main
+	artifact_ref 148905 // lib_main_shr
 	artifact_ref 147241 // squareshare
       end
       comment "Version that uses the shared library, should not 

@@ -11,8 +11,9 @@ open
   artifact_ref 128041 // example_lib
   artifact_ref 147369 // lib_main
   artifact_ref 128297 // squarestatic
-  deploymentview_ref 134313 // Shared Lib
-  deploymentview_ref 129321 // Build
+  artifact_ref 148905 // lib_main_shr
+  artifact_ref 147625 // shared_sqr
+  artifact_ref 131881 // t2t.bjam
   artifact_ref 144425 // macros
   deploymentview_ref 130601 // lib
   deploymentview_ref 132905 // exe

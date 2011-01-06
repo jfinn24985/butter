@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 14
+  revision 15
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -58,51 +58,21 @@ actions ignore run_t2t
       stereotype "document"
       associated_artifacts
       end
-      comment "import type ;
-import generators ;
-import feature  ;
-import project ;
-import toolset ;
+      comment "import feature : feature ;
+import toolset : flags ;
 import make ;
 
-project.initialize $(__name__) ;
-project t2t ;
-
-rule init ( )
+if ! $(.t2t_initialized)
 {
-    project.push-current $(.project) ;
-
-    if $(.initialized) { }
-   else
-   {
-        .initialized = true ;
-     
-       type.register TEXT2TAGS : t2t ;
-   
-      # generators.register-standard t2t : TEXT2TAGS : MAN ;
-   }
-    project.pop-current ;
+.t2t_initialized = true ;
+feature t2tflags : : free ;
+flags t2t OPTIONS <t2tflags> ;
 }
 
-feature.feature t2tflags : : free ;
-
-toolset.flags t2t-action OPTIONS <t2tflags> ;
-
-rule t2t ( name : source  : requirements * )
+actions t2t
 {
-  make $(name) : $(source) : @t2t-action : $(requirements) ;
-}
-
-actions t2t-action
-{
-  txt2tags $(OPTIONS) -o $(<) $(>)
-}
-
-rule initialized ( )
-{
-    return $(.initialized) ;
-}
-"
+  txt2tags $(OPTIONS:E=-t html) -o $(<) $(>)
+}"
     end
 
     artifact 132009 "t2t.make"
