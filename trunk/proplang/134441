@@ -1,6 +1,6 @@
 format 66
 "Test Library Shared" // Test Library Shared
-  revision 3
+  revision 4
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -31,10 +31,17 @@ format 66
     //deployment diagram settings
     package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
     draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 148777 "example_lib_shr"
+      stereotype "source"
+      cpp_src "#include \"example_lib.cpp\""
+      associated_classes
+      end
+    end
+
     artifact 147241 "squareshare"
       stereotype "library"
       associated_artifacts
-	artifact_ref 128041 // example_lib
+	artifact_ref 148777 // example_lib_shr
       end
       ncouples 1
       key "butter type" value "shared"
@@ -49,8 +56,8 @@ Test of properties
     artifact 147625 "shared_sqr"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 147241 // squareshare
 	artifact_ref 147369 // lib_main
+	artifact_ref 147241 // squareshare
       end
       comment "Version that uses the shared library, should not 
 need to be linked with -lm"

@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 12
+  revision 14
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -36,7 +36,6 @@ format 66
       associated_artifacts
       end
       comment "# jam file for text-to-tags (t2t) program
-
 rule t2t
 {
   local doc_ = $(1) ;
@@ -62,12 +61,28 @@ actions ignore run_t2t
       comment "import type ;
 import generators ;
 import feature  ;
+import project ;
 import toolset ;
 import make ;
 
-type.register TEXT2TAGS : t2t ;
+project.initialize $(__name__) ;
+project t2t ;
 
-# generators.register-standard t2t : TEXT2TAGS : MAN ;
+rule init ( )
+{
+    project.push-current $(.project) ;
+
+    if $(.initialized) { }
+   else
+   {
+        .initialized = true ;
+     
+       type.register TEXT2TAGS : t2t ;
+   
+      # generators.register-standard t2t : TEXT2TAGS : MAN ;
+   }
+    project.pop-current ;
+}
 
 feature.feature t2tflags : : free ;
 
@@ -82,6 +97,11 @@ actions t2t-action
 {
   txt2tags $(OPTIONS) -o $(<) $(>)
 }
+
+rule initialized ( )
+{
+    return $(.initialized) ;
+}
 "
     end
 
@@ -89,11 +109,15 @@ actions t2t-action
       stereotype "document"
       associated_artifacts
       end
-      comment "T2T=txt2tags
+      comment "ifndef T2T_MAK
+T2T_MAK:=1
+T2T=txt2tags
 T2TFLAGS?=
 .man.t2t :
 	$(T2T) $(T2TFLAGS) $< $>
- "
+.html.t2t :
+	$(T2T) $(T2TFLAGS) $< $>
+ endif"
     end
 
     artifact 134441 "Jamroot"
@@ -119,6 +143,5 @@ set (T2TFLAGS -o)
       comment "set (OPENMP -fopenmp)
 set (FORTRANLIBS -lgfortran)"
     end
-
   end
 end
