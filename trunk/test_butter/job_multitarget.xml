@@ -1,14 +1,27 @@
 <?xml version = '1.0'?>
 <job>
-    <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
-    <property name="patch-dir" >patch</property>
+    <property name="basefile" if="build-style=standard" >Jamfile</property>
+    <property name="sysfile"  if="build-style=standard" >Jamrules</property>
+    <property name="mainfile" if="build-style=standard" >Jamfile</property>
+    <property name="basefile" if="build-style=make" >makefile</property>
+    <property name="sysfile"  if="build-style=make" >%(make-sys)s</property>
+    <property name="mainfile" if="build-style=make" >makefile</property>
+    <property name="basefile" if="build-style=boost" >Jamroot</property>
+    <property name="sysfile"  if="build-style=boost" >local.jam</property>
+    <property name="mainfile" if="build-style=boost" >Jamfile</property>
+    <property name="basefile" if="build-style=cmake" >CMakeLists.txt</property>
+    <property name="sysfile"  if="build-style=cmake" >local.cmake</property>
+    <property name="mainfile" if="build-style=cmake" >CMakeLists.txt</property>
+    <property name="local-base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+    <property name="base" >%(local-base)s</property>
     <stage>Test generating source and build system from a single level project with 2 targets
       <verb-list category="setup" >Initialise the test location with latest copy of test.
         <property name="base" >%(base-dir)s/%(project)s</property>
         <verb type="file-list" >
+          <property name="base" >%(base-dir)s</property>
           <property name="file-type" >directory</property>
           <property name="verify" >recreate</property>
-          <property name="location" >.</property>
+          <property name="location" >%(project)s</property>
         </verb>
         <verb type="check-out" >
           <property name="type" >%(checkout-tool)s</property>
@@ -39,18 +52,24 @@
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s</property>
+          <property name="base" >%(local-base)s/%(stage-bin-dir)s</property>
           <property name="file-type" >executable</property>
           <property name="verify" >exist</property>
-          <property name="location" >%(exe-name)s %(library-name)s</property>
+          <property name="location" >%(exe-name)s</property>
+          <property name="test-phrase">2.1.1 Compiled executable</property>
+        </verb>
+         <verb type="file-list" >
+          <property name="base" >%(local-base)s/%(stage-data-dir)s</property>
+          <property name="file-type" >executable</property>
+          <property name="verify" >exist</property>
+          <property name="location" >%(library-name)s</property>
           <property name="test-phrase">2.1.1 Compiled executable</property>
         </verb>
       </verb-list>
     </stage>
     <stage>Test run the executable.
       <verb-list category="execute" >Run &quot;program&quot;
-	  <property name="library-path" >%(base)s/%(build-dir)s</property>
-	  <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s FINDFILE{PATH{%(base)s/%(build-dir)s/%(exe-name)s}} lorem.txt > output %(cmdsep)s popd</verb>
+	  <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(stage-bin-dir)s/%(exe-name)s } lorem.txt > output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >
@@ -67,10 +86,10 @@
     <stage>Clean-up stage
       <verb-list category="cleanup">Clean up operations
        <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s</property>
+          <property name="base" >%(base-dir)s</property>
           <property name="file-type" >directory</property>
           <property name="verify" >remove</property>
-          <property name="location" >.</property>
+          <property name="location" >%(project)s</property>
         </verb>
       </verb-list>
     </stage>

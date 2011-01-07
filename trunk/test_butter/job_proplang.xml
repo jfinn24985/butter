@@ -1,60 +1,76 @@
 <?xml version = '1.0'?>
 <job>
-    <property name="base" >%(base-dir)s/%(project)s</property>
-    <property name="patch-dir" >patch</property>
+    <property name="basefile" if="build-style=standard" >Jamfile</property>
+    <property name="sysfile"  if="build-style=standard" >Jamrules</property>
+    <property name="mainfile" if="build-style=standard" >Jamfile</property>
+    <property name="basefile" if="build-style=make" >makefile</property>
+    <property name="sysfile"  if="build-style=make" >%(make-sys)s</property>
+    <property name="mainfile" if="build-style=make" >makefile</property>
+    <property name="basefile" if="build-style=boost" >Jamroot</property>
+    <property name="sysfile"  if="build-style=boost" >local.jam</property>
+    <property name="mainfile" if="build-style=boost" >Jamfile</property>
+    <property name="basefile" if="build-style=cmake" >CMakeLists.txt</property>
+    <property name="sysfile"  if="build-style=cmake" >local.cmake</property>
+    <property name="mainfile" if="build-style=cmake" >CMakeLists.txt</property>
+    <property name="lib-prefix" if="build-style=boost" >lib</property>
+    <property name="local-base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+    <property name="base" >%(local-base)s</property>
     <stage>Test generating source and build system from a single level project with 2 targets
       <verb-list category="setup" >
         Initialise the test location with latest copy of test.
         <verb type="file-list" >
+          <property name="base" >%(base-dir)s</property>
           <property name="file-type" >directory</property>
           <property name="verify" >recreate</property>
-          <property name="location" >.</property>
+          <property name="location" >%(project)s</property>
         </verb>
         <verb type="check-out" >
+          <property name="base" >%(base-dir)s/%(project)s</property>
           <property name="type" >%(checkout-tool)s</property>
           <property name="branch" >%(project)s%(checkout-suf)s</property>
           <property name="location" >%(checkout-url)s/%(branch)s</property>
         </verb>
         <verb type="patch" >
+          <property name="base" >%(base-dir)s/%(project)s</property>
           <property name="location" >%(patch-file)s</property>
         </verb>
 
       </verb-list>
       <verb-list category="execute" >
         Generate the build system and the source code
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec PATH{%(plug-out1)s} -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec PATH{%(plug-out2)s} -exit</verb>
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/src/Executable</property>
+          <property name="base" >%(local-base)s/src</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(mainfile)s</property>
         </verb>
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/src/Executable</property>
+          <property name="base" >%(local-base)s/src</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >fortran.f</property>
           <property name="test-phrase">2.3.2 Document as non-C++ (is Fortran) source file</property>
         </verb>
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/src/Library</property>
+          <property name="base" >%(local-base)s/doc</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(mainfile)s</property>
-        </verb>
+          <property name="test-phrase">X.X.X Library (other) build file</property>
+        </verb> if="build-style=!boost" 
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/lib/src</property>
+          <property name="base" >%(local-base)s/doc</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
-          <property name="location" >example_c.c</property>
-          <property name="test-phrase">2.3.2 Document as non-C++ (is C) source file</property>
+          <property name="location" >program.t2t</property>
+          <property name="test-phrase">2.3.2 Document as non-C++ (t2t) source file</property>
         </verb>
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(basefile)s %(sysfile)s</property>
@@ -64,149 +80,123 @@
     </stage>
     <stage>
       Perform compilation and test compilation success
-      <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
       <verb-list category="execute" >
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s > build.log %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s >> build.log %(cmdsep)s %(cat)s build.log %(cmdsep)s popd</verb>
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s > build.log %(cmdsep)s %(cat)s build.log %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s/src/Executable%(build-var)s</property>
+          <property name="base" >%(local-base)s/%(stage-bin-dir)s</property>
           <property name="file-type" >executable</property>
           <property name="verify" >exist</property>
-          <property name="location" >%(exe-name)s</property>
-          <property name="test-phrase">2.1.1 Built executable using build system</property>
+          <property name="location" >source_test%(exe-suf)s shared_sqr%(exe-suf)s static_sqr%(exe-suf)s</property>
+          <property name="test-phrase">2.1.1 Built executables using build system</property>
         </verb>
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s/src/Executable%(build-var)s</property>
+          <property name="base" >%(local-base)s/%(stage-bin-dir)s</property>
+          <property name="file-type" >executable</property>
+          <property name="verify" >exist</property>
+          <property name="location" >fortprog%(exe-suf)s</property>
+          <property name="test-phrase">X.X.X Built executable with Fortran source</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="base" >%(local-base)s/%(stage-lib-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
-          <property name="location" >%(exe-name)s</property>
-          <property name="test-phrase">3.1.1 Compilation with 'butter build-dir'</property>
+          <property name="error" >nonfatal</property>
+          <property name="location">%(lib-prefix)ssquareshare%(shr-suf)s</property>
+           <property name="test-phrase">2.1.2 built shared library using build system</property>
         </verb>
         <verb type="file-list" >
-          <property name="build-varl" if="build-style=boost">%(build-var)s/link-static</property>
-          <property name="build-varl" if="build-style=!boost">%(build-var)s</property>
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s/src/Library%(build-var)s</property>
+          <property name="base" >%(local-base)s/%(stage-data-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
-          <property name="location" >%(library-name)s</property>
-          <property name="test-phrase">2.1.2 built library using build system</property>
+          <property name="error" >nonfatal</property>
+          <property name="location" >%(lib-prefix)ssquarestatic%(ark-suf)s</property>
+          <property name="test-phrase">2.1.2 built static library using build system</property>
         </verb>
-        <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s/src/Executable%(build-var)s</property>
+         <verb type="file-list" >
+          <property name="base" >%(local-base)s/%(stage-man-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >program.man</property>
           <property name="test-phrase">2.3.1 Non-standard target</property>
         </verb>
-       <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s/src/Library%(build-var)s</property>
+         <verb type="file-list" >
+          <property name="base" >%(local-base)s/%(stage-html-dir)s</property>
           <property name="file-type" >file</property>
-          <property name="verify" >nonexist</property>
-          <property name="error" >nonfatal</property>
-          <property name="location" >example_lib.o example_c.o</property>
+          <property name="verify" >exist</property>
+          <property name="location" >program.html</property>
+          <property name="test-phrase">2.3.1 Non-standard target</property>
         </verb>
-       </verb-list>
+      </verb-list>
     </stage>
-    <stage>Test run the executable.
-      <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+    <stage>Test run the first executable.
       <verb-list category="execute" >Run &quot;program&quot;
-	<property name="library-path" >%(build-dir)s/lib/src%(build-var)s</property>
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s FINDPATH{PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s}} lorem.txt > output %(cmdsep)s popd</verb>
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/source_test%(exe-suf)s} > output1 %(cmdsep)s %(cat)s output1 %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >
       Verify that the correct files have been produced
         <verb type="file-list" >
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
-          <property name="location" >output</property>
+          <property name="location" >output1</property>
         </verb>
         <verb type="compare" >
-          <property name="location" >output</property>
-          <property name="compare-base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+          <property name="location" >output1</property>
           <property name="test-phrase">1.2.1 Output of compiled program verified</property>
         </verb>
       </verb-list>
     </stage>
-    <stage>Test install target.
-      <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
-     <verb-list category="execute" >
-	     <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-tool)s} %(build-install)s > install.log %(cmdsep)s %(cat)s install.log %(cmdsep)s popd</verb>
+     <stage>Test run the fortran executable.
+      <verb-list category="execute" >Run &quot;program&quot;
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/fortprog%(exe-suf)s} > output2 %(cmdsep)s %(cat)s output2 %(cmdsep)s popd</verb>
       </verb-list>
-       <verb-list category="verify" >
-      Verify that the correct files have been removed
-       <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(install-dir)s/libexec</property>
-          <property name="file-type" >file</property>
-          <property name="verify" >exist</property>
-          <property name="location" >%(library-name)s</property>
-          <property name="test-phrase">1.2.3 Successful library install</property>
-        </verb>
+      <verb-list category="verify" >
+      Verify that the correct files have been produced
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(install-dir)s/sbin</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
-          <property name="location" >%(exe-name)s</property>
-          <property name="test-phrase">1.2.3 Successful executable install</property>
-        </verb>
-        <property name="type" >grep</property>
-        <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
-        <property name="location" >install.log</property>
-        <!-- Check butter install -->
-        <verb type="compare" >
-          <property name="search-regex" >%(install-dir)s/sbin/%(exe-name)s</property>
-          <property name="test-phrase">3.6.1 'butter install' on executable</property>
+          <property name="location" >output2</property>
         </verb>
         <verb type="compare" >
-          <property name="search-regex" >%(install-dir)s/libexec/%(library-name)s</property>
-          <property name="test-phrase">3.6.1 'butter install' on library</property>
+          <property name="location" >output2</property>
+          <property name="test-phrase">1.2.1 Output of compiled program verified</property>
         </verb>
-        <verb type="compare" >
-          <property name="search-regex" >%(install-dir)s/share/man/man1/program\.man</property>
-          <property name="test-phrase">3.6.1 'butter install' on library (other)</property>
-        </verb>
-        <verb type="compare" >
-          <property name="search-regex" >%(install-dir)s/share/doc/.*/program\.t2t</property>
-          <property name="test-phrase">3.6.2 'butter install' on document</property>
-        </verb>
-
-         </verb-list>
+      </verb-list>
     </stage>
-
-    <stage>Test clean target.
-      <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
-     <verb-list category="execute" >
-        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-tool)s} %(build-clean)s %(cmdsep)s popd</verb>
+     <stage>Test run the library-linked executables.
+      <verb-list category="execute" >Run &quot;program&quot;
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/static_sqr%(exe-suf)s} 12.0 1 > output3 %(cmdsep)s %(cat)s output3 %(cmdsep)s  popd</verb>
+      </verb-list>
+      <verb-list category="execute" >Run &quot;program&quot;
+	<property name="library-path">%(base)s/%(stage-lib-dir)s</property>
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(stage-bin-dir)s/shared_sqr%(exe-suf)s} 12.0 1 > output4 %(cmdsep)s %(cat)s output4 %(cmdsep)s popd</verb>
       </verb-list>
        <verb-list category="verify" >
-      Verify that the correct files have been removed
-       <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/src/Library</property>
-          <property name="file-type" >file</property>
-          <property name="verify" >nonexist</property>
-          <property name="location" >%(library-name)s</property>
-          <property name="test-phrase">1.2.4 Library has gone, successful clean</property>
-        </verb>
+      Verify that the correct files have been produced
         <verb type="file-list" >
-	  <property name="error" >nonfatal</property>
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/src/Executable</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
-          <property name="location" >example_exe.o %(exe-name)s Jamfile</property>
-          <property name="test-phrase">Dummy test to stop job clean</property>
+          <property name="location" >output3 output4</property>
         </verb>
-        </verb-list>
+        <verb type="compare" >
+	  <property name="type" >search</property>
+          <property name="search-regex" >Halley algorithm</property>
+          <property name="location" >output3 output4</property>
+          <property name="test-phrase">1.2.1 Output of compiled program verified</property>
+        </verb>
+      </verb-list>
     </stage>
     <stage>
       Clean-up stage
       <verb-list category="cleanup">
         Clean up operations
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s</property>
+          <property name="base" >%(base-dir)s</property>
           <property name="file-type" >directory</property>
           <property name="verify" >remove</property>
-          <property name="location" >.</property>
+          <property name="location" >%(project)s</property>
         </verb>
       </verb-list>
     </stage>

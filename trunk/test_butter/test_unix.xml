@@ -17,8 +17,7 @@
   <property name="cmake" >cmake</property>
   <property name="cmake-arg" >-G 'Unix Makefiles' -DCMAKE_VERBOSE_MAKEFILE=ON</property>
   <property name="cmake-sys" >local.cmake</property>
-  <property name="cmake-builder" >%(make)s -k %(make-arg)s</property>
-  <property name="cmake-installer" >%(make)s -k %(make-arg)s install</property>
+  <property name="cmake-builder" >%(make)s -k %(make-arg)s install</property>
   <property name="cmake-cleaner" >%(make)s -k %(make-arg)s clean</property>
   <property name="patch-args" >-l -t -i</property>
   <property name="checkout-tool" >svn</property>
@@ -26,7 +25,7 @@
   <property name="exe-suf" ></property>
   <property name="ark-suf" >.a</property>
   <property name="shrt-suf" >.so</property>
-  <property name="shr-suf" >.so.0</property>
+  <property name="shr-suf" >.so</property>
   <property name="cmdsep" >;</property>
   <property name="lib-dir" >\lib</property>
   <property name="bin-dir" >\bin</property>

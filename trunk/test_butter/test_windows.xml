@@ -16,8 +16,7 @@
   <property name="cmake" >"cmake"</property>
   <property name="cmake-arg" >-G "Visual Studio 10"</property>
   <property name="cmake-sys" >local.cmake</property>
-  <property name="cmake-builder" >msbuild /t:Build %(project)s.sln</property>
-  <property name="cmake-installer" >msbuild /t:Install %(project)s.sln</property>
+  <property name="cmake-builder" >msbuild /t:Install %(project)s.sln</property>
   <property name="cmake-cleaner" >msbuild /t:Clean %(project)s.sln</property>
   <property name="base-dir" >C:\tmp</property>
   <property name="patch-args" >--verbose --binary -t -l -i</property>

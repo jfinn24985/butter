@@ -224,7 +224,11 @@ job objects. """
     def endElement(self, name):
         """Notification of end of element"""
         self.depth -= 1
-        self.cursor.end_load ()
+        try:
+           self.cursor.end_load ()
+        except BaseException, err: # Add location information
+           err.args += (self._location_to_string (),)
+           raise
         if self.cursor != self.top:
           self.cursor = self.cursor.parent ()
         
@@ -252,7 +256,11 @@ document"""
           del tmp_
         assert name in interpreter.__constructor_set, "The XML element <" + name + " ...> is not recognised\n" + self._location_to_string ()
         for __ctor in interpreter.__constructor_set[name]:
-           _obj = __ctor(name, attr)
+           try:
+              _obj = __ctor(name, attr)
+           except BaseException, err: # Add location information
+              err.args += (self._location_to_string (),)
+              raise
            if None != _obj:
               self.cursor.add_child (_obj)
               self.cursor = _obj
@@ -902,17 +910,17 @@ to the end-element event."""
     @staticmethod
     def removedirs(a_path):
         """Remove a path"""
-        import stat
+        from stat import S_IWRITE
         if os.path.exists(a_path):
-            os.chmod (a_path,stat.S_IWRITE)
+            os.chmod (a_path,S_IWRITE | os.stat(a_path).st_mode)
             for root_, dirs_, files_ in os.walk(a_path, False):
                 for f_ in files_:
                     p_= os.path.join(root_, f_)
-                    os.chmod (p_,stat.S_IWRITE)
+                    os.chmod (p_,S_IWRITE | os.stat(a_path).st_mode)
                     os.unlink(p_)
                 for d_ in dirs_:
                     p_= os.path.join(root_, d_)
-                    os.chmod (p_,stat.S_IWRITE)
+                    os.chmod (p_,S_IWRITE | os.stat(a_path).st_mode)
                     os.rmdir(p_)
             os.rmdir(a_path)
         pass
