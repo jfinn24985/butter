@@ -24,10 +24,6 @@ namespace butter {
  * XXX_COMPILE_FLAGS
  * XXX_LINK_LIBRARIES
  * 
- * TODO:
- * need to root relative files with CMAKE_SOURCE_DIR
- * need to convert $(..) to ${..}
- * need to convert $(OUTPUTDIR) to CMAKE_BINARY_DIR
  * 
  * Additionally external library xxx without a local buildfile can be
  * found using:
@@ -186,8 +182,9 @@ friend class generator<cmake_generator>;
   public:
     /**
      * Convert input string into CMake allowed string.  This
-     * means converting () to {} and OUTPUTDIR to 
-     * CMAKE_BINARY_DIR
+     * means converting () to {}
+     * 
+     * Check for -I,/I,-L,/L and modify if a relative path is detected.
      */
     QString mangle(QString input);
 

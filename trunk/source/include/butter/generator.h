@@ -129,7 +129,7 @@ while (! location_stack_.isEmpty ())
                     {
                       QString value_;
                       if (art_item_.property_search (butter_constants::butter_lib_type_name, value_)
-                            && value_ == butter_constants::shared_value)
+                          && value_ == butter_constants::shared_value)
                       {
                         target_type_ = shared_library;
                       }
@@ -161,18 +161,18 @@ while (! location_stack_.isEmpty ())
                       if (stereotype_ == butter_constants::library_stereotype)
                       {
                         static_cast< derived* >(this)->assoc_library (*current_art_, entry_os_
-                                            , includes_, ldflags_, compflags_);
+                            , includes_, ldflags_, compflags_);
                       }
                       else if (stereotype_ == butter_constants::source_stereotype)
                       {
                         QString src_inc_, src_flags_;
                         find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name, true); // Pass link flags to target
                         static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
-                                            , current_art_->name () + "." + CppSettings::sourceExtension ()
-                                            , current_art_->name ()
-                                            , src_inc_
-                                            , src_flags_
-                                            , false);
+                            , current_art_->name () + "." + CppSettings::sourceExtension ()
+                            , current_art_->name ()
+                            , src_inc_
+                            , src_flags_
+                            , false);
                       }
                       else if (stereotype_ == butter_constants::document_stereotype)
                       {
@@ -182,18 +182,18 @@ while (! location_stack_.isEmpty ())
                         const int dot_ (basename_.findRev ('.'));
                         if (-1 != dot_) basename_.truncate (dot_);
                         static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
-                                            , current_art_->name ()
-                                            , basename_
-                                            , src_inc_
-                                            , src_flags_
-                                            , true);
+                            , current_art_->name ()
+                            , basename_
+                            , src_inc_
+                            , src_flags_
+                            , true);
                       }
                     }
                     ////////////////////
                     // End target
                     find_hdr_link (art_item_, includes_, ldflags_, compflags_, style_.name, false); // Pass link flags to target
                     static_cast< derived* >(this)->end_target (art_item_, entry_os_
-                                            , includes_, ldflags_, compflags_, compiler_, target_type_);
+                        , includes_, ldflags_, compflags_, compiler_, target_type_);
                   }
                   if (! entry_.isEmpty ())
                   {
@@ -237,14 +237,16 @@ while (! location_stack_.isEmpty ())
                     install_type_ = base_generator::lib;
                     if (install_dir_.isEmpty ())
                     {
-                      install_dir_ = butter_constants::libdir_value;
+                      install_dir_ = (target_type_ == base_generator::shared_library)
+                                     ? butter_constants::libdir_value
+                                     : butter_constants::arkdir_value ;
                     }
                     else
                     {
                       /////////////
                       // Reset install type to file to handle "other" targets
                       if (install_dir_ != butter_constants::libdir_value
-                         && target_type_ == base_generator::other)
+                          && target_type_ == base_generator::other)
                       {
                         install_type_ = base_generator::file;
                       }

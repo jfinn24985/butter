@@ -141,6 +141,17 @@ friend class generator<bjam_generator>;
      */
     void start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type);
 
+
+  public:
+    /**
+     * Process a set of flags as needed by boost. The general
+     * process is to split a_flagset into space spearated tokens
+     * and output each token with <a_flagname>"token". If a_combine 
+     * is true then tokens without "-" or "/" as the first character
+     * will be assumed to be arguments to the previous flag.
+     */
+    void process_flags(const ::QTextOStream & a_os, QString a_flagname, QString a_flagset, bool a_combine);
+
 };
 
 

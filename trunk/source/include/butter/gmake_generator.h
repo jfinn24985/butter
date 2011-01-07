@@ -308,21 +308,16 @@ friend class generator<gmake_generator>;
     gmake_generator & operator=(const gmake_generator &);
     /**
      * Process a_inc_list and a_flag_list into preprocessor
-     * and compiler flag sets.
+     * and compiler flag sets. Also checks if paths are relative
+     * in which case it sets them relative to root-dir
      */
-    void process_flags(QString a_inc_list, QString a_flag_list, QString & a_cppflags, QString & a_cflags);
+    void process_flags(QString a_inc_list, QString a_flag_list, QString & a_cppflags, QString & a_cflags, QString & a_ldflags);
 
     /**
      * Transform a space separated list of include dirs into a
      * list with -I...
      */
     static QString process_hdrs(QString a_inc_list);
-
-    /**
-     * Scan a_item for any requirements, add these to a_req and
-     * return true if found.
-     */
-    static bool requirements(const ::UmlItem & a_item, QString & a_reqs);
 
     /**
      * ** This method sets up object for creating a new target entry for a_target.
