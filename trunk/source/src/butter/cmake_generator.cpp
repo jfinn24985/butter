@@ -37,18 +37,18 @@ const char * cmake_generator::default_rules[] = { "#\n"
 , "# local.cmake\n"
 , "#\n"
 , "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG=1)\n"
-, "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS DEBUG=0)\n"
+, "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_RELEASE DEBUG=0)\n"
 , "#############################\n"
 , "##  Default install locations\n"
 , "#############################\n"
-, "set (CMAKE_INSTALL_PREFIX installdir)\n"
-, "set (BINDIR bin)\n"
-, "set (DATADIR share)\n"
-, "set (DOCDIR share/doc)\n"
-, "set (HTMLDIR share/html)\n"
-, "set (INCLUDEDIR include)\n"
-, "set (LIBDIR bin)\n"
-, "set (MANDIR share/man)\n"
+, "set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/stage)\n"
+, "set (BINDIR bin CACHE PATH \"Stage location for executables\")\n"
+, "set (DATADIR share CACHE PATH \"Stage location for static libraries\")\n"
+, "set (DOCDIR share/doc CACHE PATH \"Stage location for documentation\")\n"
+, "set (HTMLDIR share/html CACHE PATH \"Stage location for HTML documentation\")\n"
+, "set (INCDIR include CACHE PATH \"Stage location for include files\")\n"
+, "set (LIBDIR lib CACHE PATH \"Stage location for dynamic/shared libraries\")\n"
+, "set (MANDIR share/man CACHE PATH \"Stage location for man-page documentation\")\n"
 , "\n"
 , 0 }
 ;
@@ -281,7 +281,20 @@ if (a_type == other)
       << "\n\tCOMMAND ${" << other_type_ << "} ";
   if (! a_include.isEmpty ())
   {
-    a_os << mangle(a_include) << " ";
+    a_os << "-I";
+    for (const_token_iterator e_, b_(a_include, ' '); e_ != b_; ++b_)
+    {
+      const QString val_(b_->c_str ());
+      if (!val_.isEmpty ())
+      {
+        if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
+        {
+          a_os << "${CMAKE_SOURCE_DIR}/";
+        }
+        a_os << mangle (val_) << " ";
+      }
+    }
+    a_os << " ";
   }
   if (! a_cflags.isEmpty ())
   {
@@ -444,13 +457,22 @@ void cmake_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStr
 {
 // Bouml preserved body begin 00038929
 const QString target_name_(a_isdoc ?  a_target.name() : "${" + this->target_NAME () + "}");
+if (butter_constants::is_install_keyword (a_loc_var))
+{
+  a_loc_var.insert (0, "${").append ("DIR}");
+}
+else if (a_loc_var.right(3) == "DIR")
+{
+  // assume is user defined variable
+  a_loc_var.insert (0, "${").append ("}");
+}
+// else assume is an actual path
 switch (a_type)
 {
 case base_generator::bin:
 {
   a_os << "install (TARGETS " << target_name_
-  << "\n\tRUNTIME DESTINATION ${" << a_loc_var << "}"
-  << "\n\tCONFIGURATIONS Release)\n\n";
+  << "\n\tRUNTIME DESTINATION " << a_loc_var << ")\n\n";
   break;
 }
 case base_generator::lib:
@@ -459,26 +481,23 @@ case base_generator::lib:
   if (this->is_static_type_)
   {
     statd_ = a_loc_var;
-    shard_ = "LIBDIR";
+    shard_ = "${LIBDIR}";
   }
   else
   {
-    statd_ = "DATADIR";
+    statd_ = "${DATADIR}";
     shard_ = a_loc_var;
   }
   a_os << "install (TARGETS " << target_name_
-  << "\n\tLIBRARY DESTINATION ${" << shard_ << "}"
-  << "\n\tCONFIGURATIONS Release"
-  << "\n\tARCHIVE DESTINATION ${" << statd_ << "}"
-  << "\n\tCONFIGURATIONS Release)\n\n";
+  << "\n\tLIBRARY DESTINATION " << shard_ << ""
+  << "\n\tARCHIVE DESTINATION " << statd_ << ")\n\n";
   break;
 }
 case base_generator::file:
 case base_generator::man:
 {
   a_os << "install (FILES " << target_name_
-  << "\n\tDESTINATION ${" << a_loc_var << "}"
-  << "\n\tCONFIGURATIONS Release)\n\n";
+  << "\n\tDESTINATION " << a_loc_var << ")\n\n";
   break;
 }
 }
@@ -554,13 +573,32 @@ if (! quotes_.empty ())
 {
   throw std::runtime_error ("<p><b>Error</b> Unmatched quotes in string: " + std::string(input.utf8()) + "</p>");
 }
-while (true)
+// Check for -I, /I, -L or /L
+if (-1 != input.find('L') || -1 != input.find('I'))
 {
-  static const QString od_ ("OUTPUTDIR");
-  static const QString cd_ ("CMAKE_BINARY_DIR");
-  const int found_at_ (input.find (od_));
-  if (found_at_ == -1) break;
-  input.replace (found_at_, od_.length (), cd_);
+  QString mangle_;
+  {
+    QTextOStream os_ (&mangle_);
+    for (const_token_iterator e_, b_(input.simplifyWhiteSpace(), ' '); e_ != b_; ++b_)
+    {
+      const QString item_(b_->c_str ());
+      BUTTER_CHECK (! item_.isEmpty ()
+                  , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
+      if ('L' == item_[1] || 'I' == item_[1])
+      {
+        if ('-' == item_[0] || '/' == item_[0])
+        {
+          if (QDir::isRelativePath (item_.mid(2)))
+          {
+            os_ << item_.left(2) << "${CMAKE_SOURCE_DIR}/" << item_.mid(2) << " ";
+            continue;
+          }
+        }
+      }
+      os_ << item_ << " ";
+    }
+  }
+  input = mangle_;
 }
 return input;
 

@@ -30,10 +30,6 @@ extern const basic_style jam_style;
 void style::set_style(QString a_style)
 {
 // Bouml preserved body begin 000300A9
-extern const basic_style bjam_style;
-extern const basic_style cmake_style;
-extern const basic_style gmake_style;
-extern const basic_style jam_style;
 if (a_style == bjam_style.name)
 {
   style_ = std::auto_ptr< style >(new style (bjam_style));

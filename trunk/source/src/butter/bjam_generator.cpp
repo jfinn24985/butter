@@ -43,14 +43,14 @@ const char * bjam_generator::default_rules[] = { "#\n"
 , "#\n"
 , "# Set constants for installation paths\n"
 , "import path ;\n"
-, "path-constant INSTALL_PREFIX : installdir ;\n"
-, "constant BINDIR : bin ; # User programs\n"
-, "constant DATADIR : share ; # Private libraries and static data\n"
-, "constant DOCDIR : [ path.join share doc ] ;\n"
-, "constant HTMLDIR : [ path.join share html ] ;\n"
-, "constant INCDIR : include ;\n"
-, "constant LIBDIR : bin ; # Shared libraries\n"
-, "constant MANDIR  : [ path.join share man1 ] ;\n"
+, "path-constant PREFIX : stage ;\n"
+, "constant BINDIR : [ path.join $(PREFIX) bin ] ; # User programs\n"
+, "constant DATADIR : [ path.join $(PREFIX) share ] ; # Static libraries\n"
+, "constant DOCDIR : [ path.join $(DATADIR) doc ] ;\n"
+, "constant HTMLDIR : [ path.join $(DATADIR) html ] ;\n"
+, "constant INCDIR : [ path.join $(PREFIX) include ] ;\n"
+, "constant LIBDIR : [ path.join $(PREFIX) lib ] ; # Shared libraries\n"
+, "constant MANDIR  : [ path.join $(DATADIR) man ] ;\n"
 , "\n"
 , 0 }
 ;
@@ -174,6 +174,7 @@ if (! a_cflags.isEmpty ())
 {
   if (other == a_type)
   {
+    a_os << "@" << this->other_target_type_ << " :\n\t";
     // Handle flags for non-standard targets.
     const QString name_ ("<" + this->other_target_type_ + "flags>\"");
     for (const_token_iterator e_, b_(a_cflags, ' '); b_ != e_; ++b_)
@@ -396,6 +397,7 @@ QString content_;
     QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
     os_ << "# Include local constants\npath-constant topdir : . ;\ninclude " << name_ << " ;\n\n";
   }
+  os_ << "# Set debug as default variant\nvariant ?= debug ;\n\n";
   os_ << "# Set project's global settings\nproject " << project_name_
       << "\n\t: requirements <debug-symbols>on:<define>\"DEBUG=1\""
       << "\n\t<debug-symbols>off:<define>\"DEBUG=0\"\n\t";
@@ -459,10 +461,22 @@ void bjam_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStre
 {
 // Bouml preserved body begin 00034029
 const QString name_ (a_target.name ());
-a_os << "install install_" << name_ << " : " << name_
-        << " : <variant>release:<location>$(INSTALL_PREFIX)/$(" << a_loc_var << ") \n\t\t"
-      << "<variant>debug:<location>$(DEBUG_PREFIX)/\""
-      << root_dir ().create_relative (a_target.package ().src_path ()) << "\" ;\n";
+a_os << "install install_" << name_ << " : " << name_  << " : <location>";
+if (butter_constants::is_install_keyword (a_loc_var))
+{
+  a_os << "$(" << a_loc_var << "DIR)";
+}
+else if (a_loc_var.right(3) == "DIR")
+{
+  // assume is user defined variable
+  a_os << "$(" << a_loc_var << ")";
+}
+else
+{
+  // assume is an actual path
+  a_os << a_loc_var;
+}
+a_os << " ;\n";
 // Bouml preserved body end 00034029
 
 }
@@ -486,7 +500,7 @@ if (stereotype_ == butter_constants::library_stereotype)
     {
       a_os << "include " << a_build_file << ".bjam ;\n\n";
     }
-    a_os << this->other_target_type_ << " ";
+    a_os << "make ";
   }
   else
   {
@@ -499,6 +513,13 @@ else if (stereotype_ == butter_constants::executable_stereotype)
 }
 a_os << a_target.name () << " :\n\t";
 // Bouml preserved body end 00033D29
+}
+
+void bjam_generator::process_flags(const ::QTextOStream & a_os, QString a_flagname, QString a_flagset, bool a_combine) 
+{
+// Bouml preserved body begin 0003DC29
+// Bouml preserved body end 0003DC29
+
 }
 
 

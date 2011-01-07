@@ -51,14 +51,14 @@ const char * jam_generator::default_rules[] = { "#\n"
 , "##  Default install locations\n"
 , "##\n"
 , "#############################\n"
-, "PREFIX = installdir ;\n"
-, "BINDIR = $(PREFIX)/bin ;\n"
-, "DATADIR = $(PREFIX)/share ;\n"
-, "DOCDIR = $(DATADIR)/doc ;\n"
-, "HTMLDIR = $(DATADIR)/html ;\n"
-, "INCDIR = $(PREFIX)/include ;\n"
-, "LIBDIR = $(PREFIX)/bin ;\n"
-, "MANDIR = $(DATADIR)/man1 ;\n"
+, "PREFIX = stage ;\n"
+, "BINDIR = $(PREFIX)$(SLASH)bin ;\n"
+, "DATADIR = $(PREFIX)$(SLASH)share ;\n"
+, "DOCDIR = $(DATADIR)$(SLASH)doc ;\n"
+, "HTMLDIR = $(DATADIR)$(SLASH)html ;\n"
+, "INCDIR = $(PREFIX)$(SLASH)include ;\n"
+, "LIBDIR = $(PREFIX)$(SLASH)lib ;\n"
+, "MANDIR = $(DATADIR)$(SLASH)man ;\n"
 , "\n"
 , "######################################################\n"
 , "##\n"
@@ -83,7 +83,7 @@ const char * jam_generator::default_rules[] = { "#\n"
 , "switch $(VARIANT)\n"
 , "{\n"
 , "case RELEASE :\n"
-, "  OPTIM += -O2 -march=native -DDEBUG=0 ;\n"
+, "  OPTIM = -O2 -march=native -DDEBUG=0 ;\n"
 , "case * :\n"
 , "  OPTIM = -O0 -ggdb -DDEBUG=1 ;\n"
 , "  CCFLAGS += -pedantic ;\n"
@@ -423,7 +423,6 @@ QString content_;
   //////////////
   // Set this as top location and bring in Jamrules.
   os_ << "SubDir TOP ;\n";
-  os_ << "OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;\n";
   //////////////
   // Handle user-defined project includes and flag properties
   ////////////
@@ -470,19 +469,33 @@ void jam_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStrea
 // Bouml preserved body begin 00033229
 static const char * install_cmd_[] =
 {
-  "InstallBin"
-, "InstallFile"
-, "InstallLib"
-, "InstallMan"
+  "InstallBin "
+, "InstallFile "
+, "InstallLib "
+, "InstallMan "
 };
-a_os << install_cmd_ [a_type] << " $("  << a_loc_var << ") : ";
-if (a_isdoc)
+a_os << install_cmd_ [a_type];
+if (butter_constants::is_install_keyword (a_loc_var))
 {
-  a_os << this->grist_ << a_target.name ();
+  a_os << "$(" << a_loc_var << "DIR)";
+}
+else if (a_loc_var.right(3) == "DIR")
+{
+  // assume is user defined variable
+  a_os << "$(" << a_loc_var << ")";
 }
 else
 {
-  a_os << this->qualified_target_name_;
+  // assume is an actual path
+  a_os << a_loc_var;
+}
+if (a_isdoc)
+{
+  a_os << " : " << this->grist_ << a_target.name ();
+}
+else
+{
+  a_os << " : " << this->qualified_target_name_;
 }
 a_os << " ;\n";
 // Bouml preserved body end 00033229
