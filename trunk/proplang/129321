@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 16
+  revision 17
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -92,11 +92,13 @@ actions t2t
       comment "ifndef T2T_MAK
 T2T_MAK:=1
 T2T=txt2tags
+T2TOUT=-o # need space
+T2TIN=
 T2TFLAGS?=
 .man.t2t :
-	$(T2T) $(T2TFLAGS) $< $>
+	$(T2T) $(T2TFLAGS) $(T2TOUT)$< $(T2TIN)$>
 .html.t2t :
-	$(T2T) $(T2TFLAGS) $< $>
+	$(T2T) $(T2TFLAGS) $(T2TOUT)$< $(T2TIN)$>
  endif"
     end
 
