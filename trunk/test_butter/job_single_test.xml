@@ -62,7 +62,8 @@
 	<property name="type" >search</property>
         <property name="search-args" >-E</property>
         <verb type="compare" >
-          <property name="search-regex" >(DEBUG|native).*single_test.c</property>
+		<property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[123]).*single_test.c</property>
+		<property name="search-regex" if="build-style=boost">(debug|release).*single_test\.</property>
         </verb>
         <property name="test-phrase">2.1.1 Single directory, single target compiled</property>
       </verb-list>
@@ -70,7 +71,7 @@
     <stage>Test run the executable.
       <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s</property>
       <verb-list category="execute" >Run &quot;test&quot;
-	      <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(base)s/test%(exe-suf)s} &gt; output %(cmdsep)s popd</verb>
+	      <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s FINDFILE{PATH{%(base)s/test%(exe-suf)s}} &gt; output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >

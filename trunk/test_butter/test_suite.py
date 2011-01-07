@@ -1,6 +1,20 @@
+"""The following functional replacements are supported:
 
-
+    ENVVAR{...} -> content of brace expr are written as
+        an environment variable for the local shell
+        at read time.
+    PATH{...} -> content of brace expr is interpreted as
+        a filesystem path and converted to the local
+        syntax at read time.
+    FINDFILE{...} -> content of brace expr is interpreted
+        as a filesystem path in system (verb) commands
+        that may vary at runtime. The file is searched
+        for starting from the directory of the path
+        and then in each leaf sub-directory of path.
+"""
+        
 import xml.sax, threading, os.path
+import xml.sax.saxutils as saxutils
 
 _DEBUG = False
 if _DEBUG:
@@ -334,16 +348,16 @@ to a python dictionary.
         """checks if this is a conditional property and if the
 condition is met from the given dictionary."""
         if self.if_property: # Check for dependencies
-        need_match = True # Do we match or not match value?
-        chk = self.if_value
-        if chk[0] == '!':
-          chk = chk[1:]
-          need_match = False
-        value = a_dict.get (self.if_property, None)
-        if value:
-          return (value == chk) == need_match
-        else:
-          return not need_match # Need match to add
+          need_match = True # Do we match or not match value?
+          chk = self.if_value
+          if chk[0] == '!':
+            chk = chk[1:]
+            need_match = False
+          value = a_dict.get (self.if_property, None)
+          if value:
+            return (value == chk) == need_match
+          else:
+            return not need_match # Need match to add
         return True
         
     
@@ -525,9 +539,9 @@ one of four categories: setup, execute, verify and cleanup
 See individual types for expected name:value properties"""
     element_name = u"verb"
     #What to do with certain errors
-    _error = { u"fatal": """raise RuntimeError(r"%(_message_)s")"""
- , u"nonfatal": """self.passed = False; print r"%(_message_)s" """
- , u"optional" : """print r"%(_message_)s" """  }
+    _error = { u"fatal": """raise RuntimeError(saxutils.escape(r"%(_message_)s"))"""
+ , u"nonfatal": """self.passed = False; print saxutils.escape (r"%(_message_)s") """
+ , u"optional" : """print saxutils.escape (r"%(_message_)s") """  }
     test_property_name = u"test-phrase"
     #The XML attribute name for the verb's 
     #"type" attribute
@@ -626,26 +640,21 @@ The templates for the various operations are:
         pass
     
 class verb_compare(verb):
-    """Perform the most rigourous comparison using some program to compare 
-the contents of a file with some canonical example, the default is to
-use "diff". You can specifiy program options, for example using the GNU
-diff option to exclude comparing lines that will always be different such as 
-datestamps and timestamps.  Of course other programs can be used to
-perform other types of tests, eg CRC, file mode etc.
+    """Perform a rigourous comparison. In compare mode two files
+    are expected to be line-by-line identical except lines that match
+    regex property. In search mode a single file is searched for the 
+    given regex property. If the regex property starts and ends with 
+    [ and ] it is interpreted as a list of regex strings to apply.
 
 Command phrase:
-%(compare-command) %(compare-args) %(base)/%(leaf) %(compare-base)%(leaf)%(suffix)
+compare_files(%(base)/%(leaf), %(compare-base)%(leaf)%(suffix), %(regex))
 or
-%(search-command) %(search-args) %(search-phrase) %(base)/%(leaf)
+search_file(%(regex), %(base)/%(leaf)
 where leaf is a single element in "location"
 
 Properties
 type : compare | search
-compare-command  : The comparison program (default = "diff")
-compare-args : Arguments to program (default = "-q")
-search-command  : The search program (default = "grep")
-search-args : Arguments to program (default = "")
-search-regex : Regular expression to search for (required)
+regex : Regular expression to search for (required)
 suffix                 : File suffix to add to file(default = ".canon")
 base                 : Base directory
 compare-base : Directory with canonical files (defaut = base)
@@ -674,27 +683,23 @@ to the end-element event."""
         phrase_ = None
         # Settings for "diff"
         if type_ == u"compare":
-          compare_ = self.get (u"compare-command", u"diff")
-          args_ = self.get (u"compare-args", u"")
+          regex_ = self.get (u"search-regex", None)
           suffix_ = self.get (u"suffix", u".canon")
           msg_ = u"""File %(_path1_)s does not compare equal to canonical file %(_path2_)s%(_suffix_)s"""
-          phrase_ = u"""self.system_call(r\"\"\"%(_compare_)s %(_compare_args_)s %(_path1_)s %(_path2_)s%(_suffix_)s\"\"\", r\"\"\"%(_error_)s\"\"\")\n"""
+          phrase_ = u"""if not verb_compare.compare_files (r\"\"\"%(_path1_)s\"\"\", r\"\"\"%(_path2_)s%(_suffix_)s\"\"\", r\"\"\"%(_regex_)s\"\"\"):\n    %(_error_)s\n"""
           base2_ = self.make_substitutions(self.get(u"compare-base", u""))
           if not base2_:
             base2_ = base1_
           # Initialise the object-specific substitution dictionary
-          self.substitutions( None, { u"_compare_": compare_, u"_compare_args_": args_, u"_path1_": None, u"_path2_": None, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")], u"_suffix_": suffix_ } )
+          self.substitutions( None, { u"_path1_": None, u"_path2_": None, u"_regex_": regex_, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")], u"_suffix_": suffix_ } )
         else: # assume grep!
-          search_ = self.get (u"search-command", u"grep")
-          args_ = self.get (u"search-args", u"")
           regex_ = self.get (u"search-regex", None)
           if not regex_:
             raise RuntimeError("""No "search-regex" set for search""")
           msg_ = u"""No lines in file %(_path1_)s match regular expression %(_regex_)s"""
-          phrase_ = u"""self.system_call(r\"\"\"%(_search_)s %(_search_args_)s %(_regex_)s %(_path1_)s\"\"\", r\"\"\"%(_error_)s\"\"\")\n"""
+          phrase_ = u"""if not verb_compare.grep_file (r\"\"\"%(_path1_)s\"\"\", r\"\"\"%(_regex_)s\"\"\"):\n    %(_error_)s\n"""
           # Initialise the object-specific substitution dictionary
-          self.substitutions( None, { u"_search_": search_, u"_search_args_": args_, u"_path1_": None, u"_regex_": regex_, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")] } )
-          phrase_ = u"""self.system_call(r\"\"\"%(_search_)s %(_search_args_)s "%(_regex_)s" %(_path1_)s\"\"\", r\"\"\"%(_error_)s\"\"\")\n"""
+          self.substitutions( None, { u"_path1_": None, u"_regex_": regex_, u"_message_": None,  u"_error_": verb._error[self.get (u"error",u"fatal")] } )
         
         # Build python evaluation string
         self.reset_action ()
@@ -714,6 +719,69 @@ to the end-element event."""
           del tmp_
         pass
         
+    @staticmethod
+    def grep_file (filename1, re_or_list, matchall=False):
+        """Meta-constructor method"""
+        if not os.path.exists(filename1):
+            return False
+        import re
+        re_list_ = []
+        if isinstance(re_or_list, type(re_list_)):
+            for re_ in re_or_list:
+                re_list_.append ([re.compile (re_),False])
+        else:
+            re_list_.append ([re.compile (re_or_list),False])
+        for line_ in open(filename1, "rU"):
+            for re_ in re_list_:
+                if not re_[1] and re_[0].search(line_):
+                    if not matchall:
+                        return True
+                    re_[1] = True
+                    # Note: following done max len(re_list_) times!
+                    c_ = 0
+                    for X in re_list_:
+                        if X[1]: ++c_
+                    if c_ == len(re_list_):
+                        return True
+        return False
+        
+    @staticmethod
+    def compare_files (filename1, filename2, re_or_list):
+        """Meta-constructor method"""
+        if not os.path.exists(filename1) or not os.path.exists(filename2):
+            print saxutils.escape ( "Either" + filename1 +"or"+filename2+"does not exist")
+            return False
+        import re
+        re_list_ = []
+        if isinstance(re_or_list, type(re_list_)):
+            for re_ in re_or_list:
+                re_list_.append (re.compile (re_))
+        elif re_or_list:
+            re_list_.append (re.compile (re_or_list))
+        if 0 != len(re_list_):
+          for pair_ in map (lambda x,y: (x,y), open(filename1, "rU"), open(filename2, "rU")):
+            if pair_[0] == None:
+                return False
+            if pair_[1] == None:
+                return False
+            if pair_[0] != pair_[1]:
+                result = False
+                for re_ in re_list_:
+                    if re_.search(pair_[0]):
+                        result = True
+                        break
+                if not result:
+                    return False
+        else: # No REs
+          for pair_ in map (lambda x,y: (x,y), open(filename1, "rU"), open(filename2, "rU")):
+            if pair_[0] == None:
+                return False
+            if pair_[1] == None:
+                return False
+            if pair_[0] != pair_[1]:
+                return False
+        return True
+                
     @staticmethod
     def make(elemname, elemattr):
         """Meta-constructor method"""
@@ -820,6 +888,7 @@ to the end-element event."""
     @staticmethod
     def findfile(a_path):
         """Test if file exists in a leaf directory."""
+        print "looking for", a_path
         dir = os.path.dirname(a_path)
         leaf = os.path.basename(a_path)
         if not os.path.exists(dir):
@@ -827,19 +896,25 @@ to the end-element event."""
         """Look for subdirs"""
         for root_, dirs_, files_ in os.walk(dir, False):
           if 0 == len(dirs_) and leaf in files_:
-            return True
-        return False
+            return os.path.join (root_,leaf)
+        return None
         
     @staticmethod
     def removedirs(a_path):
         """Remove a path"""
+        import stat
         if os.path.exists(a_path):
-          for root_, dirs_, files_ in os.walk(a_path, False):
-            for f_ in files_:
-                os.unlink(os.path.join(root_, f_))
-            for d_ in dirs_:
-                os.rmdir(os.path.join(root_, d_))
-          os.rmdir(a_path)
+            os.chmod (a_path,stat.S_IWRITE)
+            for root_, dirs_, files_ in os.walk(a_path, False):
+                for f_ in files_:
+                    p_= os.path.join(root_, f_)
+                    os.chmod (p_,stat.S_IWRITE)
+                    os.unlink(p_)
+                for d_ in dirs_:
+                    p_= os.path.join(root_, d_)
+                    os.chmod (p_,stat.S_IWRITE)
+                    os.rmdir(p_)
+            os.rmdir(a_path)
         pass
         
     def __init__(self):
@@ -912,7 +987,7 @@ to the end-element event."""
         args_ = self.get (u"patch-args", u"-t -i")
         suffix_ = self.get (u"suffix", u".patch")
         msg_ = u"""File %(_path_)s failed to apply"""
-        base_ = self.make_substitutions(self[u"base"])
+        base_ = os.path.normpath(self.make_substitutions(self[u"base"]))
         patch_dir_ = self.make_substitutions(self.get(u"patch-dir", u""))
         if not patch_dir_:
           patch_dir_ = base_
@@ -1090,16 +1165,16 @@ integer that identifies this phrase"""
         """Write job's report to a_os."""
         tr_ = self.start("tablerow", None, a_os)
         td_ = self.start("tableitem", {"bgcolor": job.test_color[a_test[0]]}, a_os)
-        print >>a_os, job.test_result[a_test[0]],
+        print >>a_os, saxutils.escape ( job.test_result[a_test[0]])
         del td_
         td_ = self.start("tableitem", None, a_os)
-        print >>a_os, a_jobnum,
+        print >>a_os, saxutils.escape ( a_jobnum,)
         del td_
         td_ = self.start("tableitem", None, a_os)
-        print >>a_os, a_jobid,
+        print >>a_os, saxutils.escape ( a_jobid,)
         del td_
         td_ = self.start("tableitem", None, a_os)
-        print >>a_os, a_test[1],
+        print >>a_os, saxutils.escape ( a_test[1],)
         del td_
         del tr_
         
@@ -1161,16 +1236,16 @@ May never raise and error"""
           for stage_ in self._children:
             if isinstance(stage_, stage):
               if not stage_.run ():
-        	self.start("error",{"#title":"Non-fatal error occured"}, a_os)
-        	self.non_fatal_error += 1
+                self.start("error",{"#title":"Non-fatal error occured"}, a_os)
+                self.non_fatal_error += 1
         except RuntimeError, err:
           tmp_ = self.start("error",{"#title":"Fatal RuntimeError occured"}, a_os)
-          print >> a_os, str(err)
+          print >>a_os, saxutils.escape ( str(err))
           del tmp_
           self.fatal_error += 1
         except Exception, err:
           tmp_ = self.start("error",{"#title":"Fatal generic error occured"}, a_os)
-          print >> a_os, str(err)
+          print >>a_os, saxutils.escape ( str(err))
           del tmp_
           self.fatal_error += 1
         except:
@@ -1219,21 +1294,21 @@ Typical verbs: file-list[@type=remove]"""
             if isinstance(item_, verb_list):
               if category == item_.category:
                 if not subtmp_:
-        	  subtmp_ = self.start("sub-stage", {"#title":"Running " + category + " stage code"})
-        	  if item_.content:
-        	    p_ = item_.start("par")
-        	    print item_.content
-        	    del p_
+                    subtmp_ = self.start("sub-stage", {"#title":"Running " + category + " stage code"})
+                if item_.content:
+                    p_ = item_.start("par")
+                    print saxutils.escape (item_.content)
+                    del p_
                 tmp_ = item_.start("code",{"#title":"Code to execute"})
-                print item_.get_action ()
+                print saxutils.escape (item_.get_action ())
                 del tmp_
                 result = True
                 tmp_ = item_.start("output",{"#title":"Code output"}),
-        	exec item_.get_action ()
+                exec item_.get_action ()
                 del tmp_
-        	self.passed = result
+                self.passed = result
                 if not self.passed:
-                  return
+                    return
           if subtmp_: del subtmp_
         pass
         
@@ -1257,14 +1332,30 @@ a RuntimeError for fatal errors"""
           self.do_category (stage.cleanup_category_name)
         del tmp_
         return self.passed
+
+    import re
+    __findfile_re = re.compile("FINDFILE\{([^}]*)\}")
         
+    @staticmethod
+    def __findfile(matchobj):
+        """Internal method to search for a file in 
+        starting directory or one of its sub-directories"""
+        if matchobj.group(1):
+          if not os.path.exists (matchobj.group(1)):
+            tmp_ = verb_filelist.findfile(matchobj.group(1))
+            if tmp_:
+               return tmp_
+        return matchobj.group(1)
+
     def system_call(self, a_cmd, a_errmsg):
         """Run a system command, capturing stdout and stderr"""
         import sys, subprocess
+        # replace FINDFILE
+        a_cmd = self.__findfile_re.sub(self.__findfile, a_cmd)
         proc_ = subprocess.Popen(a_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         ( res_out, res_err ) = proc_.communicate ()
         assert None == res_err, "Got unexpected output on redirected stderr: " + res_err
-        sys.stdout.write(res_out)
+        print saxutils.escape (res_out)
         if proc_.returncode:
           exec a_errmsg
         pass
@@ -1508,3 +1599,5 @@ if __name__ == "__main__":
   suite = test_suite ()
   suite.run ()
   print "</body></html>"
+  import tkMessageBox
+  tkMessageBox.showinfo(title="test_suite", message="Test suite has completed")

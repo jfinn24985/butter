@@ -66,8 +66,7 @@
       Perform compilation and test compilation success
       <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
       <verb-list category="execute" >
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s rm -f .X ; if ! ( PATH{%(build-tool)s} %(build-arg)s) > build.log ; then touch .X; fi %(cmdsep)s %(cat)s build.log %(cmdsep)s popd</verb>
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s if [ -e .X ]; then ( PATH{%(build-tool)s} %(build-arg)s) >> build.log ; fi %(cmdsep)s %(cat)s build.log %(cmdsep)s popd</verb>
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s > build.log %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s >> build.log %(cmdsep)s %(cat)s build.log %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced
@@ -114,7 +113,7 @@
       <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
       <verb-list category="execute" >Run &quot;program&quot;
 	<property name="library-path" >%(build-dir)s/lib/src%(build-var)s</property>
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s FINDPATH{PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s}} lorem.txt > output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >
       Verify that the correct files have been produced

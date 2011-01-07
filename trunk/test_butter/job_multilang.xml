@@ -86,8 +86,8 @@
     <stage>Test run the executable.
       <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
       <verb-list category="execute" >Run &quot;program&quot;
-	      <property name="library-path" >%(build-dir)s/src/Library%(build-var)s</property>
-        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
+	      <property name="library-path" >%(base)s/%(build-dir)s/src/Library%(build-var)s</property>
+        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s FINDFILE{PATH{%(base)s/%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s}} lorem.txt > output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct output has been produced
         <verb type="file-list" >
@@ -109,14 +109,14 @@
        <verb-list category="verify" >
       Verify that the correct files have been removed
        <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(install-dir)s/lib</property>
+           <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(install-dir)s%(lib-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(library-name)s</property>
           <property name="test-phrase">1.2.3 Library target installed</property>
         </verb>
         <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(install-dir)s/bin</property>
+          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(install-dir)s%(bin-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(exe-name)s</property>

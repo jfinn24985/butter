@@ -1,6 +1,7 @@
 <?xml version = '1.0'?>
 <test-suite>
   <property name="bouml" >/usr/bin/bouml</property>
+  <property name="plug-out1" >"/tmp/butter_test"</property>
   <property name="jam" >jam</property>
   <property name="jam-arg" >-d2</property>
   <property name="cat" >cat</property>
@@ -16,6 +17,9 @@
   <property name="cmake" >cmake</property>
   <property name="cmake-arg" >-G 'Unix Makefiles' -DCMAKE_VERBOSE_MAKEFILE=ON</property>
   <property name="cmake-sys" >local.cmake</property>
+  <property name="cmake-builder" >%(make)s -k %(make-arg)s</property>
+  <property name="cmake-installer" >%(make)s -k %(make-arg)s install</property>
+  <property name="cmake-cleaner" >%(make)s -k %(make-arg)s clean</property>
   <property name="patch-args" >-l -t -i</property>
   <property name="checkout-tool" >svn</property>
   <property name="checkout-suf" ></property>
@@ -24,6 +28,8 @@
   <property name="shrt-suf" >.so</property>
   <property name="shr-suf" >.so.0</property>
   <property name="cmdsep" >;</property>
+  <property name="lib-dir" >\lib</property>
+  <property name="bin-dir" >\bin</property>
   <property name="checkout-url" >file:///home/finnerty/Office/Programming/svnroot/butter/trunk</property>
   <property name="compare-args" >
 	  <!--Ignore lines with dates: -I '^#[MTWTFS][ouehra][neduit] ' -I '^#Butter.*version'--> -w -B</property>

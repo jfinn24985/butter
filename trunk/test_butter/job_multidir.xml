@@ -82,8 +82,8 @@
     </stage>
     <stage>Test run the executable.
       <verb-list category="execute" >Run &quot;program&quot;
-        <property name="library-path" >%(build-dir)s/src/Library%(build-var)s</property>
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
+        <property name="library-path" >%(base)s/%(build-dir)s/src/Library%(build-var)s</property>
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s FINDFILE{PATH{%(base)s/%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s}} lorem.txt > output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >

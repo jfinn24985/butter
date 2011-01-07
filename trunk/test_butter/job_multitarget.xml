@@ -50,7 +50,7 @@
     <stage>Test run the executable.
       <verb-list category="execute" >Run &quot;program&quot;
 	  <property name="library-path" >%(base)s/%(build-dir)s</property>
-	  <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(base)s/%(build-dir)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
+	  <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s FINDFILE{PATH{%(base)s/%(build-dir)s/%(exe-name)s}} lorem.txt > output %(cmdsep)s popd</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >

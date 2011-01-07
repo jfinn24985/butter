@@ -1,34 +1,37 @@
 <?xml version = '1.0'?>
 <test-suite>
-<property name="bouml" >C:\Progra~1\Bouml\bouml</property>
-<property name="jam" >jam</property>
-<property name="jam-arg" >-fC:\Users\finnerty\Downloads\boost-jam-3.1.18\Jambase -d2 -sCOMP=MSVC -sBOOST_ROOT="" </property>
-<property name="rev" />
-<property name="search-command">findstr /r</property>
+    <property name="bouml" >bouml</property>
+    <property name="plug-out1" >"C:\Docume~1\jaffa\LocalS~1\Temp\butter\Qt3\butter.exe"</property>
+    <property name="jam" >jam</property>
+    <property name="jam-arg" >-f"c:\Documents and Settings\jaffa\My Documents\test_butter\Jambase" -d2 -sCOMP=MSVC -sBOOST_ROOT="" </property>
+    <property name="rev" />
   <property name="cat" >type</property>
   <property name="boost" >bjam</property>
   <property name="boost-arg" >toolset=msvc -d2</property>
-  <property name="boost-debug" >msvc-10.0\debug\threading-multi</property>
-  <property name="boost-release" >msvc-10.0\release\threading-multi</property>
+  <property name="boost-debug" >msvc-10.0\debug</property>
+  <property name="boost-release" >msvc-10.0\release</property>
   <property name="make" >gmake</property>
   <property name="make-sys" >M_sys.mak</property>
-  <property name="make-arg" >CC=cl </property>
-  <property name="cmake" >"ENVVAR{PROGRAMFILES}\CMake 2.8\bin\cmake"</property>
-  <property name="cmake-arg" >-G "Unix Makefiles" -DCMAKE_VERBOSE_MAKEFILE=ON</property>
+  <property name="make-arg" >-k CC=cl </property>
+  <property name="cmake" >"cmake"</property>
+  <property name="cmake-arg" >-G "Visual Studio 10"</property>
   <property name="cmake-sys" >local.cmake</property>
+  <property name="cmake-builder" >msbuild /t:Build %(project)s.sln</property>
+  <property name="cmake-installer" >msbuild /t:Install %(project)s.sln</property>
+  <property name="cmake-cleaner" >msbuild /t:Clean %(project)s.sln</property>
   <property name="base-dir" >C:\tmp</property>
   <property name="patch-args" >--verbose --binary -t -l -i</property>
-  <property name="checkout-tool" >zip</property>
-  <property name="zip-command" >unzip -o -u </property>
-  <property name="to-dir" >-d %(base-dir)s</property>
-  <property name="checkout-suf" >.zip</property>
+  <property name="checkout-tool" >svn</property>
+  <property name="checkout-suf" ></property>
   <property name="exe-suf" >.exe</property>
   <property name="ark-suf" >.lib</property>
   <property name="shr-suf" >.dll</property>
-  <property name="shr-pre" ></property>
   <property name="shrt-suf" >.dll</property>
   <property name="cmdsep" >&amp;</property>
-  <property name="checkout-url" >C:\Users\finnerty\Desktop\Butter\Archive</property>
+  <!-- install subdirectories -->
+  <property name="lib-dir" ></property>
+  <property name="bin-dir" ></property>
+  <property name="checkout-url" >svn://192.168.2.22/butter/trunk</property>
   <property name="compare-args" >
 	  <!--Ignore lines with dates-->-w -B</property>
   <property name="set-library-path">set PATH=ENVVAR{PATH};PATH{%(library-path)s}%(cmdsep)s</property>
