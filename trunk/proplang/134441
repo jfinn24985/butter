@@ -1,6 +1,6 @@
 format 66
 "Test Library Shared" // Test Library Shared
-  revision 4
+  revision 5
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -33,14 +33,18 @@ format 66
     draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
     artifact 148777 "example_lib_shr"
       stereotype "source"
-      cpp_src "#include \"example_lib.cpp\""
+      cpp_src "#include \"example_lib.cpp\"
+
+"
       associated_classes
       end
     end
 
     artifact 148905 "lib_main_shr"
       stereotype "source"
-      cpp_src "#include \"lib_main.cpp\""
+      cpp_src "#include \"lib_main.cpp\"
+
+"
       associated_classes
       end
     end

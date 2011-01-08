@@ -1,6 +1,6 @@
 format 66
 "exe" // Test Property::exe
-  revision 6
+  revision 7
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -41,7 +41,9 @@ format 66
 #error Included file without defining EXE_FLAG
 #endif
 
-#endif"
+#endif
+
+"
       cpp_src "#include \"Executable/example_exe.hpp\"
 #include <omp.h>
 #include <iostream>
@@ -50,10 +52,10 @@ int main (int argc, const char** argv)
   std::cerr << \"Number of OpenMP processors = \" << omp_get_num_procs() << \"\\n\";
   example_exe app_;
   return app_.main (argc, argv);
-}"
+}
+"
       associated_classes
       end
     end
-
   end
 end

@@ -1,6 +1,6 @@
 format 66
 "Test Library static" // Test Library static
-  revision 2
+  revision 3
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -49,7 +49,7 @@ void compare_algorithm (double val, int repeats);
 
 #endif
 "
-      cpp_src "${comment}
+      cpp_src "$ {comment}
 
 #include <cmath>
 #include <cfloat>
@@ -92,30 +92,60 @@ double square_root_halley (double x)
   return x;
 }
 
+#include <iostream>
+#include <string>
+#include <boost/format.hpp>
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
+extern \"C\"
+{
+#include <windows.h>
+}
+namespace
+{
+static std::string now_time()
+{
+  const int MAX_LEN = 200;
+  char buffer[MAX_LEN];
+  if (GetTimeFormatA(LOCALE_USER_DEFAULT, 0, 0,
+                     \"HH':'mm':'ss\", buffer, MAX_LEN) == 0)
+    return \"Error in now_time()\";
+  char result[100] = {0};
+  static ::DWORD first = GetTickCount();
+  std::sprintf(result, \"%s.%03ld\", buffer, (long)(GetTickCount() - first) % 1000);
+  return result;
+}
+}
+#else
 extern \"C\"
 {
 #include <sys/time.h>
 }
-extern \"C\"
+namespace
 {
-#include <sys/resource.h>
+static std::string now_time()
+{
+  char buffer[11];
+  time_t t;
+  time(&t);
+  tm r = {0};
+  strftime(buffer, sizeof(buffer), \"%X\", localtime_r(&t, &r));
+  struct timeval tv;
+  gettimeofday(&tv, 0);
+  char result[100] = {0};
+  std::sprintf(result, \"%s.%03ld\", buffer, (long)tv.tv_usec / 1000);
+  return result;
 }
-#include <iostream>
-#include <string>
-#include <boost/format.hpp>
+}
+#endif //WIN32
 namespace
 {
 /* Create an object that write its lifetime timing details and a message when it goes out of scope.  */
 class timer
 {
 private:
-  /* The interval of time (in micro secs) as represented from the
-    gettimeofday function.  */
-  timeval time_interval_[2];
-
-  /* The resources used */
-  rusage time_usage_[2];
+  /* The start time .  */
+  const std::string start_;
 
   /* A message associated with this interval.  */
   const std::string msg_;
@@ -125,39 +155,14 @@ private:
 public:
   /* Create timer object with a_label text and a_target stream */
   timer(const std::string & a_label, std::ostream & a_target)
-      : time_interval_ () , time_usage_(), msg_ (a_label) , os_ (a_target)
-  {
-    gettimeofday(&time_interval_[0], NULL);
-    getrusage (RUSAGE_SELF, &time_usage_[0]);
-  }
+      : start_(now_time ()), msg_ (a_label) , os_ (a_target)
+  {}
 
   /* Prints lifetime details and label text to the stream given in the constructor.  */
   ~timer()
   {
-    gettimeofday(&time_interval_[1], NULL);
-    getrusage (RUSAGE_SELF, &time_usage_[1]);
-    class helper
-    {
-    public:
-      static void print_ (timeval t1, const timeval &t2, std::ostream &out) /* pure */
-      {
-        t1.tv_sec = t1.tv_sec -t2.tv_sec;
-        t1.tv_usec = t1.tv_usec -t2.tv_usec;
-        if (t1.tv_usec < 0)
-        {
-          --t1.tv_sec;
-          t1.tv_usec += 1000000;
-        };
-        out << boost::format (\"%|3|.%|04| \")
-        % t1.tv_sec
-        % (t1.tv_usec%1000000/100);
-      }
-    };
-    helper::print_ (time_interval_[1], time_interval_[0], os_);
-    helper::print_ (time_usage_[1].ru_utime, time_usage_[0].ru_utime, os_);
-    helper::print_ (time_usage_[1].ru_stime, time_usage_[0].ru_stime, os_);
-    os_ << boost::format (\" %|5| %|5| \") % (time_usage_[1].ru_minflt - time_usage_[0].ru_minflt) % (time_usage_[1].ru_majflt - time_usage_[0].ru_majflt);
-    os_ << msg_ << \"\\n\";
+    const std::string end_ (now_time ());
+    os_ << start_ << \"  \" << end_ << \"  \" << msg_ << \"\\n\";
   }
   static const std::string spacer;
 
@@ -166,8 +171,7 @@ public:
    */
   static void title(std::ostream & a_os)
   {
-    a_os << \"_____Time in seconds______   Context Sw \\n\";
-    a_os << \" Elapsed     User   System    min   maj \\n\";
+    a_os << \"Start time    End Time      Message\\n\";
   }
 private:
   /* no copy */
@@ -177,7 +181,7 @@ private:
   timer & operator=(const timer & source);
 };
 
-const std::string timer::spacer = \"                                        \";
+const std::string timer::spacer = \"                            \";
 }; // end anon namespace
 
 void compare_algorithm (double val, int repeats)
@@ -275,8 +279,8 @@ Pass on ldflag to users!!
     artifact 147497 "static_sqr"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128297 // squarestatic
 	artifact_ref 147369 // lib_main
+	artifact_ref 128297 // squarestatic
       end
       comment "Version that uses the shared library, will
 need to be linked with -lm

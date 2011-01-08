@@ -1,6 +1,6 @@
 format 66
 "src" // Test Property::src
-  revision 3
+  revision 4
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -45,6 +45,7 @@ ${comment}
 
 
 #endif
+
 "
       associated_classes
       end
@@ -57,6 +58,5 @@ message \"pass/fail arg1\" to stderr.  If arg1 is not defined [or defined
 to be itself as a string ie \"arg1\" !] the value 1 is added to arg2.
 "
     end
-
   end
 end
