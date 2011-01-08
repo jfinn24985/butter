@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 19
+  revision 20
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -151,7 +151,6 @@ set (T2TFLAGS -o)
       comment "if (WIN32)
 set (OPENMP  -openmp)
 set (FORTRANLIBS vcf2c.lib -NODEFAULTLIB:msvcrt.lib -NODEFAULTLIB:msvcrtd.lib)
-set (CMAKE_fortran_COMPILER c:/Program Files/GnuWin32/fortran.bat CACHE PATH \"Fortran compiler to use\")
 else (WIN32)
 set (OPENMP -fopenmp)
 set (FORTRANLIBS -lgfortran)
