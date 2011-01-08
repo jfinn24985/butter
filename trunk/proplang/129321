@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 18
+  revision 19
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -106,9 +106,7 @@ T2TFLAGS?=
       stereotype "document"
       comment "if $(NT)
 {
-using fortran : fortran ;
 constant OPENMP : /openmp ;
-constant FORTRANLIBS : vcf2c.lib ;
 }
 else if $(UNIX)
 {
@@ -150,9 +148,14 @@ set (T2TFLAGS -o)
       stereotype "document"
       associated_artifacts
       end
-      comment "set (OPENMP -fopenmp)
-set (FORTRANLIBS -lgfortran)"
+      comment "if (WIN32)
+set (OPENMP  -openmp)
+set (FORTRANLIBS vcf2c.lib -NODEFAULTLIB:msvcrt.lib -NODEFAULTLIB:msvcrtd.lib)
+set (CMAKE_fortran_COMPILER c:/Program Files/GnuWin32/fortran.bat CACHE PATH \"Fortran compiler to use\")
+else (WIN32)
+set (OPENMP -fopenmp)
+set (FORTRANLIBS -lgfortran)
+endif (WIN32)"
     end
-
   end
 end

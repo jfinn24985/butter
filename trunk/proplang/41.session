@@ -1,6 +1,6 @@
 window_sizes 856 787 353 497 319 381
 show_stereotypes
-selected artifact_ref 134441 // Jamroot
+selected artifact_ref 143273 // CMakeLists.txt
 open
   class_ref 128041 // test_source
   artifact_ref 128681 // source_test
