@@ -1,6 +1,6 @@
 format 66
 "Test Library static" // Test Library static
-  revision 5
+  revision 6
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -286,8 +286,8 @@ Pass on ldflag to users!!
     artifact 147497 "static_sqr"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128297 // squarestatic
 	artifact_ref 147369 // lib_main
+	artifact_ref 128297 // squarestatic
       end
       comment "Version that uses the shared library, will
 need to be linked with -lm
