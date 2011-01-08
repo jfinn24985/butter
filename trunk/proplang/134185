@@ -58,7 +58,7 @@ extern void compare_algorithm (double val, int repeats);
 #define PROPLANG_EXPORT
 #endif
 #endif
-#endif
+
 #include <cmath>
 #include <cfloat>
 static const double  cutoff_ = (100 * DBL_EPSILON);
