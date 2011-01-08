@@ -1,6 +1,6 @@
 format 66
 "Test Non-C++ code" // Test Non-C++ code
-  revision 1
+  revision 2
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -89,14 +89,16 @@ C     [5] When equal print result and stop
 
       PRINT *, \"Precision is greater than \", MCOUNT
 
-      END"
+      END
+
+"
     end
 
     artifact 133161 "fortprog"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 133033 // fortran.f
 	artifact_ref 134313 // fortmain
+	artifact_ref 133033 // fortran.f
       end
       comment "For this program to compile requires:
 

@@ -1,6 +1,6 @@
 format 66
 "Test Library Shared" // Test Library Shared
-  revision 5
+  revision 6
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -42,7 +42,15 @@ format 66
 
     artifact 148905 "lib_main_shr"
       stereotype "source"
-      cpp_src "#include \"lib_main.cpp\"
+      cpp_src "#ifndef PROPLANG_EXPORT
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
+#define PROPLANG_EXPORT __decl_spec(dllexport)
+#else
+#define PROPLANG_EXPORT
+#endif
+#endif
+
+#include \"lib_main.cpp\"
 
 "
       associated_classes
@@ -67,8 +75,8 @@ Test of properties
     artifact 147625 "shared_sqr"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 148905 // lib_main_shr
 	artifact_ref 147241 // squareshare
+	artifact_ref 148905 // lib_main_shr
       end
       comment "Version that uses the shared library, should not 
 need to be linked with -lm"

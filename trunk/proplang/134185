@@ -52,11 +52,7 @@ extern void compare_algorithm (double val, int repeats);
       cpp_src "${comment}
 
 #ifndef PROPLANG_EXPORT
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-#define PROPLANG_EXPORT __decl_spec(dllexport)
-#else
 #define PROPLANG_EXPORT
-#endif
 #endif
 
 #include <cmath>

@@ -1,6 +1,6 @@
 format 66
 "Test include/flags Properties" // Test include/flags Properties
-  revision 18
+  revision 19
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -136,6 +136,5 @@ results when running.
 <UmlArtifact<<executable>>:source_test>butter include: include/lib
 <UmlArtifact<<source>>:test_source>butter include: include/src"
     end
-
   end
 end

@@ -1,6 +1,6 @@
 class test_source
 !!!128169.cpp!!!	main(in argc : int, in argv : char) : int
-int counter; // <- The number of missing flags
+int counter = 0; // <- The number of missing flags
 
 // Test SRC_FLAG
 PROPLANG_TEST_DEFINE(SRC_FLAG, counter);
