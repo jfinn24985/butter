@@ -1,6 +1,6 @@
 format 66
 "Test Library static" // Test Library static
-  revision 3
+  revision 4
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -38,19 +38,27 @@ format 66
 ${comment}
 
 // Calculate square root using Newton/Raphson
-double square_root_nr (double x);
+extern double square_root_nr (double x);
 
 // Calculate square root using Halley
-double square_root_halley (double x);
+extern double square_root_halley (double x);
 
 // Compare Newton/Raphson, Halley and math lib sqrt
-void compare_algorithm (double val, int repeats);
+extern void compare_algorithm (double val, int repeats);
 
 
 #endif
 "
       cpp_src "$ {comment}
 
+#ifndef PROPLANG_EXPORT
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
+#define PROPLANG_EXPORT __decl_spec(dllexport)
+#else
+#define PROPLANG_EXPORT
+#endif
+#endif
+#endif
 #include <cmath>
 #include <cfloat>
 static const double  cutoff_ = (100 * DBL_EPSILON);
@@ -62,6 +70,7 @@ static const double  cutoff_ = (100 * DBL_EPSILON);
   a_1 = a_0 - f'(a_0)/f(a_0)
   a_1 = a_0 + (x - a^2)/2a
 */
+PROPLANG_EXPORT
 double square_root_nr (double x)
 {
   const double x_ = x;
@@ -82,6 +91,7 @@ double square_root_nr (double x)
 
  a_1 = a_0 + {2 * a * (X - a^2)} / { 3 * a^2 + X }
 */
+PROPLANG_EXPORT
 double square_root_halley (double x)
 {
   const double x_ = x;
@@ -184,6 +194,7 @@ private:
 const std::string timer::spacer = \"                            \";
 }; // end anon namespace
 
+PROPLANG_EXPORT
 void compare_algorithm (double val, int repeats)
 {
   volatile double val_ = val; // Attempt to avoid opt away fn calls
@@ -279,8 +290,8 @@ Pass on ldflag to users!!
     artifact 147497 "static_sqr"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 147369 // lib_main
 	artifact_ref 128297 // squarestatic
+	artifact_ref 147369 // lib_main
       end
       comment "Version that uses the shared library, will
 need to be linked with -lm
