@@ -1,6 +1,6 @@
 format 66
 "Build" // Build
-  revision 17
+  revision 18
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -104,9 +104,37 @@ T2TFLAGS?=
 
     artifact 134441 "Jamroot"
       stereotype "document"
-      comment "using gfortran ;
+      comment "if $(NT)
+{
+using fortran : fortran ;
+constant OPENMP : /openmp ;
+constant FORTRANLIBS : vcf2c.lib ;
+}
+else if $(UNIX)
+{
+using gfortran ;
 constant OPENMP : -fopenmp ;
-constant FORTRANLIBS : -lgfortran ;"
+constant FORTRANLIBS : -lgfortran ;
+}"
+    end
+
+    artifact 150057 "Jamfile"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "if $(NT)
+{
+OPENMP = /openmp ;
+FORTRAN = fortran ;
+FORTRANLIBS = vcf2c.lib ;
+LINK = $(CC) ;
+}
+else if $(UNIX)
+{
+OPENMP = -fopenmp ;
+FORTRANLIBS = -lgfortran ;
+FORTRAN = gfortran ;
+}"
     end
 
     artifact 135593 "t2t.cmake"
@@ -125,5 +153,6 @@ set (T2TFLAGS -o)
       comment "set (OPENMP -fopenmp)
 set (FORTRANLIBS -lgfortran)"
     end
+
   end
 end
