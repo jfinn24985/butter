@@ -62,7 +62,7 @@
           <property name="verify" >exist</property>
           <property name="location" >%(mainfile)s</property>
           <property name="test-phrase">X.X.X Library (other) build file</property>
-        </verb> if="build-style=!boost" 
+        </verb> 
         <verb type="file-list" >
           <property name="base" >%(local-base)s/doc</property>
           <property name="file-type" >file</property>
@@ -161,6 +161,8 @@
         </verb>
         <verb type="compare" >
           <property name="location" >output2</property>
+	      <property name="type" >search</property>
+          <property name="search-regex" >Precision is  *16</property>
           <property name="test-phrase">1.2.1 Output of compiled program verified</property>
         </verb>
       </verb-list>

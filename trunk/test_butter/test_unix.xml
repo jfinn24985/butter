@@ -1,7 +1,8 @@
 <?xml version = '1.0'?>
 <test-suite>
+    <property name="os" >UNIX</property>
   <property name="bouml" >/usr/bin/bouml</property>
-  <property name="plug-out1" >"/tmp/butter_test"</property>
+  <property name="plug-out1" >/tmp/butter_test</property>
   <property name="jam" >jam</property>
   <property name="jam-arg" >-d2</property>
   <property name="cat" >cat</property>

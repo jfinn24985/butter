@@ -73,7 +73,7 @@
         <verb type="compare" >
           <property name="location" >build.log</property>
 	  <property name="type" >search</property>
-	<property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[123]).*single_test.c</property>
+	<property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[d123]).*single_test.c</property>
 	<property name="search-regex" if="build-style=boost">(debug|release).*single_test\.</property>
         </verb>
         <property name="test-phrase">2.1.1 Single directory, single target compiled</property>

@@ -1,5 +1,5 @@
 <?xml version = '1.0'?>
-<test-suite src="test_unix.xml">
+<test-suite src="test_windows.xml">
 Test suite for &quot;butter&quot; project on UNIX like operating systems.
  
 This suite tests building C++ projects.
@@ -13,7 +13,6 @@ Note that we make the following assumptions about the set up of the project:
   <property name="patch-dir" >patch</property>
   <property name="build-var" ></property>
   <property name="plug-out2" >cpp_generator</property>
-  <property name="plug-out1" >/tmp/butter_test</property>
   <property name="install-dir" >stage</property>
   <property name="error" >fatal</property>
   <property name="stage-bin-dir" >stage/bin</property>
@@ -393,11 +392,12 @@ cmake build tool + debug + non-C++ + property usage + multidirectory + shared li
 
     <property name="build-dir" >.</property>
     <property name="project" >proplang</property>
-    <property name="build-tool" >%(cmake)s</property>
+    <property name="build-tool" if="os=WIN32">%(cmake)s-gui</property>
+    <property name="build-tool" if="os!=WIN32">%(cmake)s</property>
     <property name="build-style" >cmake</property>
     <property name="patch-file" >cmake.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
-    <property name="build-arg" >. %(cmake-arg)s -DCMAKE_BUILD_TYPE=Debug %(cmdsep)s %(cmake-builder)s  </property>
+    <property name="build-arg" >. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug %(cmdsep)s nmake /k install  </property>
   </job>
 
 </test-suite>
