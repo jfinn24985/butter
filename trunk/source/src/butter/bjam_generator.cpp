@@ -14,7 +14,8 @@
 namespace butter {
 
 static QString const section_name ("boost");
-extern butter::basic_style const bjam_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::bjam_generator::create);
+extern butter::basic_style const bjam_style;
+butter::basic_style const bjam_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::bjam_generator::create);
 
 
 /**

@@ -54,7 +54,7 @@ if (QFile::exists (a_path))
 {
   QFile l_dev (a_path);
   // Test the file for reading
-  helper__ l_auto (l_dev, IO_ReadOnly);
+  helper__ l_auto (l_dev, IO_ReadOnly | IO_Translate);
   unsigned int l_cursor (0);  // How far in to the file we are.
   do
   {
@@ -84,7 +84,7 @@ if (QFile::exists (a_path))
 if (! Result)
 {
   QFile l_dev (a_path);
-  helper__ l_auto (l_dev, IO_WriteOnly);
+  helper__ l_auto (l_dev, IO_WriteOnly | IO_Translate);
   l_dev.reset ();
   l_dev.writeBlock (a_str.data (), a_str.length ());
 }

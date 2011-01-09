@@ -13,7 +13,8 @@
 namespace butter {
 
 static QString const section_name ("make");
-extern butter::basic_style const gmake_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::gmake_generator::create);
+extern butter::basic_style const gmake_style;
+butter::basic_style const gmake_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::gmake_generator::create);
 
 
 /**
@@ -99,7 +100,7 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
 , "PREFIX=$(ROOTDIR)$(SLASH)stage\n"
 , "BINDIR?=$(PREFIX)$(SLASH)bin\n"
 , "LIBDIR?=$(PREFIX)$(SLASH)lib\n"
-, "INCLUDEDIR?=$(PREFIX)$(SLASH)include\n"
+, "INCDIR?=$(PREFIX)$(SLASH)include\n"
 , "DATADIR?=$(PREFIX)$(SLASH)share\n"
 , "DOCDIR?=$(DATADIR)$(SLASH)doc\n"
 , "MANDIR?=$(DATADIR)$(SLASH)man\n"
@@ -149,10 +150,9 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "CXX:=cl\n"
 , "AR:=link\n"
 , "ARFLAGS:= /LIB\n"
-, "FORTRAN:=fc\n"
 , "CPPFLAGS?=\n"
-, "CCFLAGS+=/Za /nologo /errorReport:none\n"
-, "CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /nologo /errorReport:none\n"
+, "CCFLAGS+=/EHsc /nologo /errorReport:none\n"
+, "CCCFLAGS+=/GR /Gm- /EHsc /Zc:forScope /nologo /errorReport:none\n"
 , "\n"
 , "ifeq ($(VARIANT),DEBUG)\n"
 , "OPTFLAGS+=/Od /Zi\n"
@@ -164,22 +164,26 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "\n"
 , "CCFLAGS+=$(OPTFLAGS)\n"
 , "CCCFLAGS+=$(OPTFLAGS)\n"
-, "FORTRANFLAGS?=\n"
 , "LDFLAGS+=$(OPTFLAGS)\n"
 , "\n"
-, "FORTRANLIBS:=\n"
+, "# Plugout author's fortran settings that use netlib f2c and\n"
+, "# cl via f77.py called via fortran.bat. A native fortran\n"
+, "# compiler might require a COMPILE.f line as for COMPILE.c\n"
+, "FORTRAN?=fortran\n"
+, "FORTRANFLAGS?=$(patsubst /%,-m%,$(CCFLAGS))\n"
+, "FORTRANLIBS?=vcf2c.lib\n"
 , "OPENMP:=/openmp\n"
 , "\n"
 , "endif # end of once-only\n"
 , "\n"
 , "#  commands to execute (built-in):\n"
-, "COMPILE.c = $(CC) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
-, "COMPILE.cc = $(CXX) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
+, "COMPILE.c = $(CC) $(patsubst -%,/%,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
+, "COMPILE.cc = $(CXX) $(patsubst -%,/%,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
 , "define _makeobj_\n"
 , "%$$(sufobj): %$(1) ; $$(COMPILE$(1))$$@ $$<\n"
 , "endef\n"
 , "\n"
-, "$(foreach suff,.c .cc .cpp .cxx,$(eval $(call _makeobj_,$(suff))))\n"
+, "$(foreach suff,.c .cc .cpp .cxx .f .F,$(eval $(call _makeobj_,$(suff))))\n"
 , "\n"
 , "# Commands to create dummy make dependency files.\n"
 , "# (Or use depend generator such as X11 makedepend\n"
@@ -187,7 +191,7 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "# %$(sufdep): %$(1)\n"
 , "# \tstart makedep.py $$@ $$< $(CC) /showInclude /Zs /nologo $(CPPFLAGS) $(CXXFLAGS)\n"
 , "define _makedep_\n"
-, "%$(sufdep): %$(1) ; @echo # Dummy file  $$@\n"
+, "%$(sufdep): %$(1) ; @echo # Dummy file > $$@\n"
 , "endef\n"
 , "\n"
 , "$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))\n"
@@ -196,12 +200,12 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "_makedep_:=\n"
 , "\n"
 , "define do_link_exe\n"
-, "$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /Fe$(1) $(2)\n"
+, "$(1) : $(2) ; $$(LINK.cpp) $$(LOADLIBES) $$(LDLIBS) /Fe$(1) $(2)\n"
 , "endef\n\n"
 , "define do_link_shr\n"
 , "$(1) : CCFLAGS+=$(SHRFLAGS)\n"
 , "$(1) : CCCFLAGS+=$(SHRFLAGS)\n"
-, "$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /dll /Fe$(1) $(2)\n"
+, "$(1) : $(2) ; $$(LINK.cpp) $$(LOADLIBES) $$(LDLIBS) /LD /Fe$(1) $(2)\n"
 , "endef\n\n"
 , "define do_archive\n"
 , "$(1): $(2) ; $$(AR) $$(ARFLAGS) /OUT:$(1) $(2)\n"
@@ -296,6 +300,7 @@ const char * gmake_generator::default_rules_unix[] = { " # Definition of for loo
 , "sufexe:=\n"
 , "suflib:=.a\n"
 , "sufshr:=.so\n"
+, "sufshrlink:=.so\n"
 , "sufdep:=.d\n"
 , "\n# Path separator\n"
 , "SLASH?=/\n"
@@ -330,22 +335,23 @@ const char * gmake_generator::default_rules_winnt[] = { "# Definition of for loo
 , "sufdep:=.dep\n"
 , "suflib:=.lib\n"
 , "sufshr:=.dll\n"
+, "sufshrlink:=.lib\n"
 , "# Programs\n"
 , "MKDIR?=MD\n"
 , "COPY?=COPY /Y /B /V\n"
-, "RM:=-DEL /F\n"
+, "RM:=-$(shell echo %COMSPEC%) /C DEL /F\n"
 , "\n# Path separator\n"
-, "SLASH?=\\\n"
+, "SLASH?=\\\\\n"
 , "\n# END OF ONCE-ONLY.\n"
 , "endif\n\n"
 , "define do_install\n"
-, "install:: $(1) ; IF NOT EXIST $$($(2)DIR) ( $$(MKDIR) $$($(2)DIR) )\n\t$$(COPY) $(1) $$($(2)DIR)\\$(1)\n"
+, "install:: $(1) ; IF \"\" NEQ \"$$($(2))\" ( ( IF NOT EXIST $(if $(2),$$($(2)),$(3)) ( $$(MKDIR) $(if $(2),$$($(2)),$(3)) ) ) & $$(COPY) $(1) $(if $(2),$$($(2)),$(3))\\$(1) )\n"
 , "endef\n\n"
 , 0 }
 ;
 
 /**
- * Null terminated list of the default_rules_[] attributes.
+ * Nulterminated list of the default_rules_[] attributes.
  * This is a simple list of the default_rules_[...] attributes, listed
  * in the same order as the rules_name attribute. It is only
  * used to initialise the default_rules attribute. 
@@ -430,7 +436,7 @@ else
     //////////////////////
     // Is a shared library
     //
-    const QString lib_name_ (a_target.name () + "$(sufshr)");
+    const QString lib_name_ (a_target.name () + "$(sufshrlink)");
     lib_fname_ = lib_fname_ / lib_name_;
     // Add to linker information
     merge_string_list (a_ldflags, lib_fname_.path_localised ());
@@ -702,7 +708,21 @@ void gmake_generator::initialise(location & a_base, const ::UmlItem & a_project,
 QString init_text_;
 {
   QTextOStream init_os_ (&init_text_);
-  init_os_ << "ROOTDIR := " << root_dir ().path_localised () << "\n";
+  init_os_ << "ROOTDIR := ";
+  {
+		QDir rpath_ (root_dir ());
+	  if (1 < QDir::rootDirPath ().length ()) // Multi char root
+	  {
+		  // Root_dir_ _is_ absolute, so if it starts with
+			// "/" we know it is not yet localised.
+		  if (rpath_.path()[0] == QChar('/'))
+		  {
+			  rpath_.setPath (QDir::cleanDirPath(QDir::root ().filePath ("." + rpath_.path ())));
+		  }
+
+	  }
+  init_os_ << QDir::convertSeparators(rpath_.path ()) << "\n";
+  }
   {
     const int e_ = rules_name.find(' ');
     QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));

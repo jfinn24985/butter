@@ -276,7 +276,7 @@ if (DEBUG)
 {
   if (NULL != debug_os_.get ())
   {
-    debug_os_->~QTextStream ();
+    debug_os_->~QTextOStream ();
     debug_os_.release ();
   }
   if (NULL != debug_file_.get ())

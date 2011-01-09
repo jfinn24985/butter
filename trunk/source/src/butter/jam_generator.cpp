@@ -14,7 +14,8 @@
 namespace butter {
 
 static QString const section_name ("standard");
-extern butter::basic_style const jam_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::jam_generator::create);
+extern butter::basic_style const jam_style;
+butter::basic_style const jam_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::jam_generator::create);
 
 
 const QString jam_generator::build_file_name("Jamfile");

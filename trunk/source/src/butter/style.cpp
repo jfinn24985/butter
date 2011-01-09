@@ -22,11 +22,12 @@ return *style_.get ();
 // Bouml preserved body end 00030029
 
 }
-
 extern const basic_style bjam_style;
-extern const basic_style cmake_style;
 extern const basic_style gmake_style;
 extern const basic_style jam_style;
+extern const basic_style cmake_style;
+
+
 void style::set_style(QString a_style)
 {
 // Bouml preserved body begin 000300A9

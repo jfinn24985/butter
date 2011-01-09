@@ -9,7 +9,8 @@
 namespace butter {
 
 static QString const section_name ("cmake");
-extern butter::basic_style const cmake_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::cmake_generator::create);
+extern butter::basic_style const cmake_style;
+butter::basic_style const cmake_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::cmake_generator::create);
 
 
 /**
@@ -41,7 +42,7 @@ const char * cmake_generator::default_rules[] = { "#\n"
 , "#############################\n"
 , "##  Default install locations\n"
 , "#############################\n"
-, "set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/stage)\n"
+, "set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/stage CACHE PATH \"Root of staging tree\" FORCE)\n"
 , "set (BINDIR bin CACHE PATH \"Stage location for executables\")\n"
 , "set (DATADIR share CACHE PATH \"Stage location for static libraries\")\n"
 , "set (DOCDIR share/doc CACHE PATH \"Stage location for documentation\")\n"
@@ -489,6 +490,7 @@ case base_generator::lib:
     shard_ = a_loc_var;
   }
   a_os << "install (TARGETS " << target_name_
+  << "\n\tRUNTIME DESTINATION " << shard_ << ""
   << "\n\tLIBRARY DESTINATION " << shard_ << ""
   << "\n\tARCHIVE DESTINATION " << statd_ << ")\n\n";
   break;
@@ -496,8 +498,9 @@ case base_generator::lib:
 case base_generator::file:
 case base_generator::man:
 {
-  a_os << "install (FILES " << target_name_
-  << "\n\tDESTINATION " << a_loc_var << ")\n\n";
+  a_os << "install (FILES ";
+  if (! a_isdoc) a_os << "${CMAKE_CURRENT_BINARY_DIR}/";
+  a_os << target_name_ << "\n\tDESTINATION " << a_loc_var << ")\n\n";
   break;
 }
 }
