@@ -115,7 +115,8 @@ namespace butter {
  * <dl><dt>sufobj</dt><dd>File suffix of object files</dd>
  * <dt>sufexe</dt><dd>File suffix of program</dd>
  * <dt>suflib</dt><dd>File suffix of static libraries</dd>
- * <dt>sufshr</dt><dd>File suffix of shared librraries</dd>
+ * <dt>sufshr</dt><dd>File suffix of shared libraries</dd>
+ * <dt>sufshrlink</dt><dd>File suffix of linker file for shared libraries</dd>
  * <dt>sufdep</dt><dd>File suffix of generated dependency files</dd>
  * <dt>SLASH</dt><dd>File path separator</dd></dl>
  * </xdoc:section >
