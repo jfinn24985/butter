@@ -3,10 +3,6 @@ class style
 BUTTER_REQUIRE (NULL != style_.get (), "Programming error, attempt to get style before it was set.");
 return *style_.get ();
 !!!196777.cpp!!!	set_style(in a_style : unistr = QString()) : void
-extern const basic_style bjam_style;
-extern const basic_style cmake_style;
-extern const basic_style gmake_style;
-extern const basic_style jam_style;
 if (a_style == bjam_style.name)
 {
   style_ = std::auto_ptr< style >(new style (bjam_style));

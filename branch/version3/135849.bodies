@@ -1,5 +1,5 @@
 class gmake_generator
-!!!210729.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+!!!210729.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : QTextOStream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -43,7 +43,7 @@ else
     //////////////////////
     // Is a shared library
     //
-    const QString lib_name_ (a_target.name () + "$(sufshr)");
+    const QString lib_name_ (a_target.name () + "$(sufshrlink)");
     lib_fname_ = lib_fname_ / lib_name_;
     // Add to linker information
     merge_string_list (a_ldflags, lib_fname_.path_localised ());
@@ -96,7 +96,7 @@ ENDDOC}} */
       , ignored_cflags_, section_name, true);
 }
 this->lib_set_.append (lib_body_);
-!!!210857.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+!!!210857.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : QTextOStream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -138,8 +138,8 @@ to the source.</dd></dl></xdoc:section>
   \endcond xdoc */
   if (! a_src_inc.isEmpty () || ! a_src_flags.isEmpty ())
   {
-    QString cppflags_, compflags_;
-    this->process_flags (a_src_inc, a_src_flags, cppflags_, compflags_);
+    QString cppflags_, compflags_, ignored_;
+    this->process_flags (a_src_inc, a_src_flags, cppflags_, compflags_, ignored_);
     QString comp_ ("CCC");
     BUTTER_ALWAYS(a_target.property_value (butter_constants::butter_compiler_name, comp_)
         || ! a_isdoc
@@ -181,7 +181,7 @@ if (NULL != a_loc.parent ())
 }
 a_art.preamble.second.append (tmp_);
 
-!!!210985.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!210985.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////////////////////
 // Finalise target build instructions
 //
@@ -193,7 +193,7 @@ if (a_type == other)
   QString other_type_ (this->other_target_type_.upper ());
   this->find_replace (other_type_, '-', '_');
   QString cppflags_, compflags_;
-  this->process_flags(a_include, a_cflags, cppflags_, compflags_);
+  this->process_flags(a_include, a_cflags, cppflags_, compflags_, a_ldflags);
   if (! compflags_.isEmpty ())
   {
     a_os << this->qualified_target_name_ << ": " << other_type_ << "FLAGS+=" << compflags_ << "\n";
@@ -207,8 +207,8 @@ if (a_type == other)
     a_os << this->qualified_target_name_ << ": " << other_type_ << "FLAGS+=" << a_ldflags << "\n";
   }
   a_os << this->qualified_target_name_ << " : $(" << this->target_NAME () << "SRC) " << this->lib_set_ << "\n"
-        << "\t$(" << other_type_ << ") $(" << other_type_ << "FLAGS) " << this->qualified_target_name_
-            << " $(" << this->target_NAME () << "SRC)\n\n";
+        << "\t$(" << other_type_ << ") $(" << other_type_ << "FLAGS) $(" << other_type_ << "OUT)" << this->qualified_target_name_
+            << " $(" << other_type_ << "IN)$(" << this->target_NAME () << "SRC)\n\n";
 }
 else
 {
@@ -217,18 +217,13 @@ else
       << "SRC:." << CppSettings::sourceExtension () << "=$(sufdep)))"
       << " $(filter %$(sufdep), $(" << target_NAME () << "SRC:.c=$(sufdep)))\n";
   // Create linker and compiler flagsets
-  if (! a_ldflags.isEmpty ())
-  {
-    a_os << this->qualified_target_name_ << ": LDFLAGS+=";
-    if (! a_ldflags.isEmpty ())
-    {
-      a_os << " " << a_ldflags;
-    }
-    a_os << "\n";
-  }
   QString cppflags_, compflags_;
-  this->process_flags(a_include, a_cflags, cppflags_, compflags_);
-  if (! compflags_.isEmpty ())
+  this->process_flags(a_include, a_cflags, cppflags_, compflags_, a_ldflags);
+   if (! a_ldflags.isEmpty ())
+  {
+    a_os << this->qualified_target_name_ << ": LDFLAGS+= " << a_ldflags << "\n";
+  }
+ if (! compflags_.isEmpty ())
   {
     a_os << this->qualified_target_name_ << ": CCCFLAGS+=" << compflags_ << "\n";
     a_os << this->qualified_target_name_ << ": CCFLAGS+=" << compflags_ << "\n";
@@ -289,8 +284,21 @@ a_os << "TARGETS+=" << this->qualified_target_name_ << "\n\n";
 QString init_text_;
 {
   QTextOStream init_os_ (&init_text_);
-  init_os_ << "ROOTDIR := " << root_dir ().path_localised () << "\n"
-         << "OUTPUTDIR := " << root_dir ().path_localised () << "\n";
+  init_os_ << "ROOTDIR := ";
+  {
+		QDir rpath_ (root_dir ());
+	  if (1 < QDir::rootDirPath ().length ()) // Multi char root
+	  {
+		  // Root_dir_ _is_ absolute, so if it starts with
+			// "/" we know it is not yet localised.
+		  if (rpath_.path()[0] == QChar('/'))
+		  {
+			  rpath_.setPath (QDir::cleanDirPath(QDir::root ().filePath ("." + rpath_.path ())));
+		  }
+
+	  }
+  init_os_ << QDir::convertSeparators(rpath_.path ()) << "\n";
+  }
   {
     const int e_ = rules_name.find(' ');
     QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
@@ -309,9 +317,12 @@ QString init_text_;
   // Get list of flags
   QString flags_;
   a_project.property_search (butter_constants::butter_flags_name, flags_);
+  // Get linker flags
+  QString linkflag_;
+  a_project.property_search (butter_constants::butter_ldflags_name, linkflag_);
 
   // Process flags into preprocessor and compiler sets
-  process_flags (inc_, flags_, inc_, flags_);
+  process_flags (inc_, flags_, inc_, flags_, linkflag_);
   if (!inc_.isEmpty())
   {
     init_os_ << "CPPFLAGS+=" << inc_ << "\n";
@@ -321,23 +332,13 @@ QString init_text_;
     init_os_ << "CCFLAGS+=" << flags_ << "\n";
     init_os_ << "CCCFLAGS+=" << flags_ << "\n";
   }
-
-  // Get linker flags
-  QString linkflag_;
-  if (a_project.property_search (butter_constants::butter_ldflags_name, linkflag_))
+  if (! linkflag_.isEmpty())
   {
     init_os_ << "LDFLAGS+=" << linkflag_ << "\n";
   }
 }
 a_sys.preamble.second = init_text_;
-!!!211113.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
-static const char * install_flag_[] =
-{
-  "BIN"
-, "FILE"
-, "LIB"
-, "MAN"
-};
+!!!211113.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
 QString target_name_;
 if (a_isdoc)
 {
@@ -347,19 +348,23 @@ else
 {
   target_name_ = this->qualified_target_name_;
 }
-// Remove trailing DIR
-if (a_loc_var.right(3) == "DIR")
+a_os << "$(eval $(call do_install," << target_name_;
+if (butter_constants::is_install_keyword (a_loc_var))
 {
-  a_loc_var = a_loc_var.left(a_loc_var.length() - 3);
+  a_os << "," << a_loc_var << "DIR,";
 }
-a_os << "$(eval $(call do_install," << target_name_
-     << "," << a_loc_var;
-if (a_loc_var != install_flag_ [a_type])
+else if (a_loc_var.right(3) == "DIR")
 {
-   a_os << "," << install_flag_ [a_type];
+  // assume is user defined variable
+  a_os << "," << a_loc_var << ",";
+}
+else
+{
+  // assume is an actual path
+  a_os << ",," << a_loc_var;
 }
 a_os << "))\n\n";
-!!!236457.cpp!!!	process_flags(in a_inc_list : unistr, in a_flag_list : unistr, out a_cppflags : unistr, out a_cflags : unistr) : void
+!!!236457.cpp!!!	process_flags(in a_inc_list : unistr, in a_flag_list : unistr, out a_cppflags : unistr, out a_cflags : unistr, inout a_ldflags : unistr) : void
 QTextOStream cppos_ (&a_cppflags);
 QTextOStream flagos_ (&a_cflags);
 if (! a_inc_list.isEmpty())
@@ -418,6 +423,32 @@ if (! a_flag_list.isEmpty())
     }
   }
 }
+if (a_ldflags.isEmpty())
+{
+  QString ldflags_;
+  {
+    QTextOStream flagos_ (&ldflags_);
+    for (const_token_iterator e1_, b1_(a_ldflags.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
+    {
+      const QString item_(b1_->c_str ());
+      BUTTER_CHECK (! item_.isEmpty ()
+                    , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
+      if ('L' == item_[1])
+      {
+        if ('-' == item_[0] || '/' == item_[0])
+        {
+          if (QDir::isRelativePath (item_.mid(2)))
+          {
+            flagos_ << item_.left(2) << (pathcmp("$(ROOTDIR)") / item_.mid(2)).path_localised () << " ";
+            continue;
+          }
+        }
+      }
+      flagos_ << item_ << " ";
+    }
+  }
+  a_ldflags = ldflags_;
+}
 !!!162089.cpp!!!	process_hdrs(in a_inc_list : unistr) : unistr
 QString Result;
 {
@@ -436,32 +467,7 @@ QString Result;
   }
 }
 return Result;
-!!!161193.cpp!!!	requirements(in a_item : UmlItem, inout a_reqs : unistr) : bool
-bool Result (false);
-QString l_tmp;
-QString l_section;
-QTextOStream l_os (&l_section);
-if (a_item.property_value (butter_constants::butter_include_name, l_tmp))
-{
-  Result = true;
-  l_os << "USERHDRS := $(USERHDRS) " << process_hdrs (l_tmp) << "\n";
-}
-if (a_item.property_search (butter_constants::butter_ldflags_name, l_tmp))
-{
-  Result = true;
-  l_os << "USERLDFLAGS := $(USERLDFLAGS) " << l_tmp << "\n";
-}
-if (a_item.property_search (butter_constants::butter_flags_name, l_tmp))
-{
-  Result = true;
-  l_os << "USERFLAGS := $(USERFLAGS) " << l_tmp << "\n";
-}
-if (Result)
-{
-  a_reqs = l_section;
-}
-return Result;
-!!!210601.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!210601.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = a_target.name ();

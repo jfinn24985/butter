@@ -1,16 +1,16 @@
-format 66
+format 75
 "butter" // butter
-  revision 178
-  modified_by 41 "finnerty"
+  revision 186
+  modified_by 47 "finnerty"
   // class settings
   //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   //use case diagram settings
   package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
   //sequence diagram settings
-  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
   //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
   //object diagram settings
    write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
   //component diagram settings
@@ -85,15 +85,256 @@ with library which contains the external classes.
 Notes:
 * All references to 'jamfile' should be taken to mean the name of the relevant project
 construction document, ie jamfile, makefile, jamroot etc."
-  classview 129193 "butter"
+  classview 128047 "build system objects"
     //class diagram settings
-    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
     //collaboration diagram settings
-    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
     //object diagram settings
      write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
     //sequence diagram settings
-    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 128047 "bso"
+      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    class 128047 "target"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 128047 // <generalisation>
+	relation 128047 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128047 // <generalisation>
+	  b parent class_ref 128303 // build_element
+      end
+
+      classrelation 128303 // sources_ (<directional aggregation>)
+	relation 128303 o-->
+	  stereotype "list"
+	  a role_name "sources_" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 128303 // sources_ (<directional aggregation>)
+	  b parent class_ref 128175 // source
+      end
+
+      classrelation 128431 // dependencies_ (<directional aggregation>)
+	relation 128431 o-->
+	  a role_name "dependencies_" multiplicity "*" private
+	    comment "The objects this target depends on"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} * > ${name}${value};
+"
+	    classrelation_ref 128431 // dependencies_ (<directional aggregation>)
+	  b parent class_ref 128303 // build_element
+      end
+
+      attribute 128303 "source_list"
+	private explicit_type "any"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128431 "target_compilation_flags"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The set of flags when this is the compilation target"
+      end
+
+      attribute 128559 "client_compilation_flags"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The flags to pass to a user when this is a dependency source"
+      end
+
+      attribute 128687 "dependency_list"
+	private explicit_type "any"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The set of objects this class is dependent on"
+      end
+
+      attribute 128815 "target_link_flags"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The linker flags when this is the link target"
+      end
+
+      attribute 128943 "client_link_flags"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The linker flags to pass to users of this object"
+      end
+
+      attribute 129071 "path"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129199 "label"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The label to use to refer to this object in the compilation system"
+      end
+
+      attribute 129327 "target_header_dirs"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The list of header directories required by this object"
+      end
+
+      attribute 129455 "client_header_directories"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The list of header directories required when this is a client object"
+      end
+    end
+
+    class 128175 "source"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "A source is an element that "
+      classrelation 128175 // <generalisation>
+	relation 128175 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128175 // <generalisation>
+	  b parent class_ref 128303 // build_element
+      end
+    end
+
+    class 128303 "build_element"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 128047 "path_"
+	private explicit_type "path"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128175 "properties_"
+	private explicit_type "string"
+	multiplicity "*"
+	stereotype "map"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128943 // <composition>
+	relation_ref 128815 // <composition>
+      end
+    end
+  end
+
+  classview 129193 "butter"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
     //state diagram settings
     package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
     show_activities default region_horizontally default drawing_language default show_stereotype_properties default
@@ -103,13 +344,18 @@ construction document, ie jamfile, makefile, jamroot etc."
     show_infonote default drawing_language default show_stereotype_properties default
     associated_deployment_view deploymentview_ref 128041 // butter
     classdiagram 128041 "butter overview"
-      draw_all_relations no hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+      draw_all_relations no hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
       size A4
     end
 
     classdiagram 129193 "generator"
-      draw_all_relations default hide_attributes yes hide_operations yes show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
+      draw_all_relations default hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
       size A4
+    end
+
+    sequencediagram 128175 "associate a library"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A4
     end
 
     class 159017 "basic_style"
@@ -750,7 +996,7 @@ all uppercase version of target.)"
       end
 
       operation 244777 "to_target_NAME"
-	class_operation public explicit_return_type "unistr"
+	class_operation preserve_cpp_body_indent public explicit_return_type "unistr"
 	nparams 1
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};"
@@ -849,7 +1095,8 @@ friend class generator<bjam_generator>;" ""
       extra_member 147497 "bjam_style"
 	
 	cpp "" "static QString const section_name (\"boost\");
-extern butter::basic_style const bjam_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::bjam_generator::create);
+extern butter::basic_style const bjam_style;
+butter::basic_style const bjam_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::bjam_generator::create);
 
 
 "
@@ -904,14 +1151,14 @@ extern butter::basic_style const bjam_style (\"#\", \"\", \"##END:\", \"\", \"##
 , \"#\\n\"
 , \"# Set constants for installation paths\\n\"
 , \"import path ;\\n\"
-, \"path-constant INSTALL_PREFIX : installdir ;\\n\"
-, \"constant BINDIR : bin ; # User programs\\n\"
-, \"constant DATADIR : share ; # Private libraries and static data\\n\"
-, \"constant DOCDIR : [ path.join share doc ] ;\\n\"
-, \"constant HTMLDIR : [ path.join share html ] ;\\n\"
-, \"constant INCDIR : include ;\\n\"
-, \"constant LIBDIR : bin ; # Shared libraries\\n\"
-, \"constant MANDIR  : [ path.join share man1 ] ;\\n\"
+, \"path-constant PREFIX : stage ;\\n\"
+, \"constant BINDIR : [ path.join $(PREFIX) bin ] ; # User programs\\n\"
+, \"constant DATADIR : [ path.join $(PREFIX) share ] ; # Static libraries\\n\"
+, \"constant DOCDIR : [ path.join $(DATADIR) doc ] ;\\n\"
+, \"constant HTMLDIR : [ path.join $(DATADIR) html ] ;\\n\"
+, \"constant INCDIR : [ path.join $(PREFIX) include ] ;\\n\"
+, \"constant LIBDIR : [ path.join $(PREFIX) lib ] ; # Shared libraries\\n\"
+, \"constant MANDIR  : [ path.join $(DATADIR) man ] ;\\n\"
 , \"\\n\"
 , 0 }
 "
@@ -1210,6 +1457,32 @@ ${body}}
 	comment "This method scans a_target for its direct sources and
 direct and indirect dependencies. "
       end
+
+      operation 252969 "process_flags"
+	public explicit_return_type "void"
+	nparams 4
+	  param in name "a_os" type class_ref 162985 // QTextOStream
+	  param in name "a_flagname" explicit_type "unistr"
+	  param in name "a_flagset" explicit_type "unistr"
+	  param in name "a_combine" explicit_type "bool"
+	    defaultvalue "true"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Process a set of flags as needed by boost. The general
+process is to split a_flagset into space spearated tokens
+and output each token with <a_flagname>\"token\". If a_combine 
+is true then tokens without \"-\" or \"/\" as the first character
+will be assumed to be arguments to the previous flag."
+      end
     end
 
     class 137001 "butter_constants"
@@ -1229,9 +1502,22 @@ ${members}}
       
       comment "Static strings for the butter project.
 "
+      attribute 207785 "arkdir_value"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"DATA\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
+"
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The label of the install target static-library directory var."
+      end
+
       attribute 150569 "bindir_value"
 	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"BINDIR\")"
+	init_value "(\"BIN\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -1563,7 +1849,7 @@ HDR=/dir1 /dir2"
 
       attribute 150313 "libdir_value"
 	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"LIBDIR\")"
+	init_value "(\"LIB\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -1571,7 +1857,7 @@ HDR=/dir1 /dir2"
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "The label of the install target library directory var."
+	comment "The label of the install target shared-library directory var."
       end
 
       attribute 141609 "library_stereotype"
@@ -1787,6 +2073,26 @@ library targets will be static."
 	idl_decl ""
 	comment "Build file section label for a target section."
       end
+
+      operation 251817 "is_install_keyword"
+	class_operation public explicit_return_type "bool"
+	nparams 1
+	  param in name "a_kw" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Is this value in the list of install keywords:
+
+BIN DATA DOC HTML INC LIB MAN"
+      end
     end
 
     class 157737 "cmake_generator"
@@ -1814,10 +2120,6 @@ XXX_INCLUDE_DIRS
 XXX_COMPILE_FLAGS
 XXX_LINK_LIBRARIES
 
-TODO:
-need to root relative files with CMAKE_SOURCE_DIR
-need to convert $(..) to ${..}
-need to convert $(OUTPUTDIR) to CMAKE_BINARY_DIR
 
 Additionally external library xxx without a local buildfile can be
 found using:
@@ -1852,7 +2154,8 @@ friend class generator<cmake_generator>;" ""
       extra_member 147625 "cmake_style"
 	
 	cpp "" "static QString const section_name (\"cmake\");
-extern butter::basic_style const cmake_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::cmake_generator::create);
+extern butter::basic_style const cmake_style;
+butter::basic_style const cmake_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::cmake_generator::create);
 
 
 "
@@ -1906,18 +2209,18 @@ extern butter::basic_style const cmake_style (\"#\", \"\", \"##END:\", \"\", \"#
 , \"# local.cmake\\n\"
 , \"#\\n\"
 , \"set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG=1)\\n\"
-, \"set_directory_properties(PROPERTIES COMPILE_DEFINITIONS DEBUG=0)\\n\"
+, \"set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_RELEASE DEBUG=0)\\n\"
 , \"#############################\\n\"
 , \"##  Default install locations\\n\"
 , \"#############################\\n\"
-, \"set (CMAKE_INSTALL_PREFIX installdir)\\n\"
-, \"set (BINDIR bin)\\n\"
-, \"set (DATADIR share)\\n\"
-, \"set (DOCDIR share/doc)\\n\"
-, \"set (HTMLDIR share/html)\\n\"
-, \"set (INCLUDEDIR include)\\n\"
-, \"set (LIBDIR bin)\\n\"
-, \"set (MANDIR share/man)\\n\"
+, \"set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/stage CACHE PATH \\\"Root of staging tree\\\" FORCE)\\n\"
+, \"set (BINDIR bin CACHE PATH \\\"Stage location for executables\\\")\\n\"
+, \"set (DATADIR share CACHE PATH \\\"Stage location for static libraries\\\")\\n\"
+, \"set (DOCDIR share/doc CACHE PATH \\\"Stage location for documentation\\\")\\n\"
+, \"set (HTMLDIR share/html CACHE PATH \\\"Stage location for HTML documentation\\\")\\n\"
+, \"set (INCDIR include CACHE PATH \\\"Stage location for include files\\\")\\n\"
+, \"set (LIBDIR lib CACHE PATH \\\"Stage location for dynamic/shared libraries\\\")\\n\"
+, \"set (MANDIR share/man CACHE PATH \\\"Stage location for man-page documentation\\\")\\n\"
 , \"\\n\"
 , 0 }
 "
@@ -2235,7 +2538,7 @@ ${body}}
       end
 
       operation 231721 "install_target"
-	private explicit_return_type "void"
+	preserve_cpp_body_indent private explicit_return_type "void"
 	nparams 5
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" type class_ref 162985 // QTextOStream
@@ -2278,8 +2581,9 @@ ${body}
 	
 	
 	comment "Convert input string into CMake allowed string.  This
-means converting () to {} and OUTPUTDIR to 
-CMAKE_BINARY_DIR"
+means converting () to {}
+
+Check for -I,/I,-L,/L and modify if a relative path is detected."
       end
 
       operation 231849 "operator="
@@ -3353,7 +3657,8 @@ are expected.</p>
 <dl><dt>sufobj</dt><dd>File suffix of object files</dd>
 <dt>sufexe</dt><dd>File suffix of program</dd>
 <dt>suflib</dt><dd>File suffix of static libraries</dd>
-<dt>sufshr</dt><dd>File suffix of shared librraries</dd>
+<dt>sufshr</dt><dd>File suffix of shared libraries</dd>
+<dt>sufshrlink</dt><dd>File suffix of linker file for shared libraries</dd>
 <dt>sufdep</dt><dd>File suffix of generated dependency files</dd>
 <dt>SLASH</dt><dd>File path separator</dd></dl>
 </xdoc:section >
@@ -3379,7 +3684,8 @@ friend class generator<gmake_generator>;" ""
       extra_member 147753 "gmake_style"
 	
 	cpp "" "static QString const section_name (\"make\");
-extern butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::gmake_generator::create);
+extern butter::basic_style const gmake_style;
+butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::gmake_generator::create);
 
 
 "
@@ -3477,6 +3783,17 @@ extern butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"#
 , \"doclean: \\n\"
 , \"\\t$(if $(USEROBJ),$(RM) $(USEROBJ))\\n\"
 , \"\\n\"
+, \"#############################\\n\"
+, \"##  Default staging locations\\n\"
+, \"#############################\\n\"
+, \"PREFIX=$(ROOTDIR)$(SLASH)stage\\n\"
+, \"BINDIR?=$(PREFIX)$(SLASH)bin\\n\"
+, \"LIBDIR?=$(PREFIX)$(SLASH)lib\\n\"
+, \"INCDIR?=$(PREFIX)$(SLASH)include\\n\"
+, \"DATADIR?=$(PREFIX)$(SLASH)share\\n\"
+, \"DOCDIR?=$(DATADIR)$(SLASH)doc\\n\"
+, \"MANDIR?=$(DATADIR)$(SLASH)man\\n\"
+, \"HTMLDIR?=$(DATADIR)$(SLASH)html\\n\"
 , \"################################################\\n\"
 , \"##  Example link library setup with alternatives\\n\"
 , \"################################################\\n\"
@@ -3529,10 +3846,10 @@ using this string.
 , \"CXX:=cl\\n\"
 , \"AR:=link\\n\"
 , \"ARFLAGS:= /LIB\\n\"
-, \"FORTRAN:=fc\\n\"
+, \"FORTRAN?=\\n\"
 , \"CPPFLAGS?=\\n\"
-, \"CCFLAGS+=/Za /nologo /errorReport:none\\n\"
-, \"CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /nologo /errorReport:none\\n\"
+, \"CCFLAGS+=/EHsc /nologo /errorReport:none\\n\"
+, \"CCCFLAGS+=/GR /Gm- /EHsc /Zc:forScope /nologo /errorReport:none\\n\"
 , \"\\n\"
 , \"ifeq ($(VARIANT),DEBUG)\\n\"
 , \"OPTFLAGS+=/Od /Zi\\n\"
@@ -3547,19 +3864,19 @@ using this string.
 , \"FORTRANFLAGS?=\\n\"
 , \"LDFLAGS+=$(OPTFLAGS)\\n\"
 , \"\\n\"
-, \"FORTRANLIBS:=\\n\"
+, \"FORTRANLIBS?=\\n\"
 , \"OPENMP:=/openmp\\n\"
 , \"\\n\"
 , \"endif # end of once-only\\n\"
 , \"\\n\"
 , \"#  commands to execute (built-in):\\n\"
-, \"COMPILE.c = $(CC) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\\n\"
-, \"COMPILE.cc = $(CXX) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\\n\"
+, \"COMPILE.c = $(CC) $(patsubst -%,/%,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\\n\"
+, \"COMPILE.cc = $(CXX) $(patsubst -%,/%,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\\n\"
 , \"define _makeobj_\\n\"
 , \"%$$(sufobj): %$(1) ; $$(COMPILE$(1))$$@ $$<\\n\"
 , \"endef\\n\"
 , \"\\n\"
-, \"$(foreach suff,.c .cc .cpp .cxx,$(eval $(call _makeobj_,$(suff))))\\n\"
+, \"$(foreach suff,.c .cc .cpp .cxx .f .F,$(eval $(call _makeobj_,$(suff))))\\n\"
 , \"\\n\"
 , \"# Commands to create dummy make dependency files.\\n\"
 , \"# (Or use depend generator such as X11 makedepend\\n\"
@@ -3567,7 +3884,7 @@ using this string.
 , \"# %$(sufdep): %$(1)\\n\"
 , \"# \\tstart makedep.py $$@ $$< $(CC) /showInclude /Zs /nologo $(CPPFLAGS) $(CXXFLAGS)\\n\"
 , \"define _makedep_\\n\"
-, \"%$(sufdep): %$(1) ; @echo # Dummy file  $$@\\n\"
+, \"%$(sufdep): %$(1) ; @echo # Dummy file > $$@\\n\"
 , \"endef\\n\"
 , \"\\n\"
 , \"$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))\\n\"
@@ -3576,12 +3893,12 @@ using this string.
 , \"_makedep_:=\\n\"
 , \"\\n\"
 , \"define do_link_exe\\n\"
-, \"$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /Fe$(1) $(2)\\n\"
+, \"$(1) : $(2) ; $$(LINK.cpp) $$(LOADLIBES) $$(LDLIBS) /Fe$(1) $(2)\\n\"
 , \"endef\\n\\n\"
 , \"define do_link_shr\\n\"
 , \"$(1) : CCFLAGS+=$(SHRFLAGS)\\n\"
 , \"$(1) : CCCFLAGS+=$(SHRFLAGS)\\n\"
-, \"$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /dll /Fe$(1) $(2)\\n\"
+, \"$(1) : $(2) ; $$(LINK.cpp) $$(LOADLIBES) $$(LDLIBS) /LD /Fe$(1) $(2)\\n\"
 , \"endef\\n\\n\"
 , \"define do_archive\\n\"
 , \"$(1): $(2) ; $$(AR) $$(ARFLAGS) /OUT:$(1) $(2)\\n\"
@@ -3685,35 +4002,23 @@ using this string.
 , \"# MAKE MOST VARIABLES ONCE-ONLY\\n\"
 , \"ifndef M_UNIX_MAK\\n\"
 , \"M_UNIX_MAK:=1\\n\"
-, \"#############################\\n\"
-, \"##  Default install locations\\n\"
-, \"#############################\\n\"
-, \"PREFIX=$(ROOTDIR)/installdir\\n\"
-, \"BINDIR?=$(PREFIX)/bin\\n\"
-, \"LIBDIR?=$(PREFIX)/bin\\n\"
-, \"INCLUDEDIR?=$(PREFIX)/include\\n\"
-, \"DATADIR?=$(PREFIX)/share\\n\"
-, \"DOCDIR?=$(DATADIR)/doc\\n\"
-, \"MANDIR?=$(DATADIR)/man1\\n\"
-, \"HTMLDIR?=$(DATADIR)/html\\n\"
 , \"\\n# Flags for the install targets.\\n\"
 , \"BINIFLAGS?=-m 755\\n\"
 , \"FILEIFLAGS?=-m 644\\n\"
-, \"LIBIFLAGS?=-m 644 \\n\"
-, \"MANIFLAGS?=-m 644\\n\"
 , \"INSTALL?=install\\n\"
 , \"\\n# Standard suffixes\\n\"
 , \"sufobj:=.o\\n\"
 , \"sufexe:=\\n\"
 , \"suflib:=.a\\n\"
 , \"sufshr:=.so\\n\"
+, \"sufshrlink:=.so\\n\"
 , \"sufdep:=.d\\n\"
 , \"\\n# Path separator\\n\"
 , \"SLASH?=/\\n\"
 , \"\\n# END OF ONCE-ONLY.\\n\"
 , \"endif\\n\\n\"
 , \"define do_install\\n\"
-, \"install:: $(1) ; $$(INSTALL) -d $$($(2)DIR) ; $$(INSTALL) $$($(or $(3),$(2))IFLAGS) $(1) $$($(2)DIR)/$(1)\\n\"
+, \"install:: $(1) ; $$(INSTALL) -d $(if $(2),$$($(2)),$(3)) ; $$(INSTALL) $$($(if BIN==$(2),BIN,FILE)IFLAGS) $(1) $(if $(2),$$($(2)),$(3))/$(1)\\n\"
 , \"endef\\n\\n\"
 , \"define do_archive\\n\"
 , \"$(1): $(2) ; $$(AR) $$(ARFLAGS) $(1) $(2)\\n\"
@@ -3745,33 +4050,23 @@ using this string.
 , \"\\n\"
 , \"ifndef M_WINNT_MAK\\n\"
 , \"M_WINNT_MAK:=1\\n\"
-, \"#############################\\n\"
-, \"##  Default install locations\\n\"
-, \"#############################\\n\"
-, \"PREFIX?=$(ROOTDIR)\\\\installdir\\n\"
-, \"BINDIR?=$(PREFIX)\\\\bin\\n\"
-, \"DATADIR?=$(PREFIX)\\\\share\\n\"
-, \"DOCDIR?=$(DATADIR)\\\\doc\\n\"
-, \"HTMLDIR?=$(DATADIR)\\\\html\\n\"
-, \"INCLUDEDIR?=$(PREFIX)\\\\include\\n\"
-, \"LIBDIR?=$(PREFIX)\\\\lib\\n\"
-, \"MANDIR?=$(DATADIR)\\\\man1\\n\"
 , \"\\n# Standard Suffixes\\n\"
 , \"sufobj:=.obj\\n\"
 , \"sufexe:=.exe\\n\"
 , \"sufdep:=.dep\\n\"
 , \"suflib:=.lib\\n\"
 , \"sufshr:=.dll\\n\"
+, \"sufshrlink:=.lib\\n\"
 , \"# Programs\\n\"
 , \"MKDIR?=MD\\n\"
 , \"COPY?=COPY /Y /B /V\\n\"
-, \"RM:=-DEL /F\\n\"
+, \"RM:=-$(shell echo %COMSPEC%) /C DEL /F\\n\"
 , \"\\n# Path separator\\n\"
-, \"SLASH?=\\\\\\n\"
+, \"SLASH?=\\\\\\\\\\n\"
 , \"\\n# END OF ONCE-ONLY.\\n\"
 , \"endif\\n\\n\"
 , \"define do_install\\n\"
-, \"install:: $(1) ; IF NOT EXIST $$($(2)DIR) ( $$(MKDIR) $$($(2)DIR) )\\n\\t$$(COPY) $(1) $$($(2)DIR)\\\\$(1)\\n\"
+, \"install:: $(1) ; IF \\\"\\\" NEQ \\\"$$($(2))\\\" ( ( IF NOT EXIST $(if $(2),$$($(2)),$(3)) ( $$(MKDIR) $(if $(2),$$($(2)),$(3)) ) ) & $$(COPY) $(1) $(if $(2),$$($(2)),$(3))\\\\$(1) )\\n\"
 , \"endef\\n\\n\"
 , 0 }
 "
@@ -3887,7 +4182,7 @@ separated list of the names of these files."
       end
 
       operation 210729 "assoc_library"
-	private explicit_return_type "void"
+	preserve_cpp_body_indent private explicit_return_type "void"
 	nparams 5
 	  param in name "a_target" type class_ref 6913 // UmlArtifact
 	  param out name "a_os" type class_ref 162985 // QTextOStream
@@ -4081,7 +4376,7 @@ ${body}}
       end
 
       operation 160809 "initialise"
-	private explicit_return_type "void"
+	preserve_cpp_body_indent private explicit_return_type "void"
 	nparams 3
 	  param inout name "a_base" type class_ref 132393 // location
 	  param in name "a_project" type class_ref 7553 // UmlItem
@@ -4144,14 +4439,15 @@ Responsibilites
 
       operation 236457 "process_flags"
 	private explicit_return_type "void"
-	nparams 4
+	nparams 5
 	  param in name "a_inc_list" explicit_type "unistr"
 	  param in name "a_flag_list" explicit_type "unistr"
 	  param out name "a_cppflags" explicit_type "unistr"
 	  param out name "a_cflags" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} & ${p2}${v2}, ${t3} & ${p3}${v3}${)}${const}${volatile}${abstract};
+	  param inout name "a_ldflags" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} & ${p2}${v2}, ${t3} & ${p3}${v3}, ${t4} & ${p4}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} & ${p2}, ${t3} & ${p3}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} & ${p2}, ${t3} & ${p3}, ${t4} & ${p4}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -4163,7 +4459,8 @@ ${body}}
 	
 	
 	comment "Process a_inc_list and a_flag_list into preprocessor
-and compiler flag sets."
+and compiler flag sets. Also checks if paths are relative
+in which case it sets them relative to root-dir"
       end
 
       operation 162089 "process_hdrs"
@@ -4183,26 +4480,6 @@ ${body}}
 	
 	comment "Transform a space separated list of include dirs into a
 list with -I..."
-      end
-
-      operation 161193 "requirements"
-	class_operation private explicit_return_type "bool"
-	nparams 2
-	  param in name "a_item" type class_ref 7553 // UmlItem
-	  param inout name "a_reqs" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
-${body}}
-"
-	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
-${body}}
-"
-	
-	
-	
-	comment "Scan a_item for any requirements, add these to a_req and
-return true if found."
       end
 
       operation 210601 "start_target"
@@ -4290,7 +4567,8 @@ friend class generator<jam_generator>;" ""
       extra_member 147881 "jam_style"
 	
 	cpp "" "static QString const section_name (\"standard\");
-extern butter::basic_style const jam_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::jam_generator::create);
+extern butter::basic_style const jam_style;
+butter::basic_style const jam_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::jam_generator::create);
 
 
 "
@@ -4387,14 +4665,14 @@ the style for this buildfile type."
 , \"##  Default install locations\\n\"
 , \"##\\n\"
 , \"#############################\\n\"
-, \"PREFIX = installdir ;\\n\"
-, \"BINDIR = $(PREFIX)/bin ;\\n\"
-, \"DATADIR = $(PREFIX)/share ;\\n\"
-, \"DOCDIR = $(DATADIR)/doc ;\\n\"
-, \"HTMLDIR = $(DATADIR)/html ;\\n\"
-, \"INCDIR = $(PREFIX)/include ;\\n\"
-, \"LIBDIR = $(PREFIX)/bin ;\\n\"
-, \"MANDIR = $(DATADIR)/man1 ;\\n\"
+, \"PREFIX = stage ;\\n\"
+, \"BINDIR = $(PREFIX)$(SLASH)bin ;\\n\"
+, \"DATADIR = $(PREFIX)$(SLASH)share ;\\n\"
+, \"DOCDIR = $(DATADIR)$(SLASH)doc ;\\n\"
+, \"HTMLDIR = $(DATADIR)$(SLASH)html ;\\n\"
+, \"INCDIR = $(PREFIX)$(SLASH)include ;\\n\"
+, \"LIBDIR = $(PREFIX)$(SLASH)lib ;\\n\"
+, \"MANDIR = $(DATADIR)$(SLASH)man ;\\n\"
 , \"\\n\"
 , \"######################################################\\n\"
 , \"##\\n\"
@@ -4419,7 +4697,7 @@ the style for this buildfile type."
 , \"switch $(VARIANT)\\n\"
 , \"{\\n\"
 , \"case RELEASE :\\n\"
-, \"  OPTIM += -O2 -march=native -DDEBUG=0 ;\\n\"
+, \"  OPTIM = -O2 -march=native -DDEBUG=0 ;\\n\"
 , \"case * :\\n\"
 , \"  OPTIM = -O0 -ggdb -DDEBUG=1 ;\\n\"
 , \"  CCFLAGS += -pedantic ;\\n\"
@@ -5006,7 +5284,7 @@ ${body}}
       end
 
       operation 190505 "compare_file_to_string"
-	class_operation private explicit_return_type "bool"
+	class_operation preserve_cpp_body_indent private explicit_return_type "bool"
 	nparams 2
 	  param in name "a_path" explicit_type "unistr"
 	  param in name "a_str" explicit_type "unistr"
@@ -5857,6 +6135,19 @@ ${body}
 prior to calling this method."
       end
 
+      extra_member 149033 "declare generators"
+	
+	cpp "" "extern const basic_style bjam_style;
+extern const basic_style cmake_style;
+extern const basic_style gmake_style;
+extern const basic_style jam_style;
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
       operation 196777 "set_style"
 	class_operation public explicit_return_type "void"
 	nparams 1
@@ -6162,7 +6453,7 @@ ${body}
       end
 
       operation 223017 "~log"
-	public explicit_return_type ""
+	preserve_cpp_body_indent public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile};
 "
@@ -6450,20 +6741,31 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 134057 // qt
-	artifact_ref 154025 // main
 	artifact_ref 136361 // jam_generator
-	artifact_ref 138793 // butter_constants
-	artifact_ref 132521 // location
-	artifact_ref 142889 // bouml
 	artifact_ref 137641 // gmake_generator
-	artifact_ref 165929 // cmake_generator
-	artifact_ref 152361 // compound_artifact
 	artifact_ref 152233 // style
+	artifact_ref 142889 // bouml
+	artifact_ref 134057 // qt
 	artifact_ref 150825 // utility
 	artifact_ref 152489 // base_generator
+	artifact_ref 138793 // butter_constants
+	artifact_ref 154025 // main
 	artifact_ref 135209 // bjam_generator
+	artifact_ref 132521 // location
+	artifact_ref 165929 // cmake_generator
+	artifact_ref 152361 // compound_artifact
       end
+      ncouples 10
+      key "genpro pro" value "/Users/Scratch/finnerty_scr/butter/butter.pro"
+      key "genpro path" value "/Users/Scratch/finnerty_scr/butter/src/butter"
+      key "genpro target" value "/Users/Scratch/finnerty_scr/butter/butter"
+      key "genpro tmplt" value "app"
+      key "genpro config" value "debug warn_on qt"
+      key "genpro defines" value "WITHCPP NO_LOG"
+      key "genpro includepath" value "include/butter/ include/ include/bouml/"
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value "/Users/Scratch/finnerty_scr/butter/build"
+      key "genpro footer" value ""
       comment "Version of the butter plugout for building using the butter plugout."
     end
 
@@ -6493,107 +6795,110 @@ ${namespace_end}"
     end
 
     artifact 148393 "butter.plugout"
-      stereotype "file"
+      stereotype "executable"
       associated_artifacts
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 154025 // main
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 1152 // JavaSettings
 	artifact_ref 1792 // UmlBaseClassDiagram
 	artifact_ref 136361 // jam_generator
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 138793 // butter_constants
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 5633 // UmlClass
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 7297 // UmlNode
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 132521 // location
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 7169 // UmlItem
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 768 // CppSettings
-	artifact_ref 4992 // aVisibility
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 6656 // UmlStereotype
 	artifact_ref 137641 // gmake_generator
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 152233 // style
-	artifact_ref 5120 // anItemKind
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 150825 // utility
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 152489 // base_generator
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 135209 // bjam_generator
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 4480 // UmlCom
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 5248 // CmdFamily
 	artifact_ref 5121 // UmlClassItem
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 4864 // aDirection
-	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 7169 // UmlItem
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 5504 // OnInstanceCmd
 	artifact_ref 4736 // aRelationKind
+	artifact_ref 3712 // UmlBasePackage
 	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 174249 // basic_style
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 152233 // style
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 5120 // anItemKind
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 169641 // const_token_iterator
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 150825 // utility
+	artifact_ref 152489 // base_generator
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 138793 // butter_constants
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 154025 // main
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 4992 // aVisibility
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 768 // CppSettings
+	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 4864 // aDirection
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 135209 // bjam_generator
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 4480 // UmlCom
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 5633 // UmlClass
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 132521 // location
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 165929 // cmake_generator
 	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 7041 // UmlExtraClassMember
 	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 7297 // UmlNode
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 4096 // UmlBaseUseCase
       end
       ncouples 10
-      key "genpro pro" value "/tmp/butter2/butter.pro"
       key "genpro path" value "butter"
-      key "genpro target" value "/tmp/butter2/butter"
       key "genpro tmplt" value "app"
-      key "genpro config" value "release warn_off qt thread"
+      key "genpro config" value "release warn_off qt"
       key "genpro defines" value "WITHCPP NO_LOG"
       key "genpro includepath" value "include/bouml/ include/butter/ include/"
       key "genpro dependpath" value ""
-      key "genpro objectsdir" value "/tmp/butter2/build"
       key "genpro footer" value ""
+      key "genpro pro" value "/Users/Scratch/finnerty_scr/butter/butter.pro"
+      key "genpro target" value "/Users/Scratch/finnerty_scr/butter/butter"
+      key "genpro objectsdir" value "/Users/Scratch/finnerty_scr/butter/build"
       comment "Version of the butter plugout buildable using genpro"
     end
 
@@ -7089,9 +7394,9 @@ ${namespace_end}"
     artifact 164777 "test_path"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 134057 // qt
 	artifact_ref 142889 // bouml
 	artifact_ref 150953 // path_test
+	artifact_ref 134057 // qt
 	artifact_ref 150825 // utility
       end
       comment "Simple program to exercise pathcmp class."
@@ -7124,6 +7429,169 @@ ${namespace_end}"
 	class_ref 151849 // log
       end
       comment "Utility classes log and pathcmp"
+    end
+
+    artifact 128303 "Jamfile"
+      stereotype "document"
+      comment "##START:version
+#Butter version 1.2beta.106
+##END:version
+##START:date
+#Fri Oct 5 11:15:42 2012
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)src$(SLASH)butter ;
+
+SubDir TOP src butter ;
+
+##END:preamble
+##START:target butter
+BUTTER_BUTTER_SRC =
+	<src!butter>jam_generator.cpp
+	<src!butter>gmake_generator.cpp
+	<src!butter>style.cpp
+	<src!butter>utility.cpp
+	<src!butter>base_generator.cpp
+	<src!butter>butter_constants.cpp
+	<src!butter>main.cpp
+	<src!butter>bjam_generator.cpp
+	<src!butter>location.cpp
+	<src!butter>cmake_generator.cpp
+	<src!butter>compound_artifact.cpp
+	;
+
+Main <src!butter>butter$(SUFEXE) :
+	$(BUTTER_BUTTER_SRC) ;
+
+LINKLIBS on <src!butter>butter$(SUFEXE) +=  $(BOUML_BOUML_LDFLAGS)  -L${QTDIR}/lib64 -lqt-mt -lm ;
+LinkLibraries <src!butter>butter$(SUFEXE) :
+	 <src!bouml>bouml$(SUFLIB) 
+	;
+ObjectCcFlags $(BUTTER_BUTTER_SRC) : -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT ;
+ObjectC++Flags $(BUTTER_BUTTER_SRC) : -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT ;
+ObjectHdrs $(BUTTER_BUTTER_SRC) : include/bouml ${QTDIR}/include ;
+InstallBin $(BINDIR) : <src!butter>butter$(SUFEXE) ;
+##END:target butter
+##START:target butter.plugout
+BUTTER_BUTTER_PLUGOUT_SRC =
+	<src!butter>UmlSequenceDiagram.cpp
+	<src!butter>UmlUseCase.cpp
+	<src!butter>UmlComponentDiagram.cpp
+	<src!butter>UmlNcRelation.cpp
+	<src!butter>UmlParameter.cpp
+	<src!butter>UmlBaseUseCaseView.cpp
+	<src!butter>JavaSettings.cpp
+	<src!butter>UmlBaseClassDiagram.cpp
+	<src!butter>jam_generator.cpp
+	<src!butter>gmake_generator.cpp
+	<src!butter>UmlClassItem.cpp
+	<src!butter>UmlItem.cpp
+	<src!butter>UmlBaseCollaborationDiagram.cpp
+	<src!butter>UmlBaseDeployment.cpp
+	<src!butter>UmlBaseComponentDiagram.cpp
+	<src!butter>UmlSettingsCmd.cpp
+	<src!butter>OnInstanceCmd.cpp
+	<src!butter>aRelationKind.cpp
+	<src!butter>UmlBasePackage.cpp
+	<src!butter>UmlUseCaseDiagram.cpp
+	<src!butter>UmlAttribute.cpp
+	<src!butter>basic_style.cpp
+	<src!butter>UmlBaseSequenceDiagram.cpp
+	<src!butter>UmlBaseItem.cpp
+	<src!butter>style.cpp
+	<src!butter>UmlComponent.cpp
+	<src!butter>UmlDeploymentDiagram.cpp
+	<src!butter>UmlArtifact.cpp
+	<src!butter>anItemKind.cpp
+	<src!butter>IdlSettingsCmd.cpp
+	<src!butter>UmlSettings.cpp
+	<src!butter>UmlBaseFormalParameter.cpp
+	<src!butter>UmlBaseNode.cpp
+	<src!butter>const_token_iterator.cpp
+	<src!butter>UmlOperation.cpp
+	<src!butter>utility.cpp
+	<src!butter>base_generator.cpp
+	<src!butter>UmlCollaborationDiagram.cpp
+	<src!butter>UmlBaseClassItem.cpp
+	<src!butter>UmlBaseDeploymentView.cpp
+	<src!butter>UmlBaseClassView.cpp
+	<src!butter>butter_constants.cpp
+	<src!butter>UmlClassDiagram.cpp
+	<src!butter>UmlPackage.cpp
+	<src!butter>UmlTypeSpec.cpp
+	<src!butter>main.cpp
+	<src!butter>UmlBaseUseCaseDiagram.cpp
+	<src!butter>aVisibility.cpp
+	<src!butter>UmlBaseActualParameter.cpp
+	<src!butter>CppSettings.cpp
+	<src!butter>PackageGlobalCmd.cpp
+	<src!butter>UmlDeploymentView.cpp
+	<src!butter>aDirection.cpp
+	<src!butter>JavaSettingsCmd.cpp
+	<src!butter>bjam_generator.cpp
+	<src!butter>UmlDiagram.cpp
+	<src!butter>UmlClassMember.cpp
+	<src!butter>UmlFormalParameter.cpp
+	<src!butter>IdlSettings.cpp
+	<src!butter>MiscGlobalCmd.cpp
+	<src!butter>UmlBaseArtifact.cpp
+	<src!butter>UmlCom.cpp
+	<src!butter>UmlStereotype.cpp
+	<src!butter>UmlUseCaseView.cpp
+	<src!butter>UmlClass.cpp
+	<src!butter>UmlBaseComponentView.cpp
+	<src!butter>UmlBaseOperation.cpp
+	<src!butter>UmlBuiltin.cpp
+	<src!butter>UmlBaseNcRelation.cpp
+	<src!butter>UmlBaseExtraClassMember.cpp
+	<src!butter>location.cpp
+	<src!butter>UmlComponentView.cpp
+	<src!butter>UmlBaseDeploymentDiagram.cpp
+	<src!butter>UmlBaseClassMember.cpp
+	<src!butter>UmlBaseRelation.cpp
+	<src!butter>cmake_generator.cpp
+	<src!butter>UmlBaseAttribute.cpp
+	<src!butter>UmlBaseClass.cpp
+	<src!butter>UmlBaseComponent.cpp
+	<src!butter>ClassGlobalCmd.cpp
+	<src!butter>compound_artifact.cpp
+	<src!butter>UmlExtraClassMember.cpp
+	<src!butter>UmlActualParameter.cpp
+	<src!butter>UmlClassView.cpp
+	<src!butter>UmlRelation.cpp
+	<src!butter>UmlNode.cpp
+	<src!butter>CmdFamily.cpp
+	<src!butter>CppSettingsCmd.cpp
+	<src!butter>UmlBaseDiagram.cpp
+	<src!butter>UmlBaseUseCase.cpp
+	;
+
+Main <src!butter>butter.plugout$(SUFEXE) :
+	$(BUTTER_BUTTER_PLUGOUT_SRC) ;
+
+InstallBin $(BINDIR) : <src!butter>butter.plugout$(SUFEXE) ;
+##END:target butter.plugout
+##START:target test_path
+BUTTER_TEST_PATH_SRC =
+	<src!butter>path_test.cpp
+	<src!butter>utility.cpp
+	;
+
+Main <src!butter>test_path$(SUFEXE) :
+	$(BUTTER_TEST_PATH_SRC) ;
+
+LINKLIBS on <src!butter>test_path$(SUFEXE) +=  $(BOUML_BOUML_LDFLAGS)  -L${QTDIR}/lib64 -lqt-mt -lm ;
+LinkLibraries <src!butter>test_path$(SUFEXE) :
+	 <src!bouml>bouml$(SUFLIB) 
+	;
+ObjectCcFlags $(BUTTER_TEST_PATH_SRC) : -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT ;
+ObjectC++Flags $(BUTTER_TEST_PATH_SRC) : -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT ;
+ObjectHdrs $(BUTTER_TEST_PATH_SRC) : include/bouml ${QTDIR}/include ;
+ObjectC++Flags <src!butter>path_test.cpp : -fopenmp ;
+
+InstallBin $(BINDIR) : <src!butter>test_path$(SUFEXE) ;
+##END:target test_path
+"
     end
   end
 end

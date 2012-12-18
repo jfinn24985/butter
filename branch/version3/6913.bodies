@@ -1,12 +1,52 @@
 class UmlArtifact
-!!!134185.cpp!!!	visit(inout a_visitor : uml_visitor) : void
-QVector< UmlItem > l_kids (children ());
-a_visitor.on_visit (*this, true);
-for (unsigned int l_i (0); l_i < l_kids.size (); ++l_i)
+!!!128175.cpp!!!	build_properties(inout a_hdr : unistr, inout a_link : unistr, inout a_flag : unistr, in a_section_label : unistr, in a_not_doc : bool) : void
+// Process any data from properties.
+QString value_;
+if (a_item.property_value (butter_constants::butter_flags_name, value_))
 {
-  if (NULL != l_kids.at (l_i))
+  merge_string_list (a_flag, value_);
+}
+if (a_item.property_value (butter_constants::butter_ldflags_name, value_))
+{
+  merge_string_list (a_link, value_);
+}
+if (a_item.property_value (butter_constants::butter_include_name, value_))
+{
+  merge_string_list (a_hdr, value_);
+}
+// For non-documents any data from the description.
+if (a_not_doc)
+{
+  QString section_ (section (a_section_label, const_cast< UmlItem& >(a_item).description ()));
+  if (section_.isEmpty ())
   {
-    l_kids.at (l_i)->visit (a_visitor);
+    section_ = section (butter_constants::generic_section, const_cast< UmlItem& >(a_item).description ());
+  }
+  if (! section_.isEmpty ())
+  {
+    QRegExp hdr_re_ ("^ *" + butter_constants::header_label + " *= *");
+    QRegExp link_re_ ("^ *" + butter_constants::link_label + " *= *");
+    QRegExp flag_re_ ("^ *" + butter_constants::flag_label + " *= *");
+    if (! section_.isEmpty ())
+    {
+      QTextIStream section_is_ (&section_);
+      while (! section_is_.atEnd ())
+      {
+        const QString line_ (section_is_.readLine ());
+        int length_;
+        if (-1 != hdr_re_.match (line_, 0, &length_))
+        {
+          merge_string_list (a_hdr, line_.mid (length_));
+        }
+        else if (-1 != link_re_.match (line_, 0, &length_))
+        {
+          merge_string_list (a_link, line_.mid (length_));
+        }
+        else if (-1 != flag_re_.match (line_, 0, &length_))
+        {
+          merge_string_list (a_flag, line_.mid (length_));
+        }
+      }
+    }
   }
 }
-a_visitor.on_visit (*this, false);

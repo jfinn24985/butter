@@ -1,0 +1,78 @@
+format 75
+
+classinstance 128047 class_ref 146985 // base_generator
+  name ""   xyz 37 4 2000 life_line_z 2000
+classinstance 128175 class_ref 6913 // UmlArtifact
+  name ""   xyz 235 17 2000 life_line_z 2000
+fragment 128687 "has_project_name = true"
+  color gold form "has_project_name = true" xyzwh 7 149 1995 302 69
+end
+fragment 129071 "has_project_name = false"
+  color gold form "is_local" xyzwh 7 225 1990 303 256
+end
+fragment 130479 "library_type = shared"
+  color lightblue xyzwh 35 310 1995 174 66
+end
+fragment 130607 "library_type != shared"
+  color lightblue xyzwh 33 381 1995 176 62
+end
+note 130735 "Must extend dependency list based on the object file's dependencies"
+  xyzwh 391 373 2000 265 73
+durationcanvas 128303 classinstance_ref 128047 // :base_generator
+  xyzwh 77 130 2010 11 902
+  overlappingdurationcanvas 129967
+    xyzwh 83 346 2020 11 25
+  end
+  overlappingdurationcanvas 130223
+    xyzwh 83 412 2020 11 25
+  end
+end
+durationcanvas 128431 classinstance_ref 128175 // :UmlArtifact
+  xyzwh 265 128 2010 11 77
+end
+durationcanvas 129199 classinstance_ref 128175 // :UmlArtifact
+  xyzwh 265 258 2010 11 82
+end
+durationcanvas 129839 classinstance_ref 128175 // :UmlArtifact
+  xyzwh 265 296 2010 11 33
+end
+msg 128559 synchronous
+  from durationcanvas_ref 128303
+  to durationcanvas_ref 128431
+  yz 130 2015 msg operation_ref 205225 // "property_value(in a_key : unistr, inout a_value : unistr) : bool"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "project_name"
+  label_xy 104 117
+msg 128943 synchronous
+  from durationcanvas_ref 128303
+  to durationcanvas_ref 128431
+  yz 188 2025 msg operation_ref 128175 // "build_properties(inout a_hdr : unistr, inout a_link : unistr, inout a_flag : unistr, in a_section_label : unistr, in a_not_doc : bool) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 133 175
+msg 129327 synchronous
+  from durationcanvas_ref 128303
+  to durationcanvas_ref 129199
+  yz 273 2015 explicitmsg "make_relative_path"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "root_dir"
+  label_xy 128 260
+msg 129583 synchronous
+  from durationcanvas_ref 128303
+  to durationcanvas_ref 129839
+  yz 296 3005 msg operation_ref 135081 // "property_search(in a_key : unistr, inout a_value : unistr) : bool"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "library_type"
+  label_xy 105 283
+reflexivemsg 130095 synchronous
+  to durationcanvas_ref 129967
+  yz 346 3005 explicitmsg "append_link_library"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 56 333
+reflexivemsg 130351 synchronous
+  to durationcanvas_ref 130223
+  yz 412 2025 explicitmsg "append_object_file"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 57 399
+line 130863 -_-_
+  from ref 130607 z 2001 to ref 130735
+end

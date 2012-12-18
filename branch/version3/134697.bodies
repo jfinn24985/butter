@@ -1,5 +1,5 @@
 class jam_generator
-!!!209065.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+!!!209065.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : QTextOStream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 QString project_;
 if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
@@ -54,7 +54,7 @@ ENDDOC}} */
     a_includes.append (libinc_);
   }
 }
-!!!209193.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+!!!209193.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : QTextOStream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 ///////////////////////////
 // Description for individual objects (optional)
 QString source_;
@@ -120,7 +120,7 @@ if (NULL != a_loc.parent ())
   // Add definition to top-level
   a_sys.close.second.append ("SubInclude TOP " + dir_line_ + " ;\n");
 }
-!!!209321.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!209321.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////
 // End target source variable
 a_os << ";\n\n";
@@ -250,7 +250,6 @@ QString content_;
   //////////////
   // Set this as top location and bring in Jamrules.
   os_ << "SubDir TOP ;\n";
-  os_ << "OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;\n";
   //////////////
   // Handle user-defined project includes and flag properties
   ////////////
@@ -288,25 +287,39 @@ QString content_;
   }
 }
 a_sys.preamble.second = content_;
-!!!209449.cpp!!!	install_target(in a_target : UmlArtifact, inout a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
+!!!209449.cpp!!!	install_target(in a_target : UmlArtifact, inout a_os : QTextOStream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
 static const char * install_cmd_[] =
 {
-  "InstallBin"
-, "InstallFile"
-, "InstallLib"
-, "InstallMan"
+  "InstallBin "
+, "InstallFile "
+, "InstallLib "
+, "InstallMan "
 };
-a_os << install_cmd_ [a_type] << " $("  << a_loc_var << ") : ";
-if (a_isdoc)
+a_os << install_cmd_ [a_type];
+if (butter_constants::is_install_keyword (a_loc_var))
 {
-  a_os << this->grist_ << a_target.name ();
+  a_os << "$(" << a_loc_var << "DIR)";
+}
+else if (a_loc_var.right(3) == "DIR")
+{
+  // assume is user defined variable
+  a_os << "$(" << a_loc_var << ")";
 }
 else
 {
-  a_os << this->qualified_target_name_;
+  // assume is an actual path
+  a_os << a_loc_var;
+}
+if (a_isdoc)
+{
+  a_os << " : " << this->grist_ << a_target.name ();
+}
+else
+{
+  a_os << " : " << this->qualified_target_name_;
 }
 a_os << " ;\n";
-!!!208937.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!208937.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////////////
 // Initialise state for writing a new target entry
 if (this->grist_.isEmpty ())

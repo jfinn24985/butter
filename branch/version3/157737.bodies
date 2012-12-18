@@ -1,5 +1,5 @@
 class cmake_generator
-!!!230441.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+!!!230441.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : QTextOStream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -66,7 +66,7 @@ else
   QString src_flags_;
   find_hdr_link (a_target, a_includes, a_ldflags, src_flags_, section_name, true);
 }
-!!!230569.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+!!!230569.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : QTextOStream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -174,7 +174,7 @@ if (NULL != a_loc.parent ())
   a_sys.close.second.append (tmp_);
 }
 
-!!!230953.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!230953.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
 ////////////////////////////////
 // Finalise target build instructions
 //
@@ -191,7 +191,20 @@ if (a_type == other)
       << "\n\tCOMMAND ${" << other_type_ << "} ";
   if (! a_include.isEmpty ())
   {
-    a_os << mangle(a_include) << " ";
+    a_os << "-I";
+    for (const_token_iterator e_, b_(a_include, ' '); e_ != b_; ++b_)
+    {
+      const QString val_(b_->c_str ());
+      if (!val_.isEmpty ())
+      {
+        if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
+        {
+          a_os << "${CMAKE_SOURCE_DIR}/";
+        }
+        a_os << mangle (val_) << " ";
+      }
+    }
+    a_os << " ";
   }
   if (! a_cflags.isEmpty ())
   {
@@ -341,15 +354,24 @@ QString proj_text_;
   }
 }
 a_sys.target(this->project_name_).second = proj_text_;
-!!!231721.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
+!!!231721.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
 const QString target_name_(a_isdoc ?  a_target.name() : "${" + this->target_NAME () + "}");
+if (butter_constants::is_install_keyword (a_loc_var))
+{
+  a_loc_var.insert (0, "${").append ("DIR}");
+}
+else if (a_loc_var.right(3) == "DIR")
+{
+  // assume is user defined variable
+  a_loc_var.insert (0, "${").append ("}");
+}
+// else assume is an actual path
 switch (a_type)
 {
 case base_generator::bin:
 {
   a_os << "install (TARGETS " << target_name_
-  << "\n\tRUNTIME DESTINATION ${" << a_loc_var << "}"
-  << "\n\tCONFIGURATIONS Release)\n\n";
+  << "\n\tRUNTIME DESTINATION " << a_loc_var << ")\n\n";
   break;
 }
 case base_generator::lib:
@@ -358,26 +380,25 @@ case base_generator::lib:
   if (this->is_static_type_)
   {
     statd_ = a_loc_var;
-    shard_ = "LIBDIR";
+    shard_ = "${LIBDIR}";
   }
   else
   {
-    statd_ = "DATADIR";
+    statd_ = "${DATADIR}";
     shard_ = a_loc_var;
   }
   a_os << "install (TARGETS " << target_name_
-  << "\n\tLIBRARY DESTINATION ${" << shard_ << "}"
-  << "\n\tCONFIGURATIONS Release"
-  << "\n\tARCHIVE DESTINATION ${" << statd_ << "}"
-  << "\n\tCONFIGURATIONS Release)\n\n";
+  << "\n\tRUNTIME DESTINATION " << shard_ << ""
+  << "\n\tLIBRARY DESTINATION " << shard_ << ""
+  << "\n\tARCHIVE DESTINATION " << statd_ << ")\n\n";
   break;
 }
 case base_generator::file:
 case base_generator::man:
 {
-  a_os << "install (FILES " << target_name_
-  << "\n\tDESTINATION ${" << a_loc_var << "}"
-  << "\n\tCONFIGURATIONS Release)\n\n";
+  a_os << "install (FILES ";
+  if (! a_isdoc) a_os << "${CMAKE_CURRENT_BINARY_DIR}/";
+  a_os << target_name_ << "\n\tDESTINATION " << a_loc_var << ")\n\n";
   break;
 }
 }
@@ -447,13 +468,32 @@ if (! quotes_.empty ())
 {
   throw std::runtime_error ("<p><b>Error</b> Unmatched quotes in string: " + std::string(input.utf8()) + "</p>");
 }
-while (true)
+// Check for -I, /I, -L or /L
+if (-1 != input.find('L') || -1 != input.find('I'))
 {
-  static const QString od_ ("OUTPUTDIR");
-  static const QString cd_ ("CMAKE_BINARY_DIR");
-  const int found_at_ (input.find (od_));
-  if (found_at_ == -1) break;
-  input.replace (found_at_, od_.length (), cd_);
+  QString mangle_;
+  {
+    QTextOStream os_ (&mangle_);
+    for (const_token_iterator e_, b_(input.simplifyWhiteSpace(), ' '); e_ != b_; ++b_)
+    {
+      const QString item_(b_->c_str ());
+      BUTTER_CHECK (! item_.isEmpty ()
+                  , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
+      if ('L' == item_[1] || 'I' == item_[1])
+      {
+        if ('-' == item_[0] || '/' == item_[0])
+        {
+          if (QDir::isRelativePath (item_.mid(2)))
+          {
+            os_ << item_.left(2) << "${CMAKE_SOURCE_DIR}/" << item_.mid(2) << " ";
+            continue;
+          }
+        }
+      }
+      os_ << item_ << " ";
+    }
+  }
+  input = mangle_;
 }
 return input;
 
@@ -475,7 +515,7 @@ if (this->sys_buildfile_->preamble.second.isEmpty ()
   }
   this->sys_buildfile_->preamble.second = init_text_;
 }
-!!!232233.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!232233.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
 /////////////////
 // Initialise variables for the new target
 this->target_NAME (a_target);

@@ -1,0 +1,97 @@
+format 75
+
+classcanvas 128175 class_ref 128175 // source
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 145 609 2000
+end
+classcanvas 128303 class_ref 128303 // build_element
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 126 469 2000
+end
+classcanvas 129071 class_ref 6913 // UmlArtifact
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 297 468 2000
+end
+classcanvas 129199 class_ref 7553 // UmlItem
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 448 78 2005
+end
+classcanvas 129327 class_ref 137001 // butter_constants
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 616 9 2000
+end
+classcanvas 129583 class_ref 2944 // UmlBaseArtifact
+  draw_all_relations default hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 286 296 3005
+end
+classcanvas 130223 class_ref 4096 // UmlBaseItem
+  draw_all_relations default hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 301 20 3013
+end
+classcanvas 131887 class_ref 128047 // target
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 289 629 2006
+end
+relationcanvas 128559 relation_ref 128175 // <generalisation>
+  from ref 128175 z 2001 to ref 128303
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129455 relation_ref 128559 // <generalisation>
+  from ref 129199 z 2006 to ref 129327
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129711 relation_ref 6528 // <generalisation>
+  from ref 129583 z 3006 to ref 129199
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129839 relation_ref 7040 // <unidirectional association>
+  from ref 129583 z 3006 stereotype "<<vector>>" xyz 306 399 3006 to ref 129071
+  role_a_pos 352 450 3000 no_role_b
+  multiplicity_a_pos 327 450 3000 no_multiplicity_b
+end
+relationcanvas 129967 relation_ref 16001 // <generalisation>
+  from ref 129071 z 3006 to point 417 406
+  line 130095 z 3006 to ref 129583
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130351 relation_ref 9088 // <dependency>
+  from ref 130223 z 3014 stereotype "<<friend>>" xyz 306 175 3014 to ref 129583
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130479 relation_ref 11392 // <unidirectional association>
+  from ref 130223 z 3014 to ref 129199
+  role_a_pos 400 111 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130607 relation_ref 16641 // <generalisation>
+  from ref 129199 z 3014 to point 433 57
+  line 130735 z 3014 to ref 130223
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131375 relation_ref 128815 // <composition>
+  from ref 129071 z 2001 to ref 128303
+  role_a_pos 222 483 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132015 relation_ref 128047 // <generalisation>
+  from ref 131887 z 2007 to ref 128303
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132143 relation_ref 128303 // <directional aggregation>
+  from ref 131887 z 2007 stereotype "<<list>>" xyz 216 660.5 2007 to ref 128175
+  role_a_pos 201 624 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132271 relation_ref 128431 // <directional aggregation>
+  from ref 131887 z 2007 to ref 128303
+  role_a_pos 209 535 3000 no_role_b
+  multiplicity_a_pos 184 535 3000 no_multiplicity_b
+end
+end

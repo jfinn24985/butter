@@ -134,8 +134,8 @@ if (-1 != l_start)
 // Found no section titles --> return empty string
 return Result;
 !!!244777.cpp!!!	to_target_NAME(in a_target : UmlArtifact) : unistr
-QString Result (a_target.package ().filename ());
-Result.append ("_");
-Result.append(const_cast< UmlArtifact& >(a_target).name ());
-find_replace (Result, '.', '_');
-return Result.upper ();
+  QString Result (a_target.package ().filename ());
+  Result.append ("_");
+  Result.append(const_cast< UmlArtifact& >(a_target).name ());
+  find_replace (Result, '.', '_');
+  return Result.upper ();
