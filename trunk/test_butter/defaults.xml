@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job src="job_single_test.xml">
+  <property name="basefile" if="build-tool=%(jam)s">Jamfile</property>
+</job>
