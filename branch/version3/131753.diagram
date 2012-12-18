@@ -1,0 +1,19 @@
+format 66
+
+classinstance 128041 class_ref 132393 // location
+  name "a_base"   xyz 87 21 2005 life_line_z 2000
+classinstance 128169 class_ref 146985 // base_generator
+  name "a_writer"   xyz 299 22 2005 life_line_z 2000
+durationcanvas 128297 classinstance_ref 128041 // a_base:location
+  xyzwh 112 114 2010 11 145
+end
+durationcanvas 128425 classinstance_ref 128169 // a_writer:base_generator
+  xyzwh 335 114 2010 11 132
+end
+msg 128553 synchronous
+  from durationcanvas_ref 128297
+  to durationcanvas_ref 128425
+  yz 114 2015 msg operation_ref 191785 // "create_system(in a_base : location) : void"
+  show_full_operations_definition default drawing_language default
+  label_xy 133 96
+end

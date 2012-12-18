@@ -1,0 +1,74 @@
+format 66
+
+classinstance 128041 class_ref 132393 // location
+  name "a_base"   xyz 255 26 2000 life_line_z 2000
+classinstance 128425 class_ref 7937 // UmlPackage
+  name "a_project"   xyz 64 25 2005 life_line_z 2000
+classinstance 129193 class_ref 7553 // UmlItem
+  name "a_item"   xyz 405 31 2005 life_line_z 2000
+note 131241 "stack.insert (a_project)
+while (not stack.empty())"
+  xyzwh 297 145 3010 181 57
+note 131369 "foreach (child) stack.insert(child)"
+  xyzwh 294 261 2000 239 35
+note 131497 "if (kind = package)"
+  xyzwh 298 339 2000 144 35
+note 134185 "end while"
+  xyzwh 297 454 2000 83 37
+note 134313 "Not shown: At the beginning of the while loop the item is checked for \"butter\" properties and a warning message is issued for unknown/ill-formed properties."
+  xyzwh 499 149 2000 297 96
+durationcanvas 128553 classinstance_ref 128425 // a_project:UmlPackage
+  xyzwh 104 124 2010 11 379
+end
+durationcanvas 128681 classinstance_ref 128041 // a_base:location
+  xyzwh 280 124 2010 11 379
+  overlappingdurationcanvas 133673
+    xyzwh 286 383 2020 11 66
+    overlappingdurationcanvas 133929
+      xyzwh 292 417 2030 11 27
+    end
+  end
+end
+durationcanvas 129321 classinstance_ref 129193 // a_item:UmlItem
+  xyzwh 431 230 2010 11 25
+end
+durationcanvas 132905 classinstance_ref 129193 // a_item:UmlItem
+  xyzwh 431 314 2010 11 25
+end
+msg 128809 synchronous
+  from durationcanvas_ref 128553
+  to durationcanvas_ref 128681
+  yz 124 2015 msg operation_ref 133929 // "parse_project(in a_item : UmlItem) : location"
+  show_full_operations_definition default drawing_language default
+  args "a_project"
+  label_xy 122 106
+msg 129449 synchronous
+  from durationcanvas_ref 128681
+  to durationcanvas_ref 129321
+  yz 230 3005 msg operation_ref 46976 // "children() : UmlItem"
+  show_full_operations_definition default drawing_language default
+  label_xy 316 212
+msg 131625 return
+  from durationcanvas_ref 128681
+  to durationcanvas_ref 128553
+  yz 490 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default
+msg 133033 synchronous
+  from durationcanvas_ref 128681
+  to durationcanvas_ref 132905
+  yz 319 2015 msg operation_ref 45952 // "kind() : anItemKind"
+  show_full_operations_definition default drawing_language default
+  label_xy 343 301
+reflexivemsg 133801 synchronous
+  to durationcanvas_ref 133673
+  yz 383 2025 msg operation_ref 187689 // "find(in a_location : location, in a_path : string) : location"
+  show_full_operations_definition default drawing_language default
+  args "a_base, dirname (a_item)"
+  label_xy 325 380
+reflexivemsg 134057 synchronous
+  to durationcanvas_ref 133929
+  yz 417 2035 msg operation_ref 143145 // "add_package(inout a_package : UmlPackage) : void"
+  show_full_operations_definition default drawing_language default
+  args "a_item"
+  label_xy 327 412
+end

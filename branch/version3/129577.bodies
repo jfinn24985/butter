@@ -1,0 +1,157 @@
+class generator
+!!!151977.cpp!!!	compare_file_to_string(in a_path : string, in a_str : string) : bool
+bool Result (false);
+class helper__
+{
+public:
+  helper__ (QFile & a_file, int a_flag): m_f (a_file)
+  {
+    if (! m_f.open (a_flag))
+    {
+      QString l_msg ("Unable to open file for read/writing: " + m_f.name ());
+      throw std::runtime_error (static_cast<const char*>(l_msg));
+    }
+  }
+   ~helper__ ()
+  {
+    m_f.close ();
+  }
+  QFile & m_f;
+};
+
+if (QFile::exists (a_path))
+{
+  QFile l_dev (a_path);
+  // Test the file for reading
+  helper__ l_auto (l_dev, IO_ReadOnly);
+  unsigned int l_cursor (0);  // How far in to the file we are.
+  do
+  {
+    const unsigned int l_sz (1024);     // The size of the buffer
+    char l_buffer[l_sz];        // Buffer for reading
+    const unsigned int l_count (l_dev.readBlock (&l_buffer[0], l_sz));
+    Result = (l_count == 0 || (0 == qstrncmp (&l_buffer[0], a_str.data () + l_cursor, std::min (l_count, a_str.length () - l_cursor))));
+    l_cursor += l_count;
+  }
+  while (Result && ! l_dev.atEnd ());
+  // Read file must not be longer!
+  Result = (l_cursor == a_str.length ());
+}
+if (! Result)
+{
+  QFile l_dev (a_path);
+  helper__ l_auto (l_dev, IO_WriteOnly);
+  l_dev.reset ();
+  l_dev.writeBlock (a_str.data (), a_str.length ());
+}
+return Result;
+!!!161449.cpp!!!	find_hdr_link(in a_desc : string, inout a_hdr : string, inout a_link : string, inout a_flag : string) : void
+// Get the section.
+QString l_sec (section (butter_constants::generic_section, a_desc));
+QRegExp l_hdr_re ("^ *" + butter_constants::header_label + " *= *");
+QRegExp l_link_re ("^ *" + butter_constants::link_label + " *= *");
+QRegExp l_flag_re ("^ *" + butter_constants::flag_label + " *= *");
+if (! l_sec.isEmpty ())
+{
+  QTextIStream l_sec_is (&l_sec);
+  while (! l_sec_is.atEnd ())
+  {
+    const QString l_line (l_sec_is.readLine ());
+    int l_length;
+    if (-1 != l_hdr_re.match (l_line, 0, &l_length))
+    {
+      if (! a_hdr.isEmpty ()) { a_hdr.append (" "); }
+      a_hdr.append (l_line.mid (l_length));
+    }
+    else if (-1 != l_link_re.match (l_line, 0, &l_length))
+    {
+      if (! a_link.isEmpty ()) { a_link.append (" "); }
+      a_link.append (l_line.mid (l_length));
+    }
+    else if (-1 != l_flag_re.match (l_line, 0, &l_length))
+    {
+      if (! a_flag.isEmpty ()) { a_flag.append (" "); }
+      a_flag.append (l_line.mid (l_length));
+    }
+  }
+}
+!!!150313.cpp!!!	build_system(in a_top_loc : location, in a_project : UmlPackage) : void
+std::auto_ptr< generator > l_builder;
+QCString l_style;
+if (const_cast< UmlPackage& >(a_project).propertyValue (butter_constants::butter_style_name, l_style))
+{
+  if (jam_generator::section_name == l_style)
+  {
+    l_builder.reset (new jam_generator (a_project));
+  }
+  else if (gmake_generator::section_name == l_style)
+  {
+    l_builder.reset (new gmake_generator (a_project));
+  }
+  else if (bjam_generator::section_name != l_style)
+  {
+    QString l_msg;
+    QTextOStream l_mos (&l_msg);
+    l_mos << "<p>Unrecognised style \"<b>" << l_style << "</b>\", must be one of (";
+    l_mos << bjam_generator::section_name << "|";
+    l_mos << jam_generator::section_name << "|";
+    l_mos << gmake_generator::section_name;
+    l_mos << ") using <i>boost jam</i></p>";
+    UmlCom::trace (l_msg);
+  }
+}
+if (NULL == l_builder.get ())
+{
+  l_builder.reset (new bjam_generator (a_project));
+}
+l_builder->build_system (a_top_loc);
+!!!140329.cpp!!!	section(in a_section : string, in a_desc : string) : string
+static const QCString l_START ("${" + butter_constants::section_prefix);
+const QCString l_phrase (l_START + a_section + "}");
+QCString Result;
+int l_start (a_desc.find (l_phrase));
+if (-1 != l_start)
+{
+  // Found a_section start, search from here to end for next section
+  int l_end (a_desc.find (l_START, l_start + l_phrase.size ()));
+  if (-1 != l_end)
+  {
+    Result = a_desc.mid (l_start + l_phrase.size (), l_end - (l_start + l_phrase.size ()));
+  }
+  else
+  {
+    Result = a_desc.mid (l_start + l_phrase.size ());
+  }
+}
+else if (-1 == a_desc.find (l_START))
+{
+  // Found no section titles, use all of desc
+  Result = a_desc;
+}
+return Result;
+!!!173097.cpp!!!	write_documents(in a_top_loc : location) : void
+// Now write any documents.
+for (unsigned int l_i (0); l_i < a_top_loc.documents ().count (); ++l_i)
+{
+  // Only write non-empty docs.
+  if (! a_top_loc.documents ().at (l_i)->description ().isEmpty ())
+  {
+    QCString l_tmp;
+    if (! a_top_loc.documents ().at (l_i)->propertyValue (butter_constants::butter_other_name, l_tmp) || l_tmp == "nowrite")
+    {
+      QCString l_doc_path = a_top_loc.full_path () + QDir::separator () + a_top_loc.documents ().at (l_i)->name ();
+      if (! l_tmp.isEmpty ())
+      {
+        l_doc_path += "." + l_tmp;
+      }
+      if (! compare_file_to_string (l_doc_path, a_top_loc.documents ().at (l_i)->description ()))
+      {
+        UmlCom::trace ("<p>Writing changed document : " + l_doc_path + "</p>");
+      }
+      else
+      {
+        UmlCom::trace ("<p>Skipping unchanged document : " + l_doc_path + "</p>");
+      }
+    }
+  }
+}

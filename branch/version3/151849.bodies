@@ -1,0 +1,35 @@
+class log
+!!!207401.cpp!!!	debug_log(in a_fname : str) : void
+debug_file_ = std::auto_ptr< QFile >(new QFile (a_fname));
+if (! debug_file_->open (IO_WriteOnly))
+{
+  QString msg_ ("<p>Unable to open log file for read/writing: ");
+  msg_.append (debug_file_->name ());
+  msg_.append ("</p>");
+  debug_os_ = std::auto_ptr< QTextOStream >(); // Reset stream
+  throw std::runtime_error (msg_.utf8 ().data ());
+}
+else
+{
+  debug_os_ = std::auto_ptr< QTextOStream >(new QTextOStream (debug_file_->handle ()));
+}
+!!!223017.cpp!!!	~log()
+// NOTE: This will only be called during program exit.
+
+// For some reason under WIN32 we get a violation error, when we
+// reset the pointer, so here we call the dtor and then release
+// the pointers.
+if (DEBUG)
+{
+  if (NULL != debug_os_.get ())
+  {
+    debug_os_->~QTextStream ();
+    debug_os_.release ();
+  }
+  if (NULL != debug_file_.get ())
+  {
+    debug_file_->flush ();
+    debug_file_->~QFile ();
+    debug_file_.release ();
+  }
+}
