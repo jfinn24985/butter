@@ -1,0 +1,31 @@
+<?xml version = '1.0'?>
+<test-suite>
+  <property name="bouml" >/usr/bin/bouml</property>
+  <property name="jam" >jam</property>
+  <property name="jam-arg" >-d2</property>
+  <property name="cat" >cat</property>
+  <property name="boost" >bjam</property>
+  <property name="boost-arg" >-d2</property>
+  <property name="boost-debug" >gcc-4.3/debug</property>
+  <property name="boost-release" >gcc-4.3/release</property>
+  <property name="makeit" >makeit</property>
+  <property name="make" >make</property>
+  <property name="make-sys" >M_sys.mak</property>
+  <property name="make-arg" > </property>
+  <property name="base-dir" >/tmp</property>
+  <property name="cmake" >cmake</property>
+  <property name="cmake-arg" >-G 'Unix Makefiles' -DCMAKE_VERBOSE_MAKEFILE=ON</property>
+  <property name="cmake-sys" >local.cmake</property>
+  <property name="patch-args" >-l -t -i</property>
+  <property name="checkout-tool" >svn</property>
+  <property name="checkout-suf" ></property>
+  <property name="exe-suf" ></property>
+  <property name="ark-suf" >.a</property>
+  <property name="shrt-suf" >.so</property>
+  <property name="shr-suf" >.so.0</property>
+  <property name="cmdsep" >;</property>
+  <property name="checkout-url" >file:///home/finnerty/Office/Programming/svnroot/butter/trunk</property>
+  <property name="compare-args" >
+	  <!--Ignore lines with dates: -I '^#[MTWTFS][ouehra][neduit] ' -I '^#Butter.*version'--> -w -B</property>
+  <property name="set-library-path">LD_LIBRARY_PATH=ENVVAR{LD_LIBRARY_PATH}:PATH{%(library-path)s} %(cmdsep)s </property>
+</test-suite>

@@ -1,0 +1,98 @@
+<?xml version = '1.0'?>
+<job>
+    <property name="base" >%(base-dir)s/%(project)s</property>
+    <property name="patch-dir" >patch</property>
+    <stage>Test generating source and build system from a single level project 
+      <verb-list category="setup" >
+        Initialise the test location with latest copy of test.
+        <verb type="file-list" >
+          <property name="file-type" >directory</property>
+          <property name="verify" >recreate</property>
+          <property name="location" >.</property>
+        </verb>
+        <verb type="check-out" >
+          <property name="type" >%(checkout-tool)s</property>
+          <property name="branch" >%(project)s%(checkout-suf)s</property>
+          <property name="location" >%(checkout-url)s/%(branch)s</property>
+        </verb>
+        <verb type="patch" >
+          <property name="location" >%(patch-file)s</property>
+        </verb>
+
+      </verb-list>
+      <verb-list category="execute" >
+        Generate the build system and the source code
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
+      </verb-list>
+      <verb-list category="verify" >
+        Verify that the correct files have been produced
+        <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >%(project)s.hh %(project)s.cc</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >%(basefile)s %(sysfile)s</property>
+        </verb>
+        <property name="test-phrase">1.1.1 Create single directory, single target build system</property>
+      </verb-list>
+   </stage>
+    <stage>Perform compilation and test compilation success
+      <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+      <verb-list category="execute" >
+        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s %(cat)s build.log %(cmdsep)s popd</verb>
+      </verb-list>
+      <verb-list category="verify" >Verify that the correct files have been produced
+        <verb type="file-list" >
+          <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s</property>
+          <property name="file-type" >executable</property>
+          <property name="verify" >exist</property>
+          <property name="location" >test%(exe-suf)s</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >build.log</property>
+        </verb>
+        <property name="location" >build.log</property>
+	<property name="type" >search</property>
+        <property name="search-args" >-E</property>
+        <verb type="compare" >
+          <property name="search-regex" >(DEBUG|native).*single_test.c</property>
+        </verb>
+        <property name="test-phrase">2.1.1 Single directory, single target compiled</property>
+      </verb-list>
+    </stage>
+    <stage>Test run the executable.
+      <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s/%(build-dir)s</property>
+      <verb-list category="execute" >Run &quot;test&quot;
+	      <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(base)s/test%(exe-suf)s} &gt; output %(cmdsep)s popd</verb>
+      </verb-list>
+      <verb-list category="verify" >Verify that the correct files have been produced
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >output</property>
+        </verb>
+        <verb type="compare" >
+          <property name="location" >output</property>
+          <property name="compare-base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+        </verb>
+        <property name="test-phrase">2.1.1 Program output matchs canon</property>
+      </verb-list>
+    </stage>
+    <stage>Clean-up stage
+      <verb-list category="cleanup">Clean up operations
+        <verb type="file-list" >
+          <property name="base" >%(base-dir)s/%(project)s</property>
+          <property name="file-type" >directory</property>
+          <property name="verify" >remove</property>
+          <property name="location" >.</property>
+        </verb>
+      </verb-list>
+    </stage>
+</job>

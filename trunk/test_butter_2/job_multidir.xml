@@ -1,0 +1,111 @@
+<?xml version = '1.0'?>
+<job>
+    <property name="base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+    <property name="local-base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+    <property name="patch-dir" >patch</property>
+    <stage>Test generating source and build system from a single level project with 2 targets
+      <verb-list category="setup" >Initialise the test location with latest copy of test.
+        <property name="base" >%(base-dir)s/%(project)s</property>
+        <verb type="file-list" >
+          <property name="file-type" >directory</property>
+          <property name="verify" >recreate</property>
+          <property name="location" >.</property>
+        </verb>
+        <verb type="check-out" >
+          <property name="type" >%(checkout-tool)s</property>
+          <property name="branch" >%(project)s%(checkout-suf)s</property>
+          <property name="location" >%(checkout-url)s/%(branch)s</property>
+        </verb>
+        <verb type="patch" >
+          <property name="location" >%(patch-file)s</property>
+        </verb>
+      </verb-list>
+      <verb-list category="execute" >Generate the build system and the source code
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
+      </verb-list>
+      <verb-list category="verify" >Verify that the correct files have been produced
+        <verb type="file-list" >
+          <property name="base" >%(local-base)s/include/Executable</property>
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >example_exe.hpp</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="base" >%(local-base)s/src/Executable</property>
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >example_exe.cpp %(mainfile)s</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="base" >%(local-base)s/include/Library</property>
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >example_lib.hpp</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="base" >%(local-base)s/src/Library</property>
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >example_lib.cpp %(mainfile)s</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >%(basefile)s %(sysfile)s</property>
+        </verb>
+        <property name="test-phrase">1.1.3 Build files created in root and sub directories</property>
+      </verb-list>
+    </stage>
+    <stage>Perform compilation and test compilation success
+      <verb-list category="execute" >
+        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(build-tool)s %(build-arg)s %(cmdsep)s popd</verb>
+      </verb-list>
+      <verb-list category="verify" >Verify that the correct files have been produced
+        <verb type="file-list" >
+          <property name="base" >%(local-base)s/%(build-dir)s/src/Executable%(build-var)s</property>
+          <property name="file-type" >executable</property>
+          <property name="verify" >exist</property>
+          <property name="location" >%(exe-name)s</property>
+          <property name="test-phrase">2.1.1 Executable built</property>
+        </verb>
+      </verb-list>
+      <verb-list category="verify" >Verify that the correct files have been produced
+        <verb type="file-list" >
+          <property name="base" >%(local-base)s/%(build-dir)s/src/Library%(build-var)s</property>
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >%(library-name)s</property>
+          <property name="test-phrase">2.1.2 Library built</property>
+        </verb>
+      </verb-list>
+    </stage>
+    <stage>Test run the executable.
+      <verb-list category="execute" >Run &quot;program&quot;
+        <property name="library-path" >%(build-dir)s/src/Library%(build-var)s</property>
+	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(build-dir)s/src/Executable%(build-var)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
+      </verb-list>
+      <verb-list category="verify" >Verify that the correct files have been produced
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >output</property>
+        </verb>
+        <verb type="compare" >
+          <property name="compare-base" >%(base)s</property>
+          <property name="location" >output</property>
+        </verb>
+        <property name="test-phrase">2.1.1 Program output exists and matchs canon</property>
+      </verb-list>
+    </stage>
+    <stage>Clean-up stage
+      <verb-list category="cleanup">Clean up operations
+        <verb type="file-list" >
+          <property name="base" >%(base-dir)s/%(project)s</property>
+          <property name="file-type" >directory</property>
+          <property name="verify" >remove</property>
+          <property name="location" >.</property>
+        </verb>
+      </verb-list>
+    </stage>
+</job>
