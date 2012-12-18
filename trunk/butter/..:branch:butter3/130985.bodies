@@ -1,0 +1,7 @@
+class jamrules
+!!!140713.cpp!!!	serialize(in a_os : ostream) : void
+const_cast<jamfile_boost&> (m_jamroot).dirname (dirname ());
+const_cast<jamfile_boost&> (m_jamroot).add_package_name (package_names ());
+m_jamroot.serialize (a_os);
+a_os << "TODO JAMRULES!!!\n";
+

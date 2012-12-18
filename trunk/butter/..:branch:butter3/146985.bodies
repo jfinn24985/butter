@@ -1,0 +1,141 @@
+class base_generator
+!!!200233.cpp!!!	find_hdr_link(in a_item : UmlItem, inout a_hdr : unistr, inout a_link : unistr, inout a_flag : unistr, in a_section_label : unistr, in a_not_doc : bool) : void
+// Process any data from properties.
+QString value_;
+if (a_item.property_value (butter_constants::butter_flags_name, value_))
+{
+  merge_string_list (a_flag, value_);
+}
+if (a_item.property_value (butter_constants::butter_ldflags_name, value_))
+{
+  merge_string_list (a_link, value_);
+}
+if (a_item.property_value (butter_constants::butter_include_name, value_))
+{
+  merge_string_list (a_hdr, value_);
+}
+// For non-documents any data from the description.
+if (a_not_doc)
+{
+  QString section_ (section (a_section_label, const_cast< UmlItem& >(a_item).description ()));
+  if (section_.isEmpty ())
+  {
+    section_ = section (butter_constants::generic_section, const_cast< UmlItem& >(a_item).description ());
+  }
+  if (! section_.isEmpty ())
+  {
+    QRegExp hdr_re_ ("^ *" + butter_constants::header_label + " *= *");
+    QRegExp link_re_ ("^ *" + butter_constants::link_label + " *= *");
+    QRegExp flag_re_ ("^ *" + butter_constants::flag_label + " *= *");
+    if (! section_.isEmpty ())
+    {
+      QTextIStream section_is_ (&section_);
+      while (! section_is_.atEnd ())
+      {
+        const QString line_ (section_is_.readLine ());
+        int length_;
+        if (-1 != hdr_re_.match (line_, 0, &length_))
+        {
+          merge_string_list (a_hdr, line_.mid (length_));
+        }
+        else if (-1 != link_re_.match (line_, 0, &length_))
+        {
+          merge_string_list (a_link, line_.mid (length_));
+        }
+        else if (-1 != flag_re_.match (line_, 0, &length_))
+        {
+          merge_string_list (a_flag, line_.mid (length_));
+        }
+      }
+    }
+  }
+}
+!!!194089.cpp!!!	get_artifact(inout a_loc : location, in a_name : unistr) : compound_artifact
+// Get deployment views from current location's packages
+std::auto_ptr< compound_artifact > Result;
+if (a_loc.packages ().count () > 0)
+{
+  QVector< UmlItem > docs_ = a_loc.find_uml_document (a_name);
+  // If any documents found
+  if (! docs_.isEmpty ())
+  {
+    Result = std::auto_ptr< compound_artifact >(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
+    for (unsigned int k_ = 1; k_ < docs_.count (); ++k_)
+    {
+      UmlItem * item_ = docs_.at (k_);
+      Result->merge (dynamic_cast< UmlArtifact& >(*item_));
+      log::com.trace (log::info, "<p><b>Note:</b> Removing duplicated build file from Package " + item_->parent ()->name () + "</p>\n");
+      // item_->parent ()->children ().remove (item_->parent ()->children ().findRef (item_));
+      item_->set_Name (("OLD_" + a_name).utf8 ());
+    }
+    // Reset the artifact (keeps section labels but empties content)
+    Result->reset ();
+  }
+}
+if (NULL == Result.get ())
+{
+  // This will throw an error if no packages exist.
+  // Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
+  Result = std::auto_ptr< compound_artifact >(new compound_artifact (*a_loc.create_uml_document (a_name)));
+}
+return Result;
+!!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
+if (a_list.isEmpty ())
+{
+  a_list = a_addition.simplifyWhiteSpace ();
+}
+else
+{
+  for (const_token_iterator e1_, b1_(a_addition.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
+  {
+    const QString new_item_(b1_->c_str ());
+    if (! new_item_.isEmpty ())
+    {
+      bool match_ (false);
+      for (const_token_iterator e2_, b2_(a_list, ' '); b2_ != e2_; ++b2_)
+      {
+        const QString orig_(b2_->c_str ());
+        if (! orig_.isEmpty ())
+        {
+          if (orig_ == new_item_)
+          {
+            match_ = true;
+            break;
+          }
+        }
+      }
+      if (!match_)
+      {
+        a_list.append (" ");
+        a_list.append (new_item_);
+      }
+    }
+  }
+}
+!!!192425.cpp!!!	section(in a_section : unistr, in a_desc : unistr) : unistr
+static const QString marker_start_ ("${" + butter_constants::section_prefix);
+const QString marker_phrase_ (marker_start_ + a_section + "}");
+QString Result;
+int l_start (a_desc.find (marker_phrase_));
+if (-1 != l_start)
+{
+  // Found a_section start, search from here to end for next section
+  int l_end (a_desc.find (marker_start_, l_start + marker_phrase_.length ()));
+  if (-1 != l_end)
+  {
+    Result = a_desc.mid (l_start + marker_phrase_.length (), l_end - (l_start + marker_phrase_.length ()));
+  }
+  else
+  {
+    Result = a_desc.mid (l_start + marker_phrase_.length ());
+  }
+}
+// else ...
+// Found no section titles --> return empty string
+return Result;
+!!!244777.cpp!!!	to_target_NAME(in a_target : UmlArtifact) : unistr
+QString Result (a_target.package ().filename ());
+Result.append ("_");
+Result.append(const_cast< UmlArtifact& >(a_target).name ());
+find_replace (Result, '.', '_');
+return Result.upper ();

@@ -1,0 +1,18 @@
+class const_tree_iterator
+!!!191017.cpp!!!	increment() : void
+REQUIRE (! at_null (), "Attempt to increment iterator past the ultimate end");
+if (pointer() != here_) // Do nothing if here is nul
+{
+  if (pointer() != here_->child_)
+  {
+    here_ = here_->child_;
+  }
+  else
+  {
+    while (pointer() == here_->sibling_ && pointer() != here_->parent_)
+    {
+      here_ = here_->parent_;
+    }
+    here_ = here_->sibling_;
+  }
+}

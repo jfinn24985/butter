@@ -1,0 +1,56 @@
+class style
+!!!196649.cpp!!!	get_style() : style
+BUTTER_REQUIRE (NULL != style_.get (), "Programming error, attempt to get style before it was set.");
+return *style_.get ();
+!!!196777.cpp!!!	set_style(in a_style : unistr = QString()) : void
+extern const basic_style bjam_style;
+extern const basic_style cmake_style;
+extern const basic_style gmake_style;
+extern const basic_style jam_style;
+if (a_style == bjam_style.name)
+{
+  style_ = std::auto_ptr< style >(new style (bjam_style));
+  log::com.trace (log::info, "<p>Using style <b>Boost Jam</b></p>");
+}
+else if (a_style == cmake_style.name)
+{
+  style_ = std::auto_ptr< style >(new style (cmake_style));
+  log::com.trace (log::info, "<p>Using style <b>CMake</b></p>");
+}
+else if (a_style == gmake_style.name)
+{
+  style_ = std::auto_ptr< style >(new style (gmake_style));
+  log::com.trace (log::info, "<p>Using style <b>Make</b></p>");
+}
+else
+{
+  if (a_style != jam_style.name)
+  {
+    QString msg_;
+    {
+      QTextOStream msg_os_ (&msg_);
+      if (a_style.isEmpty ())
+      {
+        msg_os_ << "<p>No style set out of (";
+      }
+      else
+      {
+        msg_os_ << "<p><b>Warning</b> Style \"<b>" << a_style << "</b>\" does not match recognised styles (";
+      }
+      msg_os_ << bjam_style.name;
+      msg_os_ << "|" << cmake_style.name;
+      msg_os_ << "|" << jam_style.name;
+      msg_os_ << "|" << gmake_style.name;
+      msg_os_ << "), using <i>standard jam</i> as default</p>";
+    }
+    log::com.trace (log::warn, msg_);
+  }
+  else
+  {
+    log::com.trace (log::info, "<p>Using style <b>Standard Jam</b></p>");
+  }
+  style_ = std::auto_ptr< style >(new style (jam_style));
+}
+!!!198185.cpp!!!	style(in a_comment : unistr, in a_end : unistr, in a_start : unistr, in a_name : unistr, in a_factory : write_factory_fn_t)
+: basic_style (a_comment, "", a_end, "", a_start, "", a_name, a_factory)
+{}

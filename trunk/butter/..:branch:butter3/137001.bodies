@@ -1,0 +1,60 @@
+class butter_constants
+!!!131881.cpp!!!	print_item(in a_item : UmlItem, in a_depth : uint, inout a_os : ostream) : void
+static const QString title_lbl__ ("[TT] ");
+static const QString watch_lbl__ ("[**] ");
+QString indent__;
+indent__.fill (' ', a_depth);
+a_os << indent__ << title_lbl__ << "Base information\n";
+a_os << indent__ << watch_lbl__ << "name = \"" << a_item.name () << "\"\n";
+a_os << indent__ << watch_lbl__ << "depth = \"" << a_depth << "\"\n";
+a_os << indent__ << watch_lbl__ << "stereotype = \"" << const_cast< UmlItem& >(a_item).stereotype () << "\"\n";
+
+int kind_ (const_cast< UmlItem& >(a_item).kind ());
+a_os << indent__ << watch_lbl__ << "kind = \"" << butter_constants::kind_to_string (kind_) << "\" [" << kind_ << "]\n";
+a_os << indent__ << watch_lbl__ << "description = \"" << const_cast< UmlItem& >(a_item).description () << "\"\n";
+
+QDict< QCString > l_properties (const_cast< UmlItem& >(a_item).properties ());
+
+QDictIterator < QCString > l_props (l_properties);
+
+if (l_props.isEmpty ())
+{
+  a_os << indent__ << title_lbl__ << "No Properties\n";
+}
+else
+{
+  a_os << indent__ << title_lbl__ << "Properties (# = " << l_props.count () << ")\n";
+  for (; l_props.current (); ++l_props)
+  {
+    a_os << indent__ << watch_lbl__ << "[" << l_props.currentKey () << "] = \"" << *(l_props.current ()) << "\"\n";
+  }
+  a_os << indent__ << title_lbl__ << "End Properties\n";
+}
+!!!135081.cpp!!!	property_search(out a_item : UmlItem, in a_key : unistr, inout a_value : unistr) : bool
+UmlItem *item_ = const_cast< UmlItem* >(&a_item);
+const QCString key_ (a_key.utf8 ());
+QCString value_;
+if (! item_->propertyValue (key_, value_))
+{
+  while (UmlBasePackage::getProject () != item_)
+  {
+    item_ = item_->parent ();
+    if (item_->propertyValue (key_, value_))
+    {
+      a_value = value_;
+      return true;
+    }
+  }
+  return false;
+}
+// Property found
+a_value = value_;
+return true;
+!!!205225.cpp!!!	property_value(out a_item : UmlItem, in a_key : unistr, inout a_value : unistr) : bool
+QCString value_;
+if (const_cast< UmlItem& >(a_item).propertyValue (a_key.utf8 (), value_))
+{
+  a_value = value_;
+  return true;
+}
+return false;

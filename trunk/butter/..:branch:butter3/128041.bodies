@@ -1,0 +1,187 @@
+class uml_visitor
+!!!131881.cpp!!!	print_item(in a_item : UmlItem, in a_depth : uint, inout a_os : ostream) : void
+static const QCString title_lbl__ ("[TT] ");
+static const QCString watch_lbl__ ("[**] ");
+QCString indent__;
+indent__.fill (' ', a_depth);
+a_os << indent__ << title_lbl__ << "Base information\n";
+a_os << indent__ << watch_lbl__ << "name = \"" << const_cast< UmlItem& >(a_item).name () << "\"\n";
+a_os << indent__ << watch_lbl__ << "depth = \"" << a_depth << "\"\n";
+a_os << indent__ << watch_lbl__ << "stereotype = \"" << const_cast< UmlItem& >(a_item).stereotype () << "\"\n";
+int l_kind (const_cast< UmlItem& >(a_item).kind ());
+a_os << indent__ << watch_lbl__ << "kind = \"" << butter_constants::kind_to_string (l_kind) << "\" [" << l_kind << "]\n";
+a_os << indent__ << watch_lbl__ << "description = \"" << const_cast< UmlItem& >(a_item).description () << "\"\n";
+QDict< QCString > l_properties (const_cast< UmlItem& >(a_item).properties ());
+QDictIterator < QCString > l_props (l_properties);
+if (l_props.isEmpty ())
+{
+  a_os << indent__ << title_lbl__ << "No Properties\n";
+}
+else
+{
+  a_os << indent__ << title_lbl__ << "Properties (# = " << l_props.count () << ")\n";
+  for (; l_props.current (); ++l_props)
+  {
+    a_os << indent__ << watch_lbl__ << "[" << l_props.currentKey () << "] = \"" << *(l_props.current ()) << "\"\n";
+  }
+  a_os << indent__ << title_lbl__ << "End Properties\n";
+}
+!!!132009.cpp!!!	uml_visitor()
+: tree_ ()
+{}
+!!!133929.cpp!!!	visit(in a_item : UmlItem) : location
+#line 101
+///////////////////////
+// Test preconditions
+BUTTER_REQUIRE (empty (), "uml_visitor::visit called multiple times.");
+BUTTER_REQUIRE (aPackage == const_cast< UmlItem& >(a_item).kind (), "Argument is not a UmlPackage item.");
+// Use pointer case to avoid bad_cast throw, even though
+// we throw in the next step..
+const UmlPackage * item__ = dynamic_cast < const UmlPackage * >(&a_item);
+BUTTER_REQUIRE (NULL != item__ && NULL == const_cast< UmlItem& >(a_item).parent ()
+                , "Item is not a package or is not the top-level package.");
+if (! QFile::exists (CppSettings::rootDir ()))
+{
+  throw std::runtime_error ("<p><b>The project root directory does not exist</b>, please generate the project source code before creating the build system.</p>");
+}
+/////////////////////
+// ** Initialise the top object. **
+// Build basic tree.
+location::find_or_create (CppSettings::rootDir (), tree_, base_dir_, cache_);
+// Move cache_ to base package.
+location::find_or_create (butter_constants::dirname (*item__), tree_, base_dir_, cache_);
+
+UmlCom::trace ("<p><b>Please wait:</b> building target list for project <i>" + const_cast< UmlItem& >(a_item).name () + "</i>.</p>");
+#ifndef NO_LOG
+QFile log_file__ (CppSettings::rootDir () + "./butter.log");
+class helper__ // Automatically close the log file.
+{
+public:
+  helper__ (QFile & a_file, int a_flag): file_ (a_file)
+  {
+    if (! file_.open (a_flag))
+    {
+      QString l_msg ("Unable to open log file for read/writing: " + file_.name ());
+      throw std::runtime_error (static_cast<const char*>(l_msg));
+    }
+  }
+  ~helper__ ()
+  {
+    file_.close ();
+  }
+  QFile & file_;
+} auto_file_close_ (log_file__, IO_WriteOnly);
+QTextStream log_stream__ (&log_file__);
+#endif
+///////////////////////////////////
+// Walk through the UmlItems.
+QStack < UmlItem > item_stack_;
+// Push items onto stack
+item_stack_.push (&a_item);
+while (! item_stack_.isEmpty ())
+{
+  UmlItem *top__ (item_stack_.pop ());
+  // Check property names.
+  QDict< QCString > l_properties (top__->properties ());
+  QDictIterator < QCString > l_props (l_properties);
+  if (! l_props.isEmpty ())
+  {
+    for (; l_props.current (); ++l_props)
+    {
+      if (l_props.currentKey ().contains ("butter"))
+      {
+        const QCString l_key (l_props.currentKey ());
+        if (l_key != butter_constants::butter_base_name
+	   && l_key != butter_constants::butter_build_dir_name
+           && l_key != butter_constants::butter_buildfile_name
+	   && l_key != butter_constants::butter_flags_name
+	   && l_key != butter_constants::butter_ldflags_name
+	   && l_key != butter_constants::butter_lib_type_name
+	   && l_key != butter_constants::butter_other_name
+	   && l_key != butter_constants::butter_include_name
+	   && l_key != butter_constants::butter_project_name
+	   && l_key != butter_constants::butter_style_name)
+        {
+          UmlCom::trace ("<p><b>Warning:</b> Item \"" + top__->name () + "\" has property name \"" + l_key + "\" which contains 'butter' but is not a known property name</p>");
+        }
+      }
+    }
+  }
+  // Perform actions on object
+  switch (top__->kind ())
+  {
+  case anArtifact:             // UmlArtifacts.
+    {
+      UmlArtifact *art_item__ = dynamic_cast < UmlArtifact * >(top__);
+      BUTTER_CHECK (NULL != art_item__, "Item type and class type do not match.");
+      UmlPackage *pack_item__ = dynamic_cast < UmlPackage * >(top__->parent ()->parent ());
+      BUTTER_CHECK (NULL != pack_item__, "Artifact grandparent is not a Package.");
+      const QDir pack_path__ (butter_constants::dirname (*pack_item__));
+      if (! cache_->location_for_path (pack_path__))
+      {
+        location::find_or_create (pack_path__, tree_, base_dir_, cache_);
+      }
+      cache_->add_artifact (*art_item__);
+    }
+    break;
+  case aPackage:               // UmlPackages
+    {
+      UmlPackage *pack_item__ = dynamic_cast < UmlPackage * >(top__);
+      BUTTER_CHECK (NULL != pack_item__, "Item type and class type do not match.");
+      const QDir pack_path__ (butter_constants::dirname (*pack_item__));
+      if (! cache_->location_for_path (pack_path__))
+      {
+        location::find_or_create (pack_path__, tree_, base_dir_, cache_);
+      }
+      cache_->add_package (*pack_item__);
+    }
+    break;
+  default:                     // is to do nothing
+    break;
+  }
+#ifndef NO_LOG
+  {
+    unsigned int depth__ (0);
+    UmlItem * print_tmp__ (top__);
+    for (; NULL != print_tmp__; ++depth__)
+    {
+      print_tmp__ = print_tmp__->parent ();
+    }
+    print_item (*print_tmp__, depth__, log_stream__);
+  }
+#endif
+  // Push any children onto the stack,
+  QVector < UmlItem > kids__ (top__->children ());
+  for (unsigned int i__ = 0; i__ < kids__.size (); ++i__)
+  {
+    BUTTER_CHECK (NULL != kids__.at (i__), "Nul objects were children of an UmlItem.");
+    item_stack_.push (kids__.at (i__));
+  }
+}
+// Reset cache_ and base_dir_
+cache_ = NULL;
+base_dir_ = NULL;
+if (! empty ())
+{
+  // Remove any empty locations, and attempt to make root equal to
+  // any base path property (if set)
+  QCString user_base_path__, error_message__;
+  if (! const_cast< UmlItem& >(a_item).propertyValue (butter_constants::butter_base_name, user_base_path__))
+  {
+    BUTTER_CHECK (user_base_path__.is_empty (), "Property value _not_ set but string is non-empty");
+  }
+  if (location::prune (tree_, user_base_path__, error_message__))
+  {
+#ifndef NO_LOG
+    // Output debugging information.
+    tree_->serialize (log_stream__);
+#endif
+  }
+  else
+  {
+    UmlCom::trace (error_message__);
+    // Problem occured, reset tree to create empty state
+    tree_.reset ();
+  }
+}
+return tree_; // Pass ownership of location tree.
