@@ -134,7 +134,7 @@ ${items}
 ${body}
 }
 "
-  java_default_src_content "${comment}
+  cpp_indent_visibility "  "java_default_src_content "${comment}
 ${package}
 ${definition}"
   java_default_class_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {

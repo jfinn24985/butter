@@ -113,7 +113,7 @@ for (int i_ = diff_path_size_ - 2; i_ >= 0; --i_)
 return a_base;
 !!!164521.cpp!!!	create_uml_document(in a_name : unistr) : UmlArtifact
 BUTTER_REQUIRE (! packages_.isEmpty (), "<p><b>Program error:</b> Location has no packages!</p>");
-BUTTER_REQUIRE (find_uml_document (a_name).isEmpty (), "<p><b>Program error:</b> Cannot create a document with the name of an existing document.</p>");
+BUTTER_REQUIRE (find_uml_document (a_name).isEmpty (), ("<p><b>Program error:</b> Cannot create a document with the name ("+a_name+") of an existing document.</p>").ascii());
 // Find deployment view
 UmlDeploymentView * deployview_ = NULL;
 // Only check local deployment views.
@@ -585,7 +585,7 @@ if (Result->packages_.isEmpty ())
   }
 }
 return Result; // Pass ownership of location tree.
-!!!146601.cpp!!!	serialize(inout a_os : ostream) : void
+!!!146601.cpp!!!	serialize(inout a_os : QTextOStream) : void
 if (DEBUG)
 {
   a_os << "<<BEGIN location [" << full_path ().path () << "]\n";

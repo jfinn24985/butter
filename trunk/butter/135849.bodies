@@ -1,5 +1,5 @@
 class gmake_generator
-!!!210729.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+!!!210729.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : QTextOStream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -59,7 +59,7 @@ else
     QString obj_body_;
     {
       QTextOStream obj_os_ (&obj_body_);
-      obj_os_ << this->target_NAME () << "_OBJ+=" << lib_fname_.path_localised ();
+      obj_os_ << this->target_NAME () << "_OBJ+=" << lib_fname_.path_localised () << "\n";
     }
     this->individual_obj_.append (obj_body_);
   }
@@ -96,7 +96,7 @@ ENDDOC}} */
       , ignored_cflags_, section_name, true);
 }
 this->lib_set_.append (lib_body_);
-!!!210857.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+!!!210857.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : QTextOStream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -181,7 +181,7 @@ if (NULL != a_loc.parent ())
 }
 a_art.preamble.second.append (tmp_);
 
-!!!210985.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!210985.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : base_generator::target_type) : void
 ////////////////////////////////
 // Finalise target build instructions
 //
@@ -330,7 +330,7 @@ QString init_text_;
   }
 }
 a_sys.preamble.second = init_text_;
-!!!211113.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
+!!!211113.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_loc_var : unistr, in a_type : base_generator::install_type, in a_isdoc : bool) : void
 static const char * install_flag_[] =
 {
   "BIN"
@@ -461,7 +461,7 @@ if (Result)
   a_reqs = l_section;
 }
 return Result;
-!!!210601.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!210601.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_build_file : unistr, in a_compiler : unistr, in a_type : base_generator::target_type) : void
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = a_target.name ();

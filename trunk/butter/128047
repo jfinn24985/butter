@@ -1,0 +1,925 @@
+format 75
+"unit testing" // butter::unit testing
+  revision 6
+  modified_by 47 "finnerty"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  package_ref 128175 // CxxTest
+
+  classview 128047 "unit tests"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    associated_deployment_view deploymentview_ref 128047 // test headers
+    classdiagram 128047 "Test suites"
+      draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    class 128175 "pathcmp_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 128047 // <generalisation>
+	relation 128047 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128047 // <generalisation>
+	  b parent class_ref 128303 // TestSuite
+      end
+
+      extra_member 128047 "UNIX like test paths strings"
+	
+	cpp "
+// UNIX like test paths strings
+
+" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      attribute 128047 "ux_a1"
+	const_attribute private explicit_type "unistr"
+	init_value "\"/home/is/where/heart/is\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Main UNiX path string"
+      end
+
+      attribute 128175 "ux_a2"
+	const_attribute private explicit_type "unistr"
+	init_value "\"/home/is/where/heart/is/\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Same as main string"
+      end
+
+      attribute 128303 "ux_a3"
+	const_attribute private explicit_type "unistr"
+	init_value "\"/home/is/where\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Parent directory of a1"
+      end
+
+      attribute 128431 "ux_a4"
+	const_attribute private explicit_type "unistr"
+	init_value "\"/home/is/hwere/heart/is\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Non-matching path"
+      end
+
+      extra_member 128303 "Windows like test paths strings"
+	
+	cpp "
+// Windows like test paths strings
+
+" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      attribute 128559 "dos_a1"
+	const_attribute private explicit_type "unistr"
+	init_value "\"C:\\\\home\\\\is\\\\where\\\\heart\\\\is\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Main windows path string"
+      end
+
+      attribute 128687 "dos_a2"
+	const_attribute private explicit_type "unistr"
+	init_value "\"C:\\\\home\\\\is\\\\where\\\\heart\\\\is\\\\\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Same as main string"
+      end
+
+      attribute 128815 "dos_a3"
+	const_attribute private explicit_type "unistr"
+	init_value "\"C:\\\\home\\\\is\\\\where\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Parent directory of a1"
+      end
+
+      attribute 128943 "dos_a4"
+	const_attribute private explicit_type "unistr"
+	init_value "\"D:\\\\home\\\\is\\\\where\\\\heart\\\\is\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment " Non-matching path"
+      end
+
+      operation 128047 "pathcmp_test"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile} :
+    ux_a1 (\"/home/is/where/heart/is\")
+    , ux_a2 (\"/home/is/where/heart/is/\")
+    , ux_a3 (\"/home/is/where\")
+    , ux_a4 (\"/home/is/hwere/heart/is\")
+    , dos_a1 (\"C:\\\\home\\\\is\\\\where\\\\heart\\\\is\")
+    , dos_a2 (\"C:\\\\home\\\\is\\\\where\\\\heart\\\\is\\\\\")
+    , dos_a3 (\"C:\\\\home\\\\is\\\\where\")
+    , dos_a4 (\"D:\\\\home\\\\is\\\\where\\\\heart\\\\is\")
+  {};"
+	
+	
+	
+	
+      end
+
+      extra_member 128175 "TEST SERIES: OBJECT LIFETIME"
+	
+	cpp "
+//  TEST SERIES: OBJECT LIFETIME
+
+" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 128175 "test_empty_constructor"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1;
+    TS_ASSERT_EQUALS(0, p1.depth());
+  };"
+	
+	
+	
+	
+	comment " TEST SERIES: OBJECT LIFETIME"
+      end
+
+      operation 128303 "test_assign_from_string_constructor"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp uxp1, dosp1;
+    uxp1 = ux_a1;
+    TS_ASSERT_EQUALS(ux_a1, uxp1.path());
+    dosp1 = dos_a1;
+    TS_ASSERT_EQUALS(dos_a1, dosp1.path());
+  };"
+	
+	
+	
+	
+      end
+
+      operation 128431 "test_string_constructor"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp uxp1(ux_a1), dosp1(dos_a1);
+    TS_ASSERT_EQUALS(ux_a1, uxp1.path());
+    TS_ASSERT_EQUALS(dos_a1, dosp1.path());
+  };"
+	
+	
+	
+	
+      end
+
+      operation 128559 "test_copy_constructor"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(p1);
+    TS_ASSERT_EQUALS(p2.path(), p1.path());
+  };"
+	
+	
+	
+	
+      end
+
+      operation 128687 "test_assignment"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2;
+    p2 = p1;
+    TS_ASSERT_EQUALS(p2.path(), p1.path());
+  };"
+	
+	
+	
+	
+      end
+
+      extra_member 128431 "TEST SERIES : METHODS"
+	
+	cpp "
+// TEST SERIES : METHODS
+
+" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 128943 "test_create_common"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(ux_a3);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp p4(dos_a3);
+    TS_ASSERT_EQUALS(p2, p2.create_common (p1));
+    TS_ASSERT_EQUALS(p4, p4.create_common (p3));
+  };"
+	
+	
+	
+	
+      end
+
+      operation 129071 "test_create_relative"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(ux_a3);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp p4(dos_a3);
+    TS_ASSERT_EQUALS(QString(\"heart/is\"), p2.create_relative (p1));
+    TS_ASSERT_EQUALS(QString(\"heart/is\"), p4.create_relative (p3));
+    // How well is the following defined ???
+    TS_ASSERT_EQUALS(QString(\".\"), p3.create_relative (dos_a3));
+    TS_ASSERT_EQUALS(QString(\"../..\"), p1.create_relative (p2));
+    TS_ASSERT_EQUALS(QString(\"../..\"), p3.create_relative (p4));
+    TS_ASSERT_EQUALS(QString(\".\"), p4.create_relative (p4));
+    TS_ASSERT_EQUALS(QString(\".\"), p3.create_relative (p4));
+  };"
+	
+	
+	
+	
+      end
+
+      operation 129199 "test_depth"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp uxp1, dosp1;
+    uxp1 = ux_a1;
+    TS_ASSERT_EQUALS(5, uxp1.depth());
+    dosp1 = dos_a1;
+    TS_ASSERT_EQUALS(5, dosp1.depth());
+  };"
+	
+	
+	
+	
+      end
+
+      operation 129327 "test_equality_path"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(ux_a2);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp p4(dos_a2);
+    TS_ASSERT_EQUALS(p2.path(), p1.path());
+    TS_ASSERT_EQUALS(p2, p1);
+    TS_ASSERT_EQUALS(p4.path(), p3.path());
+    TS_ASSERT_EQUALS(p4, p3);
+  };"
+	
+	
+	
+	
+      end
+
+      operation 129455 "test_equality_copy"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(p1);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp p4(p3);
+    TS_ASSERT_EQUALS(p2, p1);
+    TS_ASSERT_EQUALS(p3, p4);
+  };"
+	
+	
+	
+	
+      end
+
+      operation 129583 "test_equality_assign"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2;
+    p2 = p1;
+    TS_ASSERT_EQUALS(p2, p1);
+    p1 = dos_a1;
+    p2 = p1;
+    TS_ASSERT_EQUALS(p2, p1);
+  };"
+	
+	
+	
+	
+      end
+
+      operation 129711 "test_inequality_path"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(ux_a4);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp p4(dos_a4);
+    TS_ASSERT_DIFFERS(p2, p1);
+    TS_ASSERT_DIFFERS(p3, p4);
+  };"
+	
+	
+	
+	
+      end
+
+      operation 129839 "test_has_subpath"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(ux_a3);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp p4(dos_a3);
+    butter::pathcmp p5;
+    TS_ASSERT(p2.has_subpath (p1));
+    TS_ASSERT(p4.has_subpath (p3));
+    TS_ASSERT(p5.has_subpath (p1));
+    TS_ASSERT(p5.has_subpath (p3));
+  };"
+	
+	
+	
+	
+      end
+
+      operation 129967 "test_leaf_at"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(ux_a2);
+    unsigned int i;
+    for (i = 0; i < p1.depth (); ++i)
+      {
+	 TS_ASSERT_EQUALS(p2.leaf_at(i), p1.leaf_at(i));
+      }
+  };"
+	
+	
+	
+	
+      end
+
+      operation 130095 "test_normalise"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    //butter::pathcmp p1(ux_a1);
+    //butter::pathcmp p3(dos_a1);
+    //butter::pathcmp drive (\"C:\");
+    //TS_ASSERT_EQUALS((drive / p1).path(), butter::pathcmp::normalise(p3.path()));
+  };"
+	
+	
+	
+	
+	comment " mkpath
+ normalise"
+      end
+
+      operation 130223 "test_operator_slash"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(ux_a3);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp p4(dos_a3);
+
+    butter::pathcmp part1(p1.create_relative (p2));
+    TS_ASSERT_EQUALS(p1, p2 / part1);
+    butter::pathcmp part2(p2.create_relative (p1));
+    TS_ASSERT_EQUALS(p2, p1 / part2);
+
+    butter::pathcmp part3(p1.create_relative (p2));
+    TS_ASSERT_EQUALS(p3, p4 / part3);
+    butter::pathcmp part4(p4.create_relative (p3));
+    TS_ASSERT_EQUALS(p4, p3 / part4);
+  };"
+	
+	
+	
+	
+	comment " operator/ (path)"
+      end
+
+      operation 130351 "test_operator_slash_string"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p2(ux_a3);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp p4(dos_a3);
+
+    butter::pathcmp part1(p1.create_relative (p2));
+    TS_ASSERT_EQUALS(p1, p2 / part1.path());
+    butter::pathcmp part2(p2.create_relative (p1));
+    TS_ASSERT_EQUALS(p2, p1 / part2.path());
+
+    butter::pathcmp part3(p1.create_relative (p2));
+    TS_ASSERT_EQUALS(p3, p4 / part3.path());
+    butter::pathcmp part4(p4.create_relative (p3));
+    TS_ASSERT_EQUALS(p4, p3 / part4.path());
+  };"
+	
+	
+	
+	
+	comment " operator/ str."
+      end
+
+      operation 130479 "test_path_localised"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p3(dos_a1);
+    TS_ASSERT( (p1.path () == ux_a1) xor (p3.path() == dos_a1) );
+  };"
+	
+	
+	
+	
+	comment " path_localised"
+      end
+
+      operation 130607 "test_path_convert1"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1(ux_a1);
+    butter::pathcmp p3(dos_a1);
+    butter::pathcmp tmp (\"C:\");
+    tmp = tmp / p1;
+    TS_ASSERT_EQUALS(p3.path (), tmp.path_convert(\"\\\\\"));
+  };"
+	
+	
+	
+	
+	comment " path_convert"
+      end
+
+      operation 130735 "test_path_convert2"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+    butter::pathcmp p1;
+    butter::pathcmp p3;
+    p1.setPath(ux_a1);
+    p3.setPath(dos_a1);
+    TS_ASSERT_EQUALS(p1.path (), ux_a1);
+    TS_ASSERT_DIFFERS (p3.path(), dos_a1);
+  };"
+	
+	
+	
+	
+	comment " setPath (override of QDir::setPath)"
+      end
+    end
+
+    class 134959 "log_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Test suite for the log class"
+      classrelation 134575 // <generalisation>
+	relation 134575 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 134575 // <generalisation>
+	  b parent class_ref 128303 // TestSuite
+      end
+
+      operation 137775 "test_existance"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+TS_ASSERT_THROWS_NOTHING(butter::log::com.level());
+// Default level should be warn
+TS_ASSERT_EQUALS(int(butter::log::warn), butter::log::com.level());
+}
+"
+	
+	
+	
+	
+	comment "Test for the existence of the log exemplar."
+      end
+
+      operation 137903 "test_level"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 145071 "test_debug_stream_device"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 145199 "test_debug_stream_file"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 151855 "test_trace"
+	cpp_inline public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 134831 "style_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Base class for test of style class and its subclasses"
+      attribute 135471 "_style"
+	private type class_ref 159017 // basic_style
+	multiplicity "0..1"
+	stereotype "auto_ptr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The stlye type to test"
+      end
+
+      operation 137263 "style_test"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile}
+: _style(new butter::style)
+{}
+"
+	
+	
+	
+	
+      end
+
+      operation 137391 "style_test"
+	stereotype "copy"
+	protected explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}${)}${volatile}
+: _style(source)
+{}
+"
+	
+	
+	
+	
+	comment "Constructor to enable derived classes to pass derived style class objects"
+      end
+
+      operation 137519 "operator="
+	private return_type class_ref 134831 // style_test
+	nparams 1
+	  param in name "source" type class_ref 134831 // style_test
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	
+	
+	
+	
+	comment "disallowed"
+      end
+
+      operation 137647 "style_test"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 134831 // style_test
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+"
+	
+	
+	
+	
+	comment "disallowed"
+      end
+    end
+  end
+
+  deploymentview 128047 "test headers"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 164777 "runner.cpp"
+      stereotype "library"
+      associated_artifacts
+	artifact_ref 150825 // utility
+	artifact_ref 150953 // pathcmp_test
+	artifact_ref 142889 // bouml
+	artifact_ref 134057 // qt
+      end
+      comment "cxxtest program source"
+    end
+
+    artifact 150953 "pathcmp_test"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+#include \"butter/utility.h\"
+#include\"test_common.h\"
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+
+
+
+#endif
+"
+      associated_classes
+	class_ref 128175 // pathcmp_test
+      end
+      comment "Source file for functionality test of pathcmp class."
+    end
+
+    artifact 149167 "style_test"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      associated_classes
+	class_ref 134831 // style_test
+      end
+    end
+
+    artifact 149295 "test_common"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+#ifdef CXXTEST_RUNNING
+// This declaration is only activated when building a CxxTest test suite
+#include <cxxtest/ValueTraits.h>
+#include <stdio.h>
+#include <qstring.h>
+
+namespace CxxTest
+{
+CXXTEST_TEMPLATE_INSTANTIATION
+class ValueTraits<QString>
+{
+    QString _m;
+
+public:
+    ValueTraits(const QString& m): _m(m)  { _m.insert(0, '\\\"'); _m.append('\\\"'); }
+    const char *asString() const { return _m.ascii (); }
+};
+
+CXXTEST_TEMPLATE_INSTANTIATION
+class ValueTraits<QCString>
+{
+    QString _m;
+
+public:
+    ValueTraits(const QCString& m): _m(m)  { _m.insert(0, '\\\"'); _m.append('\\\"'); }
+    const char *asString() const { return _m.ascii (); }
+};
+
+CXXTEST_TEMPLATE_INSTANTIATION
+class ValueTraits<butter::pathcmp>
+{
+    QString _m;
+
+public:
+    ValueTraits(const butter::pathcmp& m): _m(m.path())  { _m.insert(0, '\\\"'); _m.append('\\\"'); }
+    const char *asString() const { return _m.ascii (); }
+};
+};
+#endif // CXXTEST_RUNNING
+
+
+#endif
+"
+      associated_classes
+      end
+      comment "Macros and definiition for extending the CxxTest framework for this project
+
++ display adapters for Qt classes"
+    end
+
+    artifact 149423 "log_test"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+#include \"butter/utility.h\"
+#include\"test_common.h\"
+#include <qbuffer.h>
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      associated_classes
+	class_ref 134959 // log_test
+      end
+    end
+  end
+end

@@ -379,10 +379,13 @@ if (rules_name_.contains(" "))
     const QString name_(b_->c_str ());
     if (! name_.isEmpty ())
     {
-      a_base.create_uml_document (name_)->set_Description (
-        helper_::make_substitutions (
-          helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], i_)
-          , project_name_, version_).utf8());
+      if (a_base.find_uml_document (name_).isEmpty ())
+	{
+	  a_base.create_uml_document (name_)->set_Description (
+           helper_::make_substitutions (
+            helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], i_)
+            , project_name_, version_).utf8());
+	}
       ++i_; // Only increment i for non-empty names!
     }
   }

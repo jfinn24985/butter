@@ -1,0 +1,131 @@
+class log_test
+!!!137903.cpp!!!	test_level() : void
+const int level_ (butter::log::com.level());
+const int test_level_[] = {
+  butter::log::warn
+  , butter::log::info
+  , butter::log::debug
+  , butter::log::warn
+};
+// Valid settings
+for (int i_ = 0; i_ != 4; ++i_)
+  {
+    TS_ASSERT_THROWS_NOTHING(butter::log::com.level(test_level_[i_]));
+    TS_ASSERT_EQUALS(butter::log::com.level(), test_level_[i_]);
+  }
+// Reset
+TS_ASSERT_THROWS_NOTHING(butter::log::com.level(level_));
+// Build a list of invalid levels.
+std::vector< int > other_;
+for (int i_ = -10; i_ != 10; ++i_)
+  {
+    switch (i_)
+      {
+      case butter::log::warn:
+      case butter::log::info:
+      case butter::log::debug:
+	break; // do nothing
+      default:
+	// Add to other_
+	other_.push_back(i_);
+	break;
+      }
+  }
+for (std::vector< int >::const_iterator it_ = other_.begin(); it_ != other_.end(); ++it_)
+  {
+    // Setting should fail
+    TS_ASSERT_THROWS(butter::log::com.level(*it_), std::runtime_error);
+    // orignial value should be preserved
+    TS_ASSERT_EQUALS(butter::log::com.level(), level_);
+  }
+
+// Reset to original
+TS_ASSERT_THROWS_NOTHING(butter::log::com.level(level_));
+!!!145071.cpp!!!	test_debug_stream_device() : void
+#ifdef DEBUG
+const bool is_debug_(true);
+#else
+const bool is_debug_(false);
+#endif
+
+if (is_debug_)
+  {
+    TS_ASSERT_EQUALS(false, butter::log::com.is_debug());
+    
+    if (not butter::log::com.is_debug())
+      {
+	TS_WARN("Testing of debug logging code being performed.");
+	QByteArray debug_log_;
+    
+	butter::log::com.set_debug_log(new QBuffer(debug_log_));
+      
+	// is_debug us now true
+	TS_ASSERT_EQUALS(true, butter::log::com.is_debug());
+    
+	// write to the log stream
+	QCString message_ ("Test write to debug log stream\n");
+	TS_ASSERT_THROWS_NOTHING(butter::log::com.stream() << message_);
+    
+	// test the results
+	QCString result_ (debug_log_);
+	TS_ASSERT_EQUALS(message_, result_);
+
+	
+	TS_ASSERT_EQUALS(true, butter::log::com.is_debug());
+
+	butter::log::com.close_debug_log();
+
+	TS_ASSERT_EQUALS(false, butter::log::com.is_debug());
+      }
+    else
+      {
+   	TS_WARN("Unable to test debug log 'stream' because log file is set.");
+      }
+  }
+else
+  {
+    TS_WARN("Testing of debug logging code not possible in this build.");
+  }
+!!!145199.cpp!!!	test_debug_stream_file() : void
+#ifdef DEBUG
+const bool is_debug_(true);
+#else
+const bool is_debug_(false);
+#endif
+
+if (is_debug_)
+  {
+    TS_WARN("Testing of debug logging code being performed.");
+
+    TS_ASSERT_EQUALS(false, butter::log::com.is_debug());
+    
+   
+    butter::log::com.set_debug_log("debuglog.txt");
+      
+    // is_debug us now true
+    TS_ASSERT_EQUALS(true, butter::log::com.is_debug());
+    
+    // write to the log stream
+    QCString message_ ("Test write to debug log stream\n");
+    TS_ASSERT_THROWS_NOTHING(butter::log::com.stream() << message_);
+    
+    // test the results	
+    TS_ASSERT_EQUALS(true, butter::log::com.is_debug());
+
+    butter::log::com.close_debug_log();
+
+    TS_ASSERT_EQUALS(false, butter::log::com.is_debug());
+  }
+else
+  {
+    TS_WARN("Testing of debug logging code not possible in this build.");
+  }
+!!!151855.cpp!!!	test_trace() : void
+butter::log::log_levels test[] = { butter::log::warn, butter::log::info, butter::log::debug };
+for (int i = 0; i != 3; ++i)
+  {
+    std::stringstream is_;
+    is_ << "<p>Trace Message level[" << i << "]: " << test[i] << "</p>\n";
+    TS_WARN(is_.str().c_str());
+    TS_ASSERT_THROWS_NOTHING(butter::log::com.trace(test[i], is_.str().c_str()));
+  }
