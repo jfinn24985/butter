@@ -1,6 +1,6 @@
 format 75
 "butter" // butter
-  revision 182
+  revision 184
   modified_by 49 "finnerty"
   // class settings
   //class diagram settings
@@ -3417,7 +3417,7 @@ extern butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"#
       attribute 189865 "default_rules_sys"
 	class_attribute const_attribute private explicit_type "str"
 	init_value "{ \"#\\n\"
-, \"# M_sys.mak\\n\"
+, \"# M_sys.mk\\n\"
 , \"#\\n\"
 , \"##################################\\n\"
 , \"# Settings for current environment\\n\"
@@ -3446,8 +3446,8 @@ extern butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"#
 , \"##########################\\n\"
 , \"## Include compiler and OS\\n\"
 , \"##########################\\n\"
-, \"include $(ROOTDIR)$(or $(SLASH),/)M_$(OS).mak\\n\"
-, \"include $(ROOTDIR)$(or $(SLASH),/)M_$(CC).mak\\n\"
+, \"include $(ROOTDIR)$(or $(SLASH),/)M_$(OS).mk\\n\"
+, \"include $(ROOTDIR)$(or $(SLASH),/)M_$(CC).mk\\n\"
 , \"\\n\"
 , \"##############\\n\"
 , \"## Unify Vars\\n\"
@@ -3483,7 +3483,7 @@ extern butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"#
 , \"##  \\n\"
 , \"##  # Make this a one time only definition\\n\"
 , \"##  \\n\"
-, \"##  ifndef USE_XML_MAK\\n\"
+, \"##  ifndef USE_XML_MK\\n\"
 , \"##  USE_XML_MAK:=1\\n\"
 , \"##  \\n\"
 , \"##  ifdef ($(XMLLIB))\\n\"
@@ -3499,7 +3499,7 @@ extern butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"#
 , \"##  \\n\"
 , \"##  endif # XMLLIB\\n\"
 , \"##  \\n\"
-, \"##  endif # USE_XML_MAK\\n\"
+, \"##  endif # USE_XML_MK\\n\"
 , \"\\n\"
 , 0 }
 "
@@ -3510,7 +3510,7 @@ extern butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"#
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of a the rules file (M_sys.mak).
+	comment "This is the default contents of a the rules file (M_sys.mk).
 If a document artifact with name 'M_sys.mak' is not present when 
 %butter is executed with \\@style='standard' then one will be created
 using this string.
@@ -3522,7 +3522,7 @@ using this string.
 	init_value "{ \"##########################################\\n\"
 , \"##  Definitions for Microsoft VC compiler\\n\"
 , \"#########################################\\n\"
-, \"ifndef M_CL_MAK\\n\"
+, \"ifndef M_CL_MK\\n\"
 , \"M_CL_MAK:=1\\n\"
 , \"\\n\"
 , \"CCC:=cl\\n\"
@@ -3597,7 +3597,7 @@ using this string.
 	idl_decl ""
 	comment "This is the default contents of the rules file (M_cl.mak) for
 the microsoft compiler. If a 
-document artifact with name 'M_cl.mak' is not present when 
+document artifact with name 'M_cl.mk' is not present when 
 %butter is executed with \\@style='standard' then one will be created
 using this string.
 
@@ -3609,8 +3609,8 @@ using this string.
 	init_value "{ \"####################################\\n\"
 , \"##  Definitions for GNU g++ compiler\\n\"
 , \"####################################\\n\"
-, \"ifndef M_GCC_MAK\\n\"
-, \"M_GCC_MAK:=1\\n\"
+, \"ifndef M_GCC_MK\\n\"
+, \"M_GCC_MK:=1\\n\"
 , \"##\\n\"
 , \"## Define compiler variables once only.\\n\"
 , \"## \\n\"
@@ -3667,9 +3667,9 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of the rules file (M_gcc.mak) for
+	comment "This is the default contents of the rules file (M_gcc.mk) for
 the GNU compiler collection. If a 
-document artifact with name 'M_gcc.mak' is not present when 
+document artifact with name 'M_gcc.mk' is not present when 
 %butter is executed with \\@style='standard' then one will be created
 using this string.
 "
@@ -3683,8 +3683,8 @@ using this string.
 , \"endef\\n\"
 , \"\\n\"
 , \"# MAKE MOST VARIABLES ONCE-ONLY\\n\"
-, \"ifndef M_UNIX_MAK\\n\"
-, \"M_UNIX_MAK:=1\\n\"
+, \"ifndef M_UNIX_MK\\n\"
+, \"M_UNIX_MK:=1\\n\"
 , \"#############################\\n\"
 , \"##  Default install locations\\n\"
 , \"#############################\\n\"
@@ -3743,8 +3743,8 @@ using this string.
 , \"IF \\\"$(2)\\\" NEQ \\\"\\\" FOR %%W IN ( $(2) ) DO \\\"$(subst /,\\\\,$(MAKE))\\\" -C %%W $(1)\\n\"
 , \"endef\\n\"
 , \"\\n\"
-, \"ifndef M_WINNT_MAK\\n\"
-, \"M_WINNT_MAK:=1\\n\"
+, \"ifndef M_WINNT_MK\\n\"
+, \"M_WINNT_MK:=1\\n\"
 , \"#############################\\n\"
 , \"##  Default install locations\\n\"
 , \"#############################\\n\"
@@ -3782,9 +3782,9 @@ using this string.
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "This is the default contents of the rules file (M_Windows_NT.mak) for
+	comment "This is the default contents of the rules file (M_Windows_NT.mk) for
 a (post NT) Micrsoft Windows like operating system. If a 
-document artifact with name 'M_Windows_NT.mak' is not present when 
+document artifact with name 'M_Windows_NT.mk' is not present when 
 %butter is executed with \\@style='standard' then one will be created
 using this string.
 "
@@ -3851,7 +3851,7 @@ rules appear in the order specified by rules_name.
 
       attribute 144297 "rules_name"
 	class_attribute const_attribute private explicit_type "unistr"
-	init_value "(\"M_sys.mak M_cl.mak M_gcc.mak M_unix.mak M_Windows_NT.mak\")"
+	init_value "(\"M_sys.mk M_cl.mk M_gcc.mk M_unix.mk M_Windows_NT.mk\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -6450,20 +6450,20 @@ ${namespace_end}"
     artifact 152617 "butter"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 142889 // bouml
-	artifact_ref 152233 // style
-	artifact_ref 134057 // qt
-	artifact_ref 165929 // cmake_generator
-	artifact_ref 152489 // base_generator
-	artifact_ref 150825 // utility
-	artifact_ref 138793 // butter_constants
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 135209 // bjam_generator
-	artifact_ref 137641 // gmake_generator
 	artifact_ref 154025 // main
-	artifact_ref 136361 // jam_generator
 	artifact_ref 132521 // location
+	artifact_ref 152233 // style
+	artifact_ref 152489 // base_generator
 	artifact_ref 174249 // basic_style
+	artifact_ref 136361 // jam_generator
+	artifact_ref 150825 // utility
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 142889 // bouml
+	artifact_ref 137641 // gmake_generator
+	artifact_ref 138793 // butter_constants
+	artifact_ref 134057 // qt
+	artifact_ref 135209 // bjam_generator
+	artifact_ref 165929 // cmake_generator
       end
       comment "Version of the butter plugout for building using the butter plugout."
     end
@@ -6494,95 +6494,95 @@ ${namespace_end}"
     end
 
     artifact 148393 "butter.plugout"
-      stereotype "file"
+      stereotype "executable"
       associated_artifacts
-	artifact_ref 7297 // UmlNode
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 5248 // CmdFamily
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 6529 // UmlComponentView
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 4480 // UmlCom
-	artifact_ref 152233 // style
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 4864 // aDirection
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 4993 // UmlActualParameter
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 152489 // base_generator
 	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 150825 // utility
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 768 // CppSettings
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 138793 // butter_constants
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 135209 // bjam_generator
-	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 4992 // aVisibility
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 5120 // anItemKind
-	artifact_ref 137641 // gmake_generator
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 8193 // UmlUseCaseView
 	artifact_ref 7937 // UmlUseCase
+	artifact_ref 154025 // main
+	artifact_ref 5120 // anItemKind
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 4480 // UmlCom
+	artifact_ref 1280 // UmlTypeSpec
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 132521 // location
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 152233 // style
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 152489 // base_generator
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 512 // UmlBaseActualParameter
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 2048 // UmlBaseClassView
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 136361 // jam_generator
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 768 // CppSettings
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 4864 // aDirection
 	artifact_ref 5633 // UmlClass
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 150825 // utility
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 7297 // UmlNode
+	artifact_ref 640 // UmlBaseClassItem
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 3456 // UmlBaseNode
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 4992 // aVisibility
+	artifact_ref 1536 // UmlBaseAttribute
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 137641 // gmake_generator
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 2176 // UmlBaseCollaborationDiagram
+	artifact_ref 5761 // UmlClassDiagram
 	artifact_ref 4224 // UmlBaseUseCaseDiagram
 	artifact_ref 7169 // UmlItem
-	artifact_ref 154025 // main
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 136361 // jam_generator
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 132521 // location
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 896 // UmlBaseFormalParameter
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 138793 // butter_constants
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 3584 // UmlBaseOperation
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 135209 // bjam_generator
 	artifact_ref 5760 // PackageGlobalCmd
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 4608 // UmlSettings
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter2/butter.pro"
@@ -7090,10 +7090,10 @@ ${namespace_end}"
     artifact 164777 "test_path"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 142889 // bouml
-	artifact_ref 134057 // qt
-	artifact_ref 150953 // path_test
 	artifact_ref 150825 // utility
+	artifact_ref 142889 // bouml
+	artifact_ref 150953 // path_test
+	artifact_ref 134057 // qt
       end
       comment "Simple program to exercise pathcmp class."
     end
