@@ -1,0 +1,13 @@
+Build variable common to all styles
+Butter plugout @@version@@
+%!date
+
+= Defining new toolsets =
+
+When defining a new toolset note the following expectations:
+
+* The debug variant expects debugging symbols to be included in the
+build process.
+* The release variant expects no debugging symbols
+* The DEBUG preprocessor macro will be set to 1 for debug variants
+and 0 for release. It must always be defined.

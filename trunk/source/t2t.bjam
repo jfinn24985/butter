@@ -1,0 +1,23 @@
+import type ;
+import generators ;
+import feature  ;
+import toolset ;
+import make ;
+
+type.register TEXT2TAGS : t2t ;
+
+generators.register-standard t2t : TEXT2TAGS : HTML ;
+
+feature.feature t2tflags : : free ;
+
+toolset.flags t2t-action OPTIONS <t2tflags> ;
+
+rule t2t ( name : source  : requirements * )
+{
+  make $(name) : $(source) : @t2t-action : $(requirements) ; 
+}
+
+actions t2t-action
+{
+  txt2tags $(OPTIONS) -toc -t html -o $(<) $(>)
+}

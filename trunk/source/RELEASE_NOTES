@@ -1,0 +1,39 @@
+July 2010 Release 1.1beta
+Code Revision Number: 30
+
+Greatly improved reliability and better error reporting.
+
+Important external changes are:
+
+* first Windows version. Requires GNU make for interpreting 
+generated makefiles.  Example settings for gcc and cl.
+
+* auto-detecting the project root directory.  At the same time 
+this also fixed a number of program bugs related to detecting 
+directories.  The most significant of which was plugout failure 
+when the project was all in a single directory or if no project 
+directory existed.
+
+* better issue reporting.  Common issues related to generating 
+the build system are now reported by a dialog with some 
+instruction as to possible solutions.
+
+* writing the build files as UmlArtifacts into the bouml project.
+The plugout creates a "tagged" section for each target and copies 
+user text from between the sections.  This gives the ability to 
+do some per-target customization outside the plugout (see 
+documentation).
+
+* improved build systems.  The generated build systems are now 
+more consistent between styles.  The "checklist.t2t" now
+documents the key features of the plugout along with the subversion
+version that passed the acceptance test.
+
+Internal changes:
+
+* Rewrote the code to utilize only Qt containers and types.
+
+
+October 2008 Release 1.0
+
+First beta release of the "butter" build system plug-out.

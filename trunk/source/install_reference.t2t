@@ -1,0 +1,114 @@
+Common settings for installation targets of all styles
+Butter plugout @@version@@
+%!date
+
+= Introduction =
+
+This section is a reference to how this plugout creates an installation
+process for your project. The modern process for installing a project
+generally involves an installation packager.  However, this version of the
+plugout does not support these directly, relying on the primitive install
+features of each of the build tools.  Therefore the current ``install``
+build target should be considered more of a tool to copy project files
+into a well-defined location than a real installation process.
+
+**NOTE** Support for the WiX and RPM packaging systems is set as a
+new feature for the next release of the plugout! This new feature will
+be backwards compatible with the following.
+
+= Install keywords =[ref_install]
+
+Where a particular UML artefact is installed is controlled by the
+target type unless over-ridden by the ``butter install`` UML artefact
+property. Only UML artefacts with the ``executable`` or ``library``
+stereotype will automatically be installed. The ``butter install``
+property can contain an actual path or one of the following keywords.
+
+:noinstall
+ Turns off automatic installation of ``executable`` or ``library``
+ stereotype artefacts.
+
+:BIN
+ For program executable files. This is the default location for UML
+ artefacts with the ``executable`` stereotype.
+
+:DATA
+ For configuration and static data files. This is the default location
+ for UML artefacts with the ``library`` stereotype and ``static`` type.
+
+:DOC
+ For documentation files that are not HTML or man pages.
+
+:HTML
+ For HTML documentation.
+
+:INC
+ For header files.
+
+:LIB
+ For dynamic link libraries. This is the default location for UML
+ artefacts with the ``library`` stereotype and ``shared`` type.
+
+:MAN
+ For man pages.
+
+
+== Installation layout ==
+
+These default locations are statically defined in the system-settings
+build files generated for each style.  The UML artefacts representing
+these build files can be edited in each bouml project to suit your needs.
+At this time the plugout has no mechanism to change these locations
+consistently across styles.
+
+All ``install`` targets put artefacts into a directory tree based on a
+directory called ``installdir`` created in the project`s root directory.
+
+```
++-+ installdir
+  +- bin //BIN// //LIB//
+  +- include //INC//
+  +-+ share //DATA//
+    +- doc //DOC//
+    +- html //HTML//
+    +- man1 //MAN//
+```
+
+
+= Future directions =
+
+When the packaging programs WiX and RPM become supported directly by the
+plugout the current keywords will be mapped to locations based on the
+package manager and its primary operating system target as shown below.
+In the following diagrams the label VERSIONDIR should be read as a
+combination of the project's name and the ``butter version`` property of
+the UML project or default of ``1.0``. The format is ``name-version``
+It is also envisaged that more installation keywords will be introduced
+to better support a real installation process.
+
+
+For the RPM packager the default locations for these keywords are:
+```
++-+ RPM_PREFIX
+  + bin //BIN//
+  + include/VERSIONDIR //INC//
+  + lib //LIB//
+  +-+ share/VERSIONDIR //DATA//
+    +-+ doc/packages/VERSIONDIR //DOC//
+      +- html //HTML//
+    +-+ man
+      +- man1 //MAN// //MAN1//
+      +- man(n) //MAN(n)//
+```
+
+For WiX packager the default locations for these keywords are:
+```
++-+ %ProgramFiles% 
+  +-+ VERSIONDIR //BIN// //LIB// //DATA//
+    +- include //INC//
+    +-+ documentation //DOC//
+      +- html //HTML//
+      +- man //MAN// ... //MAN(n)//
+```
+
+

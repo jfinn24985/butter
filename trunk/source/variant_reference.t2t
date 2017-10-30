@@ -1,0 +1,59 @@
+Common settings for build variants of all styles
+Butter plugout @@version@@
+%!date
+
+
+= Introduction =
+
+The plugout directly supports two variants; a ``debug`` and a ``release``
+variant.  The default build variant is ``debug``.  The actual name of
+the variant is style specific, in most styles you specify something like
+``VARIANT=DEBUG`` in all upper case.  The exception is boost style
+where you specify ``variant=debug`` in all lower case.
+
+:Debug
+ The ``debug`` variant is expected to have none or minimal optimisation
+ and to include debugging information in the compiled artefacts.
+
+:Release
+ The ``release`` variant is expected to have good optimisation (generally
+ -O2 or /O2) and not include debugging information.
+
+
+The build systems have the following common targets with each variant.
+
+://default// or all
+ The default target will build all targets in the project. The ``boost``
+ style does not have a separate ``install`` process and performs the
+ installation actions after successfully building all targets.
+
+:install
+ Default action is to copy project files into the ``installdir`` directory
+ tree. See the discussion of installation settings for more information.
+
+:clean
+ What exactly is removed is to some extent style dependent. In general
+ the plugout expects only object artefacts actually created with the
+ current variant to be removed.  The ``boost`` and ``standard`` jam
+ styles will also remove target artefacts.
+
+:distclean
+ For the gmake style, the ``clean`` target removes only object artefacts
+ created by the current variant. The ``distclean`` target is provided
+ to additionally remove targets artefacts, make dependency files, ``core``
+ files and files with names ending in ``~``.
+
+
+= Variant specific notes =
+
+== Debug variant ==
+
+The user can expect the DEBUG preprocessor macro to be defined as ``1``
+during compilation in all build styles. 
+
+== Release variant ==
+
+The user can expect the DEBUG preprocessor macro to be defined as ``0``. 
+**Note** that the DEBUG macro is defined as ``0`` not  ``undefined``.
+
+

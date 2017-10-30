@@ -1,0 +1,15 @@
+rule t2t
+{
+  local html_ = $(1:S=.html) ;
+  local src_ = $(2) ;
+  Depends all : $(html_) ;
+  MakeLocate $(html_) : $(LOCATE_TARGET) ;
+  SEARCH on $(src_) = $(SEARCH_SOURCE) ;
+  run_t2t $(html_) : $(src_) ;
+  Clean clean : $(html_) ;
+} 
+
+actions ignore run_t2t
+{
+  txt2tags  $(T2TFLAGS) -toc -t html -o $(1) -i $(2)
+} 

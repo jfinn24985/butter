@@ -1,0 +1,64 @@
+Build variable common to all styles
+Butter plugout @@version@@
+%!date
+
+= Introduction =
+
+It is difficult to write style and operating system neutral 
+build rules for a number of reasons.  This plugout makes
+sure the following variables are defined for each style and
+operating system to help make writing build system rules 
+more portable.
+
+The general form to use in UML artefact properties is shown
+in the following.  The plugout knows when these need to be
+transcribed for a particular build style, for example the
+cmake style requires curly braces ``{}`` instead of ``()``.
+If you write them directly into a build artefact you need
+to do the transcription yourself.
+
+== General use variables ==
+
+These variables are available for use in build files and 
+properties.
+ 
+:$(SLASH)
+ This is defined to the operating system specific path separator.
+ Most Windows build tools and compilers can handle paths with unix
+ ``/`` path separator, but commands simple commands like DEL do
+ not. Furthermore, Windows paths on unix are usually scrambled
+ because ``\`` is interpreted as an escape character.
+
+:BIN DATA DOC HTML INC LIB MAN
+ Labels for the ``install`` property that translate to variables
+ representing installation path. The path variables add ``DIR`` onto the
+ name, so xxx becomes $(xxxDIR). You can use the $(xxxDIR) variables in
+ your own build rules.
+
+
+== Internal use variables ==
+
+The following variables are used when writing build system files
+for new compilers or operating environments. They may differ in
+letter case between styles so are not suitable to be used in
+UML object properties.  Users can put them in style specific build
+rules and must check for the correct letter case for each particular
+style. 
+
+:$(sufdep)
+ (gmake generator only) suffix for a generated dependency makefile
+
+:$(sufexe)
+  suffix for a binary executable
+
+:$(suflib)
+  suffix for a static library
+
+:$(sufobj)
+  suffix for an object file
+
+:$(sufshr)
+  suffix for a dynamic link library.
+
+
+

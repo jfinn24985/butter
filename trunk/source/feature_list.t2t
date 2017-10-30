@@ -1,0 +1,14 @@
+Build variable common to all styles
+Butter plugout @@version@@
+%!date
+
+== Features of version 1.1 ==
+
+
+== Planned future features ==
+
+* Direct support for project installation using WiX or RPM
+package managers.
+
+* The Boost project are currently changing their build system.
+The new system will to be supported

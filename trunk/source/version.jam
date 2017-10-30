@@ -1,0 +1,13 @@
+rule svnver
+{
+  ALWAYS $(1) ;
+  NOTFILE $(1) ;
+  Depends all install main lib : $(1) ;
+  Clean clean : $(1) ;
+}
+actions ignore svnver
+{
+  echo "#define" $(2) \"`svnversion -n /home/finnerty/Office/Projects/butter/butter`\" > $(1:S=.new)
+  diff -q $(1) $(1:S=.new) || mv $(1:S=.new) $(1)
+}
+svnver "include/version.h" : "BUTTER_SVN_VERSION_" ;
