@@ -1,0 +1,10 @@
+ 
+--style=ansi
+--indent=spaces=2
+--convert-tabs
+--indent-after-parens
+--pad-oper
+--pad-comma
+--pad-paren-in
+--align-pointer=middle
+--add-braces
