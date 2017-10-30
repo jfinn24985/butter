@@ -2,7 +2,7 @@ format 66
 "proplang"
   revision 18
   modified_by 41 "finnerty"
-  cpp_root_dir "output/include/"
+  cpp_root_dir "./output/include/"
 
 
   

@@ -2,7 +2,7 @@ format 66
 "multilang"
   revision 5
   modified_by 41 "finnerty"
-  cpp_root_dir "/tmp/multilang/output/include/"
+  cpp_root_dir "./output/include/"
 
 
   

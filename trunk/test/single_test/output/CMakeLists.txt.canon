@@ -1,0 +1,28 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sat Oct 28 14:58:22 2017
+##END:date
+##START:preamble
+cmake_minimum_required(VERSION 2.6)
+
+project (SINGLE_TEST)
+
+##END:preamble
+##START:target SINGLE_TEST
+include (${CMAKE_SOURCE_DIR}/local.cmake)
+
+##END:target SINGLE_TEST
+##START:target test
+set (__TEST test)
+
+set (__TEST_SRC 
+	single_test.cc)
+add_executable (${__TEST}
+	${__TEST_SRC})
+install (TARGETS ${__TEST}
+	RUNTIME DESTINATION ${BINDIR}
+	CONFIGURATIONS Release)
+
+##END:target test

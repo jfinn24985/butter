@@ -1,8 +1,8 @@
 format 66
 "multidir"
-  revision 5
-  modified_by 41 "finnerty"
-  cpp_root_dir "/tmp/multidir/output/include/"
+  revision 6
+  modified_by 48 "finnerty"
+  cpp_root_dir "./output/include/"
 
 
   

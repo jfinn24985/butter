@@ -2,14 +2,6 @@ Index: multilang.prj
 ===================================================================
 --- multilang.prj	(revision 59)
 +++ multilang.prj	(working copy)
-@@ -1,6 +1,6 @@
- format 66
- "multilang"
--  revision 5
-+  revision 6
-   modified_by 41 "finnerty"
-   cpp_root_dir "/tmp/multilang/output/include/"
- 
 @@ -37,9 +37,10 @@
  
    mark_for_import

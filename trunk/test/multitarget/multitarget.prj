@@ -2,7 +2,7 @@ format 66
 "multitarget"
   revision 5
   modified_by 41 "finnerty"
-  cpp_root_dir "/tmp/multitarget/output/"
+  cpp_root_dir "./output/"
 
 
   

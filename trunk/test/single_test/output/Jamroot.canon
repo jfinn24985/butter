@@ -1,16 +1,18 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Nov 13 18:20:09 2010
+#Fri Oct 27 17:52:06 2017
 ##END:date
 ##START:preamble
 # Include local constants
+path-constant topdir : . ;
 include local.jam ;
 
 # Set project's global settings
 project single_test
-	:  requirements <debug-symbols>on:<cxxflags>"-DDEBUG=1"
+	: requirements <debug-symbols>on:<define>"DEBUG=1"
+	<debug-symbols>off:<define>"DEBUG=0"
 	: build-dir build ;
 ##END:preamble
 ##START:target test
@@ -19,6 +21,6 @@ exe test :
 	:
 	;
 
-install install_test : test : <variant>release <location>$(BINDIR) ;
-install install_test : : <variant>debug ;
+install install_test : test : <variant>release:<location>$(INSTALL_PREFIX)/$(BINDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"" ;
 ##END:target test

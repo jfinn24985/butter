@@ -1,32 +1,28 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Nov 13 18:02:25 2010
+#Sat Oct 28 15:04:05 2017
 ##END:date
 ##START:preamble
-include makefile.sys
-
-ROOTDIR := /tmp/single_test/output
+ROOTDIR := /home/finnerty/src/butter/test/single_test/output
+OUTPUTDIR := /home/finnerty/src/butter/test/single_test/output
+include $(ROOTDIR)/M_sys.mk
 
 ##END:preamble
 ##START:target test
-TESTSRC :=  \
+__TESTSRC :=  \
 	single_test.cc
-TESTLDFLAGS := $(LOCALLDFLAGS)
-USERFLAGS := $(LOCALFLAGS) $(SHRFLAGS)
-TEST_DINC := $(filter %.d, $(TESTSRC:.cc=.d)) $(filter %.d, $(TESTSRC:.c=.d))
-include $(TEST_DINC)
-TEST_OBJ := $(TEST_OBJ) $(filter %.o, $(TESTSRC:.cc=.o))
-USEROBJ := $(USEROBJ) $(TEST_OBJ)
+__TEST_DINC := $(filter %$(sufdep), $(__TESTSRC:.cc=$(sufdep))) $(filter %$(sufdep), $(__TESTSRC:.c=$(sufdep)))
+__TEST_OBJ+=$(filter %$(sufobj), $(__TESTSRC:.cc=$(sufobj)))
+USEROBJ+=$(__TEST_OBJ)
+test$(sufexe) : $(__TEST_SRC) $(__TEST_DINC)
+-include $(__TEST_DINC)
+$(eval $(call do_link_exe,test$(sufexe),$(__TEST_OBJ)))
 
-test$(SUFEXE) : $(TEST_OBJ) $(TEST_DINC) 
-	$(CCC) $(CCCFLAGS) -o test$(SUFEXE) $(TEST_OBJ) $(TESTLDFLAGS) $(LDFLAGS)
+all :: test$(sufexe)
+TARGETS+=test$(sufexe)
 
-all :: test$(SUFEXE)
-TARGETS := $(TARGETS) test$(SUFEXE)
+$(eval $(call do_install,test$(sufexe),BIN))
 
-install:: test$(SUFEXE)
-	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) $(BINIFLAGS) test$(SUFEXE) $(BINDIR)/test$(SUFEXE)
 ##END:target test

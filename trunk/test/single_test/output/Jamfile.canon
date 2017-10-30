@@ -1,17 +1,21 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Mon Nov 1 15:00:33 2010
+#Sat Oct 28 14:53:19 2017
 ##END:date
 ##START:preamble
+BUILDDIR = $(SLASH)home$(SLASH)finnerty$(SLASH)src$(SLASH)butter$(SLASH)test$(SLASH)single_test$(SLASH)output ;
 SubDir TOP ;
+OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
 ##END:preamble
 ##START:target test
-Main <.>test$(SUFEXE) :
+__TEST_SRC =
 	<.>single_test.cc
 	;
 
+Main <.>test$(SUFEXE) :
+	$(__TEST_SRC) ;
 
 InstallBin $(BINDIR) : <.>test$(SUFEXE) ;
 ##END:target test

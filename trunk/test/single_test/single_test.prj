@@ -2,7 +2,7 @@ format 66
 "single_test"
   revision 1
   modified_by 41 "finnerty"
-  cpp_root_dir "/tmp/single_test/output/"
+  cpp_root_dir "./output/"
 
 
   
