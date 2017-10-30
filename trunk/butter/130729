@@ -1,7 +1,7 @@
 format 75
 "Build" // Build
-  revision 93
-  modified_by 49 "finnerty"
+  revision 95
+  modified_by 48 "finnerty"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -1445,6 +1445,377 @@ add_definitions (-m32)
 "
     end
 
+    artifact 128048 "M_sys.mk"
+      stereotype "document"
+      comment "#
+# M_sys.mk
+#
+##################################
+# Settings for current environment
+##################################
+
+OS ?= unix
+ifeq ($(origin CC),default)
+CC = gcc
+endif
+VARIANT ?= DEBUG
+
+# Preprocessor flags (defines and include directories)
+#  CPPFLAGS
+# C language flags
+#  CCFLAGS
+# C++ language flags
+#  CCCFLAGS
+# Fortran language flags
+#  FORTRANFLAGS
+# Linker flags
+#  LDFLAGS
+
+# Optimisation/debugging flags
+# are added depending on VARIANT
+
+##########################
+## Include compiler and OS
+##########################
+include $(ROOTDIR)$(or $(SLASH),/)M_$(OS).mk
+include $(ROOTDIR)$(or $(SLASH),/)M_$(CC).mk
+
+##############
+## Unify Vars
+##############
+CFLAGS = $(CCFLAGS)
+CXXFLAGS = $(CCCFLAGS)
+FFLAGS = $(FORTRANFLAGS)
+FC = $(FORTRAN)
+
+#############################################
+##  Define standard directory descent targets
+#############################################
+export
+unexport dirs
+
+all:: ; $(call doit,all,$(dirs))
+
+install:: ; $(call doit,install,$(dirs))
+
+distclean: doclean
+	$(call doit,distclean,$(dirs))
+	$(RM) core core.* $(TARGETS) *~ $(if $(sufdep),*$(sufdep))
+
+clean: doclean
+	$(call doit,clean,$(dirs))
+
+doclean: 
+	$(if $(USEROBJ),$(RM) $(USEROBJ))
+
+################################################
+##  Example link library setup with alternatives
+################################################
+##  
+##  # Make this a one time only definition
+##  
+##  ifndef USE_XML_MK
+##  USE_XML_MAK:=1
+##  
+##  ifdef ($(XMLLIB))
+##  ifeq ($(XMLLIB),EXPAT)
+##  CPPFLAGS+=-DEXPAT
+##  LDFLAGS+=-lexpat
+##  endif
+##  
+##  ifeq ($(XMLLIB),XML2)
+##  CPPFLAGS+=-DXML2 `xml2-config --cflags`
+##  LDFLAGS+=`xml2-config --libs`
+##  endif
+##  
+##  endif # XMLLIB
+##  
+##  endif # USE_XML_MK
+
+"
+    end
+
+    artifact 128176 "M_cl.mk"
+      stereotype "document"
+      comment "##########################################
+##  Definitions for Microsoft VC compiler
+#########################################
+ifndef M_CL_MK
+M_CL_MAK:=1
+
+CCC:=cl
+CXX:=cl
+AR:=link
+ARFLAGS:= /LIB
+FORTRAN:=fc
+CPPFLAGS?=
+CCFLAGS+=/Za /nologo /errorReport:none
+CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /nologo /errorReport:none
+
+ifeq ($(VARIANT),DEBUG)
+OPTFLAGS+=/Od /Zi
+LDFLAGS+=/MTd
+else
+OPTFLAGS+=/O2
+LDFLAGS+=/MT
+endif
+
+CCFLAGS+=$(OPTFLAGS)
+CCCFLAGS+=$(OPTFLAGS)
+FORTRANFLAGS?=
+LDFLAGS+=$(OPTFLAGS)
+
+FORTRANLIBS:=
+OPENMP:=/openmp
+
+endif # end of once-only
+
+#  commands to execute (built-in):
+COMPILE.c = $(CC) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo
+COMPILE.cc = $(CXX) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo
+define _makeobj_
+%$$(sufobj): %$(1) ; $$(COMPILE$(1))$$@ $$<
+endef
+
+$(foreach suff,.c .cc .cpp .cxx,$(eval $(call _makeobj_,$(suff))))
+
+# Commands to create dummy make dependency files.
+# (Or use depend generator such as X11 makedepend
+# or Digital Mars makedep or makedep.py)
+# %$(sufdep): %$(1)
+# 	start makedep.py $$@ $$< $(CC) /showInclude /Zs /nologo $(CPPFLAGS) $(CXXFLAGS)
+define _makedep_
+%$(sufdep): %$(1) ; @echo # Dummy file  $$@
+endef
+
+$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))
+
+_makeobj_:=
+_makedep_:=
+
+define do_link_exe
+$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /Fe$(1) $(2)
+endef
+
+define do_link_shr
+$(1) : CCFLAGS+=$(SHRFLAGS)
+$(1) : CCCFLAGS+=$(SHRFLAGS)
+$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /dll /Fe$(1) $(2)
+endef
+
+define do_archive
+$(1): $(2) ; $$(AR) $$(ARFLAGS) /OUT:$(1) $(2)
+endef
+
+"
+    end
+
+    artifact 128304 "M_gcc.mk"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "####################################
+##  Definitions for GNU g++ compiler
+####################################
+ifndef M_GCC_MK
+M_GCC_MK:=1
+##
+## Define compiler variables once only.
+## 
+CCC?=g++
+FORTRAN?=gfortran
+CPPFLAGS?=
+CCFLAGS+=-Wall -std=c99
+CCCFLAGS+=-Wall -std=c++11
+CPPFLAGS+=-Wall -std=c++11
+
+ifeq ($(VARIANT),DEBUG)
+OPTFLAGS+=-O0 -DDEBUG=1
+CCFLAGS+=-pedantic
+# -Weffc++
+else
+OPTFLAGS+=-O2 -march=native -DDEBUG=0
+endif
+
+CCFLAGS+=$(OPTFLAGS)
+CCCFLAGS+=$(OPTFLAGS)
+FORTRANFLAGS+=$(OPTFLAGS)
+LDFLAGS?=
+SHRFLAGS?=-fpic
+
+FORTRANLIBS:=-lgfortran
+OPENMP:=-fopenmp
+
+endif
+# END ONCE-ONLY
+
+define _makedep_
+%$(sufdep): %$(1)
+	set -e; $$(CCC) -MM $$(CPPFLAGS) $$< \\
+	| sed 's/\\($$*\\)$$(sufobj)[ :]*/\\1$$(sufobj) $$@ : /g' > $$@;\\
+	[ -s $$@ ] || rm -f $$@
+endef
+
+$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))
+_makedep_:=
+
+define do_link_exe
+$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) -o $(1) -Wl,--start-group $(2) -Wl,--end-group
+endef
+define do_link_shr
+$(1) : CCFLAGS+=$(SHRFLAGS)
+$(1) : CCCFLAGS+=$(SHRFLAGS)
+$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) -shared -Wl,-soname,$(1) -o $(1) -Wl,--start-group $(2) -Wl,--end-group
+endef
+
+"
+    end
+
+    artifact 128432 "M_unix.mk"
+      stereotype "document"
+      comment " # Definition of for loop in local shell.
+define doit
+$(if $(2),STATUS=0 ; for subdir in $(2); do $(MAKE) -C $${subdir}  $(1) || STATUS=$$? ; done ; exit $${STATUS})
+endef
+
+# MAKE MOST VARIABLES ONCE-ONLY
+ifndef M_UNIX_MK
+M_UNIX_MK:=1
+#############################
+##  Default install locations
+#############################
+PREFIX=$(ROOTDIR)/installdir
+BINDIR?=$(PREFIX)/bin
+LIBDIR?=$(PREFIX)/bin
+INCLUDEDIR?=$(PREFIX)/include
+DATADIR?=$(PREFIX)/share
+DOCDIR?=$(DATADIR)/doc
+MANDIR?=$(DATADIR)/man1
+HTMLDIR?=$(DATADIR)/html
+
+# Flags for the install targets.
+BINIFLAGS?=-m 755
+FILEIFLAGS?=-m 644
+LIBIFLAGS?=-m 644 
+MANIFLAGS?=-m 644
+INSTALL?=install
+
+# Standard suffixes
+sufobj:=.o
+sufexe:=
+suflib:=.a
+sufshr:=.so
+sufdep:=.d
+
+# Path separator
+SLASH?=/
+
+# END OF ONCE-ONLY.
+endif
+
+define do_install
+install:: $(1) ; $$(INSTALL) -d $$($(2)DIR) ; $$(INSTALL) $$($(or $(3),$(2))IFLAGS) $(1) $$($(2)DIR)/$(1)
+endef
+
+define do_archive
+$(1): $(2) ; $$(AR) $$(ARFLAGS) $(1) $(2)
+endef
+
+"
+    end
+
+    artifact 128560 "M_Windows_NT.mk"
+      stereotype "document"
+      comment "# Definition of for loop in local shell.
+
+define doit
+IF \"$(2)\" NEQ \"\" FOR %%W IN ( $(2) ) DO \"$(subst /,\\,$(MAKE))\" -C %%W $(1)
+endef
+
+ifndef M_WINNT_MK
+M_WINNT_MK:=1
+#############################
+##  Default install locations
+#############################
+PREFIX?=$(ROOTDIR)\\installdir
+BINDIR?=$(PREFIX)\\bin
+DATADIR?=$(PREFIX)\\share
+DOCDIR?=$(DATADIR)\\doc
+HTMLDIR?=$(DATADIR)\\html
+INCLUDEDIR?=$(PREFIX)\\include
+LIBDIR?=$(PREFIX)\\lib
+MANDIR?=$(DATADIR)\\man1
+
+# Standard Suffixes
+sufobj:=.obj
+sufexe:=.exe
+sufdep:=.dep
+suflib:=.lib
+sufshr:=.dll
+# Programs
+MKDIR?=MD
+COPY?=COPY /Y /B /V
+RM:=-DEL /F
+
+# Path separator
+SLASH?=\\
+
+# END OF ONCE-ONLY.
+endif
+
+define do_install
+install:: $(1) ; IF NOT EXIST $$($(2)DIR) ( $$(MKDIR) $$($(2)DIR) )
+	$$(COPY) $(1) $$($(2)DIR)\\$(1)
+endef
+
+"
+    end
+
+    artifact 128688 "makefile"
+      stereotype "document"
+      comment "##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sat Oct 14 16:39:26 2017
+##END:date
+##START:preamble
+ROOTDIR := /home/finnerty/src/butter
+OUTPUTDIR := /home/finnerty/src/butter
+include $(ROOTDIR)/M_sys.mk
+
+CPPFLAGS+=-I$(ROOTDIR)/include/bouml -I$(ROOTDIR)/include -DWITHCPP -DDEBUG 
+CCFLAGS+=-DWITHCPP -DDEBUG
+CCCFLAGS+=-DWITHCPP -DDEBUG
+##END:preamble
+##START:target README.html
+-include $(ROOTDIR)/t2t.mak
+
+-include $(ROOTDIR)/t2t.make
+
+___README_HTMLSRC :=  \\
+	README.t2t
+README.html : $(___README_HTMLSRC) 
+	$(T2T) $(T2TFLAGS) README.html $(___README_HTMLSRC)
+
+
+all :: README.html
+TARGETS+=README.html
+
+$(eval $(call do_install,README.html,DOC,FILE))
+
+##END:target README.html
+##START:target bouml
+dirs += src/bouml
+##END:target bouml
+##START:target butter
+dirs += src/butter
+##END:target butter
+##START:target butter_test
+dirs += src/butter/butter_test
+##END:target butter_test
+"
+    end
   end
 
   package_ref 131881 // Version

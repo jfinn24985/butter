@@ -1,5 +1,5 @@
 class cmake_generator
-!!!230441.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+!!!230441.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : QTextOStream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -12,7 +12,7 @@ if (a_target.property_value (butter_constants::butter_project_name, project_))
   // Is an externally linked library
   //
   // add flags to main target.
-  find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, section_name, true);
+  find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, cmake_generator::style.name(), true);
 
   QString name_ (a_target.name ());
   if (! lib_set_.isEmpty ())
@@ -64,9 +64,9 @@ else
   }
   // Both static/shared add include and link flags, ignore cflags
   QString src_flags_;
-  find_hdr_link (a_target, a_includes, a_ldflags, src_flags_, section_name, true);
+  find_hdr_link (a_target, a_includes, a_ldflags, src_flags_, cmake_generator::style.name(), true);
 }
-!!!230569.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+!!!230569.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : QTextOStream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -174,7 +174,7 @@ if (NULL != a_loc.parent ())
   a_sys.close.second.append (tmp_);
 }
 
-!!!230953.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!230953.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : base_generator::target_type) : void
 ////////////////////////////////
 // Finalise target build instructions
 //
@@ -184,7 +184,7 @@ if (a_type == other)
   ////////////////
   // Handle "other" library types specially.
   QString other_type_ (this->other_target_type_.upper ());
-  this->find_replace (other_type_, '-', '_');
+  other_type_.replace( QChar('-'), QChar('_') );
   a_os << "add_custom_command (OUTPUT ${" << this->target_NAME ()
       << "}\n\t DEPENDS ${" << this->target_NAME () << "_SRC} "
       << this->lib_set_
@@ -341,7 +341,7 @@ QString proj_text_;
   }
 }
 a_sys.target(this->project_name_).second = proj_text_;
-!!!231721.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
+!!!231721.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_loc_var : unistr, in a_type : base_generator::install_type, in a_isdoc : bool) : void
 const QString target_name_(a_isdoc ?  a_target.name() : "${" + this->target_NAME () + "}");
 switch (a_type)
 {
@@ -475,7 +475,7 @@ if (this->sys_buildfile_->preamble.second.isEmpty ()
   }
   this->sys_buildfile_->preamble.second = init_text_;
 }
-!!!232233.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!232233.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_build_file : unistr, in a_compiler : unistr, in a_type : base_generator::target_type) : void
 /////////////////
 // Initialise variables for the new target
 this->target_NAME (a_target);

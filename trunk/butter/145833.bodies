@@ -1,88 +1,4 @@
 class pathcmp
-!!!186025.cpp!!!	create_common(in a_other : pathcmp) : unistr
-const QString lhs_ = absPath ();
-const QString rhs_ = a_other.absPath ();
-const int sz1_ = lhs_.length ();
-const int sz2_ = rhs_.length ();
-const int sz_ = (sz1_ < sz2_) ? sz1_ : sz2_;
-int last_sep_ = 0;
-for (int c_ = 0; c_ < sz_; ++c_)
-{
-  if (default_separator_[0] == lhs_[c_])
-  {
-    last_sep_ = c_;
-  }
-  if (lhs_[c_] != rhs_[c_])
-  {
-    // End of common
-    return (last_sep_ > 0)
-    	? lhs_.left (last_sep_)
-    	: QString ();
-  }
-}
-// Matched all of smaller path.
-return lhs_.left (sz_);
-!!!186281.cpp!!!	create_relative(in a_target : pathcmp) : unistr
-QString Result;
-#ifndef NO_ARRAY_INITIALISER
-const char sep_[4] = { '.', '.', default_separator_[0], '\0' };
-#else
-char sep_[4];
-sep_[0] = '.';
-sep_[1] = '.';
-sep_[2] = default_separator_[0];
-sep_[3] = '\0';
-#endif
-const QString path1_ = absPath ();
-const QString path2_ = a_target.absPath ();
-const int sz1_ (path1_.length ());
-const int sz2_ (path2_.length ());
-const int sz_ = (sz1_ < sz2_) ? sz1_ : sz2_;
-// Determine the parent dirs in common.
-int last_sep_ = 0;
-for (int i_ = 0; true; ++i_)
-{
-  if (default_separator_[0] == path1_[i_])
-  {
-    last_sep_ = i_;
-  }
-  if (i_ >= sz_)
-  { // End of shorter path
-    last_sep_ = i_;
-    break;
-  }
-  if (path1_[i_] != path2_[i_])
-  { // End of common path
-    break; 
-  }
-}
-#ifdef _WS_WIN_
-// Throw exception when the two directories are not on the same partition
-if (0 == last_sep_)
-{
-  if (default_separator_[0] != path1_[last_sep_])
-  {
-    throw std::runtime_error (("<p><b>Configuration error</b> Path " 
-                       + path1_ + " and " + path2_ + " are not on the same partition.").utf8().data ());
-  }
-}
-#endif
-// Append "up dirs" for each separator between last_sep_ and end.
-for (int ii_ = path1_.right (sz1_ - last_sep_).contains (default_separator_[0]); ii_ > 0; --ii_)
-{
-  Result.append (&sep_[0]);
-}
-if (sz2_ > last_sep_)
-{
-  // Add down elements from common to a_target
-  Result.append (path2_.right (sz2_ - last_sep_ - 1));
-}
-else
-{
-  // No down elements, remove trailing separator
-  Result.truncate (Result.length () - 1);
-}
-return Result;
 !!!185769.cpp!!!	equality(in a_rhs : pathcmp) : bool
 const QString lhs_ = absPath ();
 const QString rhs_ = a_rhs.absPath ();
@@ -149,6 +65,105 @@ while (true)
   s_ = e_ + 1;
   --a_count;
 }
+!!!186025.cpp!!!	create_common(in a_other : pathcmp) : unistr
+//{
+//  pathcmp lhs_( this->absPath() );
+//  pathcmp rhs_( a_other.absPath() );
+//  BUTTER_REQUIRE( lhs_.leaf_at( 0 ) == rhs_.leaf_at( 0 ), "No common path possible on directories on different root devices." );
+//  const unsigned int depth_( std::min( lhs_.depth(), rhs_.depth() ) );
+//  for( unsigned int i_ = 1; i_ != depth_; i_ )
+//  {
+//    if( lhs_.leaf_at( i_ ) != rhs_.leaf_at( i_ ) )
+//    {
+//      // common upto leaf (i_ - 1)
+//    }
+//  }
+//}
+//{
+const QString lhs_ = this->absPath();
+const QString rhs_ = a_other.absPath();
+const int sz1_ = lhs_.length();
+const int sz2_ = rhs_.length();
+const int sz_ = ( sz1_ < sz2_ ) ? sz1_ : sz2_;
+int last_sep_ = 0;
+for( int c_ = 0; c_ < sz_; ++c_ )
+{
+  if( default_separator_[0] == lhs_[c_] )
+  {
+    last_sep_ = c_;
+  }
+  if( lhs_[c_] != rhs_[c_] )
+  {
+    // End of common
+    return ( last_sep_ > 0 )
+      ? lhs_.left( last_sep_ )
+      : QString();
+  }
+}
+// Matched all of smaller path.
+return lhs_.left( sz_ );
+//}
+!!!186281.cpp!!!	create_relative(in a_target : pathcmp) : unistr
+QString Result;
+#ifndef NO_ARRAY_INITIALISER
+const char sep_[4] = { '.', '.', default_separator_[0], '\0' };
+#else
+char sep_[4];
+sep_[0] = '.';
+sep_[1] = '.';
+sep_[2] = default_separator_[0];
+sep_[3] = '\0';
+#endif
+const QString path1_ = absPath ();
+const QString path2_ = a_target.absPath ();
+const int sz1_ (path1_.length ());
+const int sz2_ (path2_.length ());
+const int sz_ = (sz1_ < sz2_) ? sz1_ : sz2_;
+// Determine the parent dirs in common.
+int last_sep_ = 0;
+for (int i_ = 0; true; ++i_)
+{
+  if (default_separator_[0] == path1_[i_])
+  {
+    last_sep_ = i_;
+  }
+  if (i_ >= sz_)
+  { // End of shorter path
+    last_sep_ = i_;
+    break;
+  }
+  if (path1_[i_] != path2_[i_])
+  { // End of common path
+    break; 
+  }
+}
+#ifdef _WS_WIN_
+// Throw exception when the two directories are not on the same partition
+if (0 == last_sep_)
+{
+  if (default_separator_[0] != path1_[last_sep_])
+  {
+    throw std::runtime_error (("<p><b>Configuration error</b> Path " 
+                       + path1_ + " and " + path2_ + " are not on the same partition.").utf8().data ());
+  }
+}
+#endif
+// Append "up dirs" for each separator between last_sep_ and end.
+for (int ii_ = path1_.right (sz1_ - last_sep_).contains (default_separator_[0]); ii_ > 0; --ii_)
+{
+  Result.append (&sep_[0]);
+}
+if (sz2_ > last_sep_)
+{
+  // Add down elements from common to a_target
+  Result.append (path2_.right (sz2_ - last_sep_ - 1));
+}
+else
+{
+  // No down elements, remove trailing separator
+  Result.truncate (Result.length () - 1);
+}
+return Result;
 !!!240041.cpp!!!	mkpath() : bool
 std::stack < QString > stack_; // Stores needed path
 QString path_ (normalise (path ()));  // Current path as string

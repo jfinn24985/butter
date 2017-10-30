@@ -1,0 +1,14 @@
+class umlcom_connection
+!!!198704.cpp!!!	~umlcom_connection()
+if( this->connected_ )
+{
+   UmlCom::bye();
+   UmlCom::close();
+}
+!!!199216.cpp!!!	connection(in argv : char) : plugout_test_suite::umlcom_connection
+if( nullptr == umlcom_connection::singleton_ )
+{
+  umlcom_connection::singleton_.reset( new umlcom_connection );
+  umlcom_connection::singleton_->connected_ = ( UmlCom::connect( QString( boost::unit_test::framework::master_test_suite().argv[1] ).toUInt() ) ? true : false );
+}
+return *umlcom_connection::singleton_.get();

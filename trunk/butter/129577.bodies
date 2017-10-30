@@ -76,7 +76,7 @@ if (! l_sec.isEmpty ())
   }
 }
 !!!150313.cpp!!!	build_system(in a_top_loc : location, in a_project : UmlPackage) : void
-std::auto_ptr< generator > l_builder;
+std::unique_ptr< generator > l_builder;
 QCString l_style;
 if (const_cast< UmlPackage& >(a_project).propertyValue (butter_constants::butter_style_name, l_style))
 {

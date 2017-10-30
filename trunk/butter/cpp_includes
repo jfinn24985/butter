@@ -29,7 +29,7 @@
 
 "QPtrDict" "#include <qptrdict.h>"
 
-"std::auto_ptr" "#include <memory>"
+"std::unique_ptr" "#include <memory>"
 
 "std::tr1::shared_ptr" "#include <tr1/memory>"
 

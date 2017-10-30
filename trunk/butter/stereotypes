@@ -6,10 +6,10 @@
   class_stereotypes  12 "actor" "boundary" "control" "entity" "enum" "exception" "interface" "struct" "typedef" "union" "enum_pattern" "stereotype"
     ---- 4 "vector" "list" "set" "valuelist"
     ---> 4 "vector" "list" "set" "valuelist"
-    o--- 6 "vector" "list" "set" "valuelist" "shared_ptr" "auto_ptr"
-    *--- 6 "vector" "list" "set" "valuelist" "shared_ptr" "auto_ptr"
-    o--> 6 "vector" "list" "set" "valuelist" "shared_ptr" "auto_ptr"
-    *--> 6 "vector" "list" "set" "valuelist" "shared_ptr" "auto_ptr"
+    o--- 6 "vector" "list" "set" "valuelist" "shared_ptr" "unique_ptr"
+    *--- 6 "vector" "list" "set" "valuelist" "shared_ptr" "unique_ptr"
+    o--> 6 "vector" "list" "set" "valuelist" "shared_ptr" "unique_ptr"
+    *--> 6 "vector" "list" "set" "valuelist" "shared_ptr" "unique_ptr"
     -_-> 1 "friend"
     -_-|> 1 "bind"
   end
@@ -24,7 +24,7 @@
   end
   
   attribute_stereotypes  0
-  operation_stereotypes  4 "get" "set" "const" "auto_ptr"
+  operation_stereotypes  4 "get" "set" "const" "unique_ptr"
   state_stereotypes  3 "machine" "submachine" "top"
   activity_stereotypes  0
   flow_stereotypes  3 "interrupt" "multicast" "multireceive"

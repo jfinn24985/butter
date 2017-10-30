@@ -38,7 +38,7 @@
     "valuelist" "QValueList" "Vector" "list" "sequence"
     "vector" "QVector" "Vector" "list" "sequence"
     "stack" "QStack" "Vector" "list" "sequence"
-    "auto_ptr" "std::auto_ptr" "Vector" "list" "sequence"
+    "unique_ptr" "std::unique_ptr" "Vector" "list" "sequence"
     "shared_ptr" "std::tr1::shared_ptr" "ignored" "ignored" "ignored"
   
   classes_stereotypes 11 // uml cpp java php python idl

@@ -28,7 +28,7 @@ if (! a_cache->match_path (a_path))
     // Need to reparent tree.
     while (! base_->match_path (a_path) || ! base_->sub_path (a_path))
     {
-      std::auto_ptr< location > tmp__ = base_->create_common_parent (a_path);
+      std::unique_ptr< location > tmp__ = base_->create_common_parent (a_path);
       base_.release (); // release old base ptr
       base_ = tmp__; // pass ownership of new base location
       // base_ is closest parent. Build descendent
@@ -94,7 +94,7 @@ location find_it_ (a_path.path ());
 a_cache = locations_set_.find (find_it_);
 if (a_cache == locations_set_.end ())
 {
-  std::auto_ptr< location > tmp_ (new location (a_path_));
+  std::unique_ptr< location > tmp_ (new location (a_path_));
   tmp_->build_file (new_build_file ());
   std::pair< set_type::iterator, bool > add_succeed_ (locations_set_.insert (tmp_.get ()));
   BUTTER_ALWAYS (add_succeed_.second, "Problem creating a new location object, cowardly quitting.");

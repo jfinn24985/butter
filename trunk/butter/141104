@@ -1,6 +1,6 @@
 format 75
-"External" // External
-  revision 2
+"Boost" // External::Boost
+  revision 3
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -26,7 +26,19 @@ format 75
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
-  package_ref 129321 // Qt
-
-  package_ref 141104 // Boost
+  deploymentview 128048 "boost-libs"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 129072 "boost-test"
+      stereotype "library"
+      associated_artifacts
+      end
+      ncouples 1
+      key "butter project" value "boost"
+      comment "${butter_generic}
+# HDR=$(BOOST_INC)
+LINK=$(BOOST_LIB) -lboost_unit_test_framework"
+    end
+  end
 end

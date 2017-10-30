@@ -1,5 +1,5 @@
 class bjam_generator
-!!!212649.cpp!!!	assoc_library(in a_target : UmlArtifact, inout a_os : ostream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
+!!!212649.cpp!!!	assoc_library(in a_target : UmlArtifact, out a_os : QTextOStream, out a_includes : unistr, out a_ldflags : unistr, out a_cflags : unistr) : void
 QString project_;
 if (a_target.property_value (butter_constants::butter_project_name, project_))
 {
@@ -17,7 +17,7 @@ else
 a_os << a_target.name () << "\n\t";
 /////////////
 // Note. Header/link information is imported with library in boost jam.
-!!!212777.cpp!!!	assoc_source(in a_target : UmlArtifact, inout a_os : ostream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
+!!!212777.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : QTextOStream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
 QString individual_;
 if (! this->is_other_ && (! a_src_inc.isEmpty () && ! a_src_flags.isEmpty ()))
 {
@@ -77,7 +77,7 @@ if (NULL != a_loc.parent ())
   os_ << "build-project " << dir_line_ << " ;\n\n";
   a_sys.close.second.append (tmp_);
 }
-!!!212905.cpp!!!	end_target(in a_target : UmlArtifact, inout a_os : ostream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!212905.cpp!!!	end_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_include : unistr, in a_ldflags : unistr, in a_cflags : unistr, in a_compiler : unistr, in a_type : base_generator::target_type) : void
 ///////////////////////
 // end target definition
 a_os << ":\n\t"; // End sources.
@@ -252,116 +252,119 @@ if (! this->individual_obj_.isEmpty ())
 !!!152361.cpp!!!	external_target(in a_current : location, in a_target : UmlArtifact, inout a_sys : compound_artifact) : void
 // Get project name, if present
 QString value_;
-a_target.property_value (butter_constants::butter_project_name, value_);
-BUTTER_CHECK (! value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact.");
+a_target.property_value( butter_constants::butter_project_name, value_ );
+BUTTER_CHECK( ! value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact." );
 // Get the external target section
-butter::compound_artifact::string_pair_t & proj_ = a_sys.target (value_);
+butter::compound_artifact::string_pair_t & proj_ = a_sys.target( value_ );
 // Construct a mini-project section.
-if (proj_.second.isEmpty ())
+if( proj_.second.isEmpty () )
 {
-  proj_.second.append ("#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\n");
+  proj_.second.append( "#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\n" );
 }
 // If this is a using directive - we don't need to do anything
-if (! proj_.second.contains ("using "))
+if( ! proj_.second.contains ( "using " ) )
 {
   QString tmp_;
-  if (a_target.property_value (butter_constants::butter_buildfile_name, tmp_))
+  if( a_target.property_value( butter_constants::butter_buildfile_name, tmp_ ) )
   {
     // This is a using directive; all definitions are assumed to be in the
     // given jamfile -> reset string
-    proj_.second = QString ("#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\nusing " + tmp_ + " ;\n");
+    proj_.second = QString ( "#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\nusing " + tmp_ + " ;\n" );
   }
   else
   {
-    QString template_ (section (section_name, const_cast< UmlArtifact& >(a_target).description ()));
-    if (! template_.isEmpty ())
+    QString template_( section( this->style.name(), const_cast< UmlArtifact & >( a_target ).description() ) );
+    if( ! template_.isEmpty() )
     {
-      proj_.second.append (template_ + "\n");
+      proj_.second.append( template_ + "\n" );
     }
     else
     {
       QString includes_, linkflags_, cflags_;
-      find_hdr_link (a_target, includes_, linkflags_, cflags_, section_name, true);
-      if (! (includes_.isEmpty () && linkflags_.isEmpty ()))
+      find_hdr_link( a_target, includes_, linkflags_, cflags_, this->style.name(), true );
+      if( ! ( includes_.isEmpty() && linkflags_.isEmpty() ) )
       {
-        proj_.second.append ("alias " + a_target.name () + " : : : : ");
-        if (! includes_.isEmpty ())
+        proj_.second.append( "alias " + a_target.name() + " : : : : " );
+        if( ! includes_.isEmpty () )
         {
-          proj_.second.append ("<include>\"" + includes_ + "\" ");
+          proj_.second.append( "<include>\"" + includes_ + "\" " );
         }
-        if (! linkflags_.isEmpty ())
+        if( ! linkflags_.isEmpty() )
         {
-          proj_.second.append ("<linkflags>\"" + linkflags_ + "\" ");
+          proj_.second.append( "<linkflags>\"" + linkflags_ + "\" " );
         }
-        if (! cflags_.isEmpty ())
+        if( ! cflags_.isEmpty() )
         {
-          proj_.second.append ("<cxxflags>\"" + cflags_ + "\" <cflags>\"" + cflags_ + "\" ");
+          proj_.second.append( "<cxxflags>\"" + cflags_ + "\" <cflags>\"" + cflags_ + "\" " );
         }
-        proj_.second.append (";\n\n");
+        proj_.second.append( ";\n\n" );
       }
     }
   }
 }
 !!!152745.cpp!!!	initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void
-BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
-this->project_name_ = a_project.name ();
+BUTTER_REQUIRE( NULL == a_base.parent(), "initialise can only be called on the top-most location" );
+this->project_name_ = a_project.name();
 QString content_;
 {
-  QString base_include_ (a_base.full_path ().create_relative (dynamic_cast< const UmlPackage& >(a_project).hdr_path ()));
-  QTextOStream os_ (&content_);
+  QString base_include_( a_base.full_path().create_relative( dynamic_cast< const UmlPackage & >( a_project ).hdr_path() ) );
+  QTextOStream os_( &content_ );
   {
-    const int e_ = rules_name.find(' ');
-    QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
+    const int e_ = rules_name.find( ' ' );
+    QString name_( e_ < 0 ? rules_name : rules_name.left( e_ ) );
     os_ << "# Include local constants\npath-constant topdir : . ;\ninclude " << name_ << " ;\n\n";
   }
   os_ << "# Set project's global settings\nproject " << project_name_
-      << "\n\t: requirements <debug-symbols>on:<define>\"DEBUG=1\""
-      << "\n\t<debug-symbols>off:<define>\"DEBUG=0\"\n\t";
+    << "\n\t: requirements <debug-symbols>on:<define>\"DEBUG=1\""
+    << "\n\t<debug-symbols>off:<define>\"DEBUG=0\"\n\t";
   QString link_, flag_; // Needed arguments.
-  find_hdr_link (a_project, base_include_, link_, flag_, section_name, false);
-  if (! base_include_.isEmpty ())
+  find_hdr_link( a_project, base_include_, link_, flag_, this->style.name(), false );
+  if ( ! base_include_.isEmpty() )
   {
-    for (const_token_iterator e_, b_(base_include_, ' '); b_ != e_; ++b_)
+    for( const_token_iterator e_, b_( base_include_, ' ' ); b_ != e_; ++b_ )
     {
-      const QString path_(b_->c_str ());
-      if (! path_.isEmpty ())
+      const QString path_( b_->c_str () );
+      if ( ! path_.isEmpty() )
       {
         os_ << "<include>";
-        if (QDir::isRelativePath (path_)) os_ << "$(topdir)/";
+        if ( QDir::isRelativePath( path_ ) )
+        {
+          os_ << "$(topdir)/";
+        }
         os_ << "\"" << path_ << "\" ";
       }
     }
     os_ << "\n\t";
   }
-  if (! link_.isEmpty ())
+  if ( ! link_.isEmpty() )
   {
-    for (const_token_iterator e_, b_(link_, ' '); b_ != e_; ++b_)
+    for ( const_token_iterator e_, b_( link_, ' ' ); b_ != e_; ++b_ )
     {
-      const QString path_(b_->c_str ());
-      if (! path_.isEmpty ())
+      const QString path_( b_->c_str () );
+      if ( ! path_.isEmpty() )
       {
         os_ << "<linkflags>\"" << path_ << "\" ";
       }
     }
     os_ << "\n\t";
   }
-  if (! flag_.isEmpty ())
+  if ( ! flag_.isEmpty () )
   {
-    for (const_token_iterator e_, b_(flag_, ' '); b_ != e_; ++b_)
+    for ( const_token_iterator e_, b_( flag_, ' ' ); b_ != e_; ++b_ )
     {
-      const QString path_(b_->c_str ());
-      if (! path_.isEmpty ())
+      const QString path_( b_->c_str () );
+      if ( ! path_.isEmpty() )
       {
-        os_ << "<cxxflags>\"" << path_ << "\" <cflags>\""<< path_ << "\"\n\t";
+        os_ << "<cxxflags>\"" << path_ << "\" <cflags>\"" << path_ << "\"\n\t";
       }
     }
   }
   ///////////
   // Handle build directory with default to "build"
   QString prop_value_;
-  if (a_project.property_value (butter_constants::butter_build_dir_name, prop_value_))
+  if ( a_project.property_value( butter_constants::butter_build_dir_name, prop_value_ ) )
   {
-  os_ << ": build-dir " << prop_value_ <<" ;\n";
+    os_ << ": build-dir " << prop_value_ << " ;\n";
   }
   else
   {
@@ -370,13 +373,13 @@ QString content_;
   }
 }
 a_sys.preamble.second = content_;
-!!!213033.cpp!!!	install_target(in a_target : UmlArtifact, inout a_os : ostream, in a_loc_var : unistr, in a_type : install_type, in a_isdoc : bool) : void
+!!!213033.cpp!!!	install_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_loc_var : unistr, in a_type : base_generator::install_type, in a_isdoc : bool) : void
 const QString name_ (a_target.name ());
 a_os << "install install_" << name_ << " : " << name_
         << " : <variant>release:<location>$(INSTALL_PREFIX)/$(" << a_loc_var << ") \n\t\t"
       << "<variant>debug:<location>$(DEBUG_PREFIX)/\""
       << root_dir ().create_relative (a_target.package ().src_path ()) << "\" ;\n";
-!!!212265.cpp!!!	start_target(in a_target : UmlArtifact, inout a_os : ostream, in a_build_file : unistr, in a_compiler : unistr, in a_type : target_type) : void
+!!!212265.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_build_file : unistr, in a_compiler : unistr, in a_type : base_generator::target_type) : void
 ////////////////////////
 // Reset variables
 this->other_target_type_.truncate (0);

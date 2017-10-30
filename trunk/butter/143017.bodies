@@ -18,7 +18,7 @@ if (! QFile::exists (CppSettings::rootDir ()))
 // Build basic tree.
 location *cache__; // Pointer to the last used location
 location *cpp_root_dir_location__; // Pointer to the location of CppSettings::rootDir ()
-std::auto_ptr<location> tree__; // Root of location tree.
+std::unique_ptr<location> tree__; // Root of location tree.
 location::find_or_create (CppSettings::rootDir (), tree__, cpp_root_dir_location__, cache__);
 // Move cache__ to base package.
 location::find_or_create (butter_constants::dirname (*item__), tree__, cpp_root_dir_location__, cache__);

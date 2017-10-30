@@ -22,7 +22,7 @@ compilation flags to associated target.</property>
 <property name="ldflags" source="artifact" type="library" subtypes="external" style="make">Add
 linker flags to associated target.</property>
 ENDDOC}} */
-    find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, section_name, true);
+    find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, this->style.name(), true);
 }
 else
 {
@@ -93,7 +93,7 @@ include directories to targets associated to the library.</property>
 ENDDOC}} */
   QString ignored_cflags_;
   find_hdr_link (a_target, a_includes, a_ldflags
-      , ignored_cflags_, section_name, true);
+      , ignored_cflags_, this->style.name(), true);
 }
 this->lib_set_.append (lib_body_);
 !!!210857.cpp!!!	assoc_source(in a_target : UmlArtifact, out a_os : QTextOStream, in a_filename : unistr, in a_basename : unistr, in a_src_inc : unistr, in a_src_flags : unistr, in a_isdoc : bool) : void
@@ -190,8 +190,8 @@ if (a_type == other)
 {
   ////////////////
   // Handle "other" library types specially.
-  QString other_type_ (this->other_target_type_.upper ());
-  this->find_replace (other_type_, '-', '_');
+  QString other_type_( this->other_target_type_.upper() );
+  other_type_.replace( QChar{'-'}, QChar{'_'} );
   QString cppflags_, compflags_;
   this->process_flags(a_include, a_cflags, cppflags_, compflags_);
   if (! compflags_.isEmpty ())

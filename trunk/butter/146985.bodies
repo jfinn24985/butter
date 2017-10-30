@@ -52,14 +52,14 @@ if (a_not_doc)
 }
 !!!194089.cpp!!!	get_artifact(inout a_loc : location, in a_name : unistr) : compound_artifact
 // Get deployment views from current location's packages
-std::auto_ptr< compound_artifact > Result;
+std::unique_ptr< compound_artifact > Result;
 if (a_loc.packages ().count () > 0)
 {
   QVector< UmlItem > docs_ = a_loc.find_uml_document (a_name);
   // If any documents found
   if (! docs_.isEmpty ())
   {
-    Result = std::auto_ptr< compound_artifact >(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
+    Result = std::unique_ptr< compound_artifact >(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
     for (unsigned int k_ = 1; k_ < docs_.count (); ++k_)
     {
       UmlItem * item_ = docs_.at (k_);
@@ -76,7 +76,7 @@ if (NULL == Result.get ())
 {
   // This will throw an error if no packages exist.
   // Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
-  Result = std::auto_ptr< compound_artifact >(new compound_artifact (*a_loc.create_uml_document (a_name)));
+  Result = std::unique_ptr< compound_artifact >(new compound_artifact (*a_loc.create_uml_document (a_name)));
 }
 return Result;
 !!!176681.cpp!!!	merge_string_list(inout a_list : unistr, in a_addition : unistr) : void
@@ -137,5 +137,5 @@ return Result;
 QString Result (a_target.package ().filename ());
 Result.append ("_");
 Result.append(const_cast< UmlArtifact& >(a_target).name ());
-find_replace (Result, '.', '_');
+Result.replace( QChar{'.'}, QChar{'_'} );
 return Result.upper ();

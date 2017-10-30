@@ -1,7 +1,7 @@
 format 75
 "butter" // butter
-  revision 184
-  modified_by 49 "finnerty"
+  revision 203
+  modified_by 48 "finnerty"
   // class settings
   //class diagram settings
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -35,7 +35,7 @@ format 75
 
 At the top-most project level the following optional property determines
 which type of jamfile to write:
- @butter style= boost|standard, the default is boost!
+ @butter style= boost|standard, the default is standard jam!
 
 For both library and executable artifacts there are the following optional properties.
 Note, however, that these are better set in the Jambase file that is not created by the
@@ -113,8 +113,8 @@ construction document, ie jamfile, makefile, jamroot etc."
     end
 
     class 159017 "basic_style"
-      visibility package stereotype "struct"
-      cpp_decl "${comment}${template}struct ${name}${inherit}
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
 {
 ${members}
 };
@@ -124,7 +124,7 @@ ${inlines}
       java_decl ""
       php_decl ""
       python_2_2 python_decl ""
-      idl_decl "${comment}struct ${name} {
+      idl_decl "${comment}interface ${name}${inherit} {
 ${members}};
 "
       explicit_switch_type ""
@@ -132,7 +132,7 @@ ${members}};
       comment "POD type for storing basic information about compound_document elements"
       class 149545 "write_factory_fn_t"
 	visibility package stereotype "typedef" base_type class_ref 146985 // base_generator
-	cpp_decl "${comment}typedef std::auto_ptr< ${type} > (*${name})();
+	cpp_decl "${comment}typedef std::unique_ptr< ${type} > (*${name})();
 "
 	java_decl ""
 	php_decl ""
@@ -143,8 +143,8 @@ ${members}};
 	
       end
 
-      attribute 161577 "comment_string"
-	const_attribute public explicit_type "unistr"
+      attribute 161577 "comment_string_"
+	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -154,8 +154,8 @@ ${members}};
 	comment "beginning of comment string"
       end
 
-      attribute 199337 "end_comment_string"
-	const_attribute public explicit_type "unistr"
+      attribute 199337 "end_comment_string_"
+	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -165,8 +165,8 @@ ${members}};
 	comment "ending of comment string"
       end
 
-      attribute 159145 "end_phrase"
-	const_attribute public explicit_type "unistr"
+      attribute 159145 "end_phrase_"
+	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -176,12 +176,12 @@ ${members}};
 	comment "A string indicating the end of a labelled part.
 
 The actual end-phrase will be
-end_phrase () end_end_phrase or \"end_phrase () {label} end_end_phrase\" where label is
+end_phrase_ () end_end_phrase_ or \"end_phrase_ () {label} end_end_phrase_\" where label is
 the name of the part. Note the \"{\" \"}\" are part of phrase."
       end
 
-      attribute 197801 "end_end_phrase"
-	const_attribute public explicit_type "unistr"
+      attribute 197801 "end_end_phrase_"
+	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -191,8 +191,8 @@ the name of the part. Note the \"{\" \"}\" are part of phrase."
 	comment "A string denoting the end-of-line for  the ending point of a part."
       end
 
-      attribute 159273 "start_phrase"
-	const_attribute public explicit_type "unistr"
+      attribute 159273 "start_phrase_"
+	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -202,12 +202,12 @@ the name of the part. Note the \"{\" \"}\" are part of phrase."
 	comment "A string denoting the starting point of a part.
 
 The actual start-phrase will be
-\"start_phrase {label} end_start_phrase\" where label is the name of the part.
+\"start_phrase_ {label} end_start_phrase_\" where label is the name of the part.
 Note the \"{\" \"}\" are part of phrase."
       end
 
-      attribute 197929 "end_start_phrase"
-	const_attribute public explicit_type "unistr"
+      attribute 197929 "end_start_phrase_"
+	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -217,8 +217,8 @@ Note the \"{\" \"}\" are part of phrase."
 	comment "A string denoting the end-of-line for  the starting point of a part."
       end
 
-      attribute 200489 "name"
-	const_attribute public explicit_type "unistr"
+      attribute 200489 "name_"
+	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -228,8 +228,8 @@ Note the \"{\" \"}\" are part of phrase."
 	comment "The name of the current style."
       end
 
-      attribute 162985 "factory"
-	public type class_ref 149545 // write_factory_fn_t
+      attribute 162985 "factory_"
+	private type class_ref 149545 // write_factory_fn_t
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -237,6 +237,26 @@ Note the \"{\" \"}\" are part of phrase."
 	python_decl ""
 	idl_decl ""
 	comment "Method to create base_generator object for this style."
+      end
+
+      extra_member 134576 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 134832 "basic_style"
+	stereotype "default"
+	private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile} = delete;"
+	
+	
+	
+	
       end
 
       operation 235689 "basic_style"
@@ -251,14 +271,14 @@ Note the \"{\" \"}\" are part of phrase."
 	  param in name "a_name" explicit_type "unistr"
 	  param in name "a_factory" type class_ref 149545 // write_factory_fn_t
 	cpp_decl "    ${comment}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}, ${t3} ${p3}${v3}, ${t4} ${p4}${v4}, ${t5} ${p5}${v5}, ${t6} ${p6}, const ${t7} & ${p7}${)}${volatile}
-: comment_string(${p0})
-, end_comment_string(${p1})
-, end_phrase(${p2})
-, end_end_phrase(${p3})
-, start_phrase(${p4})
-, end_start_phrase(${p5})
-, name(${p6})
-, factory(${p7})
+: comment_string_(${p0})
+, end_comment_string_(${p1})
+, end_phrase_(${p2})
+, end_end_phrase_(${p3})
+, start_phrase_(${p4})
+, end_start_phrase_(${p5})
+, name_(${p6})
+, factory_(${p7})
 {}
 "
 	
@@ -269,23 +289,165 @@ Note the \"{\" \"}\" are part of phrase."
 
       operation 250665 "basic_style"
 	stereotype "copy"
-	public explicit_return_type ""
+	private explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 159017 // basic_style
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile}
-: comment_string(${p0}.comment_string)
-, end_comment_string(${p0}.end_comment_string)
-, end_phrase(${p0}.end_phrase)
-, end_end_phrase(${p0}.end_end_phrase)
-, start_phrase(${p0}.start_phrase)
-, end_start_phrase(${p0}.end_start_phrase)
-, name(${p0}.name)
-, factory(${p0}.factory)
-{}"
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;"
 	
 	
 	
 	
+      end
+
+      operation 128176 "basic_style"
+	stereotype "move"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;"
+	
+	
+	
+	
+      end
+
+      operation 128304 "~basic_style"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} = default;
+"
+	
+	
+	
+	
+      end
+
+      operation 135088 "operator="
+	private return_type class_ref 159017 // basic_style
+	nparams 1
+	  param in name "source" type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract} = delete;
+"
+	
+	
+	
+	
+      end
+
+      extra_member 134704 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 155056 "comment_string"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} const& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 155184 "end_comment_string"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} const& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 141616 "end_phrase"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} const& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 141744 "end_end_phrase"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} const& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 148400 "end_start_phrase"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} const& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 148528 "name"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} const& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 148272 "start_phrase"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} const& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 141232 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
       end
 
       operation 195625 "comment_text"
@@ -303,19 +465,21 @@ ${body}
 	
 	
 	
-	comment "Prepend comment indicators to each line of a_text. Also adds a terminal newline if
+	comment "Transcribe the given text into a comment in the current
+build system.  In general this prepends comment indicators
+to each line of a_text and adds a terminal newline if
 a_text does not end in a newline."
       end
 
       operation 196905 "create_writer"
-	stereotype "auto_ptr"
+	stereotype "unique_ptr"
 	const public return_type class_ref 146985 // base_generator
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}std::unique_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}std::unique_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
 {
-  return (*factory)();
+  return (*factory_)();
 }
 "
 	
@@ -327,7 +491,7 @@ a_text does not end in a newline."
     end
 
     class 146985 "base_generator"
-      abstract visibility package 
+      abstract visibility protected 
       cpp_decl "${comment}${template}class ${name}${inherit}
 {
 ${members}
@@ -535,7 +699,7 @@ is used and what requirements there are for supporting it in each style."
       attribute 204329 "root_dir_"
 	private type class_ref 145833 // pathcmp
 	multiplicity "0..1"
-	stereotype "auto_ptr"
+	stereotype "unique_ptr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
 "
 	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
@@ -600,14 +764,14 @@ a_link and a_flag."
       end
 
       operation 194089 "get_artifact"
-	stereotype "auto_ptr"
+	stereotype "unique_ptr"
 	class_operation protected return_type class_ref 147113 // compound_artifact
 	nparams 2
 	  param inout name "a_loc" type class_ref 132393 // location
 	  param in name "a_name" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}std::unique_ptr< ${type} > ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}std::unique_ptr< ${type} > ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -623,7 +787,7 @@ initialise the document.
       end
 
       operation 176681 "merge_string_list"
-	class_operation protected explicit_return_type "void"
+	class_operation public explicit_return_type "void"
 	nparams 2
 	  param inout name "a_list" explicit_type "unistr"
 	  param in name "a_addition" explicit_type "unistr"
@@ -644,14 +808,16 @@ the new list is assigned back to a_list. Either list may be empty."
       end
 
       operation 192425 "section"
-	class_operation protected explicit_return_type "unistr"
+	class_operation public explicit_return_type "unistr"
 	nparams 2
 	  param in name "a_section" explicit_type "unistr"
 	  param in name "a_desc" explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
-${body}}
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}
+{
+${body}
+}
 "
 	java_def "  ${comment}${visibility}${final}${static}${abstract}${synchronized}${type} ${name}${(}${)}${throws}${staticnl}{
 ${body}}
@@ -662,25 +828,6 @@ ${body}}
 	comment "This method finds the substring in a_desc between \"${\"a_section\"}\"
 and the next \"${\".  If no \"${\" is found then nothing is returned. Used
 to get style specific data from target artifact description fields."
-      end
-
-      operation 237609 "find_replace"
-	class_operation public explicit_return_type "void"
-	nparams 3
-	  param inout name "a_str" explicit_type "unistr"
-	  param in name "find_char" explicit_type "char"
-	  param in name "rep_char" explicit_type "char"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract}
-{
-  for (unsigned int i(0); i < ${p0}.length(); ++i)
-  { a_str.constref(i) == ${p1} ? ${p0}.ref(i) = ${p2} : QChar (${p1}); }
-}
-"
-	
-	
-	
-	
-	comment "Replace every occurence of find_char with rep_char in a_str"
       end
 
       operation 244137 "root_dir"
@@ -708,7 +855,7 @@ to get style specific data from target artifact description fields."
 {
   BUTTER_ENSURE (! ${p0}.path ().isEmpty ()
   , \"<p><b>Program error:</b> Attempt to set project root directory to an empty path.</p>\");
-  root_dir_ = std::auto_ptr < pathcmp >(new pathcmp (${p0}));
+  root_dir_ = std::unique_ptr < pathcmp >(new pathcmp (${p0}));
 }
 "
 	
@@ -774,7 +921,7 @@ all uppercase version of location + target.)"
 	cpp_def "${inline}${class}::${name}${(}${)}${volatile} 
 :  individual_obj_()
 , other_target_type_()
-, root_dir_ (new pathcmp())
+, root_dir_( new pathcmp() )
 , target_NAME_()
 {}
 "
@@ -828,14 +975,6 @@ the Boost library."
 	  b parent class_ref 150697 // generator
       end
 
-      classrelation 177705 // <dependency>
-	relation 176937 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 177705 // <dependency>
-	  b parent class_ref 159017 // basic_style
-      end
-
       extra_member 130345 "friend generator"
 	
 	cpp "// Make out parent a friend.
@@ -846,18 +985,13 @@ friend class generator<bjam_generator>;" ""
 	idl ""
       end
 
-      extra_member 147497 "bjam_style"
-	
-	cpp "" "static QString const section_name (\"boost\");
-extern butter::basic_style const bjam_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::bjam_generator::create);
-
-
+      classrelation 183472 // style (<directional composition>)
+	relation 183344 *-->
+	  a role_name "style" multiplicity "1" init_value "( \"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", \"boost\", &butter::bjam_generator::create )" class_relation const_relation public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	java ""
-	php ""
-	python ""
-	idl ""
-	comment "Instance of basic_style object with boost jam settings."
+	    classrelation_ref 183472 // style (<directional composition>)
+	  b parent class_ref 159017 // basic_style
       end
 
       attribute 164905 "build_file_name"
@@ -885,7 +1019,7 @@ extern butter::basic_style const bjam_style (\"#\", \"\", \"##END:\", \"\", \"##
       end
 
       attribute 150057 "rules_name"
-	class_attribute const_attribute private explicit_type "unistr"
+	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"local.jam\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -898,7 +1032,7 @@ extern butter::basic_style const bjam_style (\"#\", \"\", \"##END:\", \"\", \"##
       end
 
       attribute 150185 "default_rules"
-	class_attribute const_attribute private explicit_type "str"
+	class_attribute const_attribute public explicit_type "str"
 	init_value "{ \"#\\n\"
 , \"# local.jam\\n\"
 , \"#\\n\"
@@ -952,6 +1086,114 @@ using this string.
 	comment "This name of the project"
       end
 
+      extra_member 154672 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 153385 "bjam_generator"
+	private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile}
+: is_other_ ()
+, project_name_ ()
+{}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+      end
+
+      operation 153513 "~bjam_generator"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
+      operation 153257 "bjam_generator"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 133545 // bjam_generator
+	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile} = delete;
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 182576 "bjam_generator"
+	stereotype "move"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 133545 // bjam_generator
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 153129 "operator="
+	private return_type class_ref 133545 // bjam_generator
+	nparams 1
+	  param in name "source" type class_ref 133545 // bjam_generator
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 199977 "create"
+	stereotype "unique_ptr"
+	class_operation public return_type class_ref 146985 // base_generator
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}std::unique_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}std::unique_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+  std::unique_ptr< ${type} > Result (new bjam_generator);
+  return Result;
+}
+"
+	
+	
+	
+	
+	comment "Create bjam generator object.s"
+      end
+
+      extra_member 154800 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
       operation 212649 "assoc_library"
 	private explicit_return_type "void"
 	nparams 5
@@ -998,68 +1240,6 @@ ${body}}
 	
 	comment "This method scans a_target for its direct sources and
 direct and indirect dependencies. "
-      end
-
-      operation 153385 "bjam_generator"
-	private explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile}
-: is_other_ ()
-, project_name_ ()
-{}
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-      end
-
-      operation 153513 "~bjam_generator"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
-"
-	
-	
-	
-	
-      end
-
-      operation 153257 "bjam_generator"
-	stereotype "copy"
-	private explicit_return_type ""
-	nparams 1
-	  param in name "source" type class_ref 133545 // bjam_generator
-	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-	comment "no copy"
-      end
-
-      operation 199977 "create"
-	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // base_generator
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
-{
-  std::auto_ptr< ${type} > Result (new bjam_generator);
-  return Result;
-}
-"
-	
-	
-	
-	
-	comment "Create bjam generator object.s"
       end
 
       operation 153001 "descendent_link"
@@ -1174,18 +1354,6 @@ ${body}}
 	
 	
 	comment "Create an install target."
-      end
-
-      operation 153129 "operator="
-	private return_type class_ref 133545 // bjam_generator
-	nparams 1
-	  param in name "source" type class_ref 133545 // bjam_generator
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
-	
-	
-	
-	
-	comment "no assign"
       end
 
       operation 212265 "start_target"
@@ -1849,18 +2017,13 @@ friend class generator<cmake_generator>;" ""
 	idl ""
       end
 
-      extra_member 147625 "cmake_style"
-	
-	cpp "" "static QString const section_name (\"cmake\");
-extern butter::basic_style const cmake_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::cmake_generator::create);
-
-
+      classrelation 182960 // style (<directional composition>)
+	relation 182832 *-->
+	  a role_name "style" multiplicity "1" init_value "( \"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", \"cmake\", &butter::cmake_generator::create )" class_relation const_relation public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	java ""
-	php ""
-	python ""
-	idl ""
-	comment "Instance of basic_style object with cmake settings."
+	    classrelation_ref 182960 // style (<directional composition>)
+	  b parent class_ref 159017 // basic_style
       end
 
       attribute 191145 "build_file_name"
@@ -1888,7 +2051,7 @@ extern butter::basic_style const cmake_style (\"#\", \"\", \"##END:\", \"\", \"#
       end
 
       attribute 196393 "cmake_minimum_required_"
-	class_attribute const_attribute private explicit_type "unistr"
+	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"cmake_minimum_required(VERSION 2.6)\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -1901,7 +2064,7 @@ extern butter::basic_style const cmake_style (\"#\", \"\", \"##END:\", \"\", \"#
       end
 
       attribute 191913 "default_rules"
-	class_attribute const_attribute private explicit_type "str"
+	class_attribute const_attribute public explicit_type "str"
 	init_value "{ \"#\\n\"
 , \"# local.cmake\\n\"
 , \"#\\n\"
@@ -1936,7 +2099,7 @@ using this string.
       end
 
       attribute 192809 "rules_name"
-	class_attribute const_attribute private explicit_type "unistr"
+	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"local.cmake\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -2014,6 +2177,123 @@ using this string.
 	idl_decl ""
       end
 
+      extra_member 155056 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 231209 "cmake_generator"
+	private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}
+: lib_set_ ()
+, project_name_ ()
+, depend_set_ ()
+, is_static_type_ (false)
+, language_set_ ()
+, sys_buildfile_ ()
+{}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "Create a generator from the top-level a_project
+
+\\pre a_project.parent = nul"
+      end
+
+      operation 231465 "cmake_generator"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 157737 // cmake_generator
+	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile} = delete;
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 182704 "cmake_generator"
+	stereotype "move"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 157737 // cmake_generator
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 231849 "operator="
+	private return_type class_ref 157737 // cmake_generator
+	nparams 1
+	  param in name "source" type class_ref 157737 // cmake_generator
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract} = delete;"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 231337 "~cmake_generator"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
+      operation 230697 "create"
+	stereotype "unique_ptr"
+	class_operation public return_type class_ref 146985 // base_generator
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}std::unique_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}std::unique_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+  std::unique_ptr< ${type} > Result (new cmake_generator);
+  return Result;
+}
+"
+	
+	
+	
+	
+	comment "Create bjam generator object.s"
+      end
+
+      extra_member 154928 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
       operation 230441 "assoc_library"
 	private explicit_return_type "void"
 	nparams 5
@@ -2069,61 +2349,6 @@ Responsibilites
  - compiler
 - Other
  - set compilation for individual "
-      end
-
-      operation 231209 "cmake_generator"
-	private explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${)}
-: lib_set_ ()
-, project_name_ ()
-, depend_set_ ()
-, is_static_type_ (false)
-, language_set_ ()
-, sys_buildfile_ ()
-{}
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-	comment "Create a generator from the top-level a_project
-
-\\pre a_project.parent = nul"
-      end
-
-      operation 231337 "~cmake_generator"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
-"
-	
-	
-	
-	
-      end
-
-      operation 230697 "create"
-	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // base_generator
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
-{
-  std::auto_ptr< ${type} > Result (new cmake_generator);
-  return Result;
-}
-"
-	
-	
-	
-	
-	comment "Create bjam generator object.s"
       end
 
       operation 230825 "descendent_link"
@@ -2196,22 +2421,6 @@ data is written in local-targets directly where it is
 referenced."
       end
 
-      operation 231465 "cmake_generator"
-	stereotype "copy"
-	private explicit_return_type ""
-	nparams 1
-	  param in name "source" type class_ref 157737 // cmake_generator
-	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-	comment "no copy"
-      end
-
       operation 231593 "initialise"
 	private explicit_return_type "void"
 	nparams 3
@@ -2280,18 +2489,6 @@ ${body}
 	comment "Convert input string into CMake allowed string.  This
 means converting () to {} and OUTPUTDIR to 
 CMAKE_BINARY_DIR"
-      end
-
-      operation 231849 "operator="
-	private return_type class_ref 157737 // cmake_generator
-	nparams 1
-	  param in name "source" type class_ref 157737 // cmake_generator
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
-	
-	
-	
-	
-	comment "no assign"
       end
 
       operation 233385 "preamble"
@@ -2367,7 +2564,7 @@ pair< string, string > that represent the parts of the artifact. These can
 be unlabelled or labelled depending on the content of the first entry in the
 pair.
 
-* labelled parts are enclosed in \"start_phrase\"/\"end_phrase\" markers.
+* labelled parts are enclosed in \"start_phrase_\"/\"end_phrase_\" markers.
 * unlabelled parts are any non-whitespace outside part markers.
 
 Standard build-file form is a compound_artifact with something like
@@ -2378,6 +2575,14 @@ Standard build-file form is a compound_artifact with something like
 [close] ...
 
 * destructor writes parts to artifact."
+      classrelation 155696 // <dependency>
+	relation 155568 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 155696 // <dependency>
+	  b parent class_ref 159017 // basic_style
+      end
+
       classrelation 154921 // <dependency>
 	relation 154153 -_->
 	  a default
@@ -2585,7 +2790,7 @@ ${body}
 	private explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 147113 // compound_artifact
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;
 "
 	
 	
@@ -2664,7 +2869,7 @@ artifact. "
 	private return_type class_ref 147113 // compound_artifact
 	nparams 1
 	  param in name "source" type class_ref 147113 // compound_artifact
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract} = delete;
 "
 	
 	
@@ -2710,6 +2915,408 @@ ${body}
 
       operation 198057 "target"
 	public return_type class_ref 148265 // string_pair_t
+	nparams 1
+	  param in name "a_label" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Get a reference to the text for target with a_label. Insert if necessary"
+      end
+    end
+
+    class 168880 "compound_document"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "An artifact that is made up of multiple-parts. It exposes an ordered list of 
+pair< string, string > that represent the parts of the artifact. These can
+be unlabelled or labelled depending on the content of the first entry in the
+pair.
+
+* labelled parts are enclosed in \"start_phrase_\"/\"end_phrase_\" markers.
+* unlabelled parts are any non-whitespace outside part markers.
+
+Standard build-file form is a compound_artifact with something like
+[version] version information
+[date] date
+[preamble] ...
+[target:....] ...
+[close] ...
+
+* destructor writes parts to artifact."
+      classrelation 204976 // <dependency>
+	relation 204848 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 204976 // <dependency>
+	  b parent class_ref 159017 // basic_style
+      end
+
+      classrelation 205104 // <dependency>
+	relation 204976 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 205104 // <dependency>
+	  b parent class_ref 137001 // butter_constants
+      end
+
+      classrelation 205232 // <dependency>
+	relation 205104 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 205232 // <dependency>
+	  b parent class_ref 145833 // pathcmp
+      end
+
+      classrelation 205360 // <dependency>
+	relation 205232 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 205360 // <dependency>
+	  b parent class_ref 148393 // style
+      end
+
+      class 169008 "string_pair_t"
+	visibility package stereotype "typedef" explicit_base_type "unistr"
+	cpp_decl "${comment}typedef std::pair< ${type}, ${type} > ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	
+      end
+
+      class 169136 "value_type"
+	visibility package stereotype "typedef" explicit_base_type "unistr"
+	cpp_decl "${comment}typedef std::pair< ${type}, string_pair_t > ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	
+      end
+
+      attribute 141360 "close"
+	private type class_ref 148265 // string_pair_t
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The close texts"
+      end
+
+      attribute 141488 "date"
+	private type class_ref 148265 // string_pair_t
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The date texts"
+      end
+
+      attribute 141616 "end"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Any text at the end of the document."
+      end
+
+      attribute 141744 "preamble"
+	private type class_ref 148265 // string_pair_t
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The preamble texts"
+      end
+
+      attribute 141872 "style_"
+	const_attribute private type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}& ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "reference to style object"
+      end
+
+      attribute 142000 "targets_"
+	private type class_ref 148265 // string_pair_t
+	multiplicity "*"
+	stereotype "dict"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The artifact's target parts."
+      end
+
+      attribute 142128 "target_order_"
+	private explicit_type "unistr"
+	multiplicity "*"
+	stereotype "valuelist"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The list of key in encounter-order."
+      end
+
+      attribute 142256 "version"
+	private type class_ref 148265 // string_pair_t
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The version texts."
+      end
+
+      extra_member 162864 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 206384 "compound_document"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}${volatile} 
+${body}
+"
+	
+	
+	
+	
+	comment "Construct and initialise object from a_art"
+      end
+
+      operation 206512 "compound_document"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "a_style" type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile} 
+${body}
+"
+	
+	
+	
+	
+	comment "Construct and initialise object from a_art"
+      end
+
+      operation 206640 "~compound_document"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} {}
+"
+	
+	
+	
+	
+      end
+
+      operation 206768 "compound_document"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 168880 // compound_document
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;
+"
+	
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 207792 "compound_document"
+	stereotype "move"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 168880 // compound_document
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
+"
+	
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 207280 "operator="
+	private return_type class_ref 168880 // compound_document
+	nparams 1
+	  param in name "source" type class_ref 168880 // compound_document
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract} = delete;
+"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      extra_member 162992 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 206896 "deserialise"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "a_is" type class_ref 163113 // QTextIStream
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Reset object and read-in a new artifact.
+
+The version, date, preamble and close are read as-is. Unlabelled sections preceding
+targets are read, but the content of the target section is left blank."
+      end
+
+      operation 207024 "has_target"
+	const public explicit_return_type "bool"
+	nparams 1
+	  param in name "a_label" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Check for the existance of a target."
+      end
+
+      operation 207152 "merge"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_other" type class_ref 168880 // compound_document
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Merges the content of a_art into this artifact.
+
+Merge process:
+* Create temporary compound_artifact from a_art.
+* If any labelled sections exist in both artifacts then the content 
+from a_art is appended. If an unlabelled section exists before the
+labelled section then is is appended to any preceding unlabelled
+section or inserted if no existing labelled section exists.
+* If any sections remain then they are appended inorder to this 
+artifact. "
+      end
+
+      operation 207408 "reset"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Emptys any target, preamble and close labelled sections"
+      end
+
+      operation 207536 "serialise"
+	const public explicit_return_type "void"
+	nparams 1
+	  param out name "a_os" type class_ref 162985 // QTextOStream
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Output the parts into a_os"
+      end
+
+      operation 207664 "target"
+	public return_type class_ref 169008 // string_pair_t
 	nparams 1
 	  param in name "a_label" explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
@@ -2784,6 +3391,15 @@ and no matching closing quote was found."
 	
       end
 
+      extra_member 156336 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
       operation 241193 "const_token_iterator"
 	public explicit_return_type ""
 	nparams 0
@@ -2842,6 +3458,7 @@ and no matching closing quote was found."
       end
 
       operation 241449 "const_token_iterator"
+	stereotype "copy"
 	public explicit_return_type ""
 	nparams 1
 	  param in name "orig" type class_ref 161321 // const_token_iterator
@@ -2853,6 +3470,40 @@ and no matching closing quote was found."
 , esc_(orig.esc_)
 , sep_(orig.sep_)
 {}"
+	
+	
+	
+	
+      end
+
+      operation 183728 "const_token_iterator"
+	stereotype "move"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "orig" type class_ref 161321 // const_token_iterator
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${)}${volatile}
+: orig_( std::move( orig.orig_ ) )
+, tmp_( std::move( orig.tmp_ ) )
+, s_( std::move( orig.s_ ) )
+, e_( std::move( orig.e_ ) )
+, esc_( std::move( orig.esc_ ) )
+, sep_( std::move( orig.sep_ ) )
+{}"
+	
+	
+	
+	
+      end
+
+      operation 241705 "operator ="
+	public return_type class_ref 161321 // const_token_iterator
+	nparams 1
+	  param in name "orig" type class_ref 161321 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract}
+{
+  this->swap( orig );
+  return *this;
+}"
 	
 	
 	
@@ -2879,19 +3530,13 @@ and no matching closing quote was found."
 	
       end
 
-      operation 241705 "operator ="
-	public return_type class_ref 161321 // const_token_iterator
-	nparams 1
-	  param in name "orig" type class_ref 161321 // const_token_iterator
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract}
-{
-  this->swap (orig);
-  return *this;
-}"
+      extra_member 156208 "METHODS"
 	
-	
-	
-	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
       end
 
       operation 241833 "operator ++"
@@ -3130,7 +3775,7 @@ ${inlines}
       explicit_switch_type ""
       
       comment "Writer class for recursive template idiom.  This contains the implementation for
-the create_system () factory method. Derived class writers can use this class to handle
+the create_system () factory_ method. Derived class writers can use this class to handle
 the boiler-plate process of traversing the location and artifact sets - they implement
 descendent_link, external_target, initialise and local_target."
       classrelation 162857 // <generalisation>
@@ -3139,6 +3784,14 @@ descendent_link, external_target, initialise and local_target."
 	    cpp default "${type}"
 	    classrelation_ref 162857 // <generalisation>
 	  b parent class_ref 146985 // base_generator
+      end
+
+      classrelation 155568 // <dependency>
+	relation 155440 -_->
+	  a package
+	    cpp default "#include in header"
+	    classrelation_ref 155568 // <dependency>
+	  b parent class_ref 159017 // basic_style
       end
 
       classrelation 177577 // <dependency>
@@ -3376,18 +4029,13 @@ friend class generator<gmake_generator>;" ""
 	idl ""
       end
 
-      extra_member 147753 "gmake_style"
-	
-	cpp "" "static QString const section_name (\"make\");
-extern butter::basic_style const gmake_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::gmake_generator::create);
-
-
+      classrelation 183216 // style (<directional composition>)
+	relation 183088 *-->
+	  a role_name "style" multiplicity "1" init_value "( \"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", \"make\", &butter::gmake_generator::create )" class_relation const_relation public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	java ""
-	php ""
-	python ""
-	idl ""
-	comment "Instance of basic_style object with cmake settings."
+	    classrelation_ref 183216 // style (<directional composition>)
+	  b parent class_ref 159017 // basic_style
       end
 
       attribute 168745 "build_file_name"
@@ -3850,7 +4498,7 @@ rules appear in the order specified by rules_name.
       end
 
       attribute 144297 "rules_name"
-	class_attribute const_attribute private explicit_type "unistr"
+	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"M_sys.mk M_cl.mk M_gcc.mk M_unix.mk M_Windows_NT.mk\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -3884,6 +4532,119 @@ separated list of the names of these files."
 	python_decl ""
 	idl_decl ""
 	comment "The target name as used by make"
+      end
+
+      extra_member 155312 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 160553 "gmake_generator"
+	private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}
+: lib_set_ ()
+, qualified_target_name_ ()
+{}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "Create a generator from the top-level a_project
+
+\\pre a_project.parent = nul"
+      end
+
+      operation 160297 "gmake_generator"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 135849 // gmake_generator
+	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile} = delete;
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 182832 "gmake_generator"
+	stereotype "move"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 135849 // gmake_generator
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 160169 "operator="
+	private return_type class_ref 135849 // gmake_generator
+	nparams 1
+	  param in name "source" type class_ref 135849 // gmake_generator
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract} = delete;"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 160425 "~gmake_generator"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
+      operation 202921 "create"
+	stereotype "unique_ptr"
+	class_operation public return_type class_ref 146985 // base_generator
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}std::unique_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}std::unique_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+  std::unique_ptr< ${type} > Result (new gmake_generator);
+  return Result;
+}
+"
+	
+	
+	
+	
+	comment "Create bjam generator object.s"
+      end
+
+      extra_member 155184 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
       end
 
       operation 210729 "assoc_library"
@@ -3950,25 +4711,6 @@ the target artifact that is associated to the source.</property>
 \\endcond XDOC"
       end
 
-      operation 202921 "create"
-	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // base_generator
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
-{
-  std::auto_ptr< ${type} > Result (new gmake_generator);
-  return Result;
-}
-"
-	
-	
-	
-	
-	comment "Create bjam generator object.s"
-      end
-
       operation 161065 "descendent_link"
 	private explicit_return_type "void"
 	nparams 3
@@ -4032,54 +4774,6 @@ data is written in local-targets directly where it is
 referenced."
       end
 
-      operation 160553 "gmake_generator"
-	private explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${)}
-: lib_set_ ()
-, qualified_target_name_ ()
-{}
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-	comment "Create a generator from the top-level a_project
-
-\\pre a_project.parent = nul"
-      end
-
-      operation 160425 "~gmake_generator"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
-"
-	
-	
-	
-	
-      end
-
-      operation 160297 "gmake_generator"
-	stereotype "copy"
-	private explicit_return_type ""
-	nparams 1
-	  param in name "source" type class_ref 135849 // gmake_generator
-	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-	comment "no copy"
-      end
-
       operation 160809 "initialise"
 	private explicit_return_type "void"
 	nparams 3
@@ -4128,18 +4822,6 @@ ${body}}
 Responsibilites
 - Properties
  - install (library, executable and document)"
-      end
-
-      operation 160169 "operator="
-	private return_type class_ref 135849 // gmake_generator
-	nparams 1
-	  param in name "source" type class_ref 135849 // gmake_generator
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
-	
-	
-	
-	
-	comment "no assign"
       end
 
       operation 236457 "process_flags"
@@ -4287,18 +4969,13 @@ friend class generator<jam_generator>;" ""
 	idl ""
       end
 
-      extra_member 147881 "jam_style"
-	
-	cpp "" "static QString const section_name (\"standard\");
-extern butter::basic_style const jam_style (\"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", section_name, &butter::jam_generator::create);
-
-
+      classrelation 182576 // style (<directional composition>)
+	relation 182448 *-->
+	  a role_name "style" multiplicity "1" init_value "( \"#\", \"\", \"##END:\", \"\", \"##START:\", \"\", \"standard\", &butter::jam_generator::create )" class_relation const_relation public
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	java ""
-	php ""
-	python ""
-	idl ""
-	comment "Instance of basic_style object with cmake settings."
+	    classrelation_ref 182576 // style (<directional composition>)
+	  b parent class_ref 159017 // basic_style
       end
 
       attribute 166569 "build_file_name"
@@ -4321,53 +4998,6 @@ extern butter::basic_style const jam_style (\"#\", \"\", \"##END:\", \"\", \"##S
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-      end
-
-      attribute 166825 "comment_string"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"#\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 167081 "end_phrase"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"##END:\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 166953 "start_phrase"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"##START:\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      attribute 142889 "section_name"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"standard\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl "  ${comment}${visibility}${static}${final}${transient}${volatile}${type} ${name}${value};
-"
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The label for description 'sections' and the value of 
-the style for this buildfile type."
       end
 
       attribute 140073 "default_rules"
@@ -4475,7 +5105,7 @@ the style for this buildfile type."
       end
 
       attribute 144169 "rules_name"
-	class_attribute const_attribute private explicit_type "unistr"
+	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"Jamrules\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -4518,6 +5148,120 @@ the style for this buildfile type."
 	python_decl ""
 	idl_decl ""
 	comment "The full target name for the currently processing target (defined in start_target)"
+      end
+
+      extra_member 155568 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 154921 "jam_generator"
+	private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}
+: lib_defn_ ()
+, grist_ ()
+, qualified_target_name_ ()
+{}
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "Main ctor, takes top-level a_project.
+
+\\pre a_project.parent = nul"
+      end
+
+      operation 155177 "jam_generator"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 134697 // jam_generator
+	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile} = delete;
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 182960 "jam_generator"
+	stereotype "move"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 134697 // jam_generator
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
+"
+	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
+${body}}
+"
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 155689 "operator="
+	private return_type class_ref 134697 // jam_generator
+	nparams 1
+	  param in name "source" type class_ref 134697 // jam_generator
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract} = delete;"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      operation 155049 "~jam_generator"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
+"
+	
+	
+	
+	
+      end
+
+      operation 201513 "create"
+	stereotype "unique_ptr"
+	class_operation public return_type class_ref 146985 // base_generator
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}std::unique_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}std::unique_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+{
+  std::unique_ptr< ${type} > Result (new jam_generator);
+  return Result;
+}
+"
+	
+	
+	
+	
+	comment "Create bjam generator object.s"
+      end
+
+      extra_member 155440 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
       end
 
       operation 209065 "assoc_library"
@@ -4610,25 +5354,6 @@ ${body}
 	comment "Check a_source for butter properties and add information to a_os.
 a_is_source is true of a_source stereotype is \"source\" and false
 if stereotype is \"document\"."
-      end
-
-      operation 201513 "create"
-	stereotype "auto_ptr"
-	class_operation public return_type class_ref 146985 // base_generator
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}${)}${const}${volatile}${staticnl}
-{
-  std::auto_ptr< ${type} > Result (new jam_generator);
-  return Result;
-}
-"
-	
-	
-	
-	
-	comment "Create bjam generator object.s"
       end
 
       operation 158121 "descendent_link"
@@ -4759,67 +5484,6 @@ Responsibilites
  - install (library, executable and document)"
       end
 
-      operation 154921 "jam_generator"
-	private explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${)}
-: lib_defn_ ()
-, grist_ ()
-, qualified_target_name_ ()
-{}
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-	comment "Main ctor, takes top-level a_project.
-
-\\pre a_project.parent = nul"
-      end
-
-      operation 155049 "~jam_generator"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} throw () {}
-"
-	
-	
-	
-	
-      end
-
-      operation 155177 "jam_generator"
-	stereotype "copy"
-	private explicit_return_type ""
-	nparams 1
-	  param in name "source" type class_ref 134697 // jam_generator
-	cpp_decl "    ${comment}${name}${(}const ${t0} &${)}${volatile};
-"
-	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
-${body}}
-"
-	
-	
-	
-	comment "no copy"
-      end
-
-      operation 155689 "operator="
-	private return_type class_ref 134697 // jam_generator
-	nparams 1
-	  param in name "source" type class_ref 134697 // jam_generator
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} &${)}${const}${volatile}${abstract};"
-	
-	
-	
-	
-	comment "no assign"
-      end
-
       operation 208937 "start_target"
 	private explicit_return_type "void"
 	nparams 5
@@ -4889,6 +5553,14 @@ Responsibilities:
 	    cpp default "#include in source"
 	    classrelation_ref 176425 // <dependency>
 	  b parent class_ref 1280 // CppSettings
+      end
+
+      classrelation 155824 // <dependency>
+	relation 155696 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 155824 // <dependency>
+	  b parent class_ref 159017 // basic_style
       end
 
       classrelation 145193 // <dependency>
@@ -4970,7 +5642,7 @@ Responsibilities:
       end
 
       operation 143145 "add_package"
-	private explicit_return_type "void"
+	public explicit_return_type "void"
 	nparams 1
 	  param inout name "a_package" type class_ref 7937 // UmlPackage
 	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -4984,7 +5656,9 @@ ${body}}
 	
 	
 	
-	comment "Add the package as a client of the location."
+	comment "Add the package as a client of the location.
+
+\\pre path of a_package = full_path"
       end
 
       operation 167081 "children"
@@ -5027,7 +5701,7 @@ at a_path."
       end
 
       operation 187433 "create_as_child"
-	private return_type class_ref 132393 // location
+	public return_type class_ref 132393 // location
 	nparams 1
 	  param in name "a_path" type class_ref 145833 // pathcmp
 	cpp_decl "    ${comment}${static}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
@@ -5042,18 +5716,20 @@ ${body}
 	
 	
 	comment "Create a new location object as a descendent of this location.  The
-created object is owned by this object or one of its descendents."
+created object is owned by this object or one of its descendents.
+
+\\pre full_path.has_subpath( a_path )"
       end
 
       operation 187561 "create_common_parent"
-	stereotype "auto_ptr"
 	class_operation private return_type class_ref 132393 // location
 	nparams 2
-	  param inout name "a_base" type class_ref 132393 // location
+	  param in name "a_base" type class_ref 132393 // location
 	  param in name "a_path" type class_ref 145833 // pathcmp
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr< ${type} > ${name}${(}std::auto_ptr< ${t0} > ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}std::unique_ptr< ${type} > ${name}${(}std::unique_ptr< ${t0} > ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}std::auto_ptr< ${type} > ${class}::${name}${(}std::auto_ptr< ${t0} > ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}{
+	cpp_def "${inline}std::unique_ptr< ${type} > ${class}::${name}${(}std::unique_ptr< ${t0} > ${p0}, const ${t1} & ${p1}${)}${const}${volatile}
+{
 ${body}
 }
 "
@@ -5063,7 +5739,13 @@ ${body}
 	
 	comment "Create a location object that is a parent of the a_base 
 location and a_path. Only base location objects may call 
-this method.
+this method. The pointer a_base should refer to allocated
+memory which the method takes over management of. The
+return is either a new root location or a_base. The
+returned pointer should be managed by the caller.
+
+** This reroots the location tree. The returned object
+is the new root of the location tree. **
 
 \\pre nul = a_base.parent"
       end
@@ -5155,11 +5837,12 @@ ${body}}
 	
 	
 	
-	comment "This gives the fully qualifed path of the location."
+	comment "This gives the fully qualifed path of the location (relative to
+the base path.)"
       end
 
       operation 142633 "location"
-	private explicit_return_type ""
+	public explicit_return_type ""
 	nparams 1
 	  param in name "a_path" type class_ref 145833 // pathcmp
 	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
@@ -5173,7 +5856,8 @@ ${body}}
 	
 	
 	
-	comment "Ctor for location tree root objects"
+	comment "Ctor for location tree root objects (a_path is full
+path or relative to a base path.)"
       end
 
       operation 144425 "location"
@@ -5192,7 +5876,8 @@ ${body}}
 	
 	
 	
-	comment "Ctor for child location objects"
+	comment " Ctor for child location objects (a_path is relative to the parent
+ location.) Not to be called directly, use \"create_as_child\"."
       end
 
       operation 142761 "~location"
@@ -5215,7 +5900,7 @@ ${body}}
 	private explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 132393 // location
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
 ${body}}
@@ -5230,7 +5915,7 @@ ${body}}
 	private return_type class_ref 132393 // location
 	nparams 1
 	  param in name "source" type class_ref 132393 // location
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract} = delete;
 "
 	
 	
@@ -5278,9 +5963,9 @@ ${body}}
 	class_operation public return_type class_ref 132393 // location
 	nparams 1
 	  param inout name "a_item" type class_ref 7553 // UmlItem
-	cpp_decl "    ${comment}${static}${virtual}std::auto_ptr<${type}> ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}std::unique_ptr<${type}> ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}std::auto_ptr<${type}> ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}std::unique_ptr<${type}> ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -5317,6 +6002,7 @@ ${body}}
       end
 
       operation 146601 "serialize"
+	stereotype "debug"
 	const public explicit_return_type "void"
 	nparams 1
 	  param inout name "a_os" type class_ref 162985 // QTextOStream
@@ -5400,50 +6086,142 @@ not reference the operating system.  This means that comparisons etc
 are for absolute paths without resolving symlinks."
       classrelation 167849 // <generalisation>
 	relation 167081 ---|>
-	  a public
+	  a private
 	    cpp default "${type}"
 	    classrelation_ref 167849 // <generalisation>
 	  b parent class_ref 155433 // QDir
       end
 
-      operation 186025 "create_common"
-	const public explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_other" type class_ref 145833 // pathcmp
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+      attribute 181673 "default_separator_"
+	class_attribute const_attribute private explicit_type "char"
+	multiplicity "2"
+	init_value "\"/\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Generate a path that has the greatest shared path between this and a_other.
-
-Will returnempty string when paths are on different drives."
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Separator to use regardless of OS"
       end
 
-      operation 186281 "create_relative"
-	const public explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_target" type class_ref 145833 // pathcmp
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+      attribute 181801 "other_separator_"
+	class_attribute const_attribute private explicit_type "char"
+	multiplicity "2"
+	init_value "\"\\\\\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "separator used on other OS"
+      end
+
+      extra_member 147760 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 185129 "pathcmp"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile}
+: QDir ()
+{}
+"
+	
+	
+	
+	
+	comment "Default ctor"
+      end
+
+      operation 184617 "pathcmp"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "a_path" explicit_type "unistr"
+	cpp_decl "    ${comment}${name}${(}${t0} ${p0}${)}${volatile}
+: QDir (normalise (${p0}))
+{}
+"
+	
+	
+	
+	
+	comment "Construct from string"
+      end
+
+      operation 214185 "pathcmp"
+	stereotype "base"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 155433 // QDir
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile}
+: QDir( normalise( ${p0}.path() ) )
+{}
+"
+	
+	
+	
+	
+	comment "Construct from base class"
+      end
+
+      operation 184745 "~pathcmp"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile}
+{}
+"
+	
+	
+	
+	
+      end
+
+      operation 184873 "pathcmp"
+	stereotype "copy"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile}
+: QDir (source)
+{}
+"
+	
+	
+	
+	
+      end
+
+      operation 185001 "operator="
+	public return_type class_ref 145833 // pathcmp
+	nparams 1
+	  param in name "source" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
 {
-${body}
+  this->setPath( ${p0}.path() );
+  return *this;
 }
 "
 	
 	
 	
 	
-	comment "Build a relative path from here to a_target.
+      end
 
-canonical (path_ + relative (a_target)) <==> a_target"
+      extra_member 148016 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
       end
 
       operation 185385 "depth"
@@ -5522,6 +6300,82 @@ ${body}
 	comment "Get part of path at position a_count"
       end
 
+      extra_member 129193 "operator=="
+	
+	cpp "friend bool operator==(const pathcmp &a_lhs, const pathcmp &a_rhs)
+{
+  return a_lhs.equality (a_rhs);
+}" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      extra_member 148144 "ACCESS (base class)"
+	
+	cpp "
+using QDir::path;
+using QDir::exists;
+using QDir::isRelative;
+
+" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	comment "using directives to get base class methods."
+      end
+
+      extra_member 147888 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 186025 "create_common"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_other" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Generate a path that has the greatest shared path between this and a_other.
+
+Will returnempty string when paths are on different drives."
+      end
+
+      operation 186281 "create_relative"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_target" type class_ref 145833 // pathcmp
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Build a relative path from here to a_target.
+
+canonical (path_ + relative (a_target)) <==> a_target"
+      end
+
       operation 240041 "mkpath"
 	const public explicit_return_type "bool"
 	nparams 0
@@ -5570,22 +6424,6 @@ ${body}
 	comment "Convert string to form with all separators as \"/\" (function part)"
       end
 
-      operation 185001 "operator="
-	public return_type class_ref 145833 // pathcmp
-	nparams 1
-	  param in name "source" type class_ref 145833 // pathcmp
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
-{
-  setPath (${p0}.path ());
-  return *this;
-}
-"
-	
-	
-	
-	
-      end
-
       operation 216105 "operator/"
 	const public return_type class_ref 145833 // pathcmp
 	nparams 1
@@ -5616,18 +6454,6 @@ ${body}
 	
 	
 	comment "Concatenate 2 paths"
-      end
-
-      extra_member 129193 "operator=="
-	
-	cpp "friend bool operator==(const pathcmp &a_lhs, const pathcmp &a_rhs)
-{
-  return a_lhs.equality (a_rhs);
-}" ""
-	java ""
-	php ""
-	python ""
-	idl ""
       end
 
       operation 224169 "path_localised"
@@ -5664,90 +6490,6 @@ ${body}
 by some arbitrary string \"a_trans\"."
       end
 
-      operation 185129 "pathcmp"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile}
-: QDir ()
-{}
-"
-	
-	
-	
-	
-	comment "Default ctor"
-      end
-
-      operation 184617 "pathcmp"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}${)}${volatile}
-: QDir (normalise (${p0}))
-{}
-"
-	
-	
-	
-	
-	comment "Construct from string"
-      end
-
-      operation 184745 "~pathcmp"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile}
-{}
-"
-	
-	
-	
-	
-      end
-
-      operation 184873 "pathcmp"
-	stereotype "copy"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "source" type class_ref 145833 // pathcmp
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile}
-: QDir (source)
-{}
-"
-	
-	
-	
-	
-      end
-
-      operation 214185 "pathcmp"
-	stereotype "copy"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "source" type class_ref 155433 // QDir
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile}
-: QDir (normalise (${p0}.path ()))
-{}
-"
-	
-	
-	
-	
-	comment "Construct from base class"
-      end
-
-      operation 214441 "swap"
-	stereotype "todo"
-	public explicit_return_type "void"
-	nparams 1
-	  param inout name "other" type class_ref 145833 // pathcmp
-	
-	
-	
-	
-	
-      end
-
       operation 214825 "setPath"
 	public explicit_return_type "void"
 	nparams 1
@@ -5761,32 +6503,7 @@ by some arbitrary string \"a_trans\"."
 	
 	
 	
-      end
-
-      attribute 181673 "default_separator_"
-	class_attribute const_attribute private explicit_type "char"
-	multiplicity "2"
-	init_value "\"/\""
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Separator to use regardless of OS"
-      end
-
-      attribute 181801 "other_separator_"
-	class_attribute const_attribute private explicit_type "char"
-	multiplicity "2"
-	init_value "\"\\\\\""
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "separator used on other OS"
+	comment "Change to a new internal path."
       end
     end
 
@@ -5805,17 +6522,41 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "A container object for meta-style related information. This includes a 
+      comment "A Singleton container object for meta-style related information. This includes a 
 factory method for creating style specific base_generators.
 
 People implementing new build-system styles need to edit set_style 
-to add the new base_generator derived class to the system."
-      classrelation 171945 // <generalisation>
-	relation 171177 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 171945 // <generalisation>
-	  b parent class_ref 159017 // basic_style
+to add a basic_style object for the new derived base_generator."
+      classrelation 183600 // <dependency>
+	relation 183472 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 183600 // <dependency>
+	  b parent class_ref 133545 // bjam_generator
+      end
+
+      classrelation 182832 // <dependency>
+	relation 182704 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 182832 // <dependency>
+	  b parent class_ref 157737 // cmake_generator
+      end
+
+      classrelation 183344 // <dependency>
+	relation 183216 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 183344 // <dependency>
+	  b parent class_ref 135849 // gmake_generator
+      end
+
+      classrelation 182704 // <dependency>
+	relation 182576 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 182704 // <dependency>
+	  b parent class_ref 134697 // jam_generator
       end
 
       classrelation 165545 // <dependency>
@@ -5827,10 +6568,9 @@ to add the new base_generator derived class to the system."
       end
 
       attribute 163113 "style_"
-	class_attribute private type class_ref 148393 // style
+	class_attribute const_attribute private type class_ref 159017 // basic_style
 	multiplicity "0..1"
-	stereotype "auto_ptr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}${type} * ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -5840,11 +6580,11 @@ to add the new base_generator derived class to the system."
       end
 
       operation 196649 "get_style"
-	class_operation public return_type class_ref 148393 // style
+	class_operation public return_type class_ref 159017 // basic_style
 	nparams 0
 	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}const ${type}& ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}const ${type}& ${class}::${name}${(}${)}${const}${volatile}
 {
 ${body}
 }
@@ -5876,17 +6616,9 @@ ${body}
       end
 
       operation 198185 "style"
-	public explicit_return_type ""
-	nparams 5
-	  param in name "a_comment" explicit_type "unistr"
-	  param in name "a_end" explicit_type "unistr"
-	  param in name "a_start" explicit_type "unistr"
-	  param in name "a_name" explicit_type "unistr"
-	  param in name "a_factory" type class_ref 149545 // write_factory_fn_t
-	cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${v4}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}, ${t3} ${p3}, ${t4} ${p4}${)} 
-${body}
+	private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile} = delete;
 "
 	
 	
@@ -5895,14 +6627,9 @@ ${body}
       end
 
       operation 198313 "~style"
-	public explicit_return_type ""
+	cpp_virtual public explicit_return_type ""
 	nparams 0
-	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${)}${volatile} 
-{
-${body}
-}
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} {}
 "
 	
 	
@@ -5915,7 +6642,7 @@ ${body}
 	private explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 148393 // style
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;
 "
 	
 	
@@ -5928,7 +6655,7 @@ ${body}
 	private return_type class_ref 148393 // style
 	nparams 1
 	  param in name "source" type class_ref 148393 // style
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract} = delete;
 "
 	
 	
@@ -5942,9 +6669,7 @@ ${body}
 	private explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 159017 // basic_style
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile}
-: ${t0} (${p0})
-{}
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;
 "
 	
 	
@@ -6047,7 +6772,7 @@ ${items}};
       attribute 171689 "debug_file_"
 	private explicit_type "QFile"
 	multiplicity "*"
-	stereotype "auto_ptr"
+	stereotype "unique_ptr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
 "
 	java_decl ""
@@ -6060,7 +6785,7 @@ ${items}};
       attribute 171817 "debug_os_"
 	private type class_ref 162985 // QTextOStream
 	multiplicity "*"
-	stereotype "auto_ptr"
+	stereotype "unique_ptr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
 "
 	java_decl ""
@@ -6079,6 +6804,94 @@ ${items}};
 	python_decl ""
 	idl_decl ""
 	comment "The current logging level. (default is 'warn')"
+      end
+
+      extra_member 155824 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
+      operation 207273 "log"
+	private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${name}${(}${)}${volatile}
+: debug_file_ ()
+, debug_os_ ()
+, level_(warn)
+{}
+"
+	
+	
+	
+	
+      end
+
+      operation 183216 "log"
+	stereotype "move"
+	private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 151849 // log
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 183344 "log"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 151849 // log
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 183472 "operator="
+	private return_type class_ref 151849 // log
+	nparams 1
+	  param in name "source" type class_ref 151849 // log
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 223017 "~log"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile};
+"
+	cpp_def "${inline}${class}::${name}${(}${)}${volatile} 
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Dtor to ensure correct order of deconstructing stream and file"
+      end
+
+      extra_member 155696 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
       end
 
       operation 207401 "debug_log"
@@ -6144,38 +6957,6 @@ ${body}
 	
 	
 	comment "Set the logging level"
-      end
-
-      operation 207273 "log"
-	private explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${name}${(}${)}${volatile}
-: debug_file_ ()
-, debug_os_ ()
-, level_(warn)
-{}
-"
-	
-	
-	
-	
-      end
-
-      operation 223017 "~log"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${)}${volatile} 
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Dtor to ensure correct order of deconstructing stream and file"
       end
 
       operation 207529 "stream"
@@ -6448,24 +7229,32 @@ ${namespace_end}"
     end
 
     artifact 152617 "butter"
-      stereotype "executable"
+      stereotype "library"
       associated_artifacts
-	artifact_ref 154025 // main
 	artifact_ref 132521 // location
-	artifact_ref 152233 // style
-	artifact_ref 152489 // base_generator
-	artifact_ref 174249 // basic_style
-	artifact_ref 136361 // jam_generator
-	artifact_ref 150825 // utility
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 142889 // bouml
-	artifact_ref 137641 // gmake_generator
-	artifact_ref 138793 // butter_constants
 	artifact_ref 134057 // qt
 	artifact_ref 135209 // bjam_generator
+	artifact_ref 136361 // jam_generator
+	artifact_ref 137641 // gmake_generator
+	artifact_ref 138793 // butter_constants
+	artifact_ref 150825 // utility
+	artifact_ref 152233 // style
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 152489 // base_generator
 	artifact_ref 165929 // cmake_generator
+	artifact_ref 174249 // basic_style
       end
       comment "Version of the butter plugout for building using the butter plugout."
+    end
+
+    artifact 136112 "butter_exe"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 134057 // qt
+	artifact_ref 142889 // bouml
+	artifact_ref 152617 // butter
+	artifact_ref 154025 // main
+      end
     end
 
     artifact 138793 "butter_constants"
@@ -6494,106 +7283,108 @@ ${namespace_end}"
     end
 
     artifact 148393 "butter.plugout"
-      stereotype "executable"
+      stereotype "document"
       associated_artifacts
-	artifact_ref 4352 // UmlBaseUseCaseView
-	artifact_ref 7937 // UmlUseCase
-	artifact_ref 154025 // main
-	artifact_ref 5120 // anItemKind
-	artifact_ref 6528 // UmlBuiltin
-	artifact_ref 4480 // UmlCom
-	artifact_ref 1280 // UmlTypeSpec
-	artifact_ref 1920 // UmlBaseClassMember
-	artifact_ref 132521 // location
-	artifact_ref 6912 // UmlBaseComponent
-	artifact_ref 2944 // UmlBaseDeploymentView
-	artifact_ref 1792 // UmlBaseClassDiagram
-	artifact_ref 2432 // UmlBaseComponentDiagram
-	artifact_ref 152233 // style
-	artifact_ref 5505 // UmlAttribute
-	artifact_ref 3328 // UmlBaseItem
-	artifact_ref 3072 // UmlBaseDiagram
-	artifact_ref 5888 // UmlSettingsCmd
-	artifact_ref 6784 // UmlBaseNcRelation
-	artifact_ref 2304 // UmlBaseArtifact
-	artifact_ref 7809 // UmlSequenceDiagram
-	artifact_ref 2816 // UmlBaseDeploymentDiagram
-	artifact_ref 1664 // UmlBaseClass
-	artifact_ref 7681 // UmlRelation
-	artifact_ref 3200 // UmlBaseExtraClassMember
-	artifact_ref 152489 // base_generator
-	artifact_ref 5248 // CmdFamily
 	artifact_ref 512 // UmlBaseActualParameter
-	artifact_ref 7041 // UmlExtraClassMember
-	artifact_ref 5121 // UmlClassItem
-	artifact_ref 3968 // UmlBaseSequenceDiagram
-	artifact_ref 3840 // UmlBaseRelation
-	artifact_ref 2048 // UmlBaseClassView
-	artifact_ref 6656 // UmlStereotype
-	artifact_ref 6913 // UmlDiagram
-	artifact_ref 136361 // jam_generator
-	artifact_ref 6016 // CppSettingsCmd
-	artifact_ref 768 // CppSettings
-	artifact_ref 1024 // IdlSettings
-	artifact_ref 5504 // OnInstanceCmd
-	artifact_ref 5376 // MiscGlobalCmd
-	artifact_ref 8065 // UmlUseCaseDiagram
-	artifact_ref 4864 // aDirection
-	artifact_ref 5633 // UmlClass
-	artifact_ref 4736 // aRelationKind
-	artifact_ref 128002 // UmlComponent
-	artifact_ref 6145 // UmlCollaborationDiagram
-	artifact_ref 150825 // utility
-	artifact_ref 3712 // UmlBasePackage
-	artifact_ref 6017 // UmlClassView
-	artifact_ref 7297 // UmlNode
 	artifact_ref 640 // UmlBaseClassItem
-	artifact_ref 152361 // compound_artifact
-	artifact_ref 3456 // UmlBaseNode
-	artifact_ref 6657 // UmlDeploymentDiagram
-	artifact_ref 6400 // UmlParameter
-	artifact_ref 1152 // JavaSettings
-	artifact_ref 6144 // JavaSettingsCmd
-	artifact_ref 4608 // UmlSettings
+	artifact_ref 768 // CppSettings
 	artifact_ref 896 // UmlBaseFormalParameter
-	artifact_ref 6273 // UmlArtifact
-	artifact_ref 5632 // ClassGlobalCmd
-	artifact_ref 7553 // UmlPackage
-	artifact_ref 5889 // UmlClassMember
-	artifact_ref 2560 // UmlBaseComponentView
-	artifact_ref 128228 // UmlNcRelation
-	artifact_ref 2688 // UmlBaseDeployment
-	artifact_ref 6785 // UmlDeploymentView
-	artifact_ref 8193 // UmlUseCaseView
-	artifact_ref 4992 // aVisibility
+	artifact_ref 1024 // IdlSettings
+	artifact_ref 1152 // JavaSettings
+	artifact_ref 1280 // UmlTypeSpec
 	artifact_ref 1536 // UmlBaseAttribute
-	artifact_ref 5249 // UmlFormalParameter
-	artifact_ref 4096 // UmlBaseUseCase
-	artifact_ref 7425 // UmlOperation
-	artifact_ref 137641 // gmake_generator
-	artifact_ref 6529 // UmlComponentView
+	artifact_ref 1664 // UmlBaseClass
+	artifact_ref 1792 // UmlBaseClassDiagram
+	artifact_ref 1920 // UmlBaseClassMember
+	artifact_ref 2048 // UmlBaseClassView
 	artifact_ref 2176 // UmlBaseCollaborationDiagram
-	artifact_ref 5761 // UmlClassDiagram
-	artifact_ref 4224 // UmlBaseUseCaseDiagram
-	artifact_ref 7169 // UmlItem
-	artifact_ref 6272 // IdlSettingsCmd
-	artifact_ref 138793 // butter_constants
-	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 2304 // UmlBaseArtifact
+	artifact_ref 2432 // UmlBaseComponentDiagram
+	artifact_ref 2560 // UmlBaseComponentView
+	artifact_ref 2688 // UmlBaseDeployment
+	artifact_ref 2816 // UmlBaseDeploymentDiagram
+	artifact_ref 2944 // UmlBaseDeploymentView
+	artifact_ref 3072 // UmlBaseDiagram
+	artifact_ref 3200 // UmlBaseExtraClassMember
+	artifact_ref 3328 // UmlBaseItem
+	artifact_ref 3456 // UmlBaseNode
 	artifact_ref 3584 // UmlBaseOperation
-	artifact_ref 6401 // UmlComponentDiagram
-	artifact_ref 135209 // bjam_generator
+	artifact_ref 3712 // UmlBasePackage
+	artifact_ref 3840 // UmlBaseRelation
+	artifact_ref 3968 // UmlBaseSequenceDiagram
+	artifact_ref 4096 // UmlBaseUseCase
+	artifact_ref 4224 // UmlBaseUseCaseDiagram
+	artifact_ref 4352 // UmlBaseUseCaseView
+	artifact_ref 4480 // UmlCom
+	artifact_ref 4608 // UmlSettings
+	artifact_ref 4736 // aRelationKind
+	artifact_ref 4864 // aDirection
+	artifact_ref 4992 // aVisibility
+	artifact_ref 4993 // UmlActualParameter
+	artifact_ref 5120 // anItemKind
+	artifact_ref 5121 // UmlClassItem
+	artifact_ref 5248 // CmdFamily
+	artifact_ref 5249 // UmlFormalParameter
+	artifact_ref 5376 // MiscGlobalCmd
+	artifact_ref 5504 // OnInstanceCmd
+	artifact_ref 5505 // UmlAttribute
+	artifact_ref 5632 // ClassGlobalCmd
+	artifact_ref 5633 // UmlClass
 	artifact_ref 5760 // PackageGlobalCmd
+	artifact_ref 5761 // UmlClassDiagram
+	artifact_ref 5888 // UmlSettingsCmd
+	artifact_ref 5889 // UmlClassMember
+	artifact_ref 6016 // CppSettingsCmd
+	artifact_ref 6017 // UmlClassView
+	artifact_ref 6144 // JavaSettingsCmd
+	artifact_ref 6145 // UmlCollaborationDiagram
+	artifact_ref 6272 // IdlSettingsCmd
+	artifact_ref 6273 // UmlArtifact
+	artifact_ref 6400 // UmlParameter
+	artifact_ref 6401 // UmlComponentDiagram
+	artifact_ref 6528 // UmlBuiltin
+	artifact_ref 6529 // UmlComponentView
+	artifact_ref 6656 // UmlStereotype
+	artifact_ref 6657 // UmlDeploymentDiagram
+	artifact_ref 6784 // UmlBaseNcRelation
+	artifact_ref 6785 // UmlDeploymentView
+	artifact_ref 6912 // UmlBaseComponent
+	artifact_ref 6913 // UmlDiagram
+	artifact_ref 7041 // UmlExtraClassMember
+	artifact_ref 7169 // UmlItem
+	artifact_ref 7297 // UmlNode
+	artifact_ref 7425 // UmlOperation
+	artifact_ref 7553 // UmlPackage
+	artifact_ref 7681 // UmlRelation
+	artifact_ref 7809 // UmlSequenceDiagram
+	artifact_ref 7937 // UmlUseCase
+	artifact_ref 8065 // UmlUseCaseDiagram
+	artifact_ref 8193 // UmlUseCaseView
+	artifact_ref 128002 // UmlComponent
+	artifact_ref 128228 // UmlNcRelation
+	artifact_ref 132521 // location
+	artifact_ref 135209 // bjam_generator
+	artifact_ref 136361 // jam_generator
+	artifact_ref 137641 // gmake_generator
+	artifact_ref 138793 // butter_constants
+	artifact_ref 150825 // utility
+	artifact_ref 152233 // style
+	artifact_ref 152361 // compound_artifact
+	artifact_ref 152489 // base_generator
+	artifact_ref 154025 // main
+	artifact_ref 165929 // cmake_generator
+	artifact_ref 174249 // basic_style
       end
       ncouples 10
-      key "genpro pro" value "/tmp/butter2/butter.pro"
+      key "genpro pro" value "/home/finnerty/src/butter/butter.pro"
       key "genpro path" value "butter"
-      key "genpro target" value "/tmp/butter2/butter"
+      key "genpro target" value "/home/finnerty/src/butter/butter2"
       key "genpro tmplt" value "app"
       key "genpro config" value "release warn_off qt thread"
-      key "genpro defines" value "WITHCPP NO_LOG"
+      key "genpro defines" value "WITHCPP NO_LOG DEBUG=0"
       key "genpro includepath" value "include/bouml/ include/butter/ include/"
       key "genpro dependpath" value ""
-      key "genpro objectsdir" value "/tmp/butter2/build"
+      key "genpro objectsdir" value "/home/finnerty/src/butter/build"
       key "genpro footer" value ""
       comment "Version of the butter plugout buildable using genpro"
     end
@@ -6740,6 +7531,7 @@ ${includes}
 #include <stdexcept>
 #include <qstack.h>
 #include <cstdlib>
+#include <map>
 // --
 ${declarations}
 ${namespace_start}
@@ -6848,6 +7640,7 @@ ${namespace_end}"
 #include \"UmlPackage.h\"
 #include \"UmlArtifact.h\"
 #include \"butter/base_generator.h\"
+#include \"butter/basic_style.h\"
 #include \"butter/location.h\"
 #include \"butter/style.h\"
 #include \"butter/butter_constants.h\"
@@ -6896,9 +7689,9 @@ int main(int argc, char ** argv)
       }
       BUTTER_CHECK (NULL != UmlPackage::getProject (), \"Error: no project defined!<br>\");
       // Parse the project into a location tree
-      std::auto_ptr< butter::location > base_ (butter::location::parse_project (*UmlPackage::getProject ()));
+      std::unique_ptr< butter::location > base_ (butter::location::parse_project (*UmlPackage::getProject ()));
       // Generate the build-system files.
-      std::auto_ptr< butter::base_generator > writer_ (butter::style::get_style ().create_writer ());
+      std::unique_ptr< butter::base_generator > writer_ (butter::style::get_style ().create_writer ());
       writer_->create_system (*base_.get (), *UmlPackage::getProject ());
       // Write the build-system files.
       butter::location::write_documents (*base_.get ());
@@ -7090,10 +7883,10 @@ ${namespace_end}"
     artifact 164777 "test_path"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 150825 // utility
-	artifact_ref 142889 // bouml
-	artifact_ref 150953 // path_test
 	artifact_ref 134057 // qt
+	artifact_ref 142889 // bouml
+	artifact_ref 150825 // utility
+	artifact_ref 150953 // path_test
       end
       comment "Simple program to exercise pathcmp class."
     end
@@ -7126,5 +7919,95 @@ ${namespace_end}"
       end
       comment "Utility classes log and pathcmp"
     end
+
+    artifact 128944 "makefile"
+      stereotype "document"
+      comment "##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sat Oct 28 20:48:10 2017
+##END:date
+##START:preamble
+include $(ROOTDIR)/M_sys.mk
+
+##END:preamble
+##START:target butter
+BUTTER_BUTTERSRC :=  \\
+	bjam_generator.cpp \\
+	jam_generator.cpp \\
+	basic_style.cpp \\
+	cmake_generator.cpp \\
+	butter_constants.cpp \\
+	style.cpp \\
+	location.cpp \\
+	gmake_generator.cpp \\
+	utility.cpp \\
+	compound_artifact.cpp \\
+	base_generator.cpp
+BUTTER_BUTTER_DINC := $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.c=$(sufdep)))
+butter$(suflib): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
+butter$(suflib) $(BUTTER_BUTTER_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
+BUTTER_BUTTER_OBJ+=$(filter %$(sufobj), $(BUTTER_BUTTERSRC:.cpp=$(sufobj)))
+USEROBJ+=$(BUTTER_BUTTER_OBJ)
+butter$(suflib) : $(BUTTER_BUTTER_SRC) $(BUTTER_BUTTER_DINC)
+-include $(BUTTER_BUTTER_DINC)
+$(eval $(call do_archive,butter$(suflib),$(BUTTER_BUTTER_OBJ)))
+
+all :: butter$(suflib)
+TARGETS+=butter$(suflib)
+
+$(eval $(call do_install,butter$(suflib),LIB))
+
+##END:target butter
+##START:target test_path
+BUTTER_TEST_PATHSRC :=  \\
+	path_test.cpp \\
+	utility.cpp
+BUTTER_TEST_PATH_DINC := $(filter %$(sufdep), $(BUTTER_TEST_PATHSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_PATHSRC:.c=$(sufdep)))
+test_path$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
+test_path$(sufexe) $(BUTTER_TEST_PATH_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
+BUTTER_TEST_PATH_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
+
+path_test$(sufobj) : CCCFLAGS+=-fopenmp 
+
+
+BUTTER_TEST_PATH_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_PATHSRC:.cpp=$(sufobj)))
+USEROBJ+=$(BUTTER_TEST_PATH_OBJ)
+test_path$(sufexe) : $(BUTTER_TEST_PATH_SRC) $(BUTTER_TEST_PATH_DINC)
+-include $(BUTTER_TEST_PATH_DINC)
+$(eval $(call do_link_exe,test_path$(sufexe),$(BUTTER_TEST_PATH_OBJ)))
+
+all :: test_path$(sufexe)
+TARGETS+=test_path$(sufexe)
+
+$(eval $(call do_install,test_path$(sufexe),BIN))
+
+##END:target test_path
+##START:target butter_exe
+BUTTER_BUTTER_EXESRC :=  \\
+	main.cpp
+BUTTER_BUTTER_EXE_DINC := $(filter %$(sufdep), $(BUTTER_BUTTER_EXESRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_BUTTER_EXESRC:.c=$(sufdep)))
+butter_exe$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
+butter_exe$(sufexe) $(BUTTER_BUTTER_EXE_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
+BUTTER_BUTTER_EXE_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
+BUTTER_BUTTER_EXE_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
+
+BUTTER_BUTTER_EXE_OBJ+=$(filter %$(sufobj), $(BUTTER_BUTTER_EXESRC:.cpp=$(sufobj)))
+USEROBJ+=$(BUTTER_BUTTER_EXE_OBJ)
+butter_exe$(sufexe) : $(BUTTER_BUTTER_EXE_SRC) $(BUTTER_BUTTER_EXE_DINC)
+-include $(BUTTER_BUTTER_EXE_DINC)
+$(eval $(call do_link_exe,butter_exe$(sufexe),$(BUTTER_BUTTER_EXE_OBJ)))
+
+all :: butter_exe$(sufexe)
+TARGETS+=butter_exe$(sufexe)
+
+$(eval $(call do_install,butter_exe$(sufexe),BIN))
+
+##END:target butter_exe
+"
+    end
   end
+
+  package_ref 141232 // butter-test
 end

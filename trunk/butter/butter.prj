@@ -1,7 +1,7 @@
 format 75
 "butter"
-  revision 65
-  modified_by 49 "finnerty"
+  revision 67
+  modified_by 48 "finnerty"
   cpp_root_dir "/home/finnerty/src/butter/include/"
 
 
@@ -93,4 +93,6 @@ file.</xdoc:variable>
   package_ref 128041 // butter
 
   package_ref 129193 // External
+
+  package_ref 134576 // butter2
 end

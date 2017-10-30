@@ -1,0 +1,1152 @@
+format 75
+"butter-test" // butter::butter-test
+  revision 20
+  modified_by 48 "finnerty"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+  show_infonote default drawing_language default show_stereotype_properties default
+  
+  cpp_h_dir "../src/butter/butter_test"
+  cpp_src_dir "../src/butter/butter_test"
+  comment "Unit test suites for butter classes"
+  classview 141104 "butter unit tests"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default show_msg_context default draw_all_relations default shadow default show_stereotype_properties default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
+    show_activities default region_horizontally default drawing_language default show_stereotype_properties default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
+    show_infonote default drawing_language default show_stereotype_properties default
+    associated_deployment_view deploymentview_ref 128176 // butter-test
+    classdiagram 141104 "core unit tests"
+      draw_all_relations default hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      comment "Unit tests without accessing bouml objects."
+      size A4
+    end
+
+    classdiagram 147632 "mockup dependencies"
+      draw_all_relations default hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      size A4
+    end
+
+    classdiagram 154160 "plugout unit tests"
+      draw_all_relations default hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+      comment "Unit tests which need access to bouml objects."
+      size A4
+    end
+
+    class 149296 "test_generator"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 168880 // <generalisation>
+	relation 168752 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 168880 // <generalisation>
+	  b parent class_ref 146985 // base_generator
+      end
+
+      operation 168368 "create_system"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param inout name "a_base" type class_ref 132393 // location
+	  param in name "a_project" type class_ref 7553 // UmlItem
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract} override {}
+"
+	
+	
+	
+	
+	comment "DRIVER METHOD
+
+Create a series of build-system artifacts based at a_base location. The
+artifacts are inserted into a package at each location."
+      end
+    end
+
+    class 142768 "core_test_suite"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Test core functionality. (independent of bouml)"
+      classrelation 149040 // <dependency>
+	relation 148912 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 149040 // <dependency>
+	  b parent class_ref 146985 // base_generator
+      end
+
+      classrelation 142512 // <dependency>
+	relation 142384 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 142512 // <dependency>
+	  b parent class_ref 159017 // basic_style
+      end
+
+      classrelation 182064 // <dependency>
+	relation 181936 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 182064 // <dependency>
+	  b parent class_ref 133545 // bjam_generator
+      end
+
+      classrelation 162352 // <dependency>
+	relation 162224 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 162352 // <dependency>
+	  b parent class_ref 137001 // butter_constants
+      end
+
+      classrelation 182192 // <dependency>
+	relation 182064 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 182192 // <dependency>
+	  b parent class_ref 157737 // cmake_generator
+      end
+
+      classrelation 183728 // <dependency>
+	relation 183600 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 183728 // <dependency>
+	  b parent class_ref 147113 // compound_artifact
+      end
+
+      classrelation 183856 // <dependency>
+	relation 183728 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 183856 // <dependency>
+	  b parent class_ref 161321 // const_token_iterator
+      end
+
+      classrelation 182320 // <dependency>
+	relation 182192 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 182320 // <dependency>
+	  b parent class_ref 135849 // gmake_generator
+      end
+
+      classrelation 182448 // <dependency>
+	relation 182320 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 182448 // <dependency>
+	  b parent class_ref 134697 // jam_generator
+      end
+
+      classrelation 175536 // <dependency>
+	relation 175408 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 175536 // <dependency>
+	  b parent class_ref 132393 // location
+      end
+
+      classrelation 183984 // <dependency>
+	relation 183856 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 183984 // <dependency>
+	  b parent class_ref 151849 // log
+      end
+
+      classrelation 169008 // <dependency>
+	relation 168880 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 169008 // <dependency>
+	  b parent class_ref 145833 // pathcmp
+      end
+
+      operation 128048 "basic_style_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and accessors of values in ctor
+list."
+      end
+
+      operation 155312 "basic_style_methods"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Tests \"comment_text\" and \"create_writer\""
+      end
+
+      operation 161840 "butter_constants"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Tests expected value of butter constants."
+      end
+
+      operation 168624 "pathcmp_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and accessors of values in ctor
+list."
+      end
+
+      operation 168752 "pathcmp_methods"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test methods and accessors of pathcmp
+
+Untested: mkpath, path_localised
+
+Tested: pathcmp(unistr), op=(unistr) {implicit conversion}
+  depth, equality, has_subpath, leaf_at, path, setPath,
+  isRelative, exists, , operator/, pathcmp(QDir),
+  create_common, create_relative, path_convert
+
+Failed:
+  create_common, create_relative
+  
+"
+      end
+
+      operation 168496 "base_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static non-bouml methods
+
+Static methods to test:
+  section"
+      end
+
+      operation 199600 "base_gen_merge_string_list"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test static non-bouml method"
+      end
+
+      operation 199856 "base_gen_section"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test static non-bouml method"
+      end
+
+      operation 175280 "location_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and accessors of values in ctor
+list."
+      end
+
+      operation 175408 "location_methods"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test location methods and accessors
+
+Tested:
+ children, create_as_child, full_path, location, packages, parent,
+ path, serialize
+Untested:
+  add_package, compare_file_to_string, create_common_parent, 
+  create_uml_document, find, find_uml_document, parse_project,
+  write_documents, write_uml_documents."
+      end
+
+      operation 181936 "bjam_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 182064 "cmake_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes"
+      end
+
+      operation 182192 "gmake_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes"
+      end
+
+      operation 182320 "jam_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 182448 "compound_artifact_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 183088 "const_token_iterator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 199728 "const_token_iterator_method"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 183600 "log_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+    end
+
+    class 155824 "plugout_test_suite"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "Test core functionality that is dependent on bouml."
+      classrelation 190512 // <dependency>
+	relation 190384 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 190512 // <dependency>
+	  b parent class_ref 146985 // base_generator
+      end
+
+      classrelation 190640 // <dependency>
+	relation 190512 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 190640 // <dependency>
+	  b parent class_ref 159017 // basic_style
+      end
+
+      classrelation 190768 // <dependency>
+	relation 190640 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 190768 // <dependency>
+	  b parent class_ref 133545 // bjam_generator
+      end
+
+      classrelation 190896 // <dependency>
+	relation 190768 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 190896 // <dependency>
+	  b parent class_ref 137001 // butter_constants
+      end
+
+      classrelation 191024 // <dependency>
+	relation 190896 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 191024 // <dependency>
+	  b parent class_ref 157737 // cmake_generator
+      end
+
+      classrelation 191152 // <dependency>
+	relation 191024 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 191152 // <dependency>
+	  b parent class_ref 147113 // compound_artifact
+      end
+
+      classrelation 191280 // <dependency>
+	relation 191152 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 191280 // <dependency>
+	  b parent class_ref 161321 // const_token_iterator
+      end
+
+      classrelation 191408 // <dependency>
+	relation 191280 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 191408 // <dependency>
+	  b parent class_ref 135849 // gmake_generator
+      end
+
+      classrelation 191536 // <dependency>
+	relation 191408 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 191536 // <dependency>
+	  b parent class_ref 134697 // jam_generator
+      end
+
+      classrelation 191664 // <dependency>
+	relation 191536 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 191664 // <dependency>
+	  b parent class_ref 132393 // location
+      end
+
+      classrelation 191792 // <dependency>
+	relation 191664 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 191792 // <dependency>
+	  b parent class_ref 151849 // log
+      end
+
+      classrelation 191920 // <dependency>
+	relation 191792 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 191920 // <dependency>
+	  b parent class_ref 145833 // pathcmp
+      end
+
+      class 162352 "umlcom_connection"
+	visibility package 
+	cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	
+	comment "Class to manage connection between bouml and test run."
+	operation 198576 "umlcom_connection"
+	  private explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${name}${(}${)}${volatile}: connected_( false ) {}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 198704 "~umlcom_connection"
+	  public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile};
+"
+	  cpp_def "${inline}${class}::${name}${(}${)}${volatile} 
+{
+${body}
+}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 198832 "umlcom_connection"
+	  stereotype "move"
+	  private explicit_return_type ""
+	  nparams 1
+	    param inout name "source" type class_ref 162352 // umlcom_connection
+	  cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 198960 "umlcom_connection"
+	  stereotype "copy"
+	  private explicit_return_type ""
+	  nparams 1
+	    param in name "source" type class_ref 162352 // umlcom_connection
+	  cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 199088 "operator="
+	  private return_type class_ref 162352 // umlcom_connection
+	  nparams 1
+	    param in name "source" type class_ref 162352 // umlcom_connection
+	  cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract} = delete;
+"
+	  
+	  
+	  
+	  
+	end
+
+	attribute 134576 "connected_"
+	  private explicit_type "bool"
+	  init_value "false"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " If connection has been made."
+	end
+
+	operation 199216 "connection"
+	  class_operation public return_type class_ref 162352 // umlcom_connection
+	  nparams 1
+	    param in name "argv" explicit_type "char"
+	  cpp_decl "    ${comment}${static}${virtual}${type} const& ${name}${(}${t0}** ${p0}${)}${const}${volatile}${abstract};
+"
+	  cpp_def "${inline}${type} const& ${class}::${name}${(}${t0}** ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	  
+	  
+	  
+	  
+	  comment " Ensure connection to bouml a returns a reference to the connection object."
+	end
+
+	attribute 134704 "singleton_"
+	  class_attribute private type class_ref 162352 // umlcom_connection
+	  multiplicity "0..1"
+	  stereotype "unique_ptr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment " RAII object for connection to bouml"
+	end
+
+	operation 199344 "connected"
+	  const public explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->connected_;
+}
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      operation 190896 "umlcom_connection_test"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and accessors of values in ctor
+list."
+      end
+
+      operation 199472 "umlcom_connection_test2"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and accessors of values in ctor
+list."
+      end
+
+      operation 191024 "location_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and accessors of values in ctor
+list."
+      end
+
+      operation 191152 "location_methods"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test location methods and accessors
+
+Tested:
+ children, create_as_child, full_path, location, packages, parent,
+ path, serialize
+Untested:
+  add_package, compare_file_to_string, create_common_parent, 
+  create_uml_document, find, find_uml_document, parse_project,
+  write_documents, write_uml_documents."
+      end
+
+      operation 191280 "bjam_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 191408 "cmake_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes"
+      end
+
+      operation 191536 "gmake_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes"
+      end
+
+      operation 191664 "jam_generator_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 191792 "compound_artifact_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 192048 "log_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      classrelation 198448 // <dependency>
+	relation 198320 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 198448 // <dependency>
+	  b parent class_ref 5248 // UmlCom
+      end
+    end
+  end
+
+  deploymentview 128176 "butter-test"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 129200 "core_test_suite"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+
+#define BOOST_TEST_MODULE core_test
+#include <boost/test/unit_test.hpp>
+
+${includes}
+// Manuals
+#include \"version.h\"
+// -
+#include <type_traits>
+// - 
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 142768 // core_test_suite
+      end
+    end
+
+    artifact 129328 "butter_exec"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 129072 // boost-test
+	artifact_ref 129200 // core_test_suite
+	artifact_ref 134057 // qt
+	artifact_ref 142889 // bouml
+	artifact_ref 152617 // butter
+      end
+      ncouples 2
+      key "butter flags" value "-DBOOST_TEST_DYN_LINK"
+      key "butter install" value "NONE"
+    end
+
+    artifact 142768 "plugout_test_suite"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+#define BOOST_TEST_MODULE core_test
+#include <boost/test/unit_test.hpp>
+
+${includes}
+// Manuals
+#include \"version.h\"
+// -
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 155824 // plugout_test_suite
+      end
+    end
+
+    artifact 142640 "plugout_exec"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 129072 // boost-test
+	artifact_ref 134057 // qt
+	artifact_ref 142768 // plugout_test_suite
+	artifact_ref 142889 // bouml
+	artifact_ref 152617 // butter
+      end
+      ncouples 2
+      key "butter flags" value "-DBOOST_TEST_DYN_LINK"
+      key "butter install" value "NONE"
+      comment "Executable for testing code that depends on being run with bouml."
+    end
+
+    artifact 129456 "makefile"
+      stereotype "document"
+      comment "##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sat Oct 28 23:45:14 2017
+##END:date
+##START:preamble
+include $(ROOTDIR)/M_sys.mk
+
+##END:preamble
+##START:target butter_exec
+BUTTER_TEST_BUTTER_EXECSRC :=  \\
+	core_test_suite.cpp
+BUTTER_TEST_BUTTER_EXEC_DINC := $(filter %$(sufdep), $(BUTTER_TEST_BUTTER_EXECSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_BUTTER_EXECSRC:.c=$(sufdep)))
+butter_exec$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm $(BOOST_LIB) -lboost_unit_test_framework
+butter_exec$(sufexe) $(BUTTER_TEST_BUTTER_EXEC_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT -DBOOST_TEST_DYN_LINK 
+BUTTER_TEST_BUTTER_EXEC_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
+BUTTER_TEST_BUTTER_EXEC_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
+
+BUTTER_TEST_BUTTER_EXEC_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_BUTTER_EXECSRC:.cpp=$(sufobj)))
+USEROBJ+=$(BUTTER_TEST_BUTTER_EXEC_OBJ)
+butter_exec$(sufexe) : $(BUTTER_TEST_BUTTER_EXEC_SRC) $(BUTTER_TEST_BUTTER_EXEC_DINC)
+-include $(BUTTER_TEST_BUTTER_EXEC_DINC)
+$(eval $(call do_link_exe,butter_exec$(sufexe),$(BUTTER_TEST_BUTTER_EXEC_OBJ)))
+
+all :: butter_exec$(sufexe)
+TARGETS+=butter_exec$(sufexe)
+
+##END:target butter_exec
+##START:target plugout_exec
+BUTTER_TEST_PLUGOUT_EXECSRC :=  \\
+	plugout_test_suite.cpp
+BUTTER_TEST_PLUGOUT_EXEC_DINC := $(filter %$(sufdep), $(BUTTER_TEST_PLUGOUT_EXECSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_PLUGOUT_EXECSRC:.c=$(sufdep)))
+plugout_exec$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm $(BOOST_LIB) -lboost_unit_test_framework
+plugout_exec$(sufexe) $(BUTTER_TEST_PLUGOUT_EXEC_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT -DBOOST_TEST_DYN_LINK 
+BUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
+BUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
+
+BUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_PLUGOUT_EXECSRC:.cpp=$(sufobj)))
+USEROBJ+=$(BUTTER_TEST_PLUGOUT_EXEC_OBJ)
+plugout_exec$(sufexe) : $(BUTTER_TEST_PLUGOUT_EXEC_SRC) $(BUTTER_TEST_PLUGOUT_EXEC_DINC)
+-include $(BUTTER_TEST_PLUGOUT_EXEC_DINC)
+$(eval $(call do_link_exe,plugout_exec$(sufexe),$(BUTTER_TEST_PLUGOUT_EXEC_OBJ)))
+
+all :: plugout_exec$(sufexe)
+TARGETS+=plugout_exec$(sufexe)
+
+##END:target plugout_exec
+"
+    end
+  end
+end

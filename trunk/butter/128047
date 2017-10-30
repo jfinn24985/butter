@@ -719,7 +719,7 @@ ${inlines}
       attribute 135471 "_style"
 	private type class_ref 159017 // basic_style
 	multiplicity "0..1"
-	stereotype "auto_ptr"
+	stereotype "unique_ptr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
 "
 	java_decl ""
