@@ -1,0 +1,4 @@
+It is possible to run a plug-out on a project when Bouml is 
+started through your shell or command line :
+
+bouml <project file> -exec <plug out> <plug out options> -exit 
