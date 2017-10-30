@@ -3,4 +3,10 @@ trunk/source/build/
 make.*log
 *.o
 *.d
-
+trunk/source/src/bouml/bouml.a
+trunk/source/src/butter/butter.a
+trunk/source/src/butter/butter_exe
+trunk/source/src/butter/test_path
+*_exec
+test.err
+test.log
