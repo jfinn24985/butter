@@ -12,10 +12,7 @@
 // -
 namespace butter {
 
-static QString const section_name ("make");
-extern butter::basic_style const gmake_style;
-butter::basic_style const gmake_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::gmake_generator::create);
-
+const basic_style gmake_generator::style( "#", "", "##END:", "", "##START:", "", "make", &butter::gmake_generator::create );
 
 /**
  * The default leaf filename for the current style
@@ -28,13 +25,13 @@ const QString gmake_generator::build_file_name("makefile");
 const QString gmake_generator::build_file_sysname("makefile");
 
 /**
- * This is the default contents of a the rules file (M_sys.mak).
+ * This is the default contents of a the rules file (M_sys.mk).
  * If a document artifact with name 'M_sys.mak' is not present when 
  * %butter is executed with \@style='standard' then one will be created
  * using this string.
  */
 const char * gmake_generator::default_rules_sys[] = { "#\n"
-, "# M_sys.mak\n"
+, "# M_sys.mk\n"
 , "#\n"
 , "##################################\n"
 , "# Settings for current environment\n"
@@ -63,8 +60,8 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
 , "##########################\n"
 , "## Include compiler and OS\n"
 , "##########################\n"
-, "include $(ROOTDIR)$(or $(SLASH),/)M_$(OS).mak\n"
-, "include $(ROOTDIR)$(or $(SLASH),/)M_$(CC).mak\n"
+, "include $(ROOTDIR)$(or $(SLASH),/)M_$(OS).mk\n"
+, "include $(ROOTDIR)$(or $(SLASH),/)M_$(CC).mk\n"
 , "\n"
 , "##############\n"
 , "## Unify Vars\n"
@@ -94,24 +91,13 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
 , "doclean: \n"
 , "\t$(if $(USEROBJ),$(RM) $(USEROBJ))\n"
 , "\n"
-, "#############################\n"
-, "##  Default staging locations\n"
-, "#############################\n"
-, "PREFIX=$(ROOTDIR)$(SLASH)stage\n"
-, "BINDIR?=$(PREFIX)$(SLASH)bin\n"
-, "LIBDIR?=$(PREFIX)$(SLASH)lib\n"
-, "INCDIR?=$(PREFIX)$(SLASH)include\n"
-, "DATADIR?=$(PREFIX)$(SLASH)share\n"
-, "DOCDIR?=$(DATADIR)$(SLASH)doc\n"
-, "MANDIR?=$(DATADIR)$(SLASH)man\n"
-, "HTMLDIR?=$(DATADIR)$(SLASH)html\n"
 , "################################################\n"
 , "##  Example link library setup with alternatives\n"
 , "################################################\n"
 , "##  \n"
 , "##  # Make this a one time only definition\n"
 , "##  \n"
-, "##  ifndef USE_XML_MAK\n"
+, "##  ifndef USE_XML_MK\n"
 , "##  USE_XML_MAK:=1\n"
 , "##  \n"
 , "##  ifdef ($(XMLLIB))\n"
@@ -127,7 +113,7 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
 , "##  \n"
 , "##  endif # XMLLIB\n"
 , "##  \n"
-, "##  endif # USE_XML_MAK\n"
+, "##  endif # USE_XML_MK\n"
 , "\n"
 , 0 }
 ;
@@ -135,7 +121,7 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
 /**
  * This is the default contents of the rules file (M_cl.mak) for
  * the microsoft compiler. If a 
- * document artifact with name 'M_cl.mak' is not present when 
+ * document artifact with name 'M_cl.mk' is not present when 
  * %butter is executed with \@style='standard' then one will be created
  * using this string.
  * 
@@ -143,16 +129,17 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
 const char * gmake_generator::default_rules_cl[] = { "##########################################\n"
 , "##  Definitions for Microsoft VC compiler\n"
 , "#########################################\n"
-, "ifndef M_CL_MAK\n"
+, "ifndef M_CL_MK\n"
 , "M_CL_MAK:=1\n"
 , "\n"
 , "CCC:=cl\n"
 , "CXX:=cl\n"
 , "AR:=link\n"
 , "ARFLAGS:= /LIB\n"
+, "FORTRAN:=fc\n"
 , "CPPFLAGS?=\n"
-, "CCFLAGS+=/EHsc /nologo /errorReport:none\n"
-, "CCCFLAGS+=/GR /Gm- /EHsc /Zc:forScope /nologo /errorReport:none\n"
+, "CCFLAGS+=/Za /nologo /errorReport:none\n"
+, "CCCFLAGS+=/GR /Gm- /EHsc /Za /Zc:forScope /nologo /errorReport:none\n"
 , "\n"
 , "ifeq ($(VARIANT),DEBUG)\n"
 , "OPTFLAGS+=/Od /Zi\n"
@@ -164,26 +151,22 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "\n"
 , "CCFLAGS+=$(OPTFLAGS)\n"
 , "CCCFLAGS+=$(OPTFLAGS)\n"
+, "FORTRANFLAGS?=\n"
 , "LDFLAGS+=$(OPTFLAGS)\n"
 , "\n"
-, "# Plugout author's fortran settings that use netlib f2c and\n"
-, "# cl via f77.py called via fortran.bat. A native fortran\n"
-, "# compiler might require a COMPILE.f line as for COMPILE.c\n"
-, "FORTRAN?=fortran\n"
-, "FORTRANFLAGS?=$(patsubst /%,-m%,$(CCFLAGS))\n"
-, "FORTRANLIBS?=vcf2c.lib\n"
+, "FORTRANLIBS:=\n"
 , "OPENMP:=/openmp\n"
 , "\n"
 , "endif # end of once-only\n"
 , "\n"
 , "#  commands to execute (built-in):\n"
-, "COMPILE.c = $(CC) $(patsubst -%,/%,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
-, "COMPILE.cc = $(CXX) $(patsubst -%,/%,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
+, "COMPILE.c = $(CC) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
+, "COMPILE.cc = $(CXX) $(subst -,/,$(subst -L,/LIBPATH ,$(patsubst -l%,%.lib,$(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)))) /c /Fo\n"
 , "define _makeobj_\n"
 , "%$$(sufobj): %$(1) ; $$(COMPILE$(1))$$@ $$<\n"
 , "endef\n"
 , "\n"
-, "$(foreach suff,.c .cc .cpp .cxx .f .F,$(eval $(call _makeobj_,$(suff))))\n"
+, "$(foreach suff,.c .cc .cpp .cxx,$(eval $(call _makeobj_,$(suff))))\n"
 , "\n"
 , "# Commands to create dummy make dependency files.\n"
 , "# (Or use depend generator such as X11 makedepend\n"
@@ -191,7 +174,7 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "# %$(sufdep): %$(1)\n"
 , "# \tstart makedep.py $$@ $$< $(CC) /showInclude /Zs /nologo $(CPPFLAGS) $(CXXFLAGS)\n"
 , "define _makedep_\n"
-, "%$(sufdep): %$(1) ; @echo # Dummy file > $$@\n"
+, "%$(sufdep): %$(1) ; @echo # Dummy file  $$@\n"
 , "endef\n"
 , "\n"
 , "$(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))\n"
@@ -200,12 +183,12 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 , "_makedep_:=\n"
 , "\n"
 , "define do_link_exe\n"
-, "$(1) : $(2) ; $$(LINK.cpp) $$(LOADLIBES) $$(LDLIBS) /Fe$(1) $(2)\n"
+, "$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /Fe$(1) $(2)\n"
 , "endef\n\n"
 , "define do_link_shr\n"
 , "$(1) : CCFLAGS+=$(SHRFLAGS)\n"
 , "$(1) : CCCFLAGS+=$(SHRFLAGS)\n"
-, "$(1) : $(2) ; $$(LINK.cpp) $$(LOADLIBES) $$(LDLIBS) /LD /Fe$(1) $(2)\n"
+, "$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) /dll /Fe$(1) $(2)\n"
 , "endef\n\n"
 , "define do_archive\n"
 , "$(1): $(2) ; $$(AR) $$(ARFLAGS) /OUT:$(1) $(2)\n"
@@ -214,17 +197,17 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
 ;
 
 /**
- * This is the default contents of the rules file (M_gcc.mak) for
+ * This is the default contents of the rules file (M_gcc.mk) for
  * the GNU compiler collection. If a 
- * document artifact with name 'M_gcc.mak' is not present when 
+ * document artifact with name 'M_gcc.mk' is not present when 
  * %butter is executed with \@style='standard' then one will be created
  * using this string.
  */
 const char * gmake_generator::default_rules_gcc[] = { "####################################\n"
 , "##  Definitions for GNU g++ compiler\n"
 , "####################################\n"
-, "ifndef M_GCC_MAK\n"
-, "M_GCC_MAK:=1\n"
+, "ifndef M_GCC_MK\n"
+, "M_GCC_MK:=1\n"
 , "##\n"
 , "## Define compiler variables once only.\n"
 , "## \n"
@@ -289,25 +272,37 @@ const char * gmake_generator::default_rules_unix[] = { " # Definition of for loo
 , "endef\n"
 , "\n"
 , "# MAKE MOST VARIABLES ONCE-ONLY\n"
-, "ifndef M_UNIX_MAK\n"
-, "M_UNIX_MAK:=1\n"
+, "ifndef M_UNIX_MK\n"
+, "M_UNIX_MK:=1\n"
+, "#############################\n"
+, "##  Default install locations\n"
+, "#############################\n"
+, "PREFIX=$(ROOTDIR)/installdir\n"
+, "BINDIR?=$(PREFIX)/bin\n"
+, "LIBDIR?=$(PREFIX)/bin\n"
+, "INCLUDEDIR?=$(PREFIX)/include\n"
+, "DATADIR?=$(PREFIX)/share\n"
+, "DOCDIR?=$(DATADIR)/doc\n"
+, "MANDIR?=$(DATADIR)/man1\n"
+, "HTMLDIR?=$(DATADIR)/html\n"
 , "\n# Flags for the install targets.\n"
 , "BINIFLAGS?=-m 755\n"
 , "FILEIFLAGS?=-m 644\n"
+, "LIBIFLAGS?=-m 644 \n"
+, "MANIFLAGS?=-m 644\n"
 , "INSTALL?=install\n"
 , "\n# Standard suffixes\n"
 , "sufobj:=.o\n"
 , "sufexe:=\n"
 , "suflib:=.a\n"
 , "sufshr:=.so\n"
-, "sufshrlink:=.so\n"
 , "sufdep:=.d\n"
 , "\n# Path separator\n"
 , "SLASH?=/\n"
 , "\n# END OF ONCE-ONLY.\n"
 , "endif\n\n"
 , "define do_install\n"
-, "install:: $(1) ; $$(INSTALL) -d $(if $(2),$$($(2)),$(3)) ; $$(INSTALL) $$($(if BIN==$(2),BIN,FILE)IFLAGS) $(1) $(if $(2),$$($(2)),$(3))/$(1)\n"
+, "install:: $(1) ; $$(INSTALL) -d $$($(2)DIR) ; $$(INSTALL) $$($(or $(3),$(2))IFLAGS) $(1) $$($(2)DIR)/$(1)\n"
 , "endef\n\n"
 , "define do_archive\n"
 , "$(1): $(2) ; $$(AR) $$(ARFLAGS) $(1) $(2)\n"
@@ -316,9 +311,9 @@ const char * gmake_generator::default_rules_unix[] = { " # Definition of for loo
 ;
 
 /**
- * This is the default contents of the rules file (M_Windows_NT.mak) for
+ * This is the default contents of the rules file (M_Windows_NT.mk) for
  * a (post NT) Micrsoft Windows like operating system. If a 
- * document artifact with name 'M_Windows_NT.mak' is not present when 
+ * document artifact with name 'M_Windows_NT.mk' is not present when 
  * %butter is executed with \@style='standard' then one will be created
  * using this string.
  */
@@ -327,31 +322,41 @@ const char * gmake_generator::default_rules_winnt[] = { "# Definition of for loo
 , "IF \"$(2)\" NEQ \"\" FOR %%W IN ( $(2) ) DO \"$(subst /,\\,$(MAKE))\" -C %%W $(1)\n"
 , "endef\n"
 , "\n"
-, "ifndef M_WINNT_MAK\n"
-, "M_WINNT_MAK:=1\n"
+, "ifndef M_WINNT_MK\n"
+, "M_WINNT_MK:=1\n"
+, "#############################\n"
+, "##  Default install locations\n"
+, "#############################\n"
+, "PREFIX?=$(ROOTDIR)\\installdir\n"
+, "BINDIR?=$(PREFIX)\\bin\n"
+, "DATADIR?=$(PREFIX)\\share\n"
+, "DOCDIR?=$(DATADIR)\\doc\n"
+, "HTMLDIR?=$(DATADIR)\\html\n"
+, "INCLUDEDIR?=$(PREFIX)\\include\n"
+, "LIBDIR?=$(PREFIX)\\lib\n"
+, "MANDIR?=$(DATADIR)\\man1\n"
 , "\n# Standard Suffixes\n"
 , "sufobj:=.obj\n"
 , "sufexe:=.exe\n"
 , "sufdep:=.dep\n"
 , "suflib:=.lib\n"
 , "sufshr:=.dll\n"
-, "sufshrlink:=.lib\n"
 , "# Programs\n"
 , "MKDIR?=MD\n"
 , "COPY?=COPY /Y /B /V\n"
-, "RM:=-$(shell echo %COMSPEC%) /C DEL /F\n"
+, "RM:=-DEL /F\n"
 , "\n# Path separator\n"
-, "SLASH?=\\\\\n"
+, "SLASH?=\\\n"
 , "\n# END OF ONCE-ONLY.\n"
 , "endif\n\n"
 , "define do_install\n"
-, "install:: $(1) ; IF \"\" NEQ \"$$($(2))\" ( ( IF NOT EXIST $(if $(2),$$($(2)),$(3)) ( $$(MKDIR) $(if $(2),$$($(2)),$(3)) ) ) & $$(COPY) $(1) $(if $(2),$$($(2)),$(3))\\$(1) )\n"
+, "install:: $(1) ; IF NOT EXIST $$($(2)DIR) ( $$(MKDIR) $$($(2)DIR) )\n\t$$(COPY) $(1) $$($(2)DIR)\\$(1)\n"
 , "endef\n\n"
 , 0 }
 ;
 
 /**
- * Nulterminated list of the default_rules_[] attributes.
+ * Null terminated list of the default_rules_[] attributes.
  * This is a simple list of the default_rules_[...] attributes, listed
  * in the same order as the rules_name attribute. It is only
  * used to initialise the default_rules attribute. 
@@ -389,10 +394,21 @@ const char ** gmake_generator::default_rules = combine(gmake_generator::default_
  * This style has multiple system buildfiles. This variable contains a space
  * separated list of the names of these files.
  */
-const QString gmake_generator::rules_name("M_sys.mak M_cl.mak M_gcc.mak M_unix.mak M_Windows_NT.mak");
+const QString gmake_generator::rules_name("M_sys.mk M_cl.mk M_gcc.mk M_unix.mk M_Windows_NT.mk");
+
+gmake_generator::gmake_generator()
+: lib_set_ ()
+, qualified_target_name_ ()
+{}
+
+std::unique_ptr< base_generator > gmake_generator::create()
+
+{
+  std::unique_ptr< base_generator > Result (new gmake_generator);
+  return Result;
+}
 
 void gmake_generator::assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) {
-// Bouml preserved body begin 00033729
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -415,7 +431,7 @@ compilation flags to associated target.</property>
 <property name="ldflags" source="artifact" type="library" subtypes="external" style="make">Add
 linker flags to associated target.</property>
 ENDDOC}} */
-    find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, section_name, true);
+    find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, this->style.name(), true);
 }
 else
 {
@@ -436,7 +452,7 @@ else
     //////////////////////
     // Is a shared library
     //
-    const QString lib_name_ (a_target.name () + "$(sufshrlink)");
+    const QString lib_name_ (a_target.name () + "$(sufshr)");
     lib_fname_ = lib_fname_ / lib_name_;
     // Add to linker information
     merge_string_list (a_ldflags, lib_fname_.path_localised ());
@@ -452,7 +468,7 @@ else
     QString obj_body_;
     {
       QTextOStream obj_os_ (&obj_body_);
-      obj_os_ << this->target_NAME () << "_OBJ+=" << lib_fname_.path_localised ();
+      obj_os_ << this->target_NAME () << "_OBJ+=" << lib_fname_.path_localised () << "\n";
     }
     this->individual_obj_.append (obj_body_);
   }
@@ -486,14 +502,12 @@ include directories to targets associated to the library.</property>
 ENDDOC}} */
   QString ignored_cflags_;
   find_hdr_link (a_target, a_includes, a_ldflags
-      , ignored_cflags_, section_name, true);
+      , ignored_cflags_, this->style.name(), true);
 }
 this->lib_set_.append (lib_body_);
-// Bouml preserved body end 00033729
 }
 
 void gmake_generator::assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) {
-// Bouml preserved body begin 000337A9
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -535,8 +549,8 @@ to the source.</dd></dl></xdoc:section>
   \endcond xdoc */
   if (! a_src_inc.isEmpty () || ! a_src_flags.isEmpty ())
   {
-    QString cppflags_, compflags_, ignored_;
-    this->process_flags (a_src_inc, a_src_flags, cppflags_, compflags_, ignored_);
+    QString cppflags_, compflags_;
+    this->process_flags (a_src_inc, a_src_flags, cppflags_, compflags_);
     QString comp_ ("CCC");
     BUTTER_ALWAYS(a_target.property_value (butter_constants::butter_compiler_name, comp_)
         || ! a_isdoc
@@ -558,19 +572,10 @@ if (! source_extra_.isEmpty ())
   this->individual_obj_.append ("\n");
   this->individual_obj_.append (source_extra_);
 }
-// Bouml preserved body end 000337A9
-}
-
-std::auto_ptr< base_generator > gmake_generator::create()
-
-{
-  std::auto_ptr< base_generator > Result (new gmake_generator);
-  return Result;
 }
 
 void gmake_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) 
 {
-// Bouml preserved body begin 00027529
 // Need to write the "M_sys" include line.
 QString tmp_;
 QTextOStream desc_os_ (&tmp_);
@@ -590,12 +595,10 @@ if (NULL != a_loc.parent ())
 }
 a_art.preamble.second.append (tmp_);
 
-// Bouml preserved body end 00027529
 
 }
 
 void gmake_generator::end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) {
-// Bouml preserved body begin 00033829
 ////////////////////////////////
 // Finalise target build instructions
 //
@@ -604,10 +607,10 @@ if (a_type == other)
 {
   ////////////////
   // Handle "other" library types specially.
-  QString other_type_ (this->other_target_type_.upper ());
-  this->find_replace (other_type_, '-', '_');
+  QString other_type_( this->other_target_type_.upper() );
+  other_type_.replace( QChar{'-'}, QChar{'_'} );
   QString cppflags_, compflags_;
-  this->process_flags(a_include, a_cflags, cppflags_, compflags_, a_ldflags);
+  this->process_flags(a_include, a_cflags, cppflags_, compflags_);
   if (! compflags_.isEmpty ())
   {
     a_os << this->qualified_target_name_ << ": " << other_type_ << "FLAGS+=" << compflags_ << "\n";
@@ -621,8 +624,8 @@ if (a_type == other)
     a_os << this->qualified_target_name_ << ": " << other_type_ << "FLAGS+=" << a_ldflags << "\n";
   }
   a_os << this->qualified_target_name_ << " : $(" << this->target_NAME () << "SRC) " << this->lib_set_ << "\n"
-        << "\t$(" << other_type_ << ") $(" << other_type_ << "FLAGS) $(" << other_type_ << "OUT)" << this->qualified_target_name_
-            << " $(" << other_type_ << "IN)$(" << this->target_NAME () << "SRC)\n\n";
+        << "\t$(" << other_type_ << ") $(" << other_type_ << "FLAGS) " << this->qualified_target_name_
+            << " $(" << this->target_NAME () << "SRC)\n\n";
 }
 else
 {
@@ -631,13 +634,18 @@ else
       << "SRC:." << CppSettings::sourceExtension () << "=$(sufdep)))"
       << " $(filter %$(sufdep), $(" << target_NAME () << "SRC:.c=$(sufdep)))\n";
   // Create linker and compiler flagsets
-  QString cppflags_, compflags_;
-  this->process_flags(a_include, a_cflags, cppflags_, compflags_, a_ldflags);
-   if (! a_ldflags.isEmpty ())
+  if (! a_ldflags.isEmpty ())
   {
-    a_os << this->qualified_target_name_ << ": LDFLAGS+= " << a_ldflags << "\n";
+    a_os << this->qualified_target_name_ << ": LDFLAGS+=";
+    if (! a_ldflags.isEmpty ())
+    {
+      a_os << " " << a_ldflags;
+    }
+    a_os << "\n";
   }
- if (! compflags_.isEmpty ())
+  QString cppflags_, compflags_;
+  this->process_flags(a_include, a_cflags, cppflags_, compflags_);
+  if (! compflags_.isEmpty ())
   {
     a_os << this->qualified_target_name_ << ": CCCFLAGS+=" << compflags_ << "\n";
     a_os << this->qualified_target_name_ << ": CCFLAGS+=" << compflags_ << "\n";
@@ -692,37 +700,17 @@ else
 
 a_os << "\nall :: " << this->qualified_target_name_ << "\n";
 a_os << "TARGETS+=" << this->qualified_target_name_ << "\n\n";
-// Bouml preserved body end 00033829
 }
-
-gmake_generator::gmake_generator()
-: lib_set_ ()
-, qualified_target_name_ ()
-{}
 
 void gmake_generator::initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys) 
 {
-// Bouml preserved body begin 00027429
 // The include dir is the difference between the current fullpath and the
 // top-projects hdrDir
 QString init_text_;
 {
   QTextOStream init_os_ (&init_text_);
-  init_os_ << "ROOTDIR := ";
-  {
-		QDir rpath_ (root_dir ());
-	  if (1 < QDir::rootDirPath ().length ()) // Multi char root
-	  {
-		  // Root_dir_ _is_ absolute, so if it starts with
-			// "/" we know it is not yet localised.
-		  if (rpath_.path()[0] == QChar('/'))
-		  {
-			  rpath_.setPath (QDir::cleanDirPath(QDir::root ().filePath ("." + rpath_.path ())));
-		  }
-
-	  }
-  init_os_ << QDir::convertSeparators(rpath_.path ()) << "\n";
-  }
+  init_os_ << "ROOTDIR := " << root_dir ().path_localised () << "\n"
+         << "OUTPUTDIR := " << root_dir ().path_localised () << "\n";
   {
     const int e_ = rules_name.find(' ');
     QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
@@ -741,12 +729,9 @@ QString init_text_;
   // Get list of flags
   QString flags_;
   a_project.property_search (butter_constants::butter_flags_name, flags_);
-  // Get linker flags
-  QString linkflag_;
-  a_project.property_search (butter_constants::butter_ldflags_name, linkflag_);
 
   // Process flags into preprocessor and compiler sets
-  process_flags (inc_, flags_, inc_, flags_, linkflag_);
+  process_flags (inc_, flags_, inc_, flags_);
   if (!inc_.isEmpty())
   {
     init_os_ << "CPPFLAGS+=" << inc_ << "\n";
@@ -756,19 +741,27 @@ QString init_text_;
     init_os_ << "CCFLAGS+=" << flags_ << "\n";
     init_os_ << "CCCFLAGS+=" << flags_ << "\n";
   }
-  if (! linkflag_.isEmpty())
+
+  // Get linker flags
+  QString linkflag_;
+  if (a_project.property_search (butter_constants::butter_ldflags_name, linkflag_))
   {
     init_os_ << "LDFLAGS+=" << linkflag_ << "\n";
   }
 }
 a_sys.preamble.second = init_text_;
-// Bouml preserved body end 00027429
 
 }
 
 void gmake_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
 {
-// Bouml preserved body begin 000338A9
+static const char * install_flag_[] =
+{
+  "BIN"
+, "FILE"
+, "LIB"
+, "MAN"
+};
 QString target_name_;
 if (a_isdoc)
 {
@@ -778,29 +771,23 @@ else
 {
   target_name_ = this->qualified_target_name_;
 }
-a_os << "$(eval $(call do_install," << target_name_;
-if (butter_constants::is_install_keyword (a_loc_var))
+// Remove trailing DIR
+if (a_loc_var.right(3) == "DIR")
 {
-  a_os << "," << a_loc_var << "DIR,";
+  a_loc_var = a_loc_var.left(a_loc_var.length() - 3);
 }
-else if (a_loc_var.right(3) == "DIR")
+a_os << "$(eval $(call do_install," << target_name_
+     << "," << a_loc_var;
+if (a_loc_var != install_flag_ [a_type])
 {
-  // assume is user defined variable
-  a_os << "," << a_loc_var << ",";
-}
-else
-{
-  // assume is an actual path
-  a_os << ",," << a_loc_var;
+   a_os << "," << install_flag_ [a_type];
 }
 a_os << "))\n\n";
-// Bouml preserved body end 000338A9
 
 }
 
-void gmake_generator::process_flags(QString a_inc_list, QString a_flag_list, QString & a_cppflags, QString & a_cflags, QString & a_ldflags) 
+void gmake_generator::process_flags(QString a_inc_list, QString a_flag_list, QString & a_cppflags, QString & a_cflags) 
 {
-// Bouml preserved body begin 00039BA9
 QTextOStream cppos_ (&a_cppflags);
 QTextOStream flagos_ (&a_cflags);
 if (! a_inc_list.isEmpty())
@@ -859,39 +846,11 @@ if (! a_flag_list.isEmpty())
     }
   }
 }
-if (a_ldflags.isEmpty())
-{
-  QString ldflags_;
-  {
-    QTextOStream flagos_ (&ldflags_);
-    for (const_token_iterator e1_, b1_(a_ldflags.simplifyWhiteSpace (), ' '); b1_ != e1_; ++b1_)
-    {
-      const QString item_(b1_->c_str ());
-      BUTTER_CHECK (! item_.isEmpty ()
-                    , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
-      if ('L' == item_[1])
-      {
-        if ('-' == item_[0] || '/' == item_[0])
-        {
-          if (QDir::isRelativePath (item_.mid(2)))
-          {
-            flagos_ << item_.left(2) << (pathcmp("$(ROOTDIR)") / item_.mid(2)).path_localised () << " ";
-            continue;
-          }
-        }
-      }
-      flagos_ << item_ << " ";
-    }
-  }
-  a_ldflags = ldflags_;
-}
-// Bouml preserved body end 00039BA9
 
 }
 
 QString gmake_generator::process_hdrs(QString a_inc_list)
 {
-// Bouml preserved body begin 00027929
 QString Result;
 {
   QTextOStream os_ (&Result);
@@ -909,11 +868,37 @@ QString Result;
   }
 }
 return Result;
-// Bouml preserved body end 00027929
+}
+
+bool gmake_generator::requirements(const ::UmlItem & a_item, QString & a_reqs)
+{
+bool Result (false);
+QString l_tmp;
+QString l_section;
+QTextOStream l_os (&l_section);
+if (a_item.property_value (butter_constants::butter_include_name, l_tmp))
+{
+  Result = true;
+  l_os << "USERHDRS := $(USERHDRS) " << process_hdrs (l_tmp) << "\n";
+}
+if (a_item.property_search (butter_constants::butter_ldflags_name, l_tmp))
+{
+  Result = true;
+  l_os << "USERLDFLAGS := $(USERLDFLAGS) " << l_tmp << "\n";
+}
+if (a_item.property_search (butter_constants::butter_flags_name, l_tmp))
+{
+  Result = true;
+  l_os << "USERFLAGS := $(USERFLAGS) " << l_tmp << "\n";
+}
+if (Result)
+{
+  a_reqs = l_section;
+}
+return Result;
 }
 
 void gmake_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
-// Bouml preserved body begin 000336A9
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = a_target.name ();
@@ -959,7 +944,6 @@ if (a_type != executable)
 //////////////////
 // Start the source file associations
 a_os << this->target_NAME () << "SRC := ";
-// Bouml preserved body end 000336A9
 }
 
 

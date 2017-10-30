@@ -5,6 +5,7 @@
  * Intermediate generator template class.
  */
 #include "butter/base_generator.h"
+#include "butter/basic_style.h"
 #include "butter/const_token_iterator.h"
 #include "bouml/CppSettings.h"
 #include "butter/butter_constants.h"
@@ -22,12 +23,13 @@
 #include <stdexcept>
 #include <qstack.h>
 #include <cstdlib>
+#include <map>
 // --
 namespace butter {
 
 /**
  * Writer class for recursive template idiom.  This contains the implementation for
- * the create_system () factory method. Derived class writers can use this class to handle
+ * the create_system () factory_ method. Derived class writers can use this class to handle
  * the boiler-plate process of traversing the location and artifact sets - they implement
  * descendent_link, external_target, initialise and local_target.
  */
@@ -54,19 +56,18 @@ class generator : public base_generator
 template<class derived>
 void generator<derived>::create_system(location & a_base, const ::UmlItem & a_project) 
 {
-// Bouml preserved body begin 00032FA9
 // Check for top-level system build-file document, create it from template.
 this->rules_file (a_base, a_project);
 
 // Start building system
-std::auto_ptr< compound_artifact > system_artifact_ = get_artifact (a_base, static_cast< derived* >(this)->build_file_sysname);
+std::unique_ptr< compound_artifact > system_artifact_ = get_artifact (a_base, static_cast< derived* >(this)->build_file_sysname);
 
 // Set the project root directory
 this->root_dir (a_base.full_path ());
 // Perform style specific initialisation
 static_cast< derived* >(this)->initialise (a_base, a_project, *system_artifact_);
 // Get a reference to the current style.
-const butter::style &style_ = butter::style::get_style ();
+const butter::basic_style &style_ = butter::style::get_style ();
 
 //////////////
 // Process the project, handling items as we go.
@@ -83,11 +84,11 @@ while (! location_stack_.isEmpty ())
     location_stack_.push (top_->children ().at (ii_));
   }
 
-  std::auto_ptr< compound_artifact > current_; // The current build file.
+  std::unique_ptr< compound_artifact > current_; // The current build file.
   // Get deployment views from current location's packages
   for (unsigned int i_ = 0; i_ < top_->packages ().count (); ++i_)
   {
-    UmlPackage * I_ = top_->packages ().at (i_);
+    UmlPackage * I_ = top_->packages().at (i_);
     for (unsigned int j_ = 0; j_ < I_->children ().count (); ++j_)
     {
       UmlItem * J_ = I_->children ().at (j_);
@@ -119,9 +120,15 @@ while (! location_stack_.isEmpty ())
                 //////////////
                 // Is a local target
                 const QString target_name_ (art_item_.name ());
-                QVector < UmlArtifact > assoc_arts_ (const_cast< UmlArtifact& >(art_item_).associatedArtifacts ());
+                std::map< QCString, UmlArtifact* > assoc_arts_;
+                // Make map to get sorted list of artifacts
+                for (unsigned int i_ = 0; i_ < const_cast<UmlArtifact&>(art_item_).associatedArtifacts().size (); ++i_)
+                {
+                   UmlArtifact * current_art_ = const_cast<UmlArtifact&>(art_item_).associatedArtifacts().at(i_);
+                   assoc_arts_.insert(std::make_pair(current_art_->name(), current_art_));
+                }
                 // Only process targets with associated entries.
-                if (! assoc_arts_.isEmpty ())
+                if (! assoc_arts_.empty ())
                 {
                   QString entry_;           // The target entry
                   {
@@ -129,7 +136,7 @@ while (! location_stack_.isEmpty ())
                     {
                       QString value_;
                       if (art_item_.property_search (butter_constants::butter_lib_type_name, value_)
-                          && value_ == butter_constants::shared_value)
+                            && value_ == butter_constants::shared_value)
                       {
                         target_type_ = shared_library;
                       }
@@ -150,56 +157,56 @@ while (! location_stack_.isEmpty ())
                     {
                       QString buildfile_;
                       art_item_.property_value (butter_constants::butter_buildfile_name, buildfile_);
-                      static_cast< derived* >(this)->start_target (art_item_, entry_os_, buildfile_, compiler_, target_type_);
+                      static_cast< derived* >(this)->start_target(art_item_, entry_os_, buildfile_, compiler_, target_type_);
                     }
                     ///////////////////
                     // Process the associated artifacts
-                    for (unsigned int i_ = 0; i_ < assoc_arts_.size (); ++i_)
+                    for (std::map< QCString, UmlArtifact* >::iterator itr = assoc_arts_.begin(); itr != assoc_arts_.end(); ++itr)
                     {
-                      UmlArtifact *const current_art_ = assoc_arts_.at (i_);
+                      UmlArtifact *const current_art_ = itr->second;
                       const QString stereotype_ (current_art_->stereotype ().data ());
                       if (stereotype_ == butter_constants::library_stereotype)
                       {
                         static_cast< derived* >(this)->assoc_library (*current_art_, entry_os_
-                            , includes_, ldflags_, compflags_);
+                                            , includes_, ldflags_, compflags_);
                       }
                       else if (stereotype_ == butter_constants::source_stereotype)
                       {
                         QString src_inc_, src_flags_;
-                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name, true); // Pass link flags to target
+                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name(), true); // Pass link flags to target
                         static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
-                            , current_art_->name () + "." + CppSettings::sourceExtension ()
-                            , current_art_->name ()
-                            , src_inc_
-                            , src_flags_
-                            , false);
+                                            , current_art_->name () + "." + CppSettings::sourceExtension ()
+                                            , current_art_->name ()
+                                            , src_inc_
+                                            , src_flags_
+                                            , false);
                       }
                       else if (stereotype_ == butter_constants::document_stereotype)
                       {
                         QString src_inc_, src_flags_;
-                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name, true); // Pass link flags to target
+                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name(), true); // Pass link flags to target
                         QString basename_ (current_art_->name ());
                         const int dot_ (basename_.findRev ('.'));
                         if (-1 != dot_) basename_.truncate (dot_);
                         static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
-                            , current_art_->name ()
-                            , basename_
-                            , src_inc_
-                            , src_flags_
-                            , true);
+                                            , current_art_->name ()
+                                            , basename_
+                                            , src_inc_
+                                            , src_flags_
+                                            , true);
                       }
                     }
                     ////////////////////
                     // End target
-                    find_hdr_link (art_item_, includes_, ldflags_, compflags_, style_.name, false); // Pass link flags to target
+                    find_hdr_link (art_item_, includes_, ldflags_, compflags_, style_.name(), false); // Pass link flags to target
                     static_cast< derived* >(this)->end_target (art_item_, entry_os_
-                        , includes_, ldflags_, compflags_, compiler_, target_type_);
+                                            , includes_, ldflags_, compflags_, compiler_, target_type_);
                   }
                   if (! entry_.isEmpty ())
                   {
                     if (NULL == top_->parent ())
                     {  // Is local at base, use system_artifact_
-                      system_artifact_->target (target_name_).second = entry_;
+                      system_artifact_->target(target_name_).second = entry_;
                     }
                     else
                     {
@@ -237,16 +244,14 @@ while (! location_stack_.isEmpty ())
                     install_type_ = base_generator::lib;
                     if (install_dir_.isEmpty ())
                     {
-                      install_dir_ = (target_type_ == base_generator::shared_library)
-                                     ? butter_constants::libdir_value
-                                     : butter_constants::arkdir_value ;
+                      install_dir_ = butter_constants::libdir_value;
                     }
                     else
                     {
                       /////////////
                       // Reset install type to file to handle "other" targets
                       if (install_dir_ != butter_constants::libdir_value
-                          && target_type_ == base_generator::other)
+                         && target_type_ == base_generator::other)
                       {
                         install_type_ = base_generator::file;
                       }
@@ -297,14 +302,12 @@ while (! location_stack_.isEmpty ())
   }
 }
 
-// Bouml preserved body end 00032FA9
 
 }
 
 template<class derived>
 void generator<derived>::rules_file(location & a_base, const ::UmlItem & a_project) 
 {
-// Bouml preserved body begin 000374A9
 // Helper functions for managing rules files.
 class helper_
 {
@@ -399,7 +402,7 @@ if ( !app_data_var.isEmpty() && ! app_data_var.isNull ())
 {
   QFileInfo app_data_info_((pathcmp (app_data_var)
                             / butter_constants::app_data_subdir_name
-                            / style::get_style().name).path ());
+                            / style::get_style().name()).path ());
   if (DEBUG)
   {
     butter::log::com.trace(butter::log::debug, ("Full path is: "
@@ -443,10 +446,13 @@ if (rules_name_.contains(" "))
     const QString name_(b_->c_str ());
     if (! name_.isEmpty ())
     {
-      a_base.create_uml_document (name_)->set_Description (
-        helper_::make_substitutions (
-          helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], i_)
-          , project_name_, version_).utf8());
+      if (a_base.find_uml_document (name_).isEmpty ())
+	{
+	  a_base.create_uml_document (name_)->set_Description (
+           helper_::make_substitutions (
+            helper_::list_to_string(&static_cast< derived* >(this)->default_rules[0], i_)
+            , project_name_, version_).utf8());
+	}
       ++i_; // Only increment i for non-empty names!
     }
   }
@@ -462,7 +468,6 @@ else
         , project_name_, version_).utf8());
   }
 }
-// Bouml preserved body end 000374A9
 
 }
 

@@ -8,10 +8,7 @@
 #include "butter/config.h"
 namespace butter {
 
-static QString const section_name ("cmake");
-extern butter::basic_style const cmake_style;
-butter::basic_style const cmake_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::cmake_generator::create);
-
+const basic_style cmake_generator::style( "#", "", "##END:", "", "##START:", "", "cmake", &butter::cmake_generator::create );
 
 /**
  * The default leaf filename for the current style
@@ -38,18 +35,18 @@ const char * cmake_generator::default_rules[] = { "#\n"
 , "# local.cmake\n"
 , "#\n"
 , "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG=1)\n"
-, "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_RELEASE DEBUG=0)\n"
+, "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS DEBUG=0)\n"
 , "#############################\n"
 , "##  Default install locations\n"
 , "#############################\n"
-, "set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/stage CACHE PATH \"Root of staging tree\" FORCE)\n"
-, "set (BINDIR bin CACHE PATH \"Stage location for executables\")\n"
-, "set (DATADIR share CACHE PATH \"Stage location for static libraries\")\n"
-, "set (DOCDIR share/doc CACHE PATH \"Stage location for documentation\")\n"
-, "set (HTMLDIR share/html CACHE PATH \"Stage location for HTML documentation\")\n"
-, "set (INCDIR include CACHE PATH \"Stage location for include files\")\n"
-, "set (LIBDIR lib CACHE PATH \"Stage location for dynamic/shared libraries\")\n"
-, "set (MANDIR share/man CACHE PATH \"Stage location for man-page documentation\")\n"
+, "set (CMAKE_INSTALL_PREFIX installdir)\n"
+, "set (BINDIR bin)\n"
+, "set (DATADIR share)\n"
+, "set (DOCDIR share/doc)\n"
+, "set (HTMLDIR share/html)\n"
+, "set (INCLUDEDIR include)\n"
+, "set (LIBDIR bin)\n"
+, "set (MANDIR share/man)\n"
 , "\n"
 , 0 }
 ;
@@ -59,8 +56,23 @@ const char * cmake_generator::default_rules[] = { "#\n"
  */
 const QString cmake_generator::rules_name("local.cmake");
 
+cmake_generator::cmake_generator()
+: lib_set_ ()
+, project_name_ ()
+, depend_set_ ()
+, is_static_type_ (false)
+, language_set_ ()
+, sys_buildfile_ ()
+{}
+
+std::unique_ptr< base_generator > cmake_generator::create()
+
+{
+  std::unique_ptr< base_generator > Result (new cmake_generator);
+  return Result;
+}
+
 void cmake_generator::assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) {
-// Bouml preserved body begin 00038429
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -73,7 +85,7 @@ if (a_target.property_value (butter_constants::butter_project_name, project_))
   // Is an externally linked library
   //
   // add flags to main target.
-  find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, section_name, true);
+  find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, cmake_generator::style.name(), true);
 
   QString name_ (a_target.name ());
   if (! lib_set_.isEmpty ())
@@ -125,13 +137,11 @@ else
   }
   // Both static/shared add include and link flags, ignore cflags
   QString src_flags_;
-  find_hdr_link (a_target, a_includes, a_ldflags, src_flags_, section_name, true);
+  find_hdr_link (a_target, a_includes, a_ldflags, src_flags_, cmake_generator::style.name(), true);
 }
-// Bouml preserved body end 00038429
 }
 
 void cmake_generator::assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) {
-// Bouml preserved body begin 000384A9
 ////////////////////////////////////
 // Define the associations of target
 //
@@ -226,28 +236,10 @@ if (! a_src_flags.isEmpty () || ! comp_.isEmpty())
   }
   this->individual_obj_.append (user_extra_);
 }
-// Bouml preserved body end 000384A9
-}
-
-cmake_generator::cmake_generator()
-: lib_set_ ()
-, project_name_ ()
-, depend_set_ ()
-, is_static_type_ (false)
-, language_set_ ()
-, sys_buildfile_ ()
-{}
-
-std::auto_ptr< base_generator > cmake_generator::create()
-
-{
-  std::auto_ptr< base_generator > Result (new cmake_generator);
-  return Result;
 }
 
 void cmake_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) 
 {
-// Bouml preserved body begin 000385A9
 // Keep parent dir definitions.
 if (NULL != a_loc.parent ())
 {
@@ -260,12 +252,10 @@ if (NULL != a_loc.parent ())
   a_sys.close.second.append (tmp_);
 }
 
-// Bouml preserved body end 000385A9
 
 }
 
 void cmake_generator::end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) {
-// Bouml preserved body begin 00038629
 ////////////////////////////////
 // Finalise target build instructions
 //
@@ -275,27 +265,14 @@ if (a_type == other)
   ////////////////
   // Handle "other" library types specially.
   QString other_type_ (this->other_target_type_.upper ());
-  this->find_replace (other_type_, '-', '_');
+  other_type_.replace( QChar('-'), QChar('_') );
   a_os << "add_custom_command (OUTPUT ${" << this->target_NAME ()
       << "}\n\t DEPENDS ${" << this->target_NAME () << "_SRC} "
       << this->lib_set_
       << "\n\tCOMMAND ${" << other_type_ << "} ";
   if (! a_include.isEmpty ())
   {
-    a_os << "-I";
-    for (const_token_iterator e_, b_(a_include, ' '); e_ != b_; ++b_)
-    {
-      const QString val_(b_->c_str ());
-      if (!val_.isEmpty ())
-      {
-        if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
-        {
-          a_os << "${CMAKE_SOURCE_DIR}/";
-        }
-        a_os << mangle (val_) << " ";
-      }
-    }
-    a_os << " ";
+    a_os << mangle(a_include) << " ";
   }
   if (! a_cflags.isEmpty ())
   {
@@ -386,12 +363,10 @@ else
   }
 }
 
-// Bouml preserved body end 00038629
 }
 
 void cmake_generator::initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys) 
 {
-// Bouml preserved body begin 000388A9
 BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
 this->project_name_ = a_project.name ().upper ();
 this->sys_buildfile_ = &a_sys;
@@ -450,30 +425,19 @@ QString proj_text_;
   }
 }
 a_sys.target(this->project_name_).second = proj_text_;
-// Bouml preserved body end 000388A9
 
 }
 
 void cmake_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
 {
-// Bouml preserved body begin 00038929
 const QString target_name_(a_isdoc ?  a_target.name() : "${" + this->target_NAME () + "}");
-if (butter_constants::is_install_keyword (a_loc_var))
-{
-  a_loc_var.insert (0, "${").append ("DIR}");
-}
-else if (a_loc_var.right(3) == "DIR")
-{
-  // assume is user defined variable
-  a_loc_var.insert (0, "${").append ("}");
-}
-// else assume is an actual path
 switch (a_type)
 {
 case base_generator::bin:
 {
   a_os << "install (TARGETS " << target_name_
-  << "\n\tRUNTIME DESTINATION " << a_loc_var << ")\n\n";
+  << "\n\tRUNTIME DESTINATION ${" << a_loc_var << "}"
+  << "\n\tCONFIGURATIONS Release)\n\n";
   break;
 }
 case base_generator::lib:
@@ -482,35 +446,34 @@ case base_generator::lib:
   if (this->is_static_type_)
   {
     statd_ = a_loc_var;
-    shard_ = "${LIBDIR}";
+    shard_ = "LIBDIR";
   }
   else
   {
-    statd_ = "${DATADIR}";
+    statd_ = "DATADIR";
     shard_ = a_loc_var;
   }
   a_os << "install (TARGETS " << target_name_
-  << "\n\tRUNTIME DESTINATION " << shard_ << ""
-  << "\n\tLIBRARY DESTINATION " << shard_ << ""
-  << "\n\tARCHIVE DESTINATION " << statd_ << ")\n\n";
+  << "\n\tLIBRARY DESTINATION ${" << shard_ << "}"
+  << "\n\tCONFIGURATIONS Release"
+  << "\n\tARCHIVE DESTINATION ${" << statd_ << "}"
+  << "\n\tCONFIGURATIONS Release)\n\n";
   break;
 }
 case base_generator::file:
 case base_generator::man:
 {
-  a_os << "install (FILES ";
-  if (! a_isdoc) a_os << "${CMAKE_CURRENT_BINARY_DIR}/";
-  a_os << target_name_ << "\n\tDESTINATION " << a_loc_var << ")\n\n";
+  a_os << "install (FILES " << target_name_
+  << "\n\tDESTINATION ${" << a_loc_var << "}"
+  << "\n\tCONFIGURATIONS Release)\n\n";
   break;
 }
 }
-// Bouml preserved body end 00038929
 
 }
 
 QString cmake_generator::mangle(QString input) 
 {
-// Bouml preserved body begin 0003C0A9
 const char dollar_('$');
 const char escape_('\\');
 const char left_paren_('(');
@@ -576,42 +539,21 @@ if (! quotes_.empty ())
 {
   throw std::runtime_error ("<p><b>Error</b> Unmatched quotes in string: " + std::string(input.utf8()) + "</p>");
 }
-// Check for -I, /I, -L or /L
-if (-1 != input.find('L') || -1 != input.find('I'))
+while (true)
 {
-  QString mangle_;
-  {
-    QTextOStream os_ (&mangle_);
-    for (const_token_iterator e_, b_(input.simplifyWhiteSpace(), ' '); e_ != b_; ++b_)
-    {
-      const QString item_(b_->c_str ());
-      BUTTER_CHECK (! item_.isEmpty ()
-                  , "<p><em>Programming error:</em> token iterator returned an empty string</p>");
-      if ('L' == item_[1] || 'I' == item_[1])
-      {
-        if ('-' == item_[0] || '/' == item_[0])
-        {
-          if (QDir::isRelativePath (item_.mid(2)))
-          {
-            os_ << item_.left(2) << "${CMAKE_SOURCE_DIR}/" << item_.mid(2) << " ";
-            continue;
-          }
-        }
-      }
-      os_ << item_ << " ";
-    }
-  }
-  input = mangle_;
+  static const QString od_ ("OUTPUTDIR");
+  static const QString cd_ ("CMAKE_BINARY_DIR");
+  const int found_at_ (input.find (od_));
+  if (found_at_ == -1) break;
+  input.replace (found_at_, od_.length (), cd_);
 }
 return input;
 
-// Bouml preserved body end 0003C0A9
 
 }
 
 void cmake_generator::preamble() 
 {
-// Bouml preserved body begin 00038FA9
 if (this->sys_buildfile_->preamble.second.isEmpty ()
      || ! this->language_set_.isEmpty ())
 {
@@ -629,12 +571,10 @@ if (this->sys_buildfile_->preamble.second.isEmpty ()
   }
   this->sys_buildfile_->preamble.second = init_text_;
 }
-// Bouml preserved body end 00038FA9
 
 }
 
 void cmake_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
-// Bouml preserved body begin 00038B29
 /////////////////
 // Initialise variables for the new target
 this->target_NAME (a_target);
@@ -666,7 +606,6 @@ if (a_type != executable)
 // Start the source file associations
 a_os << "set (" << this->target_NAME () << " " << a_target.name () << ")\n\n";
 a_os << "set (" << this->target_NAME () << "_SRC ";
-// Bouml preserved body end 00038B29
 }
 
 

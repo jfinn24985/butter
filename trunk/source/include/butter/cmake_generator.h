@@ -3,11 +3,12 @@
 
 
 #include "butter/generator.h"
+#include "butter/basic_style.h"
 #include <qstring.h>
-#include <qtextstream.h>
-
 #include <memory>
 #include "butter/base_generator.h"
+#include <qtextstream.h>
+
 
 namespace butter { class compound_artifact; } 
 class UmlArtifact;
@@ -24,6 +25,10 @@ namespace butter {
  * XXX_COMPILE_FLAGS
  * XXX_LINK_LIBRARIES
  * 
+ * TODO:
+ * need to root relative files with CMAKE_SOURCE_DIR
+ * need to convert $(..) to ${..}
+ * need to convert $(OUTPUTDIR) to CMAKE_BINARY_DIR
  * 
  * Additionally external library xxx without a local buildfile can be
  * found using:
@@ -42,6 +47,8 @@ class cmake_generator : public generator<cmake_generator> {
 // Make out parent a friend.
 friend class generator<cmake_generator>;
   public:
+    static const basic_style style;
+
     /**
      * The default leaf filename for the current style
      */
@@ -52,8 +59,6 @@ friend class generator<cmake_generator>;
      */
     static const QString& build_file_sysname;
 
-
-  private:
     /**
      * Identify the minimum cmake version this generator supports.
      */
@@ -72,6 +77,8 @@ friend class generator<cmake_generator>;
      */
     static const QString rules_name;
 
+
+  private:
     /**
      * Set of included libraries
      */
@@ -97,6 +104,38 @@ friend class generator<cmake_generator>;
     compound_artifact* sys_buildfile_;
 
     /**
+     * Create a generator from the top-level a_project
+     * 
+     * \pre a_project.parent = nul
+     */
+    cmake_generator();
+
+    /**
+     * no copy
+     */
+    cmake_generator(const cmake_generator &) = delete;
+
+    /**
+     * no copy
+     */
+    cmake_generator(cmake_generator && source) = delete;
+
+    /**
+     * no assign
+     */
+    cmake_generator & operator=(const cmake_generator &) = delete;
+
+  public:
+    ~cmake_generator() throw () {}
+
+    /**
+     * Create bjam generator object.s
+     */
+    static std::unique_ptr< base_generator > create();
+
+
+  private:
+    /**
      * ** This method a library association to the current target entry for a_target.
      * 
      * Responsibilites
@@ -117,24 +156,6 @@ friend class generator<cmake_generator>;
      */
     void assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc);
 
-    /**
-     * Create a generator from the top-level a_project
-     * 
-     * \pre a_project.parent = nul
-     */
-    cmake_generator();
-
-
-  public:
-    ~cmake_generator() throw () {}
-
-    /**
-     * Create bjam generator object.s
-     */
-    static std::auto_ptr< base_generator > create();
-
-
-  private:
     /**
      * Write the Jamfile descent links for a_location to a_os
      */
@@ -160,11 +181,6 @@ friend class generator<cmake_generator>;
     void external_target(const location & a_current, const ::UmlArtifact & a_target, compound_artifact & a_sys) {}
 
     /**
-     * no copy
-     */
-    cmake_generator(const cmake_generator &);
-
-    /**
      * Write extra details to the top-level build file. 
      */
     void initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys);
@@ -182,20 +198,11 @@ friend class generator<cmake_generator>;
   public:
     /**
      * Convert input string into CMake allowed string.  This
-     * means converting () to {}
-     * 
-     * Check for -I,/I,-L,/L and modify if a relative path is detected.
+     * means converting () to {} and OUTPUTDIR to 
+     * CMAKE_BINARY_DIR
      */
     QString mangle(QString input);
 
-
-  private:
-    /**
-     * no assign
-     */
-    cmake_generator & operator=(const cmake_generator &);
-
-  public:
     /**
      * Update the main buildfile's project entry.  This is called
      * in initialise() and when adding a new compiler language.

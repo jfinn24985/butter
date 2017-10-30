@@ -11,11 +11,11 @@
 // Manual includes
 #include <utility>
 // --
+namespace butter { class basic_style; } 
 namespace butter { class butter_constants; } 
 namespace butter { class pathcmp; } 
 namespace butter { class style; } 
 class UmlArtifact;
-namespace butter { struct basic_style; } 
 
 namespace butter {
 
@@ -25,7 +25,7 @@ namespace butter {
  * be unlabelled or labelled depending on the content of the first entry in the
  * pair.
  * 
- * * labelled parts are enclosed in "start_phrase"/"end_phrase" markers.
+ * * labelled parts are enclosed in "start_phrase_"/"end_phrase_" markers.
  * * unlabelled parts are any non-whitespace outside part markers.
  * 
  * Standard build-file form is a compound_artifact with something like
@@ -110,7 +110,7 @@ class compound_artifact
     /**
      * no copy
      */
-    compound_artifact(const compound_artifact & source);
+    compound_artifact(const compound_artifact & source) = delete;
 
     /**
      * Reset object and read-in a new artifact.
@@ -146,7 +146,7 @@ class compound_artifact
     /**
      * no assign
      */
-    compound_artifact & operator=(const compound_artifact & source);
+    compound_artifact & operator=(const compound_artifact & source) = delete;
 
 
   public:

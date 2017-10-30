@@ -13,26 +13,11 @@
 // -
 namespace butter {
 
-static QString const section_name ("standard");
-extern butter::basic_style const jam_style;
-butter::basic_style const jam_style ("#", "", "##END:", "", "##START:", "", section_name, &butter::jam_generator::create);
-
+const basic_style jam_generator::style( "#", "", "##END:", "", "##START:", "", "standard", &butter::jam_generator::create );
 
 const QString jam_generator::build_file_name("Jamfile");
 
 const QString jam_generator::build_file_sysname("Jamfile");
-
-const QString jam_generator::comment_string("#");
-
-const QString jam_generator::end_phrase("##END:");
-
-const QString jam_generator::start_phrase("##START:");
-
-/**
- * The label for description 'sections' and the value of 
- * the style for this buildfile type.
- */
-const QString jam_generator::section_name("standard");
 
 /**
  * A template Jamrules.
@@ -52,14 +37,14 @@ const char * jam_generator::default_rules[] = { "#\n"
 , "##  Default install locations\n"
 , "##\n"
 , "#############################\n"
-, "PREFIX = stage ;\n"
-, "BINDIR = $(PREFIX)$(SLASH)bin ;\n"
-, "DATADIR = $(PREFIX)$(SLASH)share ;\n"
-, "DOCDIR = $(DATADIR)$(SLASH)doc ;\n"
-, "HTMLDIR = $(DATADIR)$(SLASH)html ;\n"
-, "INCDIR = $(PREFIX)$(SLASH)include ;\n"
-, "LIBDIR = $(PREFIX)$(SLASH)lib ;\n"
-, "MANDIR = $(DATADIR)$(SLASH)man ;\n"
+, "PREFIX = installdir ;\n"
+, "BINDIR = $(PREFIX)/bin ;\n"
+, "DATADIR = $(PREFIX)/share ;\n"
+, "DOCDIR = $(DATADIR)/doc ;\n"
+, "HTMLDIR = $(DATADIR)/html ;\n"
+, "INCDIR = $(PREFIX)/include ;\n"
+, "LIBDIR = $(PREFIX)/bin ;\n"
+, "MANDIR = $(DATADIR)/man1 ;\n"
 , "\n"
 , "######################################################\n"
 , "##\n"
@@ -84,7 +69,7 @@ const char * jam_generator::default_rules[] = { "#\n"
 , "switch $(VARIANT)\n"
 , "{\n"
 , "case RELEASE :\n"
-, "  OPTIM = -O2 -march=native -DDEBUG=0 ;\n"
+, "  OPTIM += -O2 -march=native -DDEBUG=0 ;\n"
 , "case * :\n"
 , "  OPTIM = -O0 -ggdb -DDEBUG=1 ;\n"
 , "  CCFLAGS += -pedantic ;\n"
@@ -135,70 +120,80 @@ const char * jam_generator::default_rules[] = { "#\n"
  */
 const QString jam_generator::rules_name("Jamrules");
 
+jam_generator::jam_generator()
+: lib_defn_ ()
+, grist_ ()
+, qualified_target_name_ ()
+{}
+
+std::unique_ptr< base_generator > jam_generator::create()
+
+{
+  std::unique_ptr< base_generator > Result (new jam_generator);
+  return Result;
+}
+
 void jam_generator::assoc_library(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString & a_includes, QString & a_ldflags, QString & a_cflags) 
 {
-// Bouml preserved body begin 000330A9
 QString project_;
-if (a_target.property_value (butter_constants::butter_project_name, project_))
+if( a_target.property_value ( butter_constants::butter_project_name, project_ ) )
 {
   // Is an externally linked library, look only for flags.
-/* {{BEGINDOC
-<property name="include" source="artifact" type="library" subtypes="external" style="standard">Add
-include directory properties to associated target.</property>
-<property name="flags" source="artifact" type="library" subtypes="external" style="standard">Add
-compilation flags to associated target.</property>
-<property name="ldflags" source="artifact" type="library" subtypes="external" style="standard">Add
-linker flags to associated target.</property>
-ENDDOC}} */
-  find_hdr_link (a_target, a_includes, a_ldflags, a_cflags, section_name, true);
+  /* {{BEGINDOC
+  <property name="include" source="artifact" type="library" subtypes="external" style="standard">Add
+  include directory properties to associated target.</property>
+  <property name="flags" source="artifact" type="library" subtypes="external" style="standard">Add
+  compilation flags to associated target.</property>
+  <property name="ldflags" source="artifact" type="library" subtypes="external" style="standard">Add
+  linker flags to associated target.</property>
+  ENDDOC}} */
+  find_hdr_link( a_target, a_includes, a_ldflags, a_cflags, jam_generator::style.name(), true );
 }
 else
 {
   {
     QString defn_;
     {
-      QTextOStream os_ (&defn_);
+      QTextOStream os_( &defn_ );
       const QString dir_line_
-          = this->root_dir ().create_relative (a_target.package ().src_path ());
+        = this->root_dir().create_relative( a_target.package().src_path() );
 
-      os_ << " <" << pathcmp (dir_line_).path_convert ("!") << ">"
-          << a_target.name () << "$(SUFLIB) \n\t";
+      os_ << " <" << pathcmp( dir_line_ ).path_convert( "!" ) << ">"
+        << a_target.name () << "$(SUFLIB) \n\t";
     }
-    this->lib_defn_.append (defn_);
+    this->lib_defn_.append( defn_ );
   }
-/*  QString libtype_; // Add LOC_TARGET_LDFLAGS variable for static libraries
-  if (a_target.property_search (butter_constants::butter_lib_type_name, libtype_)
-      && libtype_ != butter_constants::shared_value)*/
+  /*  QString libtype_; // Add LOC_TARGET_LDFLAGS variable for static libraries
+    if (a_target.property_search (butter_constants::butter_lib_type_name, libtype_)
+        && libtype_ != butter_constants::shared_value)*/
   {
-/* {{BEGINDOC
-<property name="ldflags" source="artifact" type="source" style="standard">Add
-linker flags transitively to targets associated to the static library
-this source is associated with.</property>
-<property name="ldflags" source="artifact" type="library" subtypes="static" style="standard">
-Add linker flags to targets associated to this library.</property>
-<property name="include" source="artifact" type="library" subtypes="shared static" style="standard">Add
-include directories to targets associated to the library.</property>
-ENDDOC}} */
+    /* {{BEGINDOC
+    <property name="ldflags" source="artifact" type="source" style="standard">Add
+    linker flags transitively to targets associated to the static library
+    this source is associated with.</property>
+    <property name="ldflags" source="artifact" type="library" subtypes="static" style="standard">
+    Add linker flags to targets associated to this library.</property>
+    <property name="include" source="artifact" type="library" subtypes="shared static" style="standard">Add
+    include directories to targets associated to the library.</property>
+    ENDDOC}} */
     QString defn_;
     {
-      QTextOStream os_ (&defn_);
-      os_ << " $(" << to_target_NAME (a_target) << "_LDFLAGS) ";
+      QTextOStream os_( &defn_ );
+      os_ << " $(" << to_target_NAME( a_target ) << "_LDFLAGS) ";
     }
-    a_ldflags.append (defn_);
+    a_ldflags.append( defn_ );
   }
   QString libinc_; // Add include variable for both static and shared libraries
-  if (a_target.property_search (butter_constants::butter_include_name, libinc_))
+  if ( a_target.property_search( butter_constants::butter_include_name, libinc_ ) )
   {
-    a_includes.append (libinc_);
+    a_includes.append( libinc_ );
   }
 }
-// Bouml preserved body end 000330A9
 
 }
 
 void jam_generator::assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc) 
 {
-// Bouml preserved body begin 00033129
 ///////////////////////////
 // Description for individual objects (optional)
 QString source_;
@@ -242,26 +237,15 @@ if (! source_.isEmpty ())
 /////////////
 // Add source to target
 a_os << this->grist_ << a_filename << "\n\t";
-// Bouml preserved body end 00033129
 
 }
 
 void jam_generator::check_properties(bool a_is_source, const ::UmlArtifact & a_source, ::QTextOStream & a_os) 
 {
-// Bouml preserved body begin 000323A9
-// Bouml preserved body end 000323A9
 
-}
-
-std::auto_ptr< base_generator > jam_generator::create()
-
-{
-  std::auto_ptr< base_generator > Result (new jam_generator);
-  return Result;
 }
 
 void jam_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) {
-// Bouml preserved body begin 000269A9
 // Need to write the TOP line.
 if (NULL != a_loc.parent ())
 {
@@ -283,12 +267,10 @@ if (NULL != a_loc.parent ())
   // Add definition to top-level
   a_sys.close.second.append ("SubInclude TOP " + dir_line_ + " ;\n");
 }
-// Bouml preserved body end 000269A9
 }
 
 void jam_generator::end_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_include, QString a_ldflags, QString a_cflags, QString a_compiler, base_generator::target_type a_type) 
 {
-// Bouml preserved body begin 000331A9
 ////////////////
 // End target source variable
 a_os << ";\n\n";
@@ -396,13 +378,11 @@ if (! this->individual_obj_.isEmpty ())
 {
   a_os << this->individual_obj_ << "\n";
 }
-// Bouml preserved body end 000331A9
 
 }
 
 void jam_generator::initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys) 
 {
-// Bouml preserved body begin 000262A9
 BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
 
 QString content_;
@@ -424,6 +404,7 @@ QString content_;
   //////////////
   // Set this as top location and bring in Jamrules.
   os_ << "SubDir TOP ;\n";
+  os_ << "OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;\n";
   //////////////
   // Handle user-defined project includes and flag properties
   ////////////
@@ -461,56 +442,32 @@ QString content_;
   }
 }
 a_sys.preamble.second = content_;
-// Bouml preserved body end 000262A9
 
 }
 
 void jam_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 
 {
-// Bouml preserved body begin 00033229
 static const char * install_cmd_[] =
 {
-  "InstallBin "
-, "InstallFile "
-, "InstallLib "
-, "InstallMan "
+  "InstallBin"
+, "InstallFile"
+, "InstallLib"
+, "InstallMan"
 };
-a_os << install_cmd_ [a_type];
-if (butter_constants::is_install_keyword (a_loc_var))
-{
-  a_os << "$(" << a_loc_var << "DIR)";
-}
-else if (a_loc_var.right(3) == "DIR")
-{
-  // assume is user defined variable
-  a_os << "$(" << a_loc_var << ")";
-}
-else
-{
-  // assume is an actual path
-  a_os << a_loc_var;
-}
+a_os << install_cmd_ [a_type] << " $("  << a_loc_var << ") : ";
 if (a_isdoc)
 {
-  a_os << " : " << this->grist_ << a_target.name ();
+  a_os << this->grist_ << a_target.name ();
 }
 else
 {
-  a_os << " : " << this->qualified_target_name_;
+  a_os << this->qualified_target_name_;
 }
 a_os << " ;\n";
-// Bouml preserved body end 00033229
 }
-
-jam_generator::jam_generator()
-: lib_defn_ ()
-, grist_ ()
-, qualified_target_name_ ()
-{}
 
 void jam_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) 
 {
-// Bouml preserved body begin 00033029
 ////////////////////////
 // Initialise state for writing a new target entry
 if (this->grist_.isEmpty ())
@@ -561,7 +518,6 @@ this->other_target_type_.truncate (0);
 //////////////////////
 // Start entry
 a_os << this->target_NAME () << "_SRC =\n\t";
-// Bouml preserved body end 00033029
 
 }
 

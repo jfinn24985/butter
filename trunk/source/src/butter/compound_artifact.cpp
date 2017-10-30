@@ -1,10 +1,10 @@
 
 #include "butter/compound_artifact.h"
+#include "butter/basic_style.h"
 #include "butter/butter_constants.h"
 #include "butter/utility.h"
 #include "butter/style.h"
 #include "bouml/UmlArtifact.h"
-#include "butter/basic_style.h"
 
 // Manual includes
 #include <stdexcept>
@@ -13,7 +13,6 @@
 namespace butter {
 
 compound_artifact::compound_artifact(::UmlArtifact & a_art) 
-// Bouml preserved body begin 00039B29
 : artifact (a_art)
 , close ()
 , date ()
@@ -32,11 +31,9 @@ compound_artifact::compound_artifact(::UmlArtifact & a_art)
   QTextIStream is_ (&tmp_);
   deserialise (is_);
 }
-// Bouml preserved body end 00039B29
 
 
 compound_artifact::compound_artifact(::UmlArtifact & a_art, const basic_style & a_style) 
-// Bouml preserved body begin 0002FCA9
 : artifact (a_art)
 , close ()
 , date ()
@@ -55,12 +52,10 @@ compound_artifact::compound_artifact(::UmlArtifact & a_art, const basic_style & 
   QTextIStream is_ (&tmp_);
   deserialise (is_);
 }
-// Bouml preserved body end 0002FCA9
 
 
 compound_artifact::~compound_artifact() 
 {
-// Bouml preserved body begin 0002FD29
 // Compare to existing document
 QString desc_;
 const QString orig_desc_ (artifact.description ());
@@ -76,13 +71,11 @@ if (0 != orig_desc_.compare (desc_))
   serialise (os2_);
   artifact.set_Description (desc2_.utf8 ());
 }
-// Bouml preserved body end 0002FD29
 
 }
 
 void compound_artifact::deserialise(::QTextIStream & a_is) 
 {
-// Bouml preserved body begin 0002F229
 QString capture_;
 int state_ = 0; // 0 = unlabelled, 1 = labelled
 string_pair_t * cache_ = NULL;
@@ -94,7 +87,7 @@ for (QString line_ = a_is.readLine ();
   {
   case 0: // Unlabelled
     {
-      if (line_.startsWith (style_.start_phrase))
+      if (line_.startsWith (style_.start_phrase()))
       {
         if (line_.contains (QString (butter::butter_constants::version_label)))
         {
@@ -131,7 +124,7 @@ for (QString line_ = a_is.readLine ();
         }
         state_ = 1;
       }
-      else if (line_.startsWith (style_.end_phrase))
+      else if (line_.startsWith (style_.end_phrase()))
       {
         QString name_ ("<p><b>Fatal Error:</b> Error in artifact <b>");
         name_.append ((pathcmp(artifact.parent ()->parent ()->name ()) / artifact.name ()).path ());
@@ -147,7 +140,7 @@ for (QString line_ = a_is.readLine ();
     break;
   case 1: // In a section
     {
-      if (line_.startsWith (style_.end_phrase))
+      if (line_.startsWith (style_.end_phrase()))
       {
         if (! capture_.isEmpty ())
         {
@@ -156,7 +149,7 @@ for (QString line_ = a_is.readLine ();
         }
         state_ = 0;
       }
-      else if (line_.startsWith (style_.start_phrase))
+      else if (line_.startsWith (style_.start_phrase()))
       {
         throw std::runtime_error ("<p>Badly formed artifact with section start inside a section</p>");
       }
@@ -183,21 +176,17 @@ if (! capture_.isEmpty ())
     version.first = capture_;
   }
 }
-// Bouml preserved body end 0002F229
 
 }
 
 bool compound_artifact::has_target(QString a_label) const 
 {
-// Bouml preserved body begin 00030829
 return NULL != targets_.find (a_label);
-// Bouml preserved body end 00030829
 
 }
 
 void compound_artifact::merge(::UmlArtifact & a_art) 
 {
-// Bouml preserved body begin 0002FAA9
 class helper_
 {
 public:
@@ -225,13 +214,11 @@ for (QDictIterator< string_pair_t > i_ (tmp_.targets_);
   helper_::merge_ (target (i_.currentKey ()), *i_.current ());
 }
 end.append (tmp_.end);
-// Bouml preserved body end 0002FAA9
 
 }
 
 void compound_artifact::reset() 
 {
-// Bouml preserved body begin 0002FEA9
 if (! targets_.isEmpty ())
 {
   for (QDictIterator< string_pair_t > i_ (targets_);
@@ -249,13 +236,11 @@ if (! close.second.isEmpty ())
 {
   close.second.truncate (0);
 }
-// Bouml preserved body end 0002FEA9
 
 }
 
 void compound_artifact::serialise(::QTextOStream & a_os) const 
 {
-// Bouml preserved body begin 0002F1A9
 class helper_
 {
 public:
@@ -267,9 +252,9 @@ public:
     }
     if (! a_cache_.second.isEmpty ())
     {
-      a_os_ << s_.start_phrase << a_label_ << s_.end_start_phrase << "\n";
+      a_os_ << s_.start_phrase() << a_label_ << s_.end_start_phrase() << "\n";
       a_os_ << a_cache_.second;
-      a_os_ << s_.end_phrase << a_label_ << s_.end_end_phrase << "\n";
+      a_os_ << s_.end_phrase() << a_label_ << s_.end_end_phrase() << "\n";
     }
   }
 };
@@ -289,23 +274,20 @@ if (! end.isEmpty ())
 {
   a_os << end;
 }
-// Bouml preserved body end 0002F1A9
 
 }
 
 compound_artifact::string_pair_t & compound_artifact::target(QString a_label) 
 {
-// Bouml preserved body begin 000305A9
 string_pair_t * existing_ = targets_.find (a_label);
 if (NULL != existing_)
 {
   return *existing_;
 }
-std::auto_ptr< string_pair_t > newitem_ (new string_pair_t);
+std::unique_ptr< string_pair_t > newitem_ (new string_pair_t);
 target_order_.append (a_label);
 targets_.insert (a_label, newitem_.get ());
 return *newitem_.release ();
-// Bouml preserved body end 000305A9
 
 }
 

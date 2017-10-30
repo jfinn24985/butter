@@ -5,6 +5,7 @@
 #include "UmlPackage.h"
 #include "UmlArtifact.h"
 #include "butter/base_generator.h"
+#include "butter/basic_style.h"
 #include "butter/location.h"
 #include "butter/style.h"
 #include "butter/butter_constants.h"
@@ -53,9 +54,9 @@ int main(int argc, char ** argv)
       }
       BUTTER_CHECK (NULL != UmlPackage::getProject (), "Error: no project defined!<br>");
       // Parse the project into a location tree
-      std::auto_ptr< butter::location > base_ (butter::location::parse_project (*UmlPackage::getProject ()));
+      std::unique_ptr< butter::location > base_ (butter::location::parse_project (*UmlPackage::getProject ()));
       // Generate the build-system files.
-      std::auto_ptr< butter::base_generator > writer_ (butter::style::get_style ().create_writer ());
+      std::unique_ptr< butter::base_generator > writer_ (butter::style::get_style ().create_writer ());
       writer_->create_system (*base_.get (), *UmlPackage::getProject ());
       // Write the build-system files.
       butter::location::write_documents (*base_.get ());

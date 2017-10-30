@@ -64,6 +64,19 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
     , esc_(orig.esc_)
     , sep_(orig.sep_)
     {}
+    const_token_iterator(const_token_iterator && orig)
+    : orig_( std::move( orig.orig_ ) )
+    , tmp_( std::move( orig.tmp_ ) )
+    , s_( std::move( orig.s_ ) )
+    , e_( std::move( orig.e_ ) )
+    , esc_( std::move( orig.esc_ ) )
+    , sep_( std::move( orig.sep_ ) )
+    {}
+    const_token_iterator & operator =(const_token_iterator orig)
+    {
+      this->swap( orig );
+      return *this;
+    }
     void swap(const_token_iterator & rhs)
     {
       std::swap(const_cast< string_type& >(this->orig_)
@@ -73,11 +86,6 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
       std::swap(this->e_, rhs.e_);
       std::swap(const_cast< char_type& >(this->esc_), const_cast< char_type& >(rhs.esc_));
       std::swap(const_cast< char_type& >(this->sep_), const_cast< char_type& >(rhs.sep_));
-    }
-    const_token_iterator & operator =(const_token_iterator orig)
-    {
-      this->swap (orig);
-      return *this;
     }
     const_token_iterator & operator ++()
     {
@@ -158,7 +166,6 @@ class const_token_iterator: public std::iterator< std::forward_iterator_tag, std
 
 inline void const_token_iterator::increment() 
 {
-// Bouml preserved body begin 0003B429
 if (! this->tmp_.empty ()) { this->tmp_.clear (); }
 if (this->e_ >= this->orig_.size ()) { this->s_ = this->e_; return; }
 if (this->sep_ == this->orig_[this->e_]) { this->e_++; }
@@ -193,7 +200,6 @@ if (! quotes_.empty ())
   throw std::runtime_error ("Unmatched quotes in string: " + this->orig_);
 }
 return;
-// Bouml preserved body end 0003B429
 
 }
 

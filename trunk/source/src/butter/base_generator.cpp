@@ -20,7 +20,6 @@ namespace butter {
 
 void base_generator::find_hdr_link(const ::UmlItem & a_item, QString & a_hdr, QString & a_link, QString & a_flag, QString a_section_label, bool a_not_doc)
 {
-// Bouml preserved body begin 00030E29
 // Process any data from properties.
 QString value_;
 if (a_item.property_value (butter_constants::butter_flags_name, value_))
@@ -71,22 +70,20 @@ if (a_not_doc)
     }
   }
 }
-// Bouml preserved body end 00030E29
 }
 
-std::auto_ptr< compound_artifact > base_generator::get_artifact(location & a_loc, QString a_name)
+std::unique_ptr< compound_artifact > base_generator::get_artifact(location & a_loc, QString a_name)
 
 {
-// Bouml preserved body begin 0002F629
 // Get deployment views from current location's packages
-std::auto_ptr< compound_artifact > Result;
+std::unique_ptr< compound_artifact > Result;
 if (a_loc.packages ().count () > 0)
 {
   QVector< UmlItem > docs_ = a_loc.find_uml_document (a_name);
   // If any documents found
   if (! docs_.isEmpty ())
   {
-    Result = std::auto_ptr< compound_artifact >(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
+    Result = std::unique_ptr< compound_artifact >(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
     for (unsigned int k_ = 1; k_ < docs_.count (); ++k_)
     {
       UmlItem * item_ = docs_.at (k_);
@@ -103,16 +100,14 @@ if (NULL == Result.get ())
 {
   // This will throw an error if no packages exist.
   // Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
-  Result = std::auto_ptr< compound_artifact >(new compound_artifact (*a_loc.create_uml_document (a_name)));
+  Result = std::unique_ptr< compound_artifact >(new compound_artifact (*a_loc.create_uml_document (a_name)));
 }
 return Result;
-// Bouml preserved body end 0002F629
 
 }
 
 void base_generator::merge_string_list(QString & a_list, QString a_addition)
 {
-// Bouml preserved body begin 0002B229
 if (a_list.isEmpty ())
 {
   a_list = a_addition.simplifyWhiteSpace ();
@@ -145,12 +140,10 @@ else
     }
   }
 }
-// Bouml preserved body end 0002B229
 }
 
 QString base_generator::section(QString a_section, QString a_desc)
 {
-// Bouml preserved body begin 0002EFA9
 static const QString marker_start_ ("${" + butter_constants::section_prefix);
 const QString marker_phrase_ (marker_start_ + a_section + "}");
 QString Result;
@@ -171,32 +164,30 @@ if (-1 != l_start)
 // else ...
 // Found no section titles --> return empty string
 return Result;
-// Bouml preserved body end 0002EFA9
+
 }
 
 void base_generator::root_dir(const pathcmp & a_path) 
 {
   BUTTER_ENSURE (! a_path.path ().isEmpty ()
   , "<p><b>Program error:</b> Attempt to set project root directory to an empty path.</p>");
-  root_dir_ = std::auto_ptr < pathcmp >(new pathcmp (a_path));
+  root_dir_ = std::unique_ptr < pathcmp >(new pathcmp (a_path));
 }
 
 QString base_generator::to_target_NAME(const ::UmlArtifact & a_target)
 {
-  // Bouml preserved body begin 0003BC29
   QString Result (a_target.package ().filename ());
   Result.append ("_");
   Result.append(const_cast< UmlArtifact& >(a_target).name ());
-  find_replace (Result, '.', '_');
+  Result.replace( QChar{'.'}, QChar{'_'} );
   return Result.upper ();
-  // Bouml preserved body end 0003BC29
 
 }
 
 base_generator::base_generator() 
 :  individual_obj_()
 , other_target_type_()
-, root_dir_ (new pathcmp())
+, root_dir_( new pathcmp() )
 , target_NAME_()
 {}
 

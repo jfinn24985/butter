@@ -103,7 +103,7 @@ class base_generator
     /**
      * The root directory of the project.
      */
-    std::auto_ptr< pathcmp > root_dir_;
+    std::unique_ptr< pathcmp > root_dir_;
 
     /**
      * The version of the target name to use with variables.
@@ -135,8 +135,10 @@ class base_generator
      * 
      * !!Warning!! returns nul iff a_loc.packages.empty
      */
-    static std::auto_ptr< compound_artifact > get_artifact(location & a_loc, QString a_name);
+    static std::unique_ptr< compound_artifact > get_artifact(location & a_loc, QString a_name);
 
+
+  public:
     /**
      * The effect of this method is to convert the contents of a_list and a_addition
      * into lists of tokens.  These lists are merged, removing duplicate items, and
@@ -150,17 +152,6 @@ class base_generator
      * to get style specific data from target artifact description fields.
      */
     static QString section(QString a_section, QString a_desc);
-
-
-  public:
-    /**
-     * Replace every occurence of find_char with rep_char in a_str
-     */
-    static void find_replace(QString & a_str, char find_char, char rep_char)
-    {
-      for (unsigned int i(0); i < a_str.length(); ++i)
-      { a_str.constref(i) == find_char ? a_str.ref(i) = rep_char : QChar (find_char); }
-    }
 
     /**
      * Get the projects root directory (if set)

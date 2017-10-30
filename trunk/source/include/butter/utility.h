@@ -23,22 +23,54 @@ namespace butter {
  * not reference the operating system.  This means that comparisons etc
  * are for absolute paths without resolving symlinks.
  */
-class pathcmp : public ::QDir
+class pathcmp : private ::QDir
 {
-  public:
+  private:
     /**
-     * Generate a path that has the greatest shared path between this and a_other.
-     * 
-     * Will returnempty string when paths are on different drives.
+     * Separator to use regardless of OS
      */
-    QString create_common(const pathcmp & a_other) const;
+    static const char default_separator_[2];
 
     /**
-     * Build a relative path from here to a_target.
-     * 
-     * canonical (path_ + relative (a_target)) <==> a_target
+     * separator used on other OS
      */
-    QString create_relative(const pathcmp & a_target) const;
+    static const char other_separator_[2];
+
+
+  public:
+    /**
+     * Default ctor
+     */
+    pathcmp()
+    : QDir ()
+    {}
+
+    /**
+     * Construct from string
+     */
+    pathcmp(QString a_path)
+    : QDir (normalise (a_path))
+    {}
+
+    /**
+     * Construct from base class
+     */
+    pathcmp(const ::QDir & source)
+    : QDir( normalise( source.path() ) )
+    {}
+
+    ~pathcmp()
+    {}
+
+    pathcmp(const pathcmp & source)
+    : QDir (source)
+    {}
+
+    pathcmp & operator=(pathcmp source)
+    {
+      this->setPath( source.path() );
+      return *this;
+    }
 
     /**
      * The number of steps in the path.
@@ -69,6 +101,28 @@ class pathcmp : public ::QDir
      */
     QString leaf_at(unsigned int a_count) const;
 
+friend bool operator==(const pathcmp &a_lhs, const pathcmp &a_rhs)
+{
+  return a_lhs.equality (a_rhs);
+}
+using QDir::path;
+using QDir::exists;
+using QDir::isRelative;
+
+    /**
+     * Generate a path that has the greatest shared path between this and a_other.
+     * 
+     * Will returnempty string when paths are on different drives.
+     */
+    QString create_common(const pathcmp & a_other) const;
+
+    /**
+     * Build a relative path from here to a_target.
+     * 
+     * canonical (path_ + relative (a_target)) <==> a_target
+     */
+    QString create_relative(const pathcmp & a_target) const;
+
     /**
      * Create this and all parent directories for the current path.
      */
@@ -90,12 +144,6 @@ class pathcmp : public ::QDir
     static QString normalise_(QString a_path);
 
   public:
-    pathcmp & operator=(pathcmp source)
-    {
-      setPath (source.path ());
-      return *this;
-    }
-
     /**
      * Concatenate 2 paths
      */
@@ -112,10 +160,7 @@ class pathcmp : public ::QDir
       return pathcmp(path () + default_separator_ + normalise (rhs));
     }
 
-friend bool operator==(const pathcmp &a_lhs, const pathcmp &a_rhs)
-{
-  return a_lhs.equality (a_rhs);
-}    /**
+    /**
      * Output path using the current OS'S separators.  Used when
      * writing paths for external visibility.
      */
@@ -130,49 +175,12 @@ friend bool operator==(const pathcmp &a_lhs, const pathcmp &a_rhs)
     QString path_convert(QString a_trans) const;
 
     /**
-     * Default ctor
+     * Change to a new internal path.
      */
-    pathcmp()
-    : QDir ()
-    {}
-
-    /**
-     * Construct from string
-     */
-    pathcmp(QString a_path)
-    : QDir (normalise (a_path))
-    {}
-
-    ~pathcmp()
-    {}
-
-    pathcmp(const pathcmp & source)
-    : QDir (source)
-    {}
-
-    /**
-     * Construct from base class
-     */
-    pathcmp(const ::QDir & source)
-    : QDir (normalise (source.path ()))
-    {}
-
     void setPath(const QString& a_path)
     {
       QDir::setPath (normalise (a_path));
     }
-
-
-  private:
-    /**
-     * Separator to use regardless of OS
-     */
-    static const char default_separator_[2];
-
-    /**
-     * separator used on other OS
-     */
-    static const char other_separator_[2];
 
 
 };
@@ -212,20 +220,37 @@ class log
     /**
      * File for debugging information. 
      */
-    std::auto_ptr< QFile > debug_file_;
+    std::unique_ptr< QFile > debug_file_;
 
     /**
      * Output stream for debug builds. 
      */
-    std::auto_ptr< ::QTextOStream > debug_os_;
+    std::unique_ptr< ::QTextOStream > debug_os_;
 
     /**
      * The current logging level. (default is 'warn')
      */
     log_levels level_;
 
+    log()
+    : debug_file_ ()
+    , debug_os_ ()
+    , level_(warn)
+    {}
+
+    log(log && source) = delete;
+
+    log(const log & source) = delete;
+
+    log & operator=(log source) = delete;
+
 
   public:
+    /**
+     * Dtor to ensure correct order of deconstructing stream and file
+     */
+    ~log();
+
     /**
      * Open a_fname file for debug messages. (Only present with debug builds.)
      */
@@ -255,21 +280,6 @@ class log
       level_ = (0 >= a_val ? warn : (2 <= a_val ? debug : info ));
     }
         
-
-
-  private:
-    log()
-    : debug_file_ ()
-    , debug_os_ ()
-    , level_(warn)
-    {}
-
-
-  public:
-    /**
-     * Dtor to ensure correct order of deconstructing stream and file
-     */
-    ~log();
 
     /**
      * Get reference to debug stream. (Only present with debug builds.)

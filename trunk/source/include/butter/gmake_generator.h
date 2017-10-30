@@ -5,11 +5,12 @@
  * Source for GNU make generator
  */
 #include "butter/generator.h"
+#include "butter/basic_style.h"
 #include <qstring.h>
-#include <qtextstream.h>
-
 #include <memory>
 #include "butter/base_generator.h"
+#include <qtextstream.h>
+
 
 class UmlArtifact;
 namespace butter { class compound_artifact; } 
@@ -115,8 +116,7 @@ namespace butter {
  * <dl><dt>sufobj</dt><dd>File suffix of object files</dd>
  * <dt>sufexe</dt><dd>File suffix of program</dd>
  * <dt>suflib</dt><dd>File suffix of static libraries</dd>
- * <dt>sufshr</dt><dd>File suffix of shared libraries</dd>
- * <dt>sufshrlink</dt><dd>File suffix of linker file for shared libraries</dd>
+ * <dt>sufshr</dt><dd>File suffix of shared librraries</dd>
  * <dt>sufdep</dt><dd>File suffix of generated dependency files</dd>
  * <dt>SLASH</dt><dd>File path separator</dd></dl>
  * </xdoc:section >
@@ -126,6 +126,8 @@ class gmake_generator : public generator<gmake_generator> {
 // Make out parent a friend.
 friend class generator<gmake_generator>;
   public:
+    static const basic_style style;
+
     /**
      * The default leaf filename for the current style
      */
@@ -139,7 +141,7 @@ friend class generator<gmake_generator>;
 
   private:
     /**
-     * This is the default contents of a the rules file (M_sys.mak).
+     * This is the default contents of a the rules file (M_sys.mk).
      * If a document artifact with name 'M_sys.mak' is not present when 
      * %butter is executed with \@style='standard' then one will be created
      * using this string.
@@ -149,7 +151,7 @@ friend class generator<gmake_generator>;
     /**
      * This is the default contents of the rules file (M_cl.mak) for
      * the microsoft compiler. If a 
-     * document artifact with name 'M_cl.mak' is not present when 
+     * document artifact with name 'M_cl.mk' is not present when 
      * %butter is executed with \@style='standard' then one will be created
      * using this string.
      * 
@@ -157,9 +159,9 @@ friend class generator<gmake_generator>;
     static const char * default_rules_cl[];
 
     /**
-     * This is the default contents of the rules file (M_gcc.mak) for
+     * This is the default contents of the rules file (M_gcc.mk) for
      * the GNU compiler collection. If a 
-     * document artifact with name 'M_gcc.mak' is not present when 
+     * document artifact with name 'M_gcc.mk' is not present when 
      * %butter is executed with \@style='standard' then one will be created
      * using this string.
      */
@@ -176,9 +178,9 @@ friend class generator<gmake_generator>;
     static const char * default_rules_unix[];
 
     /**
-     * This is the default contents of the rules file (M_Windows_NT.mak) for
+     * This is the default contents of the rules file (M_Windows_NT.mk) for
      * a (post NT) Micrsoft Windows like operating system. If a 
-     * document artifact with name 'M_Windows_NT.mak' is not present when 
+     * document artifact with name 'M_Windows_NT.mk' is not present when 
      * %butter is executed with \@style='standard' then one will be created
      * using this string.
      */
@@ -200,6 +202,8 @@ friend class generator<gmake_generator>;
      */
     static const char ** default_rules;
 
+
+  public:
     /**
      * A space separated list of rule names.
      * This style has multiple system buildfiles. This variable contains a space
@@ -207,6 +211,8 @@ friend class generator<gmake_generator>;
      */
     static const QString rules_name;
 
+
+  private:
     /**
      * Set of included libraries
      */
@@ -217,6 +223,38 @@ friend class generator<gmake_generator>;
      */
     QString qualified_target_name_;
 
+    /**
+     * Create a generator from the top-level a_project
+     * 
+     * \pre a_project.parent = nul
+     */
+    gmake_generator();
+
+    /**
+     * no copy
+     */
+    gmake_generator(const gmake_generator &) = delete;
+
+    /**
+     * no copy
+     */
+    gmake_generator(gmake_generator && source) = delete;
+
+    /**
+     * no assign
+     */
+    gmake_generator & operator=(const gmake_generator &) = delete;
+
+  public:
+    ~gmake_generator() throw () {}
+
+    /**
+     * Create bjam generator object.s
+     */
+    static std::unique_ptr< base_generator > create();
+
+
+  private:
     /**
      * ** This method a library association to the current target entry for a_target.
      * 
@@ -245,15 +283,6 @@ friend class generator<gmake_generator>;
      */
     void assoc_source(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_filename, QString a_basename, QString a_src_inc, QString a_src_flags, bool a_isdoc);
 
-
-  public:
-    /**
-     * Create bjam generator object.s
-     */
-    static std::auto_ptr< base_generator > create();
-
-
-  private:
     /**
      * Write the Jamfile descent links for a_location to a_os
      */
@@ -272,24 +301,6 @@ friend class generator<gmake_generator>;
     void external_target(const location & a_current, const ::UmlArtifact & a_target, compound_artifact & a_sys) {}
 
     /**
-     * Create a generator from the top-level a_project
-     * 
-     * \pre a_project.parent = nul
-     */
-    gmake_generator();
-
-
-  public:
-    ~gmake_generator() throw () {}
-
-
-  private:
-    /**
-     * no copy
-     */
-    gmake_generator(const gmake_generator &);
-
-    /**
      * Write extra details to the top-level build file. 
      */
     void initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys);
@@ -304,21 +315,22 @@ friend class generator<gmake_generator>;
     void install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc);
 
     /**
-     * no assign
-     */
-    gmake_generator & operator=(const gmake_generator &);
-    /**
      * Process a_inc_list and a_flag_list into preprocessor
-     * and compiler flag sets. Also checks if paths are relative
-     * in which case it sets them relative to root-dir
+     * and compiler flag sets.
      */
-    void process_flags(QString a_inc_list, QString a_flag_list, QString & a_cppflags, QString & a_cflags, QString & a_ldflags);
+    void process_flags(QString a_inc_list, QString a_flag_list, QString & a_cppflags, QString & a_cflags);
 
     /**
      * Transform a space separated list of include dirs into a
      * list with -I...
      */
     static QString process_hdrs(QString a_inc_list);
+
+    /**
+     * Scan a_item for any requirements, add these to a_req and
+     * return true if found.
+     */
+    static bool requirements(const ::UmlItem & a_item, QString & a_reqs);
 
     /**
      * ** This method sets up object for creating a new target entry for a_target.

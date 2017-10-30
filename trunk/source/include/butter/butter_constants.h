@@ -12,11 +12,6 @@ namespace butter {
 class butter_constants {
   public:
     /**
-     * The label of the install target static-library directory var.
-     */
-    static const QString arkdir_value;
-
-    /**
      * Then label of the install target binary directory.
      */
     static const QString bindir_value;
@@ -174,7 +169,7 @@ class butter_constants {
     static const QString header_label;
 
     /**
-     * The label of the install target shared-library directory var.
+     * The label of the install target library directory var.
      */
     static const QString libdir_value;
 
@@ -259,13 +254,6 @@ class butter_constants {
      * Build file section label for a target section.
      */
     static const QString app_data_subdir_name;
-
-    /**
-     * Is this value in the list of install keywords:
-     * 
-     * BIN DATA DOC HTML INC LIB MAN
-     */
-    static bool is_install_keyword(QString a_kw);
 
 };
 

@@ -5,11 +5,12 @@
  * Source file for Jam generator
  */
 #include "butter/generator.h"
+#include "butter/basic_style.h"
 #include <qstring.h>
-#include <qtextstream.h>
-
 #include <memory>
 #include "butter/base_generator.h"
+#include <qtextstream.h>
+
 
 class UmlArtifact;
 namespace butter { class compound_artifact; } 
@@ -35,21 +36,11 @@ class jam_generator : public generator<jam_generator> {
 // Make our parent a friend.
 friend class generator<jam_generator>;
   public:
+    static const basic_style style;
+
     static const QString build_file_name;
 
     static const QString build_file_sysname;
-
-    static const QString comment_string;
-
-    static const QString end_phrase;
-
-    static const QString start_phrase;
-
-    /**
-     * The label for description 'sections' and the value of 
-     * the style for this buildfile type.
-     */
-    static const QString section_name;
 
 
   private:
@@ -58,11 +49,15 @@ friend class generator<jam_generator>;
      */
     static const char * default_rules[];
 
+
+  public:
     /**
      * The name of the jam rules document.
      */
     static const QString rules_name;
 
+
+  private:
     /**
      * Text for the a main targets associated sub-targets
      */
@@ -78,6 +73,38 @@ friend class generator<jam_generator>;
      */
     QString qualified_target_name_;
 
+    /**
+     * Main ctor, takes top-level a_project.
+     * 
+     * \pre a_project.parent = nul
+     */
+    jam_generator();
+
+    /**
+     * no copy
+     */
+    jam_generator(const jam_generator &) = delete;
+
+    /**
+     * no copy
+     */
+    jam_generator(jam_generator && source) = delete;
+
+    /**
+     * no assign
+     */
+    jam_generator & operator=(const jam_generator &) = delete;
+
+  public:
+    ~jam_generator() throw () {}
+
+    /**
+     * Create bjam generator object.s
+     */
+    static std::unique_ptr< base_generator > create();
+
+
+  private:
     /**
      * ** This method a library association to the current target entry for a_target.
      * 
@@ -107,11 +134,6 @@ friend class generator<jam_generator>;
      * if stereotype is "document".
      */
     void check_properties(bool a_is_source, const ::UmlArtifact & a_source, ::QTextOStream & a_os);
-
-    /**
-     * Create bjam generator object.s
-     */
-    static std::auto_ptr< base_generator > create();
 
 
   private:
@@ -162,28 +184,6 @@ friend class generator<jam_generator>;
      */
     void install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc);
 
-    /**
-     * Main ctor, takes top-level a_project.
-     * 
-     * \pre a_project.parent = nul
-     */
-    jam_generator();
-
-
-  public:
-    ~jam_generator() throw () {}
-
-
-  private:
-    /**
-     * no copy
-     */
-    jam_generator(const jam_generator &);
-
-    /**
-     * no assign
-     */
-    jam_generator & operator=(const jam_generator &);
     /**
      * ** This method sets up object for creating a new target entry for a_target.
      * 

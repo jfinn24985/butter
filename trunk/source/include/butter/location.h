@@ -10,6 +10,7 @@
 
 
 class CppSettings;
+namespace butter { class basic_style; } 
 namespace butter { class butter_constants; } 
 namespace butter { class log; } 
 namespace butter { class style; } 
@@ -53,13 +54,15 @@ class location {
      */
     pathcmp path_;
 
+
+  public:
     /**
      * Add the package as a client of the location.
+     * 
+     * \pre path of a_package = full_path
      */
     void add_package(const ::UmlPackage & a_package);
 
-
-  public:
     /**
      * Get the children!
      */
@@ -77,20 +80,32 @@ class location {
      */
     static bool compare_file_to_string(QString a_path, QString a_str);
 
+
+  public:
     /**
      * Create a new location object as a descendent of this location.  The
      * created object is owned by this object or one of its descendents.
+     * 
+     * \pre full_path.has_subpath( a_path )
      */
     location * create_as_child(const pathcmp & a_path);
 
+
+  private:
     /**
      * Create a location object that is a parent of the a_base 
      * location and a_path. Only base location objects may call 
-     * this method.
+     * this method. The pointer a_base should refer to allocated
+     * memory which the method takes over management of. The
+     * return is either a new root location or a_base. The
+     * returned pointer should be managed by the caller.
+     * 
+     * ** This reroots the location tree. The returned object
+     * is the new root of the location tree. **
      * 
      * \pre nul = a_base.parent
      */
-    static std::auto_ptr< location > create_common_parent(std::auto_ptr< location > a_base, const pathcmp & a_path);
+    static std::unique_ptr< location > create_common_parent(std::unique_ptr< location > a_base, const pathcmp & a_path);
 
 
   public:
@@ -123,18 +138,21 @@ class location {
     QVector< ::UmlItem > find_uml_document(QString a_name) const;
 
     /**
-     * This gives the fully qualifed path of the location.
+     * This gives the fully qualifed path of the location (relative to
+     * the base path.)
      */
     pathcmp full_path() const;
-
-  private:
     /**
-     * Ctor for location tree root objects
+     * Ctor for location tree root objects (a_path is full
+     * path or relative to a base path.)
      */
     location(const pathcmp & a_path);
 
+
+  private:
     /**
-     * Ctor for child location objects
+     *  Ctor for child location objects (a_path is relative to the parent
+     *  location.) Not to be called directly, use "create_as_child".
      */
     location(const pathcmp & a_path, location & a_parent);
 
@@ -150,12 +168,12 @@ class location {
     /**
      * no copy
      */
-    location(const location & source);
+    location(const location & source) = delete;
 
     /**
      * no assign
      */
-    location & operator=(const location & source);
+    location & operator=(const location & source) = delete;
 
 
   public:
@@ -183,7 +201,7 @@ class location {
      * 
      * \pre a_item.type = UmlPackageType and nul = a_item.parent [ie = project]
      */
-    static std::auto_ptr<location> parse_project(::UmlItem & a_item);
+    static std::unique_ptr<location> parse_project(::UmlItem & a_item);
 
     /**
      * The leaf node of sub-locs and the base-path for top-level locs

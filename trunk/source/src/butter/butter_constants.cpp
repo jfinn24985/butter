@@ -6,14 +6,9 @@
 namespace butter {
 
 /**
- * The label of the install target static-library directory var.
- */
-const QString butter_constants::arkdir_value("DATA");
-
-/**
  * Then label of the install target binary directory.
  */
-const QString butter_constants::bindir_value("BIN");
+const QString butter_constants::bindir_value("BINDIR");
 
 /**
  * Artifacts with the document stereotype that contain this
@@ -168,9 +163,9 @@ const QString butter_constants::generic_section("generic");
 const QString butter_constants::header_label("HDR");
 
 /**
- * The label of the install target shared-library directory var.
+ * The label of the install target library directory var.
  */
-const QString butter_constants::libdir_value("LIB");
+const QString butter_constants::libdir_value("LIBDIR");
 
 /**
  * The stereotype name for library artifacts.
@@ -265,31 +260,6 @@ const QString butter_constants::app_data_subdir_name =
 ".butter"
 #endif
 ;
-
-bool butter_constants::is_install_keyword(QString a_kw)
-
-{
-// Bouml preserved body begin 0003D7A9
-switch (a_kw.length())
-{
-case 3:
-{
-  // BIN or DOC or INC or LIB or MAN
-  const static QString kws_ ("BINDOCINCLIBMAN");
-  return 0 == (kws_.find(a_kw) % 3);
-}
-case 4:
-{
-  // DATA or HTML
-  const static QString kws_ ("DATAHTML");
-  return 0 == (kws_.find(a_kw) % 4);
-}
-default:
-  return false;
-}
-// Bouml preserved body end 0003D7A9
-
-}
 
 
 } // namespace butter
