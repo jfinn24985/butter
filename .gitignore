@@ -1,0 +1,6 @@
+*.swp
+trunk/source/build/
+make.*log
+*.o
+*.d
+
