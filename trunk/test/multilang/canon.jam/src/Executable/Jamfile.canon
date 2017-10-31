@@ -1,23 +1,26 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Fri Nov 19 14:41:04 2010
+#Tue Oct 31 23:33:48 2017
 ##END:date
 ##START:preamble
-ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)/src/Executable ;
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)src$(SLASH)Executable ;
 
 SubDir TOP src Executable ;
 
 ##END:preamble
 ##START:target program
-Main <Executable>program$(SUFEXE) :
-	<Executable>example_exe.cpp
+EXECUTABLE_PROGRAM_SRC =
+	<src!Executable>example_exe.cpp
 	;
 
-LinkLibraries <Executable>program$(SUFEXE) :
-	 <Library>liblibrary$(SUFLIB) 
-	;
+Main <src!Executable>program$(SUFEXE) :
+	$(EXECUTABLE_PROGRAM_SRC) ;
 
-InstallBin $(BINDIR) : <Executable>program$(SUFEXE) ;
+LINKLIBS on <src!Executable>program$(SUFEXE) +=  $(LIBRARY_LIBRARY_LDFLAGS)  ;
+LinkLibraries <src!Executable>program$(SUFEXE) :
+	 <src!Library>library$(SUFLIB) 
+	;
+InstallBin $(BINDIR) : <src!Executable>program$(SUFEXE) ;
 ##END:target program

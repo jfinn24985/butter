@@ -5,7 +5,8 @@
 if $(UNIX)  { SUFSHR ?= .so ; }
 else if $(NT) { SUFSHR ?= .dll ; }
 
-COMP ?= GNU ;
+if $(JAM_TOOLSET) { TOOLSET ?= $(JAM_TOOLSET) ; }
+TOOLSET ?= GNU ;
 VARIANT ?= DEBUG ;
 
 #############################
@@ -13,124 +14,78 @@ VARIANT ?= DEBUG ;
 ##  Default install locations
 ##
 #############################
-VERSIONDIR = "multilang-1.0" ;
 PREFIX = installdir ;
-EXEC_PREFIX = $(PREFIX) ;
-BINDIR = $(EXEC_PREFIX)/bin ;
-SBINDIR = $(EXEC_PREFIX)/sbin ;
-LIBEXECDIR = $(EXEC_PREFIX)/libexec ;
-LIBDIR = $(EXEC_PREFIX)/lib ;
-DATAROOTDIR = $(PREFIX)/share ;
+BINDIR = $(PREFIX)/bin ;
 DATADIR = $(PREFIX)/share ;
-SYSCONFDIR = /etc ;
-SHAREDSTATEDIR = $(PREFIX)/com ;
-LOCALSTATEDIR = $(PREFIX)/var ;
-INCLUDEDIR = $(PREFIX)/include ;
-LOCALEDIR = $(DATAROOTDIR)/locale ;
-DOCDIR = $(DATAROOTDIR)/doc/$(VERSIONDIR) ;
-INFODIR = $(DATAROOTDIR)/info ;
-MANDIR = $(DATAROOTDIR)/man ;
-HTMLDIR = $(DOCDIR) ;
-DVIDIR = $(DOCDIR) ;
-PDFDIR = $(DOCDIR) ;
-PSDIR = $(DOCDIR) ;
-MAN1DIR = $(MANDIR)/man1 ;
-MAN2DIR = $(MANDIR)/man2 ;
-MAN3DIR = $(MANDIR)/man3 ;
-MAN4DIR = $(MANDIR)/man4 ;
-MAN5DIR = $(MANDIR)/man5 ;
-MAN6DIR = $(MANDIR)/man6 ;
-MAN7DIR = $(MANDIR)/man7 ;
-MAN8DIR = $(MANDIR)/man8 ;
-MANNDIR = $(MANDIR)/mann ;
+DOCDIR = $(DATADIR)/doc ;
+HTMLDIR = $(DATADIR)/html ;
+INCDIR = $(PREFIX)/include ;
+LIBDIR = $(PREFIX)/bin ;
+MANDIR = $(DATADIR)/man1 ;
 
 ######################################################
 ##
 ##  Example definitions for compiler suite (TOOLSETS)
+##  It is possible to add definitions here or in a
+##  separate file "$(TOOLSET).jam", the NOCARE rule
+##  tells jam not to worry if file does not exist.
 ## 
 ######################################################
-switch $(COMP)
+NOCARE $(TOOLSET).jam ;
+include $(TOOLSET).jam ;
+switch $(TOOLSET)
 {
 case GNU :
 CC = gcc ;
 C++ = g++ ;
 FORTRAN = gfortran ;
-CCSTD = -std=c99 ;
-C++STD = -std=c++98 ;
-CCCPP = ;
-C++CPP = ;
+LINK = $(C++) ;
+CCFLAGS += -Wall -std=c99 ;
+C++FLAGS += -Wall -std=c++98 ;
 SHRFLAGS = -fpic ;
-ARCH = -march=native ;
-OPTIMCOMP = -O2 $(ARCH) ;
-DEBUGCOMP = -O0 -ggdb -DDEBUG=1 ;
-CCCOMP = -Wall -pedantic $(CCSTD) $(CCCPP) ;
-C++COMP = -Wall -Weffc++ $(C++STD) $(C++CPP) ;
-FORTRANCOMP = -Wall -c ;
-LINKCOMP = ;
-OPENMP = -fopenmp ;
-FORTRANLIBS = -lgfortran ;
-}
-
-################################################
-##
-##  Define the "standard" GUI flags
-## 
-################################################
-
-CCGUI = ;
-C++GUI = ;
-LINKGUI = ;
-
-switch $(GUILIB)
-{
-case GTKMM :
-CCGUI = `pkg-config gtkmm-2.4 --cflags` ;
-C++GUI = `pkg-config gtkmm-2.4 --cflags` ;
-LINKGUI = `pkg-config gtkmm-2.4 --libs` ;
-
-case MOTIF :
-CCGUI = -I/usr/include ;
-C++GUI = -I/usr/include ;
-LINKGUI = -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;
-
-case QT3 :
-CCGUI = -I$(QTDIR)/include ;
-C++GUI = -I$(QTDIR)/include ;
-LINKGUI = -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;
-
-case * :
-CCGUI = ;
-C++GUI = ;
-LINKGUI = ;
-
-}
-
-#################################
-##
-##  Define the "standard" flags
-## 
-#################################
-
-CCFLAGS += $(CCCOMP) $(CCGUI) ;
-C++FLAGS += $(C++COMP) $(C++GUI) ;
-LINKLIBS += $(LINKCOMP) $(LINKGUI) ;
-
-OPTIM = $(DEBUGCOMP) ;
-
 switch $(VARIANT)
 {
 case RELEASE :
-OPTIM = $(OPTIMCOMP) ;
+  OPTIM += -O2 -march=native -DDEBUG=0 ;
+case * :
+  OPTIM = -O0 -ggdb -DDEBUG=1 ;
+  CCFLAGS += -pedantic ;
+  C++FLAGS += ; # -Weffc++ ;
+}
+FORTRANFLAGS += -Wall -c ;
+LINKFLAGS += $(OPTIM) ;
+OPENMP = -fopenmp ;
+FORTRANLIBS += -lgfortran ;
 }
 
-FORTRANFLAGS += $(FORTRANCOMP) $(OPTIM) ;
-LINKFLAGS = $(OPTIM) ;
-LINK = $(C++) ;
+##################################################
+##
+##  Example of how you might define a set of
+##  "standard" flags for libraries you use often.
+##
+##################################################
+##
+##switch $(GUILIB)
+##{
+##case GTKMM :
+##  CCFLAGS += `pkg-config gtkmm-2.4 --cflags` ;
+##  C++FLAGS += `pkg-config gtkmm-2.4 --cflags` ;
+##  LINKFLAGS += `pkg-config gtkmm-2.4 --libs` ;
+##
+##case MOTIF :
+##  CCFLAGS += -I/usr/include ;
+##  C++FLAGS += -I/usr/include ;
+##  LINKFLAGS += -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;
+##
+##case QT3 :
+##  CCFLAGS += -I$(QTDIR)/include ;
+##  C++FLAGS += -I$(QTDIR)/include ;
+##  LINKFLAGS += -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;
+##
+##case * :
+##}
+##
 
 # Set variable for variant-specific build-dir handling
-BASE_LOCATE_TARGET = $(BUILDDIR)/$(VARIANT) ;
+BASE_LOCATE_TARGET = $(BUILDDIR)$(SLASH)$(VARIANT) ;
 ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
-
-# Local Variables:
-# mode: makefile
-# End: 

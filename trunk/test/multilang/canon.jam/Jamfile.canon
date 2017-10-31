@@ -1,13 +1,14 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Fri Nov 19 14:41:04 2010
+#Tue Oct 31 23:33:48 2017
 ##END:date
 ##START:preamble
+BUILDDIR = $(SLASH)home$(SLASH)finnerty$(SLASH)src$(SLASH)butter$(SLASH)trunk$(SLASH)test$(SLASH)multilang$(SLASH)output ;
 SubDir TOP ;
-HDRS += "include" ;
-
+OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
+HDRS +=  include ;
 ##END:preamble
 ##START:close
 SubInclude TOP src Library ;
