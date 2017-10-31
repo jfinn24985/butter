@@ -2,11 +2,11 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Oct 14 16:39:26 2017
+#Tue Oct 31 13:07:07 2017
 ##END:date
 ##START:preamble
-ROOTDIR := /home/finnerty/src/butter
-OUTPUTDIR := /home/finnerty/src/butter
+ROOTDIR := /home/finnerty/src/butter/trunk/source
+OUTPUTDIR := /home/finnerty/src/butter/trunk/source
 include $(ROOTDIR)/M_sys.mk
 
 CPPFLAGS+=-I$(ROOTDIR)/include/bouml -I$(ROOTDIR)/include -DWITHCPP -DDEBUG 

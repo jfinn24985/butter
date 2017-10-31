@@ -14,7 +14,7 @@ CCCFLAGS+=-Wall -std=c++11
 CPPFLAGS+=-Wall -std=c++11
 
 ifeq ($(VARIANT),DEBUG)
-OPTFLAGS+=-O0 -DDEBUG=1
+OPTFLAGS+=-O0 -DDEBUG=1 -gdwarf-2
 CCFLAGS+=-pedantic
 # -Weffc++
 else
