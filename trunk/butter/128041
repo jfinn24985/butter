@@ -1,6 +1,6 @@
 format 75
 "butter" // butter
-  revision 203
+  revision 204
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -7926,7 +7926,7 @@ ${namespace_end}"
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Oct 28 20:48:10 2017
+#Tue Oct 31 13:03:23 2017
 ##END:date
 ##START:preamble
 include $(ROOTDIR)/M_sys.mk
@@ -7934,17 +7934,17 @@ include $(ROOTDIR)/M_sys.mk
 ##END:preamble
 ##START:target butter
 BUTTER_BUTTERSRC :=  \\
-	bjam_generator.cpp \\
 	jam_generator.cpp \\
-	basic_style.cpp \\
+	bjam_generator.cpp \\
 	cmake_generator.cpp \\
 	butter_constants.cpp \\
+	base_generator.cpp \\
 	style.cpp \\
+	basic_style.cpp \\
 	location.cpp \\
 	gmake_generator.cpp \\
 	utility.cpp \\
-	compound_artifact.cpp \\
-	base_generator.cpp
+	compound_artifact.cpp
 BUTTER_BUTTER_DINC := $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.c=$(sufdep)))
 butter$(suflib): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 butter$(suflib) $(BUTTER_BUTTER_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
@@ -7967,10 +7967,10 @@ BUTTER_TEST_PATHSRC :=  \\
 BUTTER_TEST_PATH_DINC := $(filter %$(sufdep), $(BUTTER_TEST_PATHSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_PATHSRC:.c=$(sufdep)))
 test_path$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 test_path$(sufexe) $(BUTTER_TEST_PATH_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
-BUTTER_TEST_PATH_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
 
 path_test$(sufobj) : CCCFLAGS+=-fopenmp 
 
+BUTTER_TEST_PATH_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
 
 BUTTER_TEST_PATH_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_PATHSRC:.cpp=$(sufobj)))
 USEROBJ+=$(BUTTER_TEST_PATH_OBJ)
@@ -7990,8 +7990,8 @@ BUTTER_BUTTER_EXESRC :=  \\
 BUTTER_BUTTER_EXE_DINC := $(filter %$(sufdep), $(BUTTER_BUTTER_EXESRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_BUTTER_EXESRC:.c=$(sufdep)))
 butter_exe$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 butter_exe$(sufexe) $(BUTTER_BUTTER_EXE_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
-BUTTER_BUTTER_EXE_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
 BUTTER_BUTTER_EXE_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
+BUTTER_BUTTER_EXE_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
 
 BUTTER_BUTTER_EXE_OBJ+=$(filter %$(sufobj), $(BUTTER_BUTTER_EXESRC:.cpp=$(sufobj)))
 USEROBJ+=$(BUTTER_BUTTER_EXE_OBJ)

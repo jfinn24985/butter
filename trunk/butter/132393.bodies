@@ -78,37 +78,43 @@ for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
     cursor_->children_.resize( cursor_->children_.size() + 1 );
   }
   cursor_->children_.insert( cursor_->children_.count(), tmp_.release() );
-  cursor_ = cursor_->children_.at( cursor_->children_.count () - 1 );
+  cursor_ = cursor_->children_.at( cursor_->children_.count() - 1 );
 }
 return cursor_;
 !!!187561.cpp!!!	create_common_parent(in a_base : location, in a_path : pathcmp) : location
 {
   BUTTER_REQUIRE( nullptr == a_base->parent (), "This is not the base location object" );
-  const butter::pathcmp start_path_ ( a_base->full_path () );
-  const butter::pathcmp new_path_ ( start_path_.create_common ( a_path ) );
-  BUTTER_REQUIRE( new_path_.has_subpath ( start_path_ ), "<p>The old base path is not a subdirectory of the new path</p>" );
-  BUTTER_REQUIRE( new_path_.equality ( a_path ) || new_path_.has_subpath ( a_path ), "<p>The given path is not a subdirectory of the new path</p>" );
-  butter::pathcmp const diff_path_ ( new_path_.create_relative ( start_path_ ) );
+  const butter::pathcmp start_path_( a_base->full_path () );
+  const butter::pathcmp new_path_( start_path_.create_common( a_path ) );
+  BUTTER_REQUIRE( new_path_.has_subpath( start_path_ ), "<p>The old base path is not a subdirectory of the new path</p>" );
+  BUTTER_REQUIRE( new_path_.equality( a_path ) || new_path_.has_subpath( a_path ), "<p>The given path is not a subdirectory of the new path</p>" );
+  butter::pathcmp const diff_path_( new_path_.create_relative( start_path_ ) );
   // make current base object's path relative
-  const int diff_path_size_ ( diff_path_.depth () );
-  a_base->path_ = diff_path_.leaf_at ( diff_path_size_ - 1 );
+  const int diff_path_size_( diff_path_.depth () );
+  a_base->path_ = diff_path_.leaf_at( diff_path_size_ - 1 );
   // Add the intermediate steps.
   for ( int i_ = diff_path_size_ - 2; i_ >= 0; --i_ )
   {
-    std::unique_ptr< butter::location > tmp_ ( new location ( diff_path_.leaf_at ( i_ ) ) );
-    BUTTER_CHECK( tmp_->children_.size () > 0, "<p>New location objects should have non-zero sized vectors</p>" );
+    std::unique_ptr< butter::location > tmp_( new location( diff_path_.leaf_at ( i_ ) ) );
     // Parent old base object
-    a_base->parent_ = tmp_.get ();
-    tmp_->children_.insert ( 0, a_base.release () );
+    if( tmp_->children_.count() == tmp_->children_.size() )
+    {
+      tmp_->children_.resize( tmp_->children_.size() + 1 );
+    }
+    a_base->parent_ = tmp_.get();
+    tmp_->children_.insert( 0, a_base.release () );
     std::swap( a_base, tmp_ );
   }
   // Add new base
   {
-    std::unique_ptr< butter::location > tmp_ ( new location ( new_path_ ) );
-    BUTTER_CHECK( tmp_->children_.size () > 0, "<p>New location objects should have non-zero sized vectors</p>" );
+    std::unique_ptr< butter::location > tmp_( new location( new_path_ ) );
     // Parent old base object
-    a_base->parent_ = tmp_.get ();
-    tmp_->children_.insert ( 0, a_base.release () );
+    if( tmp_->children_.count() == tmp_->children_.size() )
+    {
+      tmp_->children_.resize( tmp_->children_.size() + 1 );
+    }
+    a_base->parent_ = tmp_.get();
+    tmp_->children_.insert( 0, a_base.release () );
     std::swap( a_base, tmp_ );
   }
 }
@@ -150,7 +156,7 @@ if (NULL == deployview_)
   // QUERY = fails if create returns nul other than when non-package passed. 
   if (NULL == deployview_)
   {
-    QString msg_ ("<p><b>Fatal error:</b> Unable to create a new deployment view, no editiable packages at location <b>");
+    QString msg_ ("<p><b>Fatal error:</b> Unable to create a new deployment view, no editable packages at location <b>");
     msg_.append (full_path ().path ());
     msg_.append ("</b>. Make an editable package at this location and try again.</p>");
     throw std::runtime_error (msg_.utf8 ().data ());
@@ -237,9 +243,9 @@ for (const butter::location * tmp_ = this;
 }
 return Result;
 !!!142633.cpp!!!	location(in a_path : pathcmp)
-: children_()
-, packages_()
-, parent_()
+: children_(1)
+, packages_(1)
+, parent_(nullptr)
 , path_(a_path)
 {
   children_.setAutoDelete( true );
@@ -428,7 +434,7 @@ while ( ! item_stack_.isEmpty () )
             log::com.stream() << "## Package below base dir. Reparenting base.\n";
           }
           // Reparent
-          Result == create_common_parent( std::move( Result ), pack_path_ );
+          Result = create_common_parent( std::move( Result ), pack_path_ );
           if ( DEBUG )
           {
             log::com.stream() << "## Found common parent [" << Result->full_path ().path () << "]\n";

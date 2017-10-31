@@ -1,6 +1,6 @@
 format 75
 "API USER" // API USER
-  revision 57
+  revision 58
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -2327,7 +2327,7 @@ ${definition}"
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Oct 28 23:45:14 2017
+#Tue Oct 31 13:03:23 2017
 ##END:date
 ##START:preamble
 include $(ROOTDIR)/M_sys.mk
@@ -2335,83 +2335,83 @@ include $(ROOTDIR)/M_sys.mk
 ##END:preamble
 ##START:target bouml
 BOUML_BOUMLSRC :=  \\
-	UmlClass.cpp \\
-	OnInstanceCmd.cpp \\
-	MiscGlobalCmd.cpp \\
-	aDirection.cpp \\
-	UmlArtifact.cpp \\
-	aRelationKind.cpp \\
-	UmlBasePackage.cpp \\
-	UmlDiagram.cpp \\
-	UmlParameter.cpp \\
-	UmlClassItem.cpp \\
-	UmlBaseNode.cpp \\
-	JavaSettings.cpp \\
-	UmlBaseClassItem.cpp \\
-	UmlItem.cpp \\
-	JavaSettingsCmd.cpp \\
-	UmlSettings.cpp \\
-	UmlBaseFormalParameter.cpp \\
-	UmlOperation.cpp \\
-	UmlClassView.cpp \\
-	ClassGlobalCmd.cpp \\
-	UmlRelation.cpp \\
-	UmlDeploymentDiagram.cpp \\
-	aVisibility.cpp \\
-	UmlBaseDeployment.cpp \\
-	UmlBaseComponentView.cpp \\
-	UmlUseCase.cpp \\
-	UmlBaseUseCase.cpp \\
-	UmlBaseAttribute.cpp \\
-	UmlUseCaseView.cpp \\
-	UmlClassDiagram.cpp \\
-	UmlBaseUseCaseDiagram.cpp \\
-	UmlBaseCollaborationDiagram.cpp \\
-	UmlNcRelation.cpp \\
-	UmlComponentDiagram.cpp \\
-	PackageGlobalCmd.cpp \\
-	UmlBaseOperation.cpp \\
-	UmlFormalParameter.cpp \\
+	UmlBaseComponent.cpp \\
 	anItemKind.cpp \\
 	UmlBaseUseCaseView.cpp \\
-	UmlBaseComponent.cpp \\
-	UmlBuiltin.cpp \\
 	UmlAttribute.cpp \\
 	UmlCom.cpp \\
 	UmlBaseDeploymentView.cpp \\
-	UmlBaseComponentDiagram.cpp \\
-	UmlBaseClassMember.cpp \\
-	UmlBaseClassDiagram.cpp \\
-	UmlTypeSpec.cpp \\
 	UmlExtraClassMember.cpp \\
+	UmlParameter.cpp \\
 	UmlCollaborationDiagram.cpp \\
 	UmlBaseItem.cpp \\
+	UmlBaseArtifact.cpp \\
+	UmlBaseClassView.cpp \\
+	IdlSettings.cpp \\
+	UmlBaseActualParameter.cpp \\
+	UmlSequenceDiagram.cpp \\
 	UmlNode.cpp \\
 	UmlDeploymentView.cpp \\
 	UmlBaseNcRelation.cpp \\
 	UmlSettingsCmd.cpp \\
-	UmlActualParameter.cpp \\
 	UmlBaseDiagram.cpp \\
 	UmlBaseDeploymentDiagram.cpp \\
-	UmlBaseArtifact.cpp \\
-	UmlBaseClass.cpp \\
+	JavaSettings.cpp \\
+	UmlBaseFormalParameter.cpp \\
+	UmlUseCaseDiagram.cpp \\
 	UmlPackage.cpp \\
 	CmdFamily.cpp \\
 	UmlBaseExtraClassMember.cpp \\
-	UmlBaseActualParameter.cpp \\
-	UmlSequenceDiagram.cpp \\
-	UmlStereotype.cpp \\
+	UmlComponent.cpp \\
 	UmlClassMember.cpp \\
 	UmlBaseSequenceDiagram.cpp \\
 	UmlBaseRelation.cpp \\
-	UmlBaseClassView.cpp \\
-	UmlUseCaseDiagram.cpp \\
 	UmlComponentView.cpp \\
-	IdlSettingsCmd.cpp \\
-	UmlComponent.cpp \\
+	UmlClassItem.cpp \\
 	CppSettingsCmd.cpp \\
-	IdlSettings.cpp \\
-	CppSettings.cpp
+	UmlClass.cpp \\
+	OnInstanceCmd.cpp \\
+	MiscGlobalCmd.cpp \\
+	aDirection.cpp \\
+	UmlBaseClass.cpp \\
+	CppSettings.cpp \\
+	UmlBaseClassItem.cpp \\
+	UmlArtifact.cpp \\
+	aRelationKind.cpp \\
+	UmlBasePackage.cpp \\
+	UmlDiagram.cpp \\
+	UmlBuiltin.cpp \\
+	UmlBaseNode.cpp \\
+	UmlBaseAttribute.cpp \\
+	UmlRelation.cpp \\
+	UmlItem.cpp \\
+	JavaSettingsCmd.cpp \\
+	UmlSettings.cpp \\
+	UmlTypeSpec.cpp \\
+	UmlUseCase.cpp \\
+	UmlOperation.cpp \\
+	UmlClassView.cpp \\
+	ClassGlobalCmd.cpp \\
+	UmlUseCaseView.cpp \\
+	UmlDeploymentDiagram.cpp \\
+	UmlFormalParameter.cpp \\
+	aVisibility.cpp \\
+	UmlBaseDeployment.cpp \\
+	UmlBaseComponentView.cpp \\
+	UmlBaseComponentDiagram.cpp \\
+	UmlNcRelation.cpp \\
+	UmlStereotype.cpp \\
+	UmlBaseUseCase.cpp \\
+	UmlBaseCollaborationDiagram.cpp \\
+	IdlSettingsCmd.cpp \\
+	UmlClassDiagram.cpp \\
+	UmlBaseUseCaseDiagram.cpp \\
+	UmlComponentDiagram.cpp \\
+	PackageGlobalCmd.cpp \\
+	UmlActualParameter.cpp \\
+	UmlBaseOperation.cpp \\
+	UmlBaseClassMember.cpp \\
+	UmlBaseClassDiagram.cpp
 BOUML_BOUML_DINC := $(filter %$(sufdep), $(BOUML_BOUMLSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BOUML_BOUMLSRC:.c=$(sufdep)))
 bouml$(suflib): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 bouml$(suflib) $(BOUML_BOUML_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
