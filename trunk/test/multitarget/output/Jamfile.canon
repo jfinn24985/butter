@@ -1,28 +1,36 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Wed Nov 17 13:48:57 2010
+#Tue Oct 31 23:48:53 2017
 ##END:date
 ##START:preamble
+BUILDDIR = $(SLASH)home$(SLASH)finnerty$(SLASH)src$(SLASH)butter$(SLASH)trunk$(SLASH)test$(SLASH)multitarget$(SLASH)output ;
 SubDir TOP ;
+OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
 ##END:preamble
 ##START:target library
-Library <.>liblibrary$(SUFLIB) :
+__LIBRARY_SRC =
 	<.>example_lib.cpp
 	;
 
+Library <.>library$(SUFLIB) :
+	$(__LIBRARY_SRC) ;
 
-InstallLib $(LIBDIR) : <.>liblibrary$(SUFLIB) ;
+__LIBRARY_LDFLAGS =  ;
+InstallLib $(LIBDIR) : <.>library$(SUFLIB) ;
 ##END:target library
 ##START:target program
-Main <.>program$(SUFEXE) :
+__PROGRAM_SRC =
 	<.>example_exe.cpp
 	;
 
-LinkLibraries <.>program$(SUFEXE) :
-	 <.>liblibrary$(SUFLIB) 
-	;
+Main <.>program$(SUFEXE) :
+	$(__PROGRAM_SRC) ;
 
+LINKLIBS on <.>program$(SUFEXE) +=  $(__LIBRARY_LDFLAGS)  ;
+LinkLibraries <.>program$(SUFEXE) :
+	 <.>library$(SUFLIB) 
+	;
 InstallBin $(BINDIR) : <.>program$(SUFEXE) ;
 ##END:target program
