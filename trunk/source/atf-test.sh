@@ -9,6 +9,8 @@ single_jam_gen_body() {
   #----------------------- 
   # Standard (jam) variant 
   #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/jam.patch
   atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile output/Jamfile.canon
@@ -16,7 +18,6 @@ single_jam_gen_body() {
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -f output/butter.log
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
@@ -31,6 +32,8 @@ single_boost_gen_body() {
   #-------------- 
   # Boost variant 
   #-------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/boost.patch
   atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot output/Jamroot.canon
@@ -38,7 +41,6 @@ single_boost_gen_body() {
   atf_check -s exit:0 -o empty rm output/local.jam output/Jamroot
   atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -f output/butter.log
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
 
   popd
@@ -54,6 +56,8 @@ single_cmake_gen_body() {
   #-------------- 
   # CMake variant 
   #-------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/cmake.patch
   atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt output/CMakeLists.txt.canon
@@ -61,7 +65,6 @@ single_cmake_gen_body() {
   atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
   atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -f output/butter.log
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
@@ -77,6 +80,8 @@ single_make_gen_body() {
   #-------------- 
   # Make variant 
   #-------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/make.patch
   atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile output/makefile.canon
@@ -88,7 +93,6 @@ single_make_gen_body() {
   atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
   atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -f output/butter.log
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
 
   popd
@@ -112,8 +116,8 @@ multidir_jam_gen_body() {
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.jam/src/Executable/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.jam/src/Library/Jamfile.canon
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
-  atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
 
@@ -138,6 +142,7 @@ multilang_jam_gen_body() {
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
 
@@ -162,6 +167,7 @@ multitarget_jam_gen_body() {
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
 
@@ -185,6 +191,7 @@ proplang_jam_gen_body() {
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
 
