@@ -1,0 +1,16 @@
+# jam file for text-to-tags (t2t) program
+rule t2t
+{
+  local doc_ = $(1) ;
+  local src_ = $(2) ;
+  Depends all : $(doc_) ;
+  MakeLocate $(doc_) : $(LOCATE_TARGET) ;
+  SEARCH on $(src_) = $(SEARCH_SOURCE) ;
+  run_t2t $(doc_) : $(src_) ;
+  Clean clean : $(doc_) ;
+}
+
+actions ignore run_t2t
+{
+  txt2tags  $(T2TFLAGS) -o $(1) -i $(2)
+}

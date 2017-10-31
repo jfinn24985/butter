@@ -1,0 +1,91 @@
+#
+# Default Jamrules
+#
+
+if $(UNIX)  { SUFSHR ?= .so ; }
+else if $(NT) { SUFSHR ?= .dll ; }
+
+if $(JAM_TOOLSET) { TOOLSET ?= $(JAM_TOOLSET) ; }
+TOOLSET ?= GNU ;
+VARIANT ?= DEBUG ;
+
+#############################
+##
+##  Default install locations
+##
+#############################
+PREFIX = installdir ;
+BINDIR = $(PREFIX)/bin ;
+DATADIR = $(PREFIX)/share ;
+DOCDIR = $(DATADIR)/doc ;
+HTMLDIR = $(DATADIR)/html ;
+INCDIR = $(PREFIX)/include ;
+LIBDIR = $(PREFIX)/bin ;
+MANDIR = $(DATADIR)/man1 ;
+
+######################################################
+##
+##  Example definitions for compiler suite (TOOLSETS)
+##  It is possible to add definitions here or in a
+##  separate file "$(TOOLSET).jam", the NOCARE rule
+##  tells jam not to worry if file does not exist.
+## 
+######################################################
+NOCARE $(TOOLSET).jam ;
+include $(TOOLSET).jam ;
+switch $(TOOLSET)
+{
+case GNU :
+CC = gcc ;
+C++ = g++ ;
+FORTRAN = gfortran ;
+LINK = $(C++) ;
+CCFLAGS += -Wall -std=c99 ;
+C++FLAGS += -Wall -std=c++98 ;
+SHRFLAGS = -fpic ;
+switch $(VARIANT)
+{
+case RELEASE :
+  OPTIM += -O2 -march=native -DDEBUG=0 ;
+case * :
+  OPTIM = -O0 -ggdb -DDEBUG=1 ;
+  CCFLAGS += -pedantic ;
+  C++FLAGS += ; # -Weffc++ ;
+}
+FORTRANFLAGS += -Wall -c ;
+LINKFLAGS += $(OPTIM) ;
+OPENMP = -fopenmp ;
+FORTRANLIBS += -lgfortran ;
+}
+
+##################################################
+##
+##  Example of how you might define a set of
+##  "standard" flags for libraries you use often.
+##
+##################################################
+##
+##switch $(GUILIB)
+##{
+##case GTKMM :
+##  CCFLAGS += `pkg-config gtkmm-2.4 --cflags` ;
+##  C++FLAGS += `pkg-config gtkmm-2.4 --cflags` ;
+##  LINKFLAGS += `pkg-config gtkmm-2.4 --libs` ;
+##
+##case MOTIF :
+##  CCFLAGS += -I/usr/include ;
+##  C++FLAGS += -I/usr/include ;
+##  LINKFLAGS += -L/usr/lib -lXm -lXp -lXpm -lXmu -lXt -lXext -lX11 ;
+##
+##case QT3 :
+##  CCFLAGS += -I$(QTDIR)/include ;
+##  C++FLAGS += -I$(QTDIR)/include ;
+##  LINKFLAGS += -L$(QTDIR)/lib -lqt-mt -lXext -lX11 -lm ;
+##
+##case * :
+##}
+##
+
+# Set variable for variant-specific build-dir handling
+BASE_LOCATE_TARGET = $(BUILDDIR)$(SLASH)$(VARIANT) ;
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;

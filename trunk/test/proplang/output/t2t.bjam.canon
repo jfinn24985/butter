@@ -1,0 +1,25 @@
+import feature : feature ;
+import toolset : flags ;
+import make ;
+
+if ! $(.t2t_initialized)
+{
+.t2t_initialized = true ;
+.default_t2tflags = -t html ;
+feature t2tflags : : free ;
+flags t2t OPTIONS <t2tflags> ;
+
+rule t2t
+{
+  if ! $(OPTIONS)
+  {
+    OPTIONS = $(.default_t2tflags) ;
+  }
+}
+
+actions t2t
+{
+  txt2tags $(OPTIONS) -o $(<) $(>)
+}
+
+}

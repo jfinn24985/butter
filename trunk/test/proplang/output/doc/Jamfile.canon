@@ -1,0 +1,41 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Tue Oct 31 23:56:47 2017
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)doc ;
+
+SubDir TOP doc ;
+
+##END:preamble
+##START:target program.t2t
+InstallFile $(DOC) : program.t2t ;
+##END:target program.t2t
+##START:target program.man
+include t2t.jam ;
+
+DOC_PROGRAM_MAN_SRC =
+	<doc>program.t2t
+	;
+
+t2t <doc>program.man :
+	$(DOC_PROGRAM_MAN_SRC) ;
+
+T2TFLAGS on <doc>program.man += -t man ;
+InstallFile $(MAN) : <doc>program.man ;
+##END:target program.man
+##START:target program.html
+include t2t.jam ;
+
+DOC_PROGRAM_HTML_SRC =
+	<doc>program.t2t
+	;
+
+t2t <doc>program.html :
+	$(DOC_PROGRAM_HTML_SRC) ;
+
+T2TFLAGS on <doc>program.html += --toc -t html ;
+InstallFile $(HTML) : <doc>program.html ;
+##END:target program.html

@@ -1,0 +1,2 @@
+set (T2T txt2tags)
+set (T2TFLAGS -o)

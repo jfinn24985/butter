@@ -1,0 +1,92 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Tue Oct 31 23:56:47 2017
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)src ;
+
+SubDir TOP src ;
+
+##END:preamble
+##START:target squareshare
+SRC_SQUARESHARE_SRC =
+	<src>example_lib_shr.cpp
+	;
+
+Library <src>squareshare$(SUFLIB) :
+	$(SRC_SQUARESHARE_SRC) ;
+
+SRC_SQUARESHARE_LDFLAGS =  ;
+InstallLib $(LIBDIR) : <src>squareshare$(SUFLIB) ;
+##END:target squareshare
+##START:target shared_sqr
+SRC_SHARED_SQR_SRC =
+	<src>lib_main_shr.cpp
+	;
+
+Main <src>shared_sqr$(SUFEXE) :
+	$(SRC_SHARED_SQR_SRC) ;
+
+LINKLIBS on <src>shared_sqr$(SUFEXE) +=  $(SRC_SQUARESHARE_LDFLAGS)  ;
+LinkLibraries <src>shared_sqr$(SUFEXE) :
+	 <src>squareshare$(SUFLIB) 
+	;
+ObjectHdrs $(SRC_SHARED_SQR_SRC) : include/exe ;
+InstallBin $(BINDIR) : <src>shared_sqr$(SUFEXE) ;
+##END:target shared_sqr
+##START:target squarestatic
+SRC_SQUARESTATIC_SRC =
+	<src>example_lib.cpp
+	;
+
+Library <src>squarestatic$(SUFLIB) :
+	$(SRC_SQUARESTATIC_SRC) ;
+
+SRC_SQUARESTATIC_LDFLAGS = -lm ;
+InstallLib $(LIBDIR) : <src>squarestatic$(SUFLIB) ;
+##END:target squarestatic
+##START:target static_sqr
+SRC_STATIC_SQR_SRC =
+	<src>lib_main.cpp
+	;
+
+Main <src>static_sqr$(SUFEXE) :
+	$(SRC_STATIC_SQR_SRC) ;
+
+LINKLIBS on <src>static_sqr$(SUFEXE) +=  $(SRC_SQUARESTATIC_LDFLAGS)  ;
+LinkLibraries <src>static_sqr$(SUFEXE) :
+	 <src>squarestatic$(SUFLIB) 
+	;
+ObjectHdrs $(SRC_STATIC_SQR_SRC) : include/exe ;
+InstallBin $(BINDIR) : <src>static_sqr$(SUFEXE) ;
+##END:target static_sqr
+##START:target fortprog
+SRC_FORTPROG_SRC =
+	<src>fortmain.cpp
+	<src>fortran.f
+	;
+
+Main <src>fortprog$(SUFEXE) :
+	$(SRC_FORTPROG_SRC) ;
+
+LINKLIBS on <src>fortprog$(SUFEXE) += $(FORTRANLIBS) ;
+InstallBin $(BINDIR) : <src>fortprog$(SUFEXE) ;
+##END:target fortprog
+##START:target source_test
+SRC_SOURCE_TEST_SRC =
+	<src>test_source.cpp
+	;
+
+Main <src>source_test$(SUFEXE) :
+	$(SRC_SOURCE_TEST_SRC) ;
+
+ObjectCcFlags $(SRC_SOURCE_TEST_SRC) : -DEXE_FLAG ;
+ObjectC++Flags $(SRC_SOURCE_TEST_SRC) : -DEXE_FLAG ;
+ObjectHdrs $(SRC_SOURCE_TEST_SRC) : include/lib ;
+ObjectHdrs <src>test_source.cpp : include/src ;
+ObjectC++Flags <src>test_source.cpp : -DSRC_FLAG ;
+
+InstallBin $(BINDIR) : <src>source_test$(SUFEXE) ;
+##END:target source_test

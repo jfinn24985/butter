@@ -1,0 +1,35 @@
+      SUBROUTINE FORTPROG
+
+      INTEGER MCOUNT
+      DOUBLE PRECISION RPRES1, RPRES2
+
+      PRINT *, "== Program Exercise 2 =="
+
+C     Find out the capacity of the cells of the computer that you
+C     will be using during your study of Fortran
+
+C     [1] Initialise the test number
+      RPRES1 = 1.0
+
+C     [2] Loop (for a maximum of 30)
+      DO MCOUNT = 1,30
+
+C     [3] Create a second number close to test number
+         RPRES2 = RPRES1 + (0.1**(MCOUNT))
+
+
+C     [4] Test if the numbers are "equal"
+         IF ( RPRES1 .EQ. RPRES2 ) THEN
+
+C     [5] When equal print result and stop
+            PRINT *, RPRES1, " .EQ.", RPRES2, " Precision is ", MCOUNT
+            STOP
+         ELSE
+            PRINT *, RPRES1, " .NE.", RPRES2
+         ENDIF
+      ENDDO
+
+      PRINT *, "Precision is greater than ", MCOUNT
+
+      END
+
