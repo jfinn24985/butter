@@ -420,11 +420,15 @@ proplang_jam_gen_body() {
   atf_check -s exit:0 -o inline:"patching file proplang.prj\n" patch <patch/jam.patch
   atf_check -s exit:0 -o empty bouml proplang.prj -exec ../../source/src/butter/butter_exe -exit
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile output/Jamfile.canon
-  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamrules output/Jamrules.canon
+  atf_check -o empty diff output/Jamrules output/Jamrules.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Jamfile output/src/Jamfile.canon
   atf_check -o empty diff output/src/fortran.f output/src/fortran.f.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/doc/Jamfile output/doc/Jamfile.canon
   atf_check -o empty diff output/doc/program.t2t output/doc/program.t2t.canon
+  atf_check -o empty diff output/t2t.bjam output/t2t.bjam.canon
+  atf_check -o empty diff output/t2t.jam output/t2t.jam.canon
+  atf_check -o empty diff output/t2t.cmake output/t2t.cmake.canon
+  atf_check -o empty diff output/t2t.make output/t2t.make.canon
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm output/src/Jamfile output/src/fortran.f
   atf_check -s exit:0 -o empty rm output/doc/Jamfile output/doc/program.t2t
