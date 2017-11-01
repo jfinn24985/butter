@@ -1,0 +1,45 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 18:00:12 2017
+##END:date
+##START:preamble
+cmake_minimum_required(VERSION 2.6)
+
+project (MULTITARGET)
+
+##END:preamble
+##START:target MULTITARGET
+include (${CMAKE_SOURCE_DIR}/local.cmake)
+
+##END:target MULTITARGET
+##START:target library
+set (__LIBRARY library)
+
+set (__LIBRARY_SRC 
+	example_lib.cpp)
+add_library (${__LIBRARY}
+	STATIC ${__LIBRARY_SRC})
+set_target_properties(${__LIBRARY} PROPERTIES PREFIX "")
+install (TARGETS ${__LIBRARY}
+	LIBRARY DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release
+	ARCHIVE DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release)
+
+##END:target library
+##START:target program
+set (__PROGRAM program)
+
+set (__PROGRAM_SRC 
+	example_exe.cpp)
+add_executable (${__PROGRAM}
+	${__PROGRAM_SRC})
+target_link_libraries (${__PROGRAM}
+	library)
+install (TARGETS ${__PROGRAM}
+	RUNTIME DESTINATION ${BINDIR}
+	CONFIGURATIONS Release)
+
+##END:target program

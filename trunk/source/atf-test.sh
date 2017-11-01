@@ -350,6 +350,29 @@ multitarget_boost_gen_body() {
   popd
 }
 
+atf_test_case multitarget_cmake_gen
+multitarget_cmake_gen_head() {
+  atf_set "descr" "Test CMake generator on single directory project."
+}
+multitarget_cmake_gen_body() {
+  pushd ../test/multitarget
+  #----------------------- 
+  # CMake variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file multitarget.prj\n" patch <patch/cmake.patch
+  atf_check -s exit:0 -o empty bouml multitarget.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt output/CMakeLists.txt.canon
+  atf_check -o empty diff output/local.cmake output/local.cmake.canon
+  atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
+  atf_check -s exit:0 -o empty rm -f output/butter.log
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+
 
 
 
@@ -406,7 +429,7 @@ atf_init_test_cases() {
     atf_add_test_case multilang_make_gen
     atf_add_test_case multitarget_jam_gen
     atf_add_test_case multitarget_boost_gen
-#    atf_add_test_case multitarget_cmake_gen
+    atf_add_test_case multitarget_cmake_gen
 #    atf_add_test_case multitarget_make_gen
     atf_add_test_case proplang_jam_gen
 #    atf_add_test_case proplang_boost_gen
