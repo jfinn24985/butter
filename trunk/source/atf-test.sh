@@ -372,6 +372,33 @@ multitarget_cmake_gen_body() {
   popd
 }
 
+atf_test_case multitarget_make_gen
+multitarget_make_gen_head() {
+  atf_set "descr" "Test Make generator on single directory project."
+}
+multitarget_make_gen_body() {
+  pushd ../test/multitarget
+  #----------------------- 
+  # Make variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file multitarget.prj\n" patch <patch/make.patch
+  atf_check -s exit:0 -o empty bouml multitarget.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile output/makefile.canon
+  atf_check -o empty diff output/M_sys.mk output/M_sys.mk.canon
+  atf_check -o empty diff output/M_cl.mk output/M_cl.mk.canon
+  atf_check -o empty diff output/M_gcc.mk output/M_gcc.mk.canon
+  atf_check -o empty diff output/M_unix.mk output/M_unix.mk.canon
+  atf_check -o empty diff output/M_Windows_NT.mk output/M_Windows_NT.mk.canon
+  atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
+  atf_check -s exit:0 -o empty rm -f output/butter.log
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+
 
 
 
@@ -430,7 +457,7 @@ atf_init_test_cases() {
     atf_add_test_case multitarget_jam_gen
     atf_add_test_case multitarget_boost_gen
     atf_add_test_case multitarget_cmake_gen
-#    atf_add_test_case multitarget_make_gen
+    atf_add_test_case multitarget_make_gen
     atf_add_test_case proplang_jam_gen
 #    atf_add_test_case proplang_boost_gen
 #    atf_add_test_case proplang_cmake_gen

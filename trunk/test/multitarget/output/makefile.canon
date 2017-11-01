@@ -1,51 +1,46 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Nov 27 16:52:43 2010
+#Wed Nov 1 18:04:15 2017
 ##END:date
 ##START:preamble
-include makefile.sys
-
-ROOTDIR := /tmp/multitarget/output
+ROOTDIR := /home/finnerty/src/butter/trunk/test/multitarget/output
+OUTPUTDIR := /home/finnerty/src/butter/trunk/test/multitarget/output
+include $(ROOTDIR)/M_sys.mk
 
 ##END:preamble
 ##START:target library
-LIBRARYSRC :=  \
+__LIBRARYSRC :=  \
 	example_lib.cpp
-LIBRARYLDFLAGS := $(LOCALLDFLAGS)
-LIBRARY_DINC := $(filter %.d, $(LIBRARYSRC:.cpp=.d)) $(filter %.d, $(LIBRARYSRC:.c=.d))
-include $(LIBRARY_DINC)
-LIBRARY_OBJ := $(LIBRARY_OBJ) $(filter %.o, $(LIBRARYSRC:.cpp=.o))
-USEROBJ := $(USEROBJ) $(LIBRARY_OBJ)
+__LIBRARY_DINC := $(filter %$(sufdep), $(__LIBRARYSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(__LIBRARYSRC:.c=$(sufdep)))
+__LIBRARY_OBJ+=$(filter %$(sufobj), $(__LIBRARYSRC:.cpp=$(sufobj)))
+USEROBJ+=$(__LIBRARY_OBJ)
+library$(suflib) : $(__LIBRARY_SRC) $(__LIBRARY_DINC)
+-include $(__LIBRARY_DINC)
+$(eval $(call do_archive,library$(suflib),$(__LIBRARY_OBJ)))
 
-liblibrary$(SUFLIB) : $(LIBRARY_OBJ) $(LIBRARY_DINC)
-	$(AR) $(ARFLAGS) liblibrary$(SUFLIB) $(LIBRARY_OBJ)
+all :: library$(suflib)
+TARGETS+=library$(suflib)
 
-all :: liblibrary$(SUFLIB)
-TARGETS := $(TARGETS) liblibrary$(SUFLIB)
+$(eval $(call do_install,library$(suflib),LIB))
 
-install:: liblibrary$(SUFLIB)
-	$(INSTALL) -d $(LIBDIR)
-	$(INSTALL) $(LIBIFLAGS) liblibrary$(SUFLIB) $(LIBDIR)/liblibrary$(SUFLIB)
 ##END:target library
 ##START:target program
-PROGRAMSRC :=  \
+__PROGRAMSRC :=  \
 	example_exe.cpp
-PROGRAMLDFLAGS := $(LOCALLDFLAGS) $(ROOTDIR)/liblibrary$(SUFLIB) 
-USERFLAGS := $(LOCALFLAGS) $(SHRFLAGS)
-PROGRAM_DINC := $(filter %.d, $(PROGRAMSRC:.cpp=.d)) $(filter %.d, $(PROGRAMSRC:.c=.d))
-include $(PROGRAM_DINC)
-PROGRAM_OBJ := $(PROGRAM_OBJ) $(filter %.o, $(PROGRAMSRC:.cpp=.o))
-USEROBJ := $(USEROBJ) $(PROGRAM_OBJ)
+__PROGRAM_DINC := $(filter %$(sufdep), $(__PROGRAMSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(__PROGRAMSRC:.c=$(sufdep)))
+__PROGRAM_OBJ+=$(ROOTDIR)/library$(suflib)
 
-program$(SUFEXE) : $(PROGRAM_OBJ) $(PROGRAM_DINC) $(ROOTDIR)/liblibrary$(SUFLIB) 
-	$(CCC) $(CCCFLAGS) -o program$(SUFEXE) $(PROGRAM_OBJ) $(PROGRAMLDFLAGS) $(LDFLAGS)
+__PROGRAM_OBJ+=$(filter %$(sufobj), $(__PROGRAMSRC:.cpp=$(sufobj)))
+USEROBJ+=$(__PROGRAM_OBJ)
+program$(sufexe) : $(__PROGRAM_SRC) $(__PROGRAM_DINC)
+-include $(__PROGRAM_DINC)
+$(eval $(call do_link_exe,program$(sufexe),$(__PROGRAM_OBJ)))
 
-all :: program$(SUFEXE)
-TARGETS := $(TARGETS) program$(SUFEXE)
+all :: program$(sufexe)
+TARGETS+=program$(sufexe)
 
-install:: program$(SUFEXE)
-	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) $(BINIFLAGS) program$(SUFEXE) $(BINDIR)/program$(SUFEXE)
+$(eval $(call do_install,program$(sufexe),BIN))
+
 ##END:target program
