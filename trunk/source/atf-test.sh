@@ -29,7 +29,6 @@ single_boost_gen_head() {
 }
 single_boost_gen_body() {
   pushd ../test/single_test
- 
   #-------------- 
   # Boost variant 
   #-------------- 
@@ -44,7 +43,6 @@ single_boost_gen_body() {
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-
   popd
 }
 
@@ -54,7 +52,6 @@ single_cmake_gen_head() {
 }
 single_cmake_gen_body() {
   pushd ../test/single_test
- 
   #-------------- 
   # CMake variant 
   #-------------- 
@@ -72,14 +69,12 @@ single_cmake_gen_body() {
   popd
 }
 
-
 atf_test_case single_make_gen
 single_make_gen_head() {
   atf_set "descr" "Test Makefile generator on single directory project."
 }
 single_make_gen_body() {
   pushd ../test/single_test
- 
   #-------------- 
   # Make variant 
   #-------------- 
@@ -94,7 +89,6 @@ single_make_gen_body() {
   atf_check -o empty diff output/M_unix.mk output/M_unix.mk.canon
   atf_check -o empty diff output/M_Windows_NT.mk output/M_Windows_NT.mk.canon
   atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
-  atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
@@ -116,7 +110,7 @@ multidir_jam_gen_body() {
   atf_check -s exit:0 -o inline:"patching file multidir.prj\n" patch <patch/jam.patch
   atf_check -s exit:0 -o empty bouml multidir.prj -exec ../../source/src/butter/butter_exe -exit
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile canon.jam/Jamfile.canon
-  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamrules canon.jam/Jamrules.canon
+  atf_check -o empty diff output/Jamrules canon.jam/Jamrules.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.jam/src/Executable/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.jam/src/Library/Jamfile.canon
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
@@ -125,6 +119,83 @@ multidir_jam_gen_body() {
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
+
+atf_test_case multidir_boost_gen
+multidir_boost_gen_head() {
+  atf_set "descr" "Test Standard Jam generator on single directory project."
+}
+multidir_boost_gen_body() {
+  pushd ../test/multidir
+  #----------------------- 
+  # Boost (bjam) variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file multidir.prj\n" patch <patch/boost.patch
+  atf_check -s exit:0 -o empty bouml multidir.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot canon.bjam/Jamroot.canon
+  atf_check -o empty diff output/local.jam canon.bjam/local.jam.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.bjam/src/Executable/Jamfile.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.bjam/src/Library/Jamfile.canon
+  atf_check -s exit:0 -o empty rm output/Jamroot output/local.jam
+  atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case multidir_cmake_gen
+multidir_cmake_gen_head() {
+  atf_set "descr" "Test Standard Jam generator on single directory project."
+}
+multidir_cmake_gen_body() {
+  pushd ../test/multidir
+  #----------------------- 
+  # CMake variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file multidir.prj\n" patch <patch/cmake.patch
+  atf_check -s exit:0 -o empty bouml multidir.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt canon.cmake/CMakeLists.txt.canon
+  atf_check -o empty diff output/local.cmake canon.cmake/local.cmake.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/CMakeLists.txt canon.cmake/src/Executable/CMakeLists.txt.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/CMakeLists.txt canon.cmake/src/Library/CMakeLists.txt.canon
+  atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
+  atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case multidir_make_gen
+multidir_make_gen_head() {
+  atf_set "descr" "Test Standard Jam generator on single directory project."
+}
+multidir_make_gen_body() {
+  pushd ../test/multidir
+  #----------------------- 
+  # CMake variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file multidir.prj\n" patch <patch/make.patch
+  atf_check -s exit:0 -o empty bouml multidir.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile canon.make/makefile.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/makefile canon.make/src/Executable/makefile.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/makefile canon.make/src/Library/makefile.canon
+  atf_check -o empty diff output/M_sys.mk canon.make/M_sys.mk.canon
+  atf_check -o empty diff output/M_cl.mk canon.make/M_cl.mk.canon
+  atf_check -o empty diff output/M_gcc.mk canon.make/M_gcc.mk.canon
+  atf_check -o empty diff output/M_unix.mk canon.make/M_unix.mk.canon
+  atf_check -o empty diff output/M_Windows_NT.mk canon.make/M_Windows_NT.mk.canon
+  atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
+  atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
 
 
 atf_test_case multilang_jam_gen
@@ -215,9 +286,9 @@ atf_init_test_cases() {
     atf_add_test_case single_cmake_gen
     atf_add_test_case single_make_gen
     atf_add_test_case multidir_jam_gen
-#    atf_add_test_case multidir_boost_gen
-#    atf_add_test_case multidir_cmake_gen
-#    atf_add_test_case multidir_make_gen
+    atf_add_test_case multidir_boost_gen
+    atf_add_test_case multidir_cmake_gen
+    atf_add_test_case multidir_make_gen
     atf_add_test_case multitarget_jam_gen
 #    atf_add_test_case multitarget_boost_gen
 #    atf_add_test_case multitarget_cmake_gen

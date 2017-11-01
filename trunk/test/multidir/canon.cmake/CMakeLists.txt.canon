@@ -1,8 +1,8 @@
 ##START:version
-#Butter version 1.1beta.36
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Wed Dec 15 18:50:37 2010
+#Wed Nov 1 16:41:09 2017
 ##END:date
 ##START:preamble
 cmake_minimum_required(VERSION 2.6)
@@ -13,8 +13,8 @@ project (MULTIDIR)
 ##START:target MULTIDIR
 include (${CMAKE_SOURCE_DIR}/local.cmake)
 
-include_directories (${CMAKE_SOURCE_DIR}/include)
 
+include_directories (${CMAKE_SOURCE_DIR}/include )
 ##END:target MULTIDIR
 ##START:close
 add_subdirectory (src/Library)

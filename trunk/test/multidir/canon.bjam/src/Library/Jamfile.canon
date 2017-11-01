@@ -1,16 +1,17 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Nov 27 19:01:00 2010
+#Wed Nov 1 16:23:51 2017
 ##END:date
 ##START:target library
 lib library :
 	example_lib.cpp
 	:
-	<link>shared
+	<link>static
+	: :
 	;
 
-install install_library : library : <variant>release <location>$(LIBDIR) ;
-install install_library : : <variant>debug ;
+install install_library : library : <variant>release:<location>$(INSTALL_PREFIX)/$(LIBDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"src/Library" ;
 ##END:target library

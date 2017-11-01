@@ -1,42 +1,17 @@
 #
 # local.cmake
 #
+set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG=1)
+set_directory_properties(PROPERTIES COMPILE_DEFINITIONS DEBUG=0)
 #############################
 ##  Default install locations
 #############################
-set (VERSIONDIR "multidir-1.0")
 set (CMAKE_INSTALL_PREFIX installdir)
 set (BINDIR bin)
-set (SBINDIR sbin)
-set (LIBEXECDIR libexec)
-set (LIBDIR lib)
-set (DATAROOTDIR share)
 set (DATADIR share)
-set (SYSCONFDIR etc)
-set (SHAREDSTATEDIR com)
-set (LOCALSTATEDIR var)
+set (DOCDIR share/doc)
+set (HTMLDIR share/html)
 set (INCLUDEDIR include)
-set (LOCALEDIR ${DATAROOTDIR}/locale)
-set (DOCDIR ${DATAROOTDIR}/doc/${VERSIONDIR})
-set (INFODIR ${DATAROOTDIR}/info)
-set (MANDIR ${DATAROOTDIR}/man)
-set (HTMLDIR ${DOCDIR})
-set (DVIDIR ${DOCDIR})
-set (PDFDIR ${DOCDIR})
-set (PSDIR ${DOCDIR})
-set (MAN1DIR ${MANDIR}/man1)
-set (MAN2DIR ${MANDIR}/man2)
-set (MAN3DIR ${MANDIR}/man3)
-set (MAN4DIR ${MANDIR}/man4)
-set (MAN5DIR ${MANDIR}/man5)
-set (MAN6DIR ${MANDIR}/man6)
-set (MAN7DIR ${MANDIR}/man7)
-set (MAN8DIR ${MANDIR}/man8)
-set (MANNDIR ${MANDIR}/mann)
-###############
-## Editor sugar
-###############
-# Local Variables:
-# mode: makefile
-# End:
+set (LIBDIR bin)
+set (MANDIR share/man)
 
