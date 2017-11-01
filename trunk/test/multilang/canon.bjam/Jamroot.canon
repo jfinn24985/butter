@@ -1,17 +1,19 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Nov 27 19:46:12 2010
+#Wed Nov 1 17:06:19 2017
 ##END:date
 ##START:preamble
 # Include local constants
+path-constant topdir : . ;
 include local.jam ;
 
 # Set project's global settings
 project multilang
-	:  requirements <debug-symbols>on:<cxxflags>"-DDEBUG=1"
-	<include>"include" 
+	: requirements <debug-symbols>on:<define>"DEBUG=1"
+	<debug-symbols>off:<define>"DEBUG=0"
+	<include>$(topdir)/"include" 
 	: build-dir build ;
 ##END:preamble
 ##START:close

@@ -175,7 +175,7 @@ multidir_make_gen_head() {
 multidir_make_gen_body() {
   pushd ../test/multidir
   #----------------------- 
-  # CMake variant 
+  # Make variant 
   #----------------------- 
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
@@ -215,12 +215,39 @@ multilang_jam_gen_body() {
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamrules canon.jam/Jamrules.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.jam/src/Executable/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.jam/src/Library/Jamfile.canon
+  atf_check -o empty diff output/src/Library/example_c.c canon.jam/src/Library/example_c.c.canon
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
+
+atf_test_case multilang_boost_gen
+multilang_boost_gen_head() {
+  atf_set "descr" "Test Standard Jam generator on single directory project."
+}
+multilang_boost_gen_body() {
+  pushd ../test/multilang
+  #----------------------- 
+  # Boost (bjam) variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file multilang.prj\n" patch <patch/boost.patch
+  atf_check -s exit:0 -o empty bouml multilang.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot canon.bjam/Jamroot.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.jam canon.bjam/local.jam.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.bjam/src/Executable/Jamfile.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.bjam/src/Library/Jamfile.canon
+  atf_check -o empty diff output/src/Library/example_c.c canon.bjam/src/Library/example_c.c.canon
+  atf_check -s exit:0 -o empty rm output/Jamroot output/local.jam
+  atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
 
 
 atf_test_case multitarget_jam_gen
@@ -289,14 +316,14 @@ atf_init_test_cases() {
     atf_add_test_case multidir_boost_gen
     atf_add_test_case multidir_cmake_gen
     atf_add_test_case multidir_make_gen
+    atf_add_test_case multilang_jam_gen
+    atf_add_test_case multilang_boost_gen
+#    atf_add_test_case multilang_cmake_gen
+#    atf_add_test_case multilang_make_gen
     atf_add_test_case multitarget_jam_gen
 #    atf_add_test_case multitarget_boost_gen
 #    atf_add_test_case multitarget_cmake_gen
 #    atf_add_test_case multitarget_make_gen
-    atf_add_test_case multilang_jam_gen
-#    atf_add_test_case multilang_boost_gen
-#    atf_add_test_case multilang_cmake_gen
-#    atf_add_test_case multilang_make_gen
     atf_add_test_case proplang_jam_gen
 #    atf_add_test_case proplang_boost_gen
 #    atf_add_test_case proplang_cmake_gen
