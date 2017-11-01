@@ -1,0 +1,10 @@
+if $(NT)
+{
+constant OPENMP : /openmp ;
+}
+else if $(UNIX)
+{
+using gfortran ;
+constant OPENMP : -fopenmp ;
+constant FORTRANLIBS : -lgfortran ;
+}

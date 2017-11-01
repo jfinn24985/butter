@@ -1,0 +1,13 @@
+if $(NT)
+{
+OPENMP = /openmp ;
+FORTRAN = fortran ;
+FORTRANLIBS = vcf2c.lib ;
+LINK = $(CC) ;
+}
+else if $(UNIX)
+{
+OPENMP = -fopenmp ;
+FORTRANLIBS = -lgfortran ;
+FORTRAN = gfortran ;
+}

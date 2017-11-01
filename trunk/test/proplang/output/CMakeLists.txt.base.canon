@@ -1,0 +1,8 @@
+if (WIN32)
+set (OPENMP  -openmp)
+set (FORTRANLIBS vcf2c.lib -NODEFAULTLIB:msvcrt.lib -NODEFAULTLIB:msvcrtd.lib)
+set (CMAKE_Fortran_COMPILER "C:/Program Files/GnuWin32/bin/fortran.bat" CACHE PATH "Fortran compiler")
+else (WIN32)
+set (OPENMP -fopenmp)
+set (FORTRANLIBS -lgfortran)
+endif (WIN32)
