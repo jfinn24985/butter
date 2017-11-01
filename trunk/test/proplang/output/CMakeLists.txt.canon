@@ -6,3 +6,28 @@ else (WIN32)
 set (OPENMP -fopenmp)
 set (FORTRANLIBS -lgfortran)
 endif (WIN32)
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:31:01 2017
+##END:date
+##START:preamble
+cmake_minimum_required(VERSION 2.6)
+
+project (PROPLANG CXX Fortran)
+
+##END:preamble
+##START:target PROPLANG
+include (${CMAKE_SOURCE_DIR}/local.cmake)
+
+
+include_directories (${CMAKE_SOURCE_DIR}/include/exe ${CMAKE_SOURCE_DIR}/include )
+set (CMAKE_EXE_LINKER_FLAGS ${OPENMP}
+	CACHE STRING "Project-wide linker flags." FORCE)
+add_definitions (-DPROJ_FLAG)
+##END:target PROPLANG
+##START:close
+add_subdirectory (doc)
+add_subdirectory (src)
+##END:close

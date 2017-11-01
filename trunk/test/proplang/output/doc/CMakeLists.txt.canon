@@ -1,0 +1,52 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:31:01 2017
+##END:date
+##START:target program.t2t
+install (FILES program.t2t
+	DESTINATION ${DOC}
+	CONFIGURATIONS Release)
+
+##END:target program.t2t
+##START:target program.man
+include (${CMAKE_SOURCE_DIR}/t2t.cmake)
+
+set (DOC_PROGRAM_MAN program.man)
+
+set (DOC_PROGRAM_MAN_SRC 
+	program.t2t)
+add_custom_command (OUTPUT ${DOC_PROGRAM_MAN}
+	 DEPENDS ${DOC_PROGRAM_MAN_SRC} 
+	COMMAND ${T2T} -t man ${T2TFLAGS} ${CMAKE_CURRENT_BINARY_DIR}/${DOC_PROGRAM_MAN} ${DOC_PROGRAM_MAN_SRC}	
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set_directory_properties (PROPERTIES
+	ADDITIONAL_MAKE_CLEAN_FILES ${DOC_PROGRAM_MAN})
+add_custom_target (${DOC_PROGRAM_MAN}_TARGET ALL
+	DEPENDS ${DOC_PROGRAM_MAN})
+install (FILES ${DOC_PROGRAM_MAN}
+	DESTINATION ${MAN}
+	CONFIGURATIONS Release)
+
+##END:target program.man
+##START:target program.html
+include (${CMAKE_SOURCE_DIR}/t2t.cmake)
+
+set (DOC_PROGRAM_HTML program.html)
+
+set (DOC_PROGRAM_HTML_SRC 
+	program.t2t)
+add_custom_command (OUTPUT ${DOC_PROGRAM_HTML}
+	 DEPENDS ${DOC_PROGRAM_HTML_SRC} 
+	COMMAND ${T2T} --toc -t html ${T2TFLAGS} ${CMAKE_CURRENT_BINARY_DIR}/${DOC_PROGRAM_HTML} ${DOC_PROGRAM_HTML_SRC}	
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set_directory_properties (PROPERTIES
+	ADDITIONAL_MAKE_CLEAN_FILES ${DOC_PROGRAM_HTML})
+add_custom_target (${DOC_PROGRAM_HTML}_TARGET ALL
+	DEPENDS ${DOC_PROGRAM_HTML})
+install (FILES ${DOC_PROGRAM_HTML}
+	DESTINATION ${HTML}
+	CONFIGURATIONS Release)
+
+##END:target program.html

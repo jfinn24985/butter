@@ -1,0 +1,111 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:31:01 2017
+##END:date
+##START:target squareshare
+set (SRC_SQUARESHARE squareshare)
+
+set (SRC_SQUARESHARE_SRC 
+	example_lib_shr.cpp)
+add_library (${SRC_SQUARESHARE}
+	SHARED ${SRC_SQUARESHARE_SRC})
+set_target_properties(${SRC_SQUARESHARE} PROPERTIES PREFIX "")
+install (TARGETS ${SRC_SQUARESHARE}
+	LIBRARY DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release
+	ARCHIVE DESTINATION ${DATADIR}
+	CONFIGURATIONS Release)
+
+##END:target squareshare
+##START:target shared_sqr
+set (SRC_SHARED_SQR shared_sqr)
+
+set (SRC_SHARED_SQR_SRC 
+	lib_main_shr.cpp)
+add_executable (${SRC_SHARED_SQR}
+	${SRC_SHARED_SQR_SRC})
+target_link_libraries (${SRC_SHARED_SQR}
+	squareshare)
+install (TARGETS ${SRC_SHARED_SQR}
+	RUNTIME DESTINATION ${BINDIR}
+	CONFIGURATIONS Release)
+
+##END:target shared_sqr
+##START:target squarestatic
+set (SRC_SQUARESTATIC squarestatic)
+
+set (SRC_SQUARESTATIC_SRC 
+	example_lib.cpp)
+add_library (${SRC_SQUARESTATIC}
+	STATIC ${SRC_SQUARESTATIC_SRC})
+set_target_properties(${SRC_SQUARESTATIC} PROPERTIES PREFIX "")
+target_link_libraries (${SRC_SQUARESTATIC}
+	-lm)
+install (TARGETS ${SRC_SQUARESTATIC}
+	LIBRARY DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release
+	ARCHIVE DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release)
+
+##END:target squarestatic
+##START:target static_sqr
+set (SRC_STATIC_SQR static_sqr)
+
+set (SRC_STATIC_SQR_SRC 
+	lib_main.cpp)
+add_executable (${SRC_STATIC_SQR}
+	${SRC_STATIC_SQR_SRC})
+target_link_libraries (${SRC_STATIC_SQR}
+	squarestatic
+	-lm)
+install (TARGETS ${SRC_STATIC_SQR}
+	RUNTIME DESTINATION ${BINDIR}
+	CONFIGURATIONS Release)
+
+##END:target static_sqr
+##START:target fortprog
+set (SRC_FORTPROG fortprog)
+
+set (SRC_FORTPROG_SRC 
+	fortmain.cpp
+	fortran.f)
+add_executable (${SRC_FORTPROG}
+	${SRC_FORTPROG_SRC})
+target_link_libraries (${SRC_FORTPROG}
+	${FORTRANLIBS})
+set_source_files_properties (fortran.f
+	PROPERTIES
+	LANGUAGE Fortran)
+
+
+install (TARGETS ${SRC_FORTPROG}
+	RUNTIME DESTINATION ${BINDIR}
+	CONFIGURATIONS Release)
+
+##END:target fortprog
+##START:target source_test
+set (SRC_SOURCE_TEST source_test)
+
+set (SRC_SOURCE_TEST_SRC 
+	test_source.cpp)
+add_executable (${SRC_SOURCE_TEST}
+	${SRC_SOURCE_TEST_SRC})
+set_target_properties(${SRC_SOURCE_TEST}
+	PROPERTIES
+	COMPILE_FLAGS -DEXE_FLAG)
+
+include_directories (${CMAKE_SOURCE_DIR}/include/lib )
+
+include_directories (${CMAKE_SOURCE_DIR}/include/src )
+set_source_files_properties (test_source.cpp
+	PROPERTIES
+	COMPILE_FLAGS -DSRC_FLAG)
+
+
+install (TARGETS ${SRC_SOURCE_TEST}
+	RUNTIME DESTINATION ${BINDIR}
+	CONFIGURATIONS Release)
+
+##END:target source_test

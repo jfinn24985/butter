@@ -478,6 +478,42 @@ proplang_boost_gen_body() {
   popd
 }
 
+atf_test_case proplang_cmake_gen
+proplang_cmake_gen_head() {
+  atf_set "descr" "Test CMake generator on single directory project."
+}
+proplang_cmake_gen_body() {
+  pushd ../test/proplang
+  #----------------------- 
+  # CMake variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file proplang.prj\n" patch <patch/cmake.patch
+  atf_check -s exit:0 -o empty bouml proplang.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt output/CMakeLists.txt.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/CMakeLists.txt output/src/CMakeLists.txt.canon
+  atf_check -o empty diff output/src/fortran.f output/src/fortran.f.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/doc/CMakeLists.txt output/doc/CMakeLists.txt.canon
+  atf_check -o empty diff output/local.cmake output/local.cmake.canon
+  atf_check -o empty diff output/Jamfile output/Jamfile.base.canon
+  atf_check -o empty diff output/Jamroot output/Jamroot.base.canon
+  atf_check -o empty diff output/doc/program.t2t output/doc/program.t2t.canon
+  atf_check -o empty diff output/t2t.bjam output/t2t.bjam.canon
+  atf_check -o empty diff output/t2t.jam output/t2t.jam.canon
+  atf_check -o empty diff output/t2t.cmake output/t2t.cmake.canon
+  atf_check -o empty diff output/t2t.make output/t2t.make.canon
+  atf_check -s exit:0 -o empty rm output/Jamroot output/local.cmake
+  atf_check -s exit:0 -o empty rm output/src/CMakeLists.txt output/src/fortran.f
+  atf_check -s exit:0 -o empty rm output/doc/CMakeLists.txt output/doc/program.t2t
+  atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/Jamfile
+  atf_check -s exit:0 -o empty rm output/t2t.bjam output/t2t.cmake output/t2t.jam output/t2t.make
+  atf_check -s exit:0 -o empty rm -rf output/include
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
 
 
 
@@ -503,7 +539,7 @@ atf_init_test_cases() {
     atf_add_test_case multitarget_make_gen
     atf_add_test_case proplang_jam_gen
     atf_add_test_case proplang_boost_gen
-#    atf_add_test_case proplang_cmake_gen
+    atf_add_test_case proplang_cmake_gen
 #    atf_add_test_case proplang_make_gen
 }
 
