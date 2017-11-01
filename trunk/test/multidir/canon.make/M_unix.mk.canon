@@ -1,62 +1,48 @@
  # Definition of for loop in local shell.
 define doit
-for subdir in $(2); do $(MAKE) -C $${subdir}  $(1); done
+$(if $(2),STATUS=0 ; for subdir in $(2); do $(MAKE) -C $${subdir}  $(1) || STATUS=$$? ; done ; exit $${STATUS})
 endef
 
 # MAKE MOST VARIABLES ONCE-ONLY
-ifndef M_UNIX_MAK
-M_UNIX_MAK:=1
+ifndef M_UNIX_MK
+M_UNIX_MK:=1
 #############################
 ##  Default install locations
 #############################
 PREFIX=$(ROOTDIR)/installdir
-EXEC_PREFIX=$(PREFIX)
-BINDIR=$(EXEC_PREFIX)/bin
-SBINDIR=$(EXEC_PREFIX)/sbin
-LIBEXECDIR=$(EXEC_PREFIX)/libexec
-LIBDIR=$(EXEC_PREFIX)/lib
-DATAROOTDIR=$(PREFIX)/share
-DATADIR=$(PREFIX)/share
-SYSCONFDIR=/etc
-SHAREDSTATEDIR=$(PREFIX)/com
-LOCALSTATEDIR=$(PREFIX)/var
-INCLUDEDIR=$(PREFIX)/include
-LOCALEDIR=$(DATAROOTDIR)/locale
-DOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)
-INFODIR=$(DATAROOTDIR)/info
-MANDIR=$(DATAROOTDIR)/man
-HTMLDIR=$(DOCDIR)
-DVIDIR=$(DOCDIR)
-PDFDIR=$(DOCDIR)
-PSDIR=$(DOCDIR)
-MAN1DIR=$(MANDIR)/man1
-MAN2DIR=$(MANDIR)/man2
-MAN3DIR=$(MANDIR)/man3
-MAN4DIR=$(MANDIR)/man4
-MAN5DIR=$(MANDIR)/man5
-MAN6DIR=$(MANDIR)/man6
-MAN7DIR=$(MANDIR)/man7
-MAN8DIR=$(MANDIR)/man8
-MANNDIR=$(MANDIR)/mann
+BINDIR?=$(PREFIX)/bin
+LIBDIR?=$(PREFIX)/bin
+INCLUDEDIR?=$(PREFIX)/include
+DATADIR?=$(PREFIX)/share
+DOCDIR?=$(DATADIR)/doc
+MANDIR?=$(DATADIR)/man1
+HTMLDIR?=$(DATADIR)/html
 
 # Flags for the install targets.
-BINIFLAGS:=-m 755
-FILEIFLAGS:=-m 644
-LIBIFLAGS:=-m 644 
-MANIFLAGS:=-m 644
+BINIFLAGS?=-m 755
+FILEIFLAGS?=-m 644
+LIBIFLAGS?=-m 644 
+MANIFLAGS?=-m 644
+INSTALL?=install
 
 # Standard suffixes
 sufobj:=.o
 sufexe:=
 suflib:=.a
-sufshr:=.so.0
+sufshr:=.so
 sufdep:=.d
+
+# Path separator
+SLASH?=/
 
 # END OF ONCE-ONLY.
 endif
-###############
-## Editor sugar
-###############
-# Local Variables:
-# mode: makefile
-# End:
+
+define do_install
+install:: $(1) ; $$(INSTALL) -d $$($(2)DIR) ; $$(INSTALL) $$($(or $(3),$(2))IFLAGS) $(1) $$($(2)DIR)/$(1)
+endef
+
+define do_archive
+$(1): $(2) ; $$(AR) $$(ARFLAGS) $(1) $(2)
+endef
+

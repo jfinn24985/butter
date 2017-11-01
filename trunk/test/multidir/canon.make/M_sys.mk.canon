@@ -1,5 +1,5 @@
 #
-# M_sys.mak
+# M_sys.mk
 #
 ##################################
 # Settings for current environment
@@ -24,23 +24,19 @@ VARIANT ?= DEBUG
 
 # Optimisation/debugging flags
 # are added depending on VARIANT
-#############################
-##  Default install locations
-#############################
-VERSIONDIR:="multidir-1.0"
 
 ##########################
 ## Include compiler and OS
 ##########################
-include $(ROOTDIR)/M_$(OS).mak
-include $(ROOTDIR)/M_$(CC).mak
+include $(ROOTDIR)$(or $(SLASH),/)M_$(OS).mk
+include $(ROOTDIR)$(or $(SLASH),/)M_$(CC).mk
 
 ##############
 ## Unify Vars
 ##############
 CFLAGS = $(CCFLAGS)
 CXXFLAGS = $(CCCFLAGS)
-FFLAGS = $(FORTANFLAGS)
+FFLAGS = $(FORTRANFLAGS)
 FC = $(FORTRAN)
 
 #############################################
@@ -55,41 +51,35 @@ install:: ; $(call doit,install,$(dirs))
 
 distclean: doclean
 	$(call doit,distclean,$(dirs))
-	rm -f core core.* $(TARGETS) *~ *.dep
+	$(RM) core core.* $(TARGETS) *~ $(if $(sufdep),*$(sufdep))
 
 clean: doclean
 	$(call doit,clean,$(dirs))
 
 doclean: 
-	rm -f $(USEROBJ)
+	$(if $(USEROBJ),$(RM) $(USEROBJ))
 
-######################################################
-##  Example library setup definition for XML libraries
-######################################################
-
-# Make this a one time only definition
-
-ifndef USE_XML_MAK
-USE_XML_MAK:=1
-
-ifdef ($(USE_XML))
-ifeq ($(XMLLIB),EXPAT)
-CPPFLAGS+=-DEXPAT
-LDFLAGS+=-lexpat
-endif
-
-ifeq ($(XMLLIB),XML2)
-CPPFLAGS+=-DXML2 `xml2-config --cflags`
-LDFLAGS+=`xml2-config --libs`
-endif
-
-endif # USE_XML
-
-endif # USE_XML_MAK
-###############
-## Editor sugar
-###############
-# Local Variables:
-# mode: makefile
-# End:
+################################################
+##  Example link library setup with alternatives
+################################################
+##  
+##  # Make this a one time only definition
+##  
+##  ifndef USE_XML_MK
+##  USE_XML_MAK:=1
+##  
+##  ifdef ($(XMLLIB))
+##  ifeq ($(XMLLIB),EXPAT)
+##  CPPFLAGS+=-DEXPAT
+##  LDFLAGS+=-lexpat
+##  endif
+##  
+##  ifeq ($(XMLLIB),XML2)
+##  CPPFLAGS+=-DXML2 `xml2-config --cflags`
+##  LDFLAGS+=`xml2-config --libs`
+##  endif
+##  
+##  endif # XMLLIB
+##  
+##  endif # USE_XML_MK
 

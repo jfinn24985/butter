@@ -1,13 +1,13 @@
 ####################################
 ##  Definitions for GNU g++ compiler
 ####################################
-ifndef M_GCC_MAK
-M_GCC_MAK:=1
+ifndef M_GCC_MK
+M_GCC_MK:=1
 ##
 ## Define compiler variables once only.
 ## 
-CCC:=g++
-FORTRAN:=gfortran
+CCC?=g++
+FORTRAN?=gfortran
 CPPFLAGS?=
 CCFLAGS+=-Wall -std=c99
 CCCFLAGS+=-Wall -std=c++98
@@ -17,7 +17,7 @@ OPTFLAGS+=-O0 -DDEBUG=1
 CCFLAGS+=-pedantic
 CCCFLAGS+=-Weffc++
 else
-OPTFLAGS+=-O2 -march=native
+OPTFLAGS+=-O2 -march=native -DDEBUG=0
 endif
 
 CCFLAGS+=$(OPTFLAGS)
@@ -28,13 +28,6 @@ SHRFLAGS?=-fpic
 
 FORTRANLIBS:=-lgfortran
 OPENMP:=-fopenmp
-
-# internal flags
-compileonly:=-c # need whitespace
-exec_file:=-o # need whitespace
-obj_file:=-o # need whitespace
-arc_file:=
-shr_file:=-o # need whitespace
 
 endif
 # END ONCE-ONLY
@@ -49,24 +42,12 @@ endef
 $(foreach suff,.c .C .cc .cpp .cxx,$(eval $(call _makedep_,$(suff))))
 _makedep_:=
 
-
-define do_install
-install:: $(1)
-	$$(INSTALL) -d $$($(2)DIR) ; $$(INSTALL) $$($(or $(3),$(2))IFLAGS) $(1) $$($(2)DIR)/$(1)
+define do_link_exe
+$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) -o $(1) -Wl,--start-group $(2) -Wl,--end-group
 endef
-
-define do_shared_library
-$(1) : LDFLAGS+=-shared -Wl,-soname,$(1).$(or $(2),0)
+define do_link_shr
 $(1) : CCFLAGS+=$(SHRFLAGS)
 $(1) : CCCFLAGS+=$(SHRFLAGS)
-endef
-define create_object_group
--Wl,--start-group $(1) -Wl,--end-group
+$(1) : $(2); $$(LINK.cpp) $$(OUTPUT_OPTIONS) -shared -Wl,-soname,$(1) -o $(1) -Wl,--start-group $(2) -Wl,--end-group
 endef
 
-###############
-## Editor sugar
-###############
-# Local Variables:
-# mode: makefile
-# End:
