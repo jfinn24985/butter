@@ -1,0 +1,22 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:39:43 2017
+##END:date
+##START:preamble
+ROOTDIR := /home/finnerty/src/butter/trunk/test/proplang/output
+OUTPUTDIR := /home/finnerty/src/butter/trunk/test/proplang/output
+include $(ROOTDIR)/M_sys.mk
+
+CPPFLAGS+=-I$(ROOTDIR)/include/exe -I$(ROOTDIR)/include -DPROJ_FLAG 
+CCFLAGS+=-DPROJ_FLAG
+CCCFLAGS+=-DPROJ_FLAG
+LDFLAGS+=$(OPENMP)
+##END:preamble
+##START:target doc
+dirs += doc
+##END:target doc
+##START:target src
+dirs += src
+##END:target src

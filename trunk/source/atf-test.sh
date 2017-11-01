@@ -514,6 +514,49 @@ proplang_cmake_gen_body() {
   popd
 }
 
+atf_test_case proplang_make_gen
+proplang_make_gen_head() {
+  atf_set "descr" "Test CMake generator on single directory project."
+}
+proplang_make_gen_body() {
+  pushd ../test/proplang
+  #----------------------- 
+  # CMake variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file proplang.prj\n" patch <patch/make.patch
+  atf_check -s exit:0 -o empty bouml proplang.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile output/makefile.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/makefile output/src/makefile.canon
+  atf_check -o empty diff output/src/fortran.f output/src/fortran.f.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/doc/makefile output/doc/makefile.canon
+  atf_check -o empty diff output/Jamfile output/Jamfile.base.canon
+  atf_check -o empty diff output/Jamroot output/Jamroot.base.canon
+  atf_check -o empty diff output/CMakeLists.txt output/CMakeLists.txt.base.canon
+  atf_check -o empty diff output/doc/program.t2t output/doc/program.t2t.canon
+  atf_check -o empty diff output/t2t.bjam output/t2t.bjam.canon
+  atf_check -o empty diff output/t2t.jam output/t2t.jam.canon
+  atf_check -o empty diff output/t2t.cmake output/t2t.cmake.canon
+  atf_check -o empty diff output/t2t.make output/t2t.make.canon
+  atf_check -o empty diff output/M_sys.mk output/M_sys.mk.canon
+  atf_check -o empty diff output/M_cl.mk output/M_cl.mk.canon
+  atf_check -o empty diff output/M_gcc.mk output/M_gcc.mk.canon
+  atf_check -o empty diff output/M_unix.mk output/M_unix.mk.canon
+  atf_check -o empty diff output/M_Windows_NT.mk output/M_Windows_NT.mk.canon
+  atf_check -s exit:0 -o empty rm output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
+  atf_check -s exit:0 -o empty rm output/Jamroot output/makefile
+  atf_check -s exit:0 -o empty rm output/src/makefile output/src/fortran.f
+  atf_check -s exit:0 -o empty rm output/doc/makefile output/doc/program.t2t
+  atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/Jamfile
+  atf_check -s exit:0 -o empty rm output/t2t.bjam output/t2t.cmake output/t2t.jam output/t2t.make
+  atf_check -s exit:0 -o empty rm -rf output/include
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+
 
 
 
@@ -540,6 +583,6 @@ atf_init_test_cases() {
     atf_add_test_case proplang_jam_gen
     atf_add_test_case proplang_boost_gen
     atf_add_test_case proplang_cmake_gen
-#    atf_add_test_case proplang_make_gen
+    atf_add_test_case proplang_make_gen
 }
 

@@ -1,0 +1,121 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:39:43 2017
+##END:date
+##START:preamble
+include $(ROOTDIR)/M_sys.mk
+
+##END:preamble
+##START:target squareshare
+SRC_SQUARESHARESRC :=  \
+	example_lib_shr.cpp
+SRC_SQUARESHARE_DINC := $(filter %$(sufdep), $(SRC_SQUARESHARESRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(SRC_SQUARESHARESRC:.c=$(sufdep)))
+SRC_SQUARESHARE_OBJ+=$(filter %$(sufobj), $(SRC_SQUARESHARESRC:.cpp=$(sufobj)))
+USEROBJ+=$(SRC_SQUARESHARE_OBJ)
+squareshare$(sufshr) : $(SRC_SQUARESHARE_SRC) $(SRC_SQUARESHARE_DINC)
+-include $(SRC_SQUARESHARE_DINC)
+$(eval $(call do_link_shr,squareshare$(sufshr),$(SRC_SQUARESHARE_OBJ),$(or $(SRC_SQUARESHARE_VERSION),0)))
+
+all :: squareshare$(sufshr)
+TARGETS+=squareshare$(sufshr)
+
+$(eval $(call do_install,squareshare$(sufshr),LIB))
+
+##END:target squareshare
+##START:target shared_sqr
+SRC_SHARED_SQRSRC :=  \
+	lib_main_shr.cpp
+SRC_SHARED_SQR_DINC := $(filter %$(sufdep), $(SRC_SHARED_SQRSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(SRC_SHARED_SQRSRC:.c=$(sufdep)))
+shared_sqr$(sufexe): LDFLAGS+= $(ROOTDIR)/src/squareshare$(sufshr)
+SRC_SHARED_SQR_OBJ+=$(filter %$(sufobj), $(SRC_SHARED_SQRSRC:.cpp=$(sufobj)))
+USEROBJ+=$(SRC_SHARED_SQR_OBJ)
+shared_sqr$(sufexe) : $(SRC_SHARED_SQR_SRC) $(SRC_SHARED_SQR_DINC)
+-include $(SRC_SHARED_SQR_DINC)
+$(eval $(call do_link_exe,shared_sqr$(sufexe),$(SRC_SHARED_SQR_OBJ)))
+
+all :: shared_sqr$(sufexe)
+TARGETS+=shared_sqr$(sufexe)
+
+$(eval $(call do_install,shared_sqr$(sufexe),BIN))
+
+##END:target shared_sqr
+##START:target squarestatic
+SRC_SQUARESTATICSRC :=  \
+	example_lib.cpp
+SRC_SQUARESTATIC_DINC := $(filter %$(sufdep), $(SRC_SQUARESTATICSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(SRC_SQUARESTATICSRC:.c=$(sufdep)))
+squarestatic$(suflib): LDFLAGS+= -lm
+SRC_SQUARESTATIC_OBJ+=$(filter %$(sufobj), $(SRC_SQUARESTATICSRC:.cpp=$(sufobj)))
+USEROBJ+=$(SRC_SQUARESTATIC_OBJ)
+squarestatic$(suflib) : $(SRC_SQUARESTATIC_SRC) $(SRC_SQUARESTATIC_DINC)
+-include $(SRC_SQUARESTATIC_DINC)
+$(eval $(call do_archive,squarestatic$(suflib),$(SRC_SQUARESTATIC_OBJ)))
+
+all :: squarestatic$(suflib)
+TARGETS+=squarestatic$(suflib)
+
+$(eval $(call do_install,squarestatic$(suflib),LIB))
+
+##END:target squarestatic
+##START:target static_sqr
+SRC_STATIC_SQRSRC :=  \
+	lib_main.cpp
+SRC_STATIC_SQR_DINC := $(filter %$(sufdep), $(SRC_STATIC_SQRSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(SRC_STATIC_SQRSRC:.c=$(sufdep)))
+static_sqr$(sufexe): LDFLAGS+= -lm
+SRC_STATIC_SQR_OBJ+=$(ROOTDIR)/src/squarestatic$(suflib)
+
+SRC_STATIC_SQR_OBJ+=$(filter %$(sufobj), $(SRC_STATIC_SQRSRC:.cpp=$(sufobj)))
+USEROBJ+=$(SRC_STATIC_SQR_OBJ)
+static_sqr$(sufexe) : $(SRC_STATIC_SQR_SRC) $(SRC_STATIC_SQR_DINC)
+-include $(SRC_STATIC_SQR_DINC)
+$(eval $(call do_link_exe,static_sqr$(sufexe),$(SRC_STATIC_SQR_OBJ)))
+
+all :: static_sqr$(sufexe)
+TARGETS+=static_sqr$(sufexe)
+
+$(eval $(call do_install,static_sqr$(sufexe),BIN))
+
+##END:target static_sqr
+##START:target fortprog
+SRC_FORTPROGSRC :=  \
+	fortmain.cpp \
+	fortran.f
+SRC_FORTPROG_DINC := $(filter %$(sufdep), $(SRC_FORTPROGSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(SRC_FORTPROGSRC:.c=$(sufdep)))
+fortprog$(sufexe): LDFLAGS+= $(FORTRANLIBS)
+
+SRC_FORTPROG_OBJ+=fortran$(sufobj)
+
+SRC_FORTPROG_OBJ+=$(filter %$(sufobj), $(SRC_FORTPROGSRC:.cpp=$(sufobj)))
+USEROBJ+=$(SRC_FORTPROG_OBJ)
+fortprog$(sufexe) : $(SRC_FORTPROG_SRC) $(SRC_FORTPROG_DINC)
+-include $(SRC_FORTPROG_DINC)
+$(eval $(call do_link_exe,fortprog$(sufexe),$(SRC_FORTPROG_OBJ)))
+
+all :: fortprog$(sufexe)
+TARGETS+=fortprog$(sufexe)
+
+$(eval $(call do_install,fortprog$(sufexe),BIN))
+
+##END:target fortprog
+##START:target source_test
+SRC_SOURCE_TESTSRC :=  \
+	test_source.cpp
+SRC_SOURCE_TEST_DINC := $(filter %$(sufdep), $(SRC_SOURCE_TESTSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(SRC_SOURCE_TESTSRC:.c=$(sufdep)))
+source_test$(sufexe) $(SRC_SOURCE_TEST_DINC) : CPPFLAGS+=-I$(ROOTDIR)/include/lib -DEXE_FLAG 
+
+test_source$(sufobj) test_source$(sufdep) : CPPFLAGS+=-I$(ROOTDIR)/include/src -DSRC_FLAG 
+
+
+SRC_SOURCE_TEST_OBJ+=$(filter %$(sufobj), $(SRC_SOURCE_TESTSRC:.cpp=$(sufobj)))
+USEROBJ+=$(SRC_SOURCE_TEST_OBJ)
+source_test$(sufexe) : $(SRC_SOURCE_TEST_SRC) $(SRC_SOURCE_TEST_DINC)
+-include $(SRC_SOURCE_TEST_DINC)
+$(eval $(call do_link_exe,source_test$(sufexe),$(SRC_SOURCE_TEST_OBJ)))
+
+all :: source_test$(sufexe)
+TARGETS+=source_test$(sufexe)
+
+$(eval $(call do_install,source_test$(sufexe),BIN))
+
+##END:target source_test

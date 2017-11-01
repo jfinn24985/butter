@@ -1,0 +1,50 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:39:43 2017
+##END:date
+##START:preamble
+include $(ROOTDIR)/M_sys.mk
+
+##END:preamble
+##START:target program.t2t
+$(eval $(call do_install,program.t2t,DOC,FILE))
+
+##END:target program.t2t
+##START:target program.man
+-include $(ROOTDIR)/t2t.mak
+
+-include $(ROOTDIR)/t2t.make
+
+DOC_PROGRAM_MANSRC :=  \
+	program.t2t
+program.man: T2TFLAGS+=-t man 
+program.man : $(DOC_PROGRAM_MANSRC) 
+	$(T2T) $(T2TFLAGS) program.man $(DOC_PROGRAM_MANSRC)
+
+
+all :: program.man
+TARGETS+=program.man
+
+$(eval $(call do_install,program.man,MAN,FILE))
+
+##END:target program.man
+##START:target program.html
+-include $(ROOTDIR)/t2t.mak
+
+-include $(ROOTDIR)/t2t.make
+
+DOC_PROGRAM_HTMLSRC :=  \
+	program.t2t
+program.html: T2TFLAGS+=--toc -t html 
+program.html : $(DOC_PROGRAM_HTMLSRC) 
+	$(T2T) $(T2TFLAGS) program.html $(DOC_PROGRAM_HTMLSRC)
+
+
+all :: program.html
+TARGETS+=program.html
+
+$(eval $(call do_install,program.html,HTML,FILE))
+
+##END:target program.html
