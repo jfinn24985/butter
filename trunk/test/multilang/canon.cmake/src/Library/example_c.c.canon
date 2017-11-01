@@ -1,0 +1,14 @@
+/**
+
+Example C source file
+
+**/
+
+unsigned int example_lib_backscan(const char *const src, unsigned int len, char target)
+{
+  for (--len; len >= 0; --len)
+  {
+    if (*(src + len) == target) break;
+  }
+  return len;
+} 

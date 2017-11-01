@@ -1,0 +1,22 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 17:27:28 2017
+##END:date
+##START:target library
+set (LIBRARY_LIBRARY library)
+
+set (LIBRARY_LIBRARY_SRC 
+	example_c.c
+	example_lib.cpp)
+add_library (${LIBRARY_LIBRARY}
+	STATIC ${LIBRARY_LIBRARY_SRC})
+set_target_properties(${LIBRARY_LIBRARY} PROPERTIES PREFIX "")
+install (TARGETS ${LIBRARY_LIBRARY}
+	LIBRARY DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release
+	ARCHIVE DESTINATION ${LIBDIR}
+	CONFIGURATIONS Release)
+
+##END:target library

@@ -1,0 +1,22 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 17:27:28 2017
+##END:date
+##START:preamble
+cmake_minimum_required(VERSION 2.6)
+
+project (MULTILANG)
+
+##END:preamble
+##START:target MULTILANG
+include (${CMAKE_SOURCE_DIR}/local.cmake)
+
+
+include_directories (${CMAKE_SOURCE_DIR}/include )
+##END:target MULTILANG
+##START:close
+add_subdirectory (src/Library)
+add_subdirectory (src/Executable)
+##END:close

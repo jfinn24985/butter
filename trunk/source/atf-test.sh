@@ -248,6 +248,32 @@ multilang_boost_gen_body() {
   popd
 }
 
+atf_test_case multilang_cmake_gen
+multilang_cmake_gen_head() {
+  atf_set "descr" "Test Standard Jam generator on single directory project."
+}
+multilang_cmake_gen_body() {
+  pushd ../test/multilang
+  #----------------------- 
+  # CMake variant 
+  #----------------------- 
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file multilang.prj\n" patch <patch/cmake.patch
+  atf_check -s exit:0 -o empty bouml multilang.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt canon.cmake/CMakeLists.txt.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.jam canon.cmake/local.jam.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/CMakeLists.txt canon.cmake/src/Executable/CMakeLists.txt.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/CMakeLists.txt canon.cmake/src/Library/CMakeLists.txt.canon
+  atf_check -o empty diff output/src/Library/example_c.c canon.cmake/src/Library/example_c.c.canon
+  atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
+  atf_check -s exit:0 -o empty rm -rf output/src output/include
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+
 
 
 atf_test_case multitarget_jam_gen
@@ -318,7 +344,7 @@ atf_init_test_cases() {
     atf_add_test_case multidir_make_gen
     atf_add_test_case multilang_jam_gen
     atf_add_test_case multilang_boost_gen
-#    atf_add_test_case multilang_cmake_gen
+    atf_add_test_case multilang_cmake_gen
 #    atf_add_test_case multilang_make_gen
     atf_add_test_case multitarget_jam_gen
 #    atf_add_test_case multitarget_boost_gen

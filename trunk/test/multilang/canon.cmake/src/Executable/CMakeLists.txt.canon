@@ -1,0 +1,20 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 17:27:28 2017
+##END:date
+##START:target program
+set (EXECUTABLE_PROGRAM program)
+
+set (EXECUTABLE_PROGRAM_SRC 
+	example_exe.cpp)
+add_executable (${EXECUTABLE_PROGRAM}
+	${EXECUTABLE_PROGRAM_SRC})
+target_link_libraries (${EXECUTABLE_PROGRAM}
+	library)
+install (TARGETS ${EXECUTABLE_PROGRAM}
+	RUNTIME DESTINATION ${BINDIR}
+	CONFIGURATIONS Release)
+
+##END:target program
