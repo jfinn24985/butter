@@ -1,34 +1,28 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Nov 27 19:46:28 2010
+#Wed Nov 1 17:40:32 2017
 ##END:date
 ##START:preamble
-include $(ROOTDIR)/makefile.sys
-
-LOCALHDRS:=$(USERHDRS)
-LOCALFLAGS:=$(USERFLAGS)
-LOCALLDFLAGS:=$(USERLDFLAGS)
+include $(ROOTDIR)/M_sys.mk
 
 ##END:preamble
 ##START:target program
-PROGRAMSRC :=  \
+EXECUTABLE_PROGRAMSRC :=  \
 	example_exe.cpp
-PROGRAMLDFLAGS := $(LOCALLDFLAGS) $(ROOTDIR)/src/Library/liblibrary$(SUFLIB) 
-USERFLAGS := $(LOCALFLAGS) $(SHRFLAGS)
-PROGRAM_DINC := $(filter %.d, $(PROGRAMSRC:.cpp=.d)) $(filter %.d, $(PROGRAMSRC:.c=.d))
-include $(PROGRAM_DINC)
-PROGRAM_OBJ := $(PROGRAM_OBJ) $(filter %.o, $(PROGRAMSRC:.cpp=.o))
-USEROBJ := $(USEROBJ) $(PROGRAM_OBJ)
+EXECUTABLE_PROGRAM_DINC := $(filter %$(sufdep), $(EXECUTABLE_PROGRAMSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(EXECUTABLE_PROGRAMSRC:.c=$(sufdep)))
+EXECUTABLE_PROGRAM_OBJ+=$(ROOTDIR)/src/Library/library$(suflib)
 
-program$(SUFEXE) : $(PROGRAM_OBJ) $(PROGRAM_DINC) $(ROOTDIR)/src/Library/liblibrary$(SUFLIB) 
-	$(CCC) $(CCCFLAGS) -o program$(SUFEXE) $(PROGRAM_OBJ) $(PROGRAMLDFLAGS) $(LDFLAGS)
+EXECUTABLE_PROGRAM_OBJ+=$(filter %$(sufobj), $(EXECUTABLE_PROGRAMSRC:.cpp=$(sufobj)))
+USEROBJ+=$(EXECUTABLE_PROGRAM_OBJ)
+program$(sufexe) : $(EXECUTABLE_PROGRAM_SRC) $(EXECUTABLE_PROGRAM_DINC)
+-include $(EXECUTABLE_PROGRAM_DINC)
+$(eval $(call do_link_exe,program$(sufexe),$(EXECUTABLE_PROGRAM_OBJ)))
 
-all :: program$(SUFEXE)
-TARGETS := $(TARGETS) program$(SUFEXE)
+all :: program$(sufexe)
+TARGETS+=program$(sufexe)
 
-install:: program$(SUFEXE)
-	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) $(BINIFLAGS) program$(SUFEXE) $(BINDIR)/program$(SUFEXE)
+$(eval $(call do_install,program$(sufexe),BIN))
+
 ##END:target program

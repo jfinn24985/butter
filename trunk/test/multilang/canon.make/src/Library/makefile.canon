@@ -1,37 +1,30 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Nov 27 19:46:28 2010
+#Wed Nov 1 17:40:32 2017
 ##END:date
 ##START:preamble
-include $(ROOTDIR)/makefile.sys
-
-LOCALHDRS:=$(USERHDRS)
-LOCALFLAGS:=$(USERFLAGS)
-LOCALLDFLAGS:=$(USERLDFLAGS)
+include $(ROOTDIR)/M_sys.mk
 
 ##END:preamble
 ##START:target library
-LIBRARYSRC :=  \
-	example_lib.cpp \
-	example_c.c
-LIBRARYLDFLAGS := $(LOCALLDFLAGS)
-LIBRARY_DINC := $(filter %.d, $(LIBRARYSRC:.cpp=.d)) $(filter %.d, $(LIBRARYSRC:.c=.d))
-include $(LIBRARY_DINC)
-LIBRARY_OBJ := $(LIBRARY_OBJ)  example_c.o
+LIBRARY_LIBRARYSRC :=  \
+	example_c.c \
+	example_lib.cpp
+LIBRARY_LIBRARY_DINC := $(filter %$(sufdep), $(LIBRARY_LIBRARYSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(LIBRARY_LIBRARYSRC:.c=$(sufdep)))
 
+LIBRARY_LIBRARY_OBJ+=example_c$(sufobj)
 
-LIBRARY_OBJ := $(LIBRARY_OBJ) $(filter %.o, $(LIBRARYSRC:.cpp=.o))
-USEROBJ := $(USEROBJ) $(LIBRARY_OBJ)
+LIBRARY_LIBRARY_OBJ+=$(filter %$(sufobj), $(LIBRARY_LIBRARYSRC:.cpp=$(sufobj)))
+USEROBJ+=$(LIBRARY_LIBRARY_OBJ)
+library$(suflib) : $(LIBRARY_LIBRARY_SRC) $(LIBRARY_LIBRARY_DINC)
+-include $(LIBRARY_LIBRARY_DINC)
+$(eval $(call do_archive,library$(suflib),$(LIBRARY_LIBRARY_OBJ)))
 
-liblibrary$(SUFLIB) : $(LIBRARY_OBJ) $(LIBRARY_DINC)
-	$(AR) $(ARFLAGS) liblibrary$(SUFLIB) $(LIBRARY_OBJ)
+all :: library$(suflib)
+TARGETS+=library$(suflib)
 
-all :: liblibrary$(SUFLIB)
-TARGETS := $(TARGETS) liblibrary$(SUFLIB)
+$(eval $(call do_install,library$(suflib),LIB))
 
-install:: liblibrary$(SUFLIB)
-	$(INSTALL) -d $(LIBDIR)
-	$(INSTALL) $(LIBIFLAGS) liblibrary$(SUFLIB) $(LIBDIR)/liblibrary$(SUFLIB)
 ##END:target library

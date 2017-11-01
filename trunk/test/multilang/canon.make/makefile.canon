@@ -1,20 +1,19 @@
 ##START:version
-#Butter project version 1.2
+#Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Nov 27 19:46:28 2010
+#Wed Nov 1 17:40:32 2017
 ##END:date
 ##START:preamble
-include makefile.sys
+ROOTDIR := /home/finnerty/src/butter/trunk/test/multilang/output
+OUTPUTDIR := /home/finnerty/src/butter/trunk/test/multilang/output
+include $(ROOTDIR)/M_sys.mk
 
-ROOTDIR := /tmp/multilang/output
-
-USERHDRS := $(USERHDRS) -I$(ROOTDIR)/include
-
+CPPFLAGS+=-I$(ROOTDIR)/include 
 ##END:preamble
 ##START:target Library
-DIRS := $(DIRS) src/Library
+dirs += src/Library
 ##END:target Library
 ##START:target Executable
-DIRS := $(DIRS) src/Executable
+dirs += src/Executable
 ##END:target Executable
