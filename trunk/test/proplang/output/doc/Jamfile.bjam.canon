@@ -1,0 +1,34 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:19:29 2017
+##END:date
+##START:target program.t2t
+install install_program.t2t : program.t2t : <variant>release:<location>$(INSTALL_PREFIX)/$(DOC) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"doc" ;
+##END:target program.t2t
+##START:target program.man
+include t2t.bjam ;
+
+t2t program.man :
+	program.t2t
+	:
+	<t2tflags>"-t" <t2tflags>"man" 
+	;
+
+install install_program.man : program.man : <variant>release:<location>$(INSTALL_PREFIX)/$(MAN) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"doc" ;
+##END:target program.man
+##START:target program.html
+include t2t.bjam ;
+
+t2t program.html :
+	program.t2t
+	:
+	<t2tflags>"--toc" <t2tflags>"-t" <t2tflags>"html" 
+	;
+
+install install_program.html : program.html : <variant>release:<location>$(INSTALL_PREFIX)/$(HTML) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"doc" ;
+##END:target program.html

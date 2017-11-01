@@ -1,0 +1,76 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:19:29 2017
+##END:date
+##START:target squareshare
+lib squareshare :
+	example_lib_shr.cpp
+	:
+	<link>shared
+	;
+
+install install_squareshare : squareshare : <variant>release:<location>$(INSTALL_PREFIX)/$(LIBDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"src" ;
+##END:target squareshare
+##START:target shared_sqr
+exe shared_sqr :
+	lib_main_shr.cpp
+	/proplang/src//squareshare
+	:
+	;
+
+install install_shared_sqr : shared_sqr : <variant>release:<location>$(INSTALL_PREFIX)/$(BINDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"src" ;
+##END:target shared_sqr
+##START:target squarestatic
+lib squarestatic :
+	example_lib.cpp
+	:
+	<link>static
+	: :
+	<linkflags>"-lm" 
+	;
+
+install install_squarestatic : squarestatic : <variant>release:<location>$(INSTALL_PREFIX)/$(LIBDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"src" ;
+##END:target squarestatic
+##START:target static_sqr
+exe static_sqr :
+	lib_main.cpp
+	/proplang/src//squarestatic
+	:
+	;
+
+install install_static_sqr : static_sqr : <variant>release:<location>$(INSTALL_PREFIX)/$(BINDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"src" ;
+##END:target static_sqr
+##START:target fortprog
+exe fortprog :
+	fortmain.cpp
+	fortran.f
+	:
+	<linkflags>"$(FORTRANLIBS)" 
+	;
+
+install install_fortprog : fortprog : <variant>release:<location>$(INSTALL_PREFIX)/$(BINDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"src" ;
+##END:target fortprog
+##START:target source_test
+exe source_test :
+	test_source_obj
+	:
+	<include>$(topdir)/"include/lib" 
+	<cxxflags>"-DEXE_FLAG" <cflags>"-DEXE_FLAG"
+	;
+
+local SRC_SOURCE_TESTHDRS = <include>$(topdir)/"include/lib" 
+	;
+local SRC_SOURCE_TESTFLAGS = <cxxflags>"-DEXE_FLAG" <cflags>"-DEXE_FLAG"
+	 ;
+
+obj test_source_obj : test_source.cpp : <include>$(topdir)/"include/src" $(SRC_SOURCE_TESTHDRS) <cxxflags>"-DSRC_FLAG" $(SRC_SOURCE_TESTFLAGS) ;
+install install_source_test : source_test : <variant>release:<location>$(INSTALL_PREFIX)/$(BINDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"src" ;
+##END:target source_test

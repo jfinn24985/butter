@@ -470,6 +470,7 @@ proplang_boost_gen_body() {
   atf_check -s exit:0 -o empty rm output/Jamroot output/local.jam
   atf_check -s exit:0 -o empty rm output/src/Jamfile output/src/fortran.f
   atf_check -s exit:0 -o empty rm output/doc/Jamfile output/doc/program.t2t
+  atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/Jamfile
   atf_check -s exit:0 -o empty rm output/t2t.bjam output/t2t.cmake output/t2t.jam output/t2t.make
   atf_check -s exit:0 -o empty rm -rf output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .

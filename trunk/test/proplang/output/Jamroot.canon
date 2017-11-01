@@ -8,3 +8,31 @@ using gfortran ;
 constant OPENMP : -fopenmp ;
 constant FORTRANLIBS : -lgfortran ;
 }
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Wed Nov 1 19:25:45 2017
+##END:date
+##START:preamble
+# Include local constants
+path-constant topdir : . ;
+include local.jam ;
+
+# Set project's global settings
+project proplang
+	: requirements <debug-symbols>on:<define>"DEBUG=1"
+	<debug-symbols>off:<define>"DEBUG=0"
+	<include>$(topdir)/"include" <include>$(topdir)/"include/exe" 
+	<linkflags>"$(OPENMP)" 
+	<cxxflags>"-DPROJ_FLAG" <cflags>"-DPROJ_FLAG"
+	: build-dir build ;
+##END:preamble
+##START:close
+use-project /proplang/doc : doc ;
+build-project doc ;
+
+use-project /proplang/src : src ;
+build-project src ;
+
+##END:close
