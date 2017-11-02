@@ -2,10 +2,10 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Oct 28 14:53:19 2017
+#Thu Nov 2 16:25:50 2017
 ##END:date
 ##START:preamble
-BUILDDIR = $(SLASH)home$(SLASH)finnerty$(SLASH)src$(SLASH)butter$(SLASH)test$(SLASH)single_test$(SLASH)output ;
+BUILDDIR = $(SLASH)home$(SLASH)finnerty$(SLASH)src$(SLASH)butter$(SLASH)trunk$(SLASH)test$(SLASH)single_test$(SLASH)output ;
 SubDir TOP ;
 OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
 ##END:preamble
