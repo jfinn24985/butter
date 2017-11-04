@@ -7,7 +7,7 @@ if( plugout_test_suite::umlcom_connection::connection( boost::unit_test::framewo
     UmlCom::trace( "<b>butter unit test:</b> " + butter::butter_constants::BUTTER_VERSION + "<br>" );
     BOOST_REQUIRE_MESSAGE( nullptr != UmlPackage::getProject (), "Error: no project defined!<br>" );
     // Parse the project into a location tree
-    std::unique_ptr< butter::location > base_( butter::location::parse_project( *UmlPackage::getProject() ) );
+    std::unique_ptr< butter::location > base_( butter::location::parse_project( *UmlPackage::getProject(), 1 ) );
   }
   catch ( const std::exception & a_err )
   {
@@ -33,7 +33,7 @@ if( plugout_test_suite::umlcom_connection::connection( boost::unit_test::framewo
     UmlCom::trace( "<b>butter unit test:</b> " + butter::butter_constants::BUTTER_VERSION + "<br>" );
     BOOST_REQUIRE_MESSAGE( nullptr != UmlPackage::getProject (), "Error: no project defined!<br>" );
     // Parse the project into a location tree
-    std::unique_ptr< butter::location > base_( butter::location::parse_project( *UmlPackage::getProject() ) );
+    std::unique_ptr< butter::location > base_( butter::location::parse_project( *UmlPackage::getProject(), 1 ) );
   }
   catch ( const std::exception & a_err )
   {

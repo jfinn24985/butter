@@ -313,7 +313,7 @@ location::location(const pathcmp & a_path, location & a_parent)
 location::~location() throw ()
 {}
 
-std::unique_ptr<location> location::parse_project(::UmlItem & a_item)
+std::unique_ptr<location> location::parse_project(::UmlItem & a_item, unsigned a_interaction)
 
 {
 ///////////////////////
@@ -620,7 +620,7 @@ if ( Result->packages_.isEmpty() )
       mos_ << "or 'Cancel' and do one of:<p>\n";
       mos_ << "<ul><li>Create/modify a package with this directory.</li>\n";
       mos_ << "<li>Change existing directories to change parent directory.</li></ul>\n";
-      if ( QMessageBox::Ok ==
+      if ( 1 == a_interaction or ( 0 == a_interaction and QMessageBox::Ok ==
 #if QT_VERSION < 300L
         QMessageBox::warning
 #else
@@ -630,7 +630,7 @@ if ( Result->packages_.isEmpty() )
           , "Butter: Parent directory is outside project."
           , msg_
           , QMessageBox::Ok
-          , QMessageBox::Abort ) )
+          , QMessageBox::Abort ) ) )
       {
         UmlPackage * build_ = UmlPackage::create( dynamic_cast< UmlPackage * >( &a_item ), new_name_ );
         butter::pathcmp helper_( CppSettings::rootDir () );

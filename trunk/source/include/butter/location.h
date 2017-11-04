@@ -199,9 +199,13 @@ class location {
      * suitable for creating a build-system.  The return value may be empty
      * in the event of an error or there being no targets or documents.
      * 
+     * \arg a_item : Root of bouml tree.
+     * \arg a_interaction : automate user interaction (during test mode)
+     *   (0 = query user(default), 1 = user selects "Ok", 2 = user selects other option)
+     * 
      * \pre a_item.type = UmlPackageType and nul = a_item.parent [ie = project]
      */
-    static std::unique_ptr<location> parse_project(::UmlItem & a_item);
+    static std::unique_ptr<location> parse_project(::UmlItem & a_item, unsigned a_interaction);
 
     /**
      * The leaf node of sub-locs and the base-path for top-level locs

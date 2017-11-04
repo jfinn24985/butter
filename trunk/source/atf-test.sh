@@ -15,11 +15,11 @@ single_jam_gen_body() {
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/jam.patch
-  atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
+  atf_check -s exit:0 -o file:butter.log.canon bouml single_test.prj -execnogui ../../source/src/butter/butter_exe -test:ok -exit
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile output/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamrules output/Jamrules.canon
 
-  atf_check -s exit:0 -o empty bouml single_test.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
+  atf_check -s exit:0 -o file:cpp.log.canon bouml single_test.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
   pushd output
   # default (DEBUG) VARIANT
   atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam
