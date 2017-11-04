@@ -1,5 +1,8 @@
 #!/home/finnerty/local/bin/atf-sh 
 
+# Location of bouml standard installation.
+BOUML_LOC=/usr/lib/bouml
+
 atf_test_case single_jam_gen
 single_jam_gen_head() {
   atf_set "descr" "Test Standard Jam generator on single directory project."
@@ -15,8 +18,54 @@ single_jam_gen_body() {
   atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile output/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamrules output/Jamrules.canon
+
+  atf_check -s exit:0 -o empty bouml single_test.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
+  pushd output
+  # default (DEBUG) VARIANT
+  atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam
+  atf_check -s exit:0 [ -f DEBUG/test ]
+  atf_check -s exit:0 -o file:output.canon DEBUG/test
+  atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install
+  atf_check -s exit:0 [ -e installdir/bin/test ]
+  atf_check -s exit:0 -o file:output.canon installdir/bin/test
+  atf_check -s exit:0 -o empty rm jam1.log jam1.err
+  atf_check -s exit:0 -o empty rm jam2.log jam2.err
+  atf_check -s exit:0 -o empty rm -rf DEBUG
+  atf_check -s exit:0 -o empty rm -rf installdir
+  popd
+  pushd output
+  # specific DEBUG VARIANT
+  atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam -sVARIANT=DEBUG
+  atf_check -s exit:0 [ -f DEBUG/test ]
+  atf_check -s exit:0 -o file:output.canon DEBUG/test
+  atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install
+  atf_check -s exit:0 [ -e installdir/bin/test ]
+  atf_check -s exit:0 -o file:output.canon installdir/bin/test
+  atf_check -s exit:0 -o empty rm jam1.log jam1.err
+  atf_check -s exit:0 -o empty rm jam2.log jam2.err
+  atf_check -s exit:0 -o empty rm -rf DEBUG
+  atf_check -s exit:0 -o empty rm -rf installdir
+  popd
+  pushd output
+  # RELEASE VARIANT
+  atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam -sVARIANT=RELEASE
+  atf_check -s exit:0 [ -f RELEASE/test ]
+  atf_check -s exit:0 -o file:output.canon RELEASE/test
+  atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam -sVARIANT=RELEASE install
+  atf_check -s exit:0 [ -e installdir/bin/test ]
+  atf_check -s exit:0 -o file:output.canon installdir/bin/test
+  atf_check -s exit:0 -o empty rm jam1.log jam1.err
+  atf_check -s exit:0 -o empty rm jam2.log jam2.err
+  atf_check -s exit:0 -o empty rm -rf RELEASE
+  atf_check -s exit:0 -o empty rm -rf installdir
+
+  # remove source
+  atf_check -s exit:0 -o empty rm single_test.cc single_test.hh
+  popd
+
+
+
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
-  atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
