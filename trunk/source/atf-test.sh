@@ -28,7 +28,7 @@ single_jam_gen_body() {
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile output/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamrules output/Jamrules.canon
 
-  build_single_test(){
+  build_test(){
     local variant=$1
     local builddir=$2
     pushd output
@@ -57,11 +57,11 @@ single_jam_gen_body() {
   }
 
   # default (DEBUG) VARIANT
-  build_single_test "" DEBUG
+  build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_single_test -sVARIANT=DEBUG DEBUG
+  build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_single_test -sVARIANT=RELEASE RELEASE
+  build_test -sVARIANT=RELEASE RELEASE
   
   # remove source
   pushd output
@@ -74,7 +74,7 @@ single_jam_gen_body() {
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_single_test
+  unset build_test
 }
 
 atf_test_case single_boost_gen
@@ -91,7 +91,7 @@ single_boost_gen_body() {
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot output/Jamroot.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.jam output/local.jam.canon
 
-  build_single_test(){
+  build_test(){
     local variant=$1
     local builddir=$2
     local installdir=$3
@@ -123,11 +123,11 @@ single_boost_gen_body() {
   }
 
   # default (DEBUG) VARIANT
-  build_single_test "" "*/debug" install_test
+  build_test "" "*/debug" install_test
   # specific DEBUG VARIANT
-  build_single_test debug "*/debug" install_test
+  build_test debug "*/debug" install_test
   # RELEASE VARIANT
-  build_single_test release "*/release" installdir/bin
+  build_test release "*/release" installdir/bin
    
   # remove source
   pushd output
@@ -140,7 +140,7 @@ single_boost_gen_body() {
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_single_test
+  unset build_test
 }
 
 atf_test_case single_cmake_gen
@@ -157,7 +157,7 @@ single_cmake_gen_body() {
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt output/CMakeLists.txt.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.cmake output/local.cmake.canon
 
-  build_single_test(){
+  build_test(){
     local variant=$1
     local installdir=$2
     pushd output
@@ -199,11 +199,11 @@ single_cmake_gen_body() {
   }
 
   # default (DEBUG) VARIANT
-  build_single_test "" ""
+  build_test "" ""
   # specific DEBUG VARIANT
-  build_single_test Debug ""
+  build_test Debug ""
   # RELEASE VARIANT
-  build_single_test Release "installdir"
+  build_test Release "installdir"
  
   # remove source
   pushd output
@@ -216,7 +216,7 @@ single_cmake_gen_body() {
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_single_test
+  unset build_test
 }
 
 atf_test_case single_make_gen
@@ -237,7 +237,7 @@ single_make_gen_body() {
   atf_check -o empty diff output/M_unix.mk output/M_unix.mk.canon
   atf_check -o empty diff output/M_Windows_NT.mk output/M_Windows_NT.mk.canon
  
-  build_single_test(){
+  build_test(){
     local variant=$1
     pushd output
     # test base build target
@@ -274,11 +274,11 @@ single_make_gen_body() {
   }
 
   # default (DEBUG) VARIANT
-  build_single_test ""
+  build_test ""
   # specific DEBUG VARIANT
-  build_single_test DEBUG
+  build_test DEBUG
   # RELEASE VARIANT
-  build_single_test RELEASE
+  build_test RELEASE
 
   # remove source
   pushd output
@@ -292,7 +292,7 @@ single_make_gen_body() {
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
 
   popd
-  unset build_single_test
+  unset build_test
 }
 
 atf_test_case multidir_jam_gen
@@ -311,7 +311,7 @@ multidir_jam_gen_body() {
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.jam/src/Executable/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.jam/src/Library/Jamfile.canon
 
-  build_single_test(){
+  build_test(){
     local variant=$1
     local builddir=$2
     pushd output
@@ -340,11 +340,11 @@ multidir_jam_gen_body() {
   }
 
   # default (DEBUG) VARIANT
-  build_single_test "" DEBUG
+  build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_single_test -sVARIANT=DEBUG DEBUG
+  build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_single_test -sVARIANT=RELEASE RELEASE
+  build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
@@ -352,6 +352,7 @@ multidir_jam_gen_body() {
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_test
 }
 
 atf_test_case multidir_boost_gen
