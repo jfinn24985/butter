@@ -10,7 +10,7 @@ setup_example(){
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}.patch
-  atf_check -s exit:0 -o file:butter.log.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
+  atf_check -s exit:0 -o file:butter.log.${genr}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
   atf_check -s exit:0 -o file:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
 }
 
@@ -86,18 +86,62 @@ single_boost_gen_body() {
   #-------------- 
   # Boost variant 
   #-------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/boost.patch
-  atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "single_test" "boost"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot output/Jamroot.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.jam output/local.jam.canon
+
+
+  build_single_test(){
+    local variant=$1
+    local builddir=$2
+    local installdir=$3
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err bjam ${variant}
+    atf_check -s exit:0 [ -e build/${builddir}/test ]
+    atf_check -s exit:0 [ -e build/${builddir}/single_test.o ]
+    atf_check -s exit:0 -o file:output.canon build/${builddir}/test
+    # no separate install target
+    atf_check -s exit:0 [ -e ${installdir}/test ]
+    atf_check -s exit:0 -o file:output.canon ${installdir}/test
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err bjam clean ${variant}
+    atf_check -s exit:0 [ ! -e build/${builddir}/test ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/single_test.o ]
+    atf_check -s exit:0 [ ! -e ${installdir}/test ]
+
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm -rf build
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    if [ `basename ${installdir}` != ${installdir} ]; then
+       echo "deleting " `dirname ${installdir}`
+       atf_check -s exit:0 -o empty rm -rf `dirname ${installdir}`
+    fi
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_single_test "" "*/debug" install_test
+  # specific DEBUG VARIANT
+  build_single_test debug "*/debug" install_test
+  # RELEASE VARIANT
+  build_single_test release "*/release" installdir/bin
+   
+  # remove source
+  pushd output
+  atf_check -s exit:0 -o empty rm single_test.cc single_test.hh
+  popd
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/local.jam output/Jamroot
-  atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_single_test
 }
 
 atf_test_case single_cmake_gen
