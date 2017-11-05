@@ -424,19 +424,71 @@ multidir_cmake_gen_body() {
   #----------------------- 
   # CMake variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multidir.prj\n" patch <patch/cmake.patch
-  atf_check -s exit:0 -o empty bouml multidir.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multidir" "cmake"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt canon.cmake/CMakeLists.txt.canon
   atf_check -o empty diff output/local.cmake canon.cmake/local.cmake.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/CMakeLists.txt canon.cmake/src/Executable/CMakeLists.txt.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/CMakeLists.txt canon.cmake/src/Library/CMakeLists.txt.canon
+
+  build_test(){
+    local variant=$1
+    local installdir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} --build .
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile VERBOSE=1
+    atf_check -s exit:0 [ -x src/Executable/program ]
+    atf_check -s exit:0 [ -e src/Executable/CMakeFiles/program.dir/example_exe.cpp.o ]
+    atf_check -s exit:0 [ -e src/Library/library.a ]
+    atf_check -s exit:0 [ -e src/Library/CMakeFiles/library.dir/example_lib.cpp.o ]
+    atf_check -s exit:0 -o file:output.canon src/Executable/program lorem.txt
+    # test install target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile install VERBOSE=1
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ -s install_manifest.txt ]
+      atf_check -s exit:0 [ -e ${installdir}/bin/program ]
+      atf_check -s exit:0 -o file:output.canon ${installdir}/bin/program lorem.txt
+    else
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ ! -s install_manifest.txt ]
+    fi
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build3.log -e save:build3.err make -f Makefile clean VERBOSE=1
+    atf_check -s exit:0 [ ! -e src/Executable/program ]
+    atf_check -s exit:0 [ ! -e src/Executable/CMakeFiles/program.dir/example_exe.cpp.o ]
+    atf_check -s exit:0 [ ! -e src/Library/library.a ]
+    atf_check -s exit:0 [ ! -e src/Library/CMakeFiles/library.dir/example_lib.cpp.o ]
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -e ${installdir}/bin/program ]
+    fi
+
+    # cleanup
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.log build3.err
+    atf_check -s exit:0 -o empty rm CMakeCache.txt Makefile cmake_install.cmake install_manifest.txt
+
+    atf_check -s exit:0 -o empty rm -rf CMakeFiles
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" ""
+  # specific DEBUG VARIANT
+  build_test Debug ""
+  # RELEASE VARIANT
+  build_test Release "installdir"
+
   atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_test
 }
 
 atf_test_case multidir_make_gen
