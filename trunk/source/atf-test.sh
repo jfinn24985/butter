@@ -10,7 +10,7 @@ setup_example(){
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}.patch
-  atf_check -s exit:0 -o file:butter.log.${genr}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
+  atf_check -s exit:0 -o save:butter.log.${genr}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
   atf_check -s exit:0 -o file:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
 }
 
@@ -183,8 +183,11 @@ single_cmake_gen_body() {
     atf_check -s exit:0 -o save:build3.log -e save:build3.err make -f Makefile clean VERBOSE=1
     atf_check -s exit:0 [ ! -e ./test ]
     atf_check -s exit:0 [ ! -e CMakeFiles/test.dir/single_test.o ]
-    #atf_check -s exit:0 [ ! -e ${installdir}/test ]
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -e ${installdir}/bin/test ]
+    fi
 
+    # cleanup
     atf_check -s exit:0 -o empty rm build1.log build1.err
     atf_check -s exit:0 -o empty rm build2.log build2.err
     atf_check -s exit:0 -o empty rm build3.log build3.err
@@ -192,10 +195,6 @@ single_cmake_gen_body() {
 
     atf_check -s exit:0 -o empty rm -rf CMakeFiles
     atf_check -s exit:0 -o empty rm -rf ${installdir}
-    #if [ `basename ${installdir}` != ${installdir} ]; then
-   #    echo "deleting " `dirname ${installdir}`
-    #   atf_check -s exit:0 -o empty rm -rf `dirname ${installdir}`
-    #fi
     popd
   }
 
@@ -229,22 +228,71 @@ single_make_gen_body() {
   #-------------- 
   # Make variant 
   #-------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/make.patch
-  atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "single_test" "make"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile output/makefile.canon
   atf_check -o empty diff output/M_sys.mk output/M_sys.mk.canon
   atf_check -o empty diff output/M_cl.mk output/M_cl.mk.canon
   atf_check -o empty diff output/M_gcc.mk output/M_gcc.mk.canon
   atf_check -o empty diff output/M_unix.mk output/M_unix.mk.canon
   atf_check -o empty diff output/M_Windows_NT.mk output/M_Windows_NT.mk.canon
+ 
+  build_single_test(){
+    local variant=$1
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err make -k VARIANT=${variant}
+    atf_check -s exit:0 [ -x test ]
+    atf_check -s exit:0 [ -e single_test.o ]
+    atf_check -s exit:0 [ ! -e installdir/bin/test ]
+    atf_check -s exit:0 -o file:output.canon ./test
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make clean
+    atf_check -s exit:0 [ -e ./test ]
+    atf_check -s exit:0 [ ! -e single_test.o ]
+    atf_check -s exit:0 [ ! -e installdir/bin/test ]
+
+    # test install target
+    atf_check -s exit:0 -o save:build3.log -e save:build3.err make install
+    atf_check -s exit:0 [ -x test ]
+    atf_check -s exit:0 [ -e single_test.o ]
+    atf_check -s exit:0 [ -e installdir/bin/test ]
+    atf_check -s exit:0 -o file:output.canon installdir/bin/test
+    # test diszclean target
+    atf_check -s exit:0 -o save:build4.log -e save:build4.err make distclean
+    atf_check -s exit:0 [ ! -e ./test ]
+    atf_check -s exit:0 [ ! -e single_test.o ]
+    atf_check -s exit:0 [ -e installdir/bin/test ]
+
+    # cleanup
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.log build3.err
+    atf_check -s exit:0 -o empty rm build4.log build4.err
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_single_test ""
+  # specific DEBUG VARIANT
+  build_single_test DEBUG
+  # RELEASE VARIANT
+  build_single_test RELEASE
+
+  # remove source
+  pushd output
+  atf_check -s exit:0 -o empty rm single_test.cc single_test.hh
+  popd
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
 
   popd
+  unset build_single_test
 }
 
 atf_test_case multidir_jam_gen

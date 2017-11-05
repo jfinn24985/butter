@@ -2,11 +2,11 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sat Oct 28 15:04:05 2017
+#Sun Nov 5 17:12:49 2017
 ##END:date
 ##START:preamble
-ROOTDIR := /home/finnerty/src/butter/test/single_test/output
-OUTPUTDIR := /home/finnerty/src/butter/test/single_test/output
+ROOTDIR := /home/finnerty/src/butter/trunk/test/single_test/output
+OUTPUTDIR := /home/finnerty/src/butter/trunk/test/single_test/output
 include $(ROOTDIR)/M_sys.mk
 
 ##END:preamble
