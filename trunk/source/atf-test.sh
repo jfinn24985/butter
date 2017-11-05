@@ -34,12 +34,12 @@ single_jam_gen_body() {
     pushd output
     # test base build target
     atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -e ${builddir}/test ]
+    atf_check -s exit:0 [ -x ${builddir}/test ]
     atf_check -s exit:0 [ -e ${builddir}/single_test.o ]
     atf_check -s exit:0 -o file:output.canon ${builddir}/test
     # test install target
     atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -e installdir/bin/test ]
+    atf_check -s exit:0 [ -x installdir/bin/test ]
     atf_check -s exit:0 -o file:output.canon installdir/bin/test
     # no distclean target
     # test clean target
@@ -91,7 +91,6 @@ single_boost_gen_body() {
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot output/Jamroot.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.jam output/local.jam.canon
 
-
   build_single_test(){
     local variant=$1
     local builddir=$2
@@ -99,11 +98,11 @@ single_boost_gen_body() {
     pushd output
     # test base build target
     atf_check -s exit:0 -o save:build1.log -e save:build1.err bjam ${variant}
-    atf_check -s exit:0 [ -e build/${builddir}/test ]
+    atf_check -s exit:0 [ -x build/${builddir}/test ]
     atf_check -s exit:0 [ -e build/${builddir}/single_test.o ]
     atf_check -s exit:0 -o file:output.canon build/${builddir}/test
     # no separate install target
-    atf_check -s exit:0 [ -e ${installdir}/test ]
+    atf_check -s exit:0 [ -x ${installdir}/test ]
     atf_check -s exit:0 -o file:output.canon ${installdir}/test
     # no distclean target
     # test clean target
@@ -153,18 +152,72 @@ single_cmake_gen_body() {
   #-------------- 
   # CMake variant 
   #-------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/cmake.patch
-  atf_check -s exit:0 -o empty bouml single_test.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "single_test" "cmake"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt output/CMakeLists.txt.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.cmake output/local.cmake.canon
+
+  build_single_test(){
+    local variant=$1
+    local installdir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} --build .
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile VERBOSE=1
+    atf_check -s exit:0 [ -x test ]
+    atf_check -s exit:0 [ -e CMakeFiles/test.dir/single_test.cc.o ]
+    atf_check -s exit:0 -o file:output.canon ./test
+    # test install target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile install VERBOSE=1
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ -s install_manifest.txt ]
+      atf_check -s exit:0 [ -e ${installdir}/bin/test ]
+      atf_check -s exit:0 -o file:output.canon ${installdir}/bin/test
+    else
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ ! -s install_manifest.txt ]
+    fi
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build3.log -e save:build3.err make -f Makefile clean VERBOSE=1
+    atf_check -s exit:0 [ ! -e ./test ]
+    atf_check -s exit:0 [ ! -e CMakeFiles/test.dir/single_test.o ]
+    #atf_check -s exit:0 [ ! -e ${installdir}/test ]
+
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.log build3.err
+    atf_check -s exit:0 -o empty rm CMakeCache.txt Makefile cmake_install.cmake install_manifest.txt
+
+    atf_check -s exit:0 -o empty rm -rf CMakeFiles
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    #if [ `basename ${installdir}` != ${installdir} ]; then
+   #    echo "deleting " `dirname ${installdir}`
+    #   atf_check -s exit:0 -o empty rm -rf `dirname ${installdir}`
+    #fi
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_single_test "" ""
+  # specific DEBUG VARIANT
+  build_single_test Debug ""
+  # RELEASE VARIANT
+  build_single_test Release "installdir"
+ 
+  # remove source
+  pushd output
+  atf_check -s exit:0 -o empty rm single_test.cc single_test.hh
+  popd
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
-  atf_check -s exit:0 -o empty rm *.session
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_single_test
 }
 
 atf_test_case single_make_gen
