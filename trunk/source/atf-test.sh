@@ -2,6 +2,17 @@
 
 # Location of bouml standard installation.
 BOUML_LOC=/usr/lib/bouml
+BUTTER_EXE=../../source/src/butter/butter_exe
+
+setup_example(){
+  local example=$1
+  local genr=$2
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}.patch
+  atf_check -s exit:0 -o file:butter.log.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
+  atf_check -s exit:0 -o file:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
+}
 
 atf_test_case single_jam_gen
 single_jam_gen_head() {
@@ -11,65 +22,59 @@ single_jam_gen_body() {
   pushd ../test/single_test
   #----------------------- 
   # Standard (jam) variant 
-  #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file single_test.prj\n" patch <patch/jam.patch
-  atf_check -s exit:0 -o file:butter.log.canon bouml single_test.prj -execnogui ../../source/src/butter/butter_exe -test:ok -exit
+  #-----------------------
+  setup_example "single_test" "jam"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile output/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamrules output/Jamrules.canon
 
-  atf_check -s exit:0 -o file:cpp.log.canon bouml single_test.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
-  pushd output
-  # default (DEBUG) VARIANT
-  atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam
-  atf_check -s exit:0 [ -f DEBUG/test ]
-  atf_check -s exit:0 -o file:output.canon DEBUG/test
-  atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install
-  atf_check -s exit:0 [ -e installdir/bin/test ]
-  atf_check -s exit:0 -o file:output.canon installdir/bin/test
-  atf_check -s exit:0 -o empty rm jam1.log jam1.err
-  atf_check -s exit:0 -o empty rm jam2.log jam2.err
-  atf_check -s exit:0 -o empty rm -rf DEBUG
-  atf_check -s exit:0 -o empty rm -rf installdir
-  popd
-  pushd output
-  # specific DEBUG VARIANT
-  atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam -sVARIANT=DEBUG
-  atf_check -s exit:0 [ -f DEBUG/test ]
-  atf_check -s exit:0 -o file:output.canon DEBUG/test
-  atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install
-  atf_check -s exit:0 [ -e installdir/bin/test ]
-  atf_check -s exit:0 -o file:output.canon installdir/bin/test
-  atf_check -s exit:0 -o empty rm jam1.log jam1.err
-  atf_check -s exit:0 -o empty rm jam2.log jam2.err
-  atf_check -s exit:0 -o empty rm -rf DEBUG
-  atf_check -s exit:0 -o empty rm -rf installdir
-  popd
-  pushd output
-  # RELEASE VARIANT
-  atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam -sVARIANT=RELEASE
-  atf_check -s exit:0 [ -f RELEASE/test ]
-  atf_check -s exit:0 -o file:output.canon RELEASE/test
-  atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam -sVARIANT=RELEASE install
-  atf_check -s exit:0 [ -e installdir/bin/test ]
-  atf_check -s exit:0 -o file:output.canon installdir/bin/test
-  atf_check -s exit:0 -o empty rm jam1.log jam1.err
-  atf_check -s exit:0 -o empty rm jam2.log jam2.err
-  atf_check -s exit:0 -o empty rm -rf RELEASE
-  atf_check -s exit:0 -o empty rm -rf installdir
+  build_single_test(){
+    local variant=$1
+    local builddir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
+    atf_check -s exit:0 [ -e ${builddir}/test ]
+    atf_check -s exit:0 [ -e ${builddir}/single_test.o ]
+    atf_check -s exit:0 -o file:output.canon ${builddir}/test
+    # test install target
+    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+    atf_check -s exit:0 [ -e installdir/bin/test ]
+    atf_check -s exit:0 -o file:output.canon installdir/bin/test
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
+    atf_check -s exit:0 [ ! -e ${builddir}/test ]
+    atf_check -s exit:0 [ ! -e ${builddir}/single_test.o ]
+    atf_check -s exit:0 [ -e installdir/bin/test ]
 
+    atf_check -s exit:0 -o empty rm jam1.log jam1.err
+    atf_check -s exit:0 -o empty rm jam2.log jam2.err
+    atf_check -s exit:0 -o empty rm jam3.log jam3.err
+    atf_check -s exit:0 -o empty rm -rf ${builddir}
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_single_test "" DEBUG
+  # specific DEBUG VARIANT
+  build_single_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  build_single_test -sVARIANT=RELEASE RELEASE
+  
   # remove source
+  pushd output
   atf_check -s exit:0 -o empty rm single_test.cc single_test.hh
   popd
 
-
-
+  # Clean up
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_single_test
 }
 
 atf_test_case single_boost_gen
