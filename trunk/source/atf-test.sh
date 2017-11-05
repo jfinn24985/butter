@@ -10,7 +10,7 @@ setup_example(){
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}.patch
-  atf_check -s exit:0 -o save:butter.log.${genr}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
+  atf_check -s exit:0 -o file:butter.log.${genr}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
   atf_check -s exit:0 -o file:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
 }
 
@@ -304,14 +304,49 @@ multidir_jam_gen_body() {
   #----------------------- 
   # Standard (jam) variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multidir.prj\n" patch <patch/jam.patch
-  atf_check -s exit:0 -o empty bouml multidir.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multidir" "jam"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile canon.jam/Jamfile.canon
   atf_check -o empty diff output/Jamrules canon.jam/Jamrules.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.jam/src/Executable/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.jam/src/Library/Jamfile.canon
+
+  build_single_test(){
+    local variant=$1
+    local builddir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
+    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
+    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
+    atf_check -s exit:0 -o file:output.canon ${builddir}/src/Executable/program lorem.txt
+    # test install target
+    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+    atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon installdir/bin/program lorem.txt
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
+    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
+    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+
+    atf_check -s exit:0 -o empty rm jam1.log jam1.err
+    atf_check -s exit:0 -o empty rm jam2.log jam2.err
+    atf_check -s exit:0 -o empty rm jam3.log jam3.err
+    atf_check -s exit:0 -o empty rm -rf ${builddir}
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_single_test "" DEBUG
+  # specific DEBUG VARIANT
+  build_single_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  build_single_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
