@@ -500,13 +500,67 @@ multidir_make_gen_body() {
   #----------------------- 
   # Make variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multidir.prj\n" patch <patch/make.patch
-  atf_check -s exit:0 -o empty bouml multidir.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multidir" "make"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile canon.make/makefile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/makefile canon.make/src/Executable/makefile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/makefile canon.make/src/Library/makefile.canon
+  build_test(){
+    local variant=$1
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.1.log -e save:build1.1.err make -k VARIANT=${variant}
+    atf_check -s exit:0 -o save:build1.2.log -e save:build1.2.err make -k VARIANT=${variant}
+    atf_check -s exit:0 [ -x src/Executable/program ]
+    atf_check -s exit:0 [ -e src/Library/library.a ]
+    atf_check -s exit:0 [ -e src/Executable/example_exe.o ]
+    atf_check -s exit:0 [ -e src/Library/example_lib.o ]
+    atf_check -s exit:0 [ ! -e installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon src/Executable/program lorem.txt
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make clean
+    atf_check -s exit:0 [ -e src/Executable/program ]
+    atf_check -s exit:0 [ ! -e src/Library/library.a ]
+    atf_check -s exit:0 [ ! -e src/Executable/example_exe.o ]
+    atf_check -s exit:0 [ ! -e src/Library/example_lib.o ]
+    atf_check -s exit:0 [ ! -e installdir/bin/program ]
+
+    # test install target
+    atf_check -s exit:0 -o save:build3.1.log -e save:build3.1.err make install
+    atf_check -s exit:0 -o save:build3.2.log -e save:build3.2.err make install
+    atf_check -s exit:0 [ -x src/Executable/program ]
+    atf_check -s exit:0 [ -e src/Library/library.a ]
+    atf_check -s exit:0 [ -e src/Executable/example_exe.o ]
+    atf_check -s exit:0 [ -e src/Library/example_lib.o ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon installdir/bin/program lorem.txt
+    # test diszclean target
+    atf_check -s exit:0 -o save:build4.log -e save:build4.err make distclean
+    atf_check -s exit:0 [ ! -e src/Executable/program ]
+    atf_check -s exit:0 [ ! -e src/Library/library.a ]
+    atf_check -s exit:0 [ ! -e src/Executable/example_exe.o ]
+    atf_check -s exit:0 [ ! -e src/Library/example_lib.o ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+
+    # cleanup
+    atf_check -s exit:0 -o empty rm build1.1.log build1.1.err
+    atf_check -s exit:0 -o empty rm build1.2.log build1.2.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.1.log build3.1.err
+    atf_check -s exit:0 -o empty rm build3.2.log build3.2.err
+    atf_check -s exit:0 -o empty rm build4.log build4.err
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test ""
+  # specific DEBUG VARIANT
+  build_test DEBUG
+  # RELEASE VARIANT
+  build_test RELEASE
+
+  # Clean up
   atf_check -o empty diff output/M_sys.mk canon.make/M_sys.mk.canon
   atf_check -o empty diff output/M_cl.mk canon.make/M_cl.mk.canon
   atf_check -o empty diff output/M_gcc.mk canon.make/M_gcc.mk.canon
