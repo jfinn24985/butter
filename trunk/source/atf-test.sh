@@ -363,19 +363,55 @@ multidir_boost_gen_body() {
   #----------------------- 
   # Boost (bjam) variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multidir.prj\n" patch <patch/boost.patch
-  atf_check -s exit:0 -o empty bouml multidir.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multidir" "boost"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot canon.bjam/Jamroot.canon
   atf_check -o empty diff output/local.jam canon.bjam/local.jam.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.bjam/src/Executable/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.bjam/src/Library/Jamfile.canon
+
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    local installdir=$3
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err bjam ${variant}
+    atf_check -s exit:0 [ -x build/src/Executable/${builddir}/program ]
+    atf_check -s exit:0 [ -e build/src/Library/${builddir}/link-static/library.a ]
+    atf_check -s exit:0 -o file:output.canon build/src/Executable/${builddir}/program lorem.txt
+    # no separate install target
+    atf_check -s exit:0 [ -x ${installdir}/program ]
+    atf_check -s exit:0 -o file:output.canon ${installdir}/program lorem.txt
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err bjam clean ${variant}
+    atf_check -s exit:0 [ ! -e build/src/Executable/${builddir}/program ]
+    atf_check -s exit:0 [ ! -e build/src/Library/${builddir}/link-static/library.a ]
+    atf_check -s exit:0 [ ! -e ${installdir}/program ]
+
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm -rf build
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" "*/debug" src/Executable/install_program
+  # specific DEBUG VARIANT
+  build_test debug "*/debug" src/Executable/install_program
+  # RELEASE VARIANT
+  build_test release "*/release" installdir/bin
+
+  atf_check -s exit:0 -o empty rmdir output/installdir
+
   atf_check -s exit:0 -o empty rm output/Jamroot output/local.jam
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_test
 }
 
 atf_test_case multidir_cmake_gen
