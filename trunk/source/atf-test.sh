@@ -258,7 +258,7 @@ single_make_gen_body() {
     atf_check -s exit:0 [ -e single_test.o ]
     atf_check -s exit:0 [ -e installdir/bin/test ]
     atf_check -s exit:0 -o file:output.canon installdir/bin/test
-    # test diszclean target
+    # test distclean target
     atf_check -s exit:0 -o save:build4.log -e save:build4.err make distclean
     atf_check -s exit:0 [ ! -e ./test ]
     atf_check -s exit:0 [ ! -e single_test.o ]
@@ -540,7 +540,7 @@ multidir_make_gen_body() {
     atf_check -s exit:0 [ -e src/Library/example_lib.o ]
     atf_check -s exit:0 [ -e installdir/bin/program ]
     atf_check -s exit:0 -o file:output.canon installdir/bin/program lorem.txt
-    # test diszclean target
+    # test distclean target
     atf_check -s exit:0 -o save:build4.log -e save:build4.err make distclean
     atf_check -s exit:0 [ ! -e src/Executable/program ]
     atf_check -s exit:0 [ ! -e src/Library/library.a ]
@@ -827,7 +827,7 @@ multilang_make_gen_body() {
     atf_check -s exit:0 [ -e src/Library/example_lib.o ]
     atf_check -s exit:0 [ -e installdir/bin/program ]
     atf_check -s exit:0 -o file:output.canon installdir/bin/program lorem.txt
-    # test diszclean target
+    # test distclean target
     atf_check -s exit:0 -o save:build4.log -e save:build4.err make distclean
     atf_check -s exit:0 [ ! -e src/Executable/program ]
     atf_check -s exit:0 [ ! -e src/Library/library.a ]
@@ -875,12 +875,54 @@ multitarget_jam_gen_body() {
   #----------------------- 
   # Standard (jam) variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multitarget.prj\n" patch <patch/jam.patch
-  atf_check -s exit:0 -o empty bouml multitarget.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multitarget" "jam"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile output/Jamfile.canon
   atf_check -o empty diff output/Jamrules output/Jamrules.canon
+
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
+    atf_check -s exit:0 [ -x ${builddir}/program ]
+    atf_check -s exit:0 [ -e ${builddir}/example_exe.o ]
+    atf_check -s exit:0 [ -e ${builddir}/library.a ]
+
+    atf_check -s exit:0 -o file:output.canon ${builddir}/program lorem.txt
+    # test install target
+    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+    atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon installdir/bin/program lorem.txt
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
+    atf_check -s exit:0 [ ! -e ${builddir}/program ]
+    atf_check -s exit:0 [ ! -e ${builddir}/example_exe.o ]
+    atf_check -s exit:0 [ ! -e ${builddir}/library.a ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+
+    atf_check -s exit:0 -o empty rm jam1.log jam1.err
+    atf_check -s exit:0 -o empty rm jam2.log jam2.err
+    atf_check -s exit:0 -o empty rm jam3.log jam3.err
+    atf_check -s exit:0 -o empty rm -rf ${builddir}
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" DEBUG
+  # specific DEBUG VARIANT
+  build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  build_test -sVARIANT=RELEASE RELEASE
+
+  # delete source
+  atf_check -s exit:0 -o empty rm output/example_exe.cpp output/example_exe.hpp
+  atf_check -s exit:0 -o empty rm output/example_lib.cpp output/example_lib.hpp
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
@@ -897,12 +939,50 @@ multitarget_boost_gen_body() {
   #----------------------- 
   # Boost variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multitarget.prj\n" patch <patch/boost.patch
-  atf_check -s exit:0 -o empty bouml multitarget.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multitarget" "boost"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot output/Jamroot.canon
   atf_check -o empty diff output/local.jam output/local.jam.canon
+
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    local installdir=$3
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err bjam ${variant}
+    atf_check -s exit:0 [ -x build/${builddir}/program ]
+    atf_check -s exit:0 [ -e build/${builddir}/link-static/library.a ]
+    atf_check -s exit:0 -o file:output.canon build/${builddir}/program lorem.txt
+    # no separate install target
+    atf_check -s exit:0 [ -x ${installdir}/program ]
+    atf_check -s exit:0 -o file:output.canon ${installdir}/program lorem.txt
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err bjam clean ${variant}
+    atf_check -s exit:0 [ ! -e build/${builddir}/program ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/link-static/library.a ]
+    atf_check -s exit:0 [ ! -e ${installdir}/program ]
+
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm -rf build
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" "*/debug" install_program
+  # specific DEBUG VARIANT
+  build_test debug "*/debug" install_program
+  # RELEASE VARIANT
+  build_test release "*/release" installdir/bin
+
+  # delete source
+  atf_check -s exit:0 -o empty rm output/example_exe.cpp output/example_exe.hpp
+  atf_check -s exit:0 -o empty rm output/example_lib.cpp output/example_lib.hpp
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/Jamroot output/local.jam
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
@@ -919,12 +999,67 @@ multitarget_cmake_gen_body() {
   #----------------------- 
   # CMake variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multitarget.prj\n" patch <patch/cmake.patch
-  atf_check -s exit:0 -o empty bouml multitarget.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multitarget" "cmake"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt output/CMakeLists.txt.canon
   atf_check -o empty diff output/local.cmake output/local.cmake.canon
+  build_test(){
+    local variant=$1
+    local installdir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} --build .
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile VERBOSE=1
+    atf_check -s exit:0 [ -x program ]
+    atf_check -s exit:0 [ -e CMakeFiles/program.dir/example_exe.cpp.o ]
+    atf_check -s exit:0 [ -e library.a ]
+    atf_check -s exit:0 [ -e CMakeFiles/library.dir/example_lib.cpp.o ]
+    atf_check -s exit:0 -o file:output.canon ./program lorem.txt
+    # test install target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile install VERBOSE=1
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ -s install_manifest.txt ]
+      atf_check -s exit:0 [ -e ${installdir}/bin/program ]
+      atf_check -s exit:0 -o file:output.canon ${installdir}/bin/program lorem.txt
+    else
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ ! -s install_manifest.txt ]
+    fi
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build3.log -e save:build3.err make -f Makefile clean VERBOSE=1
+    atf_check -s exit:0 [ ! -e program ]
+    atf_check -s exit:0 [ ! -e CMakeFiles/program.dir/example_exe.cpp.o ]
+    atf_check -s exit:0 [ ! -e library.a ]
+    atf_check -s exit:0 [ ! -e CMakeFiles/library.dir/example_lib.cpp.o ]
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -e ${installdir}/bin/program ]
+    fi
+
+    # cleanup
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.log build3.err
+    atf_check -s exit:0 -o empty rm CMakeCache.txt Makefile cmake_install.cmake install_manifest.txt
+
+    atf_check -s exit:0 -o empty rm -rf CMakeFiles
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" ""
+  # specific DEBUG VARIANT
+  build_test Debug ""
+  # RELEASE VARIANT
+  build_test Release "installdir"
+
+  # delete source
+  atf_check -s exit:0 -o empty rm output/example_exe.cpp output/example_exe.hpp
+  atf_check -s exit:0 -o empty rm output/example_lib.cpp output/example_lib.hpp
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
@@ -941,16 +1076,74 @@ multitarget_make_gen_body() {
   #----------------------- 
   # Make variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multitarget.prj\n" patch <patch/make.patch
-  atf_check -s exit:0 -o empty bouml multitarget.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multitarget" "make"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile output/makefile.canon
   atf_check -o empty diff output/M_sys.mk output/M_sys.mk.canon
   atf_check -o empty diff output/M_cl.mk output/M_cl.mk.canon
   atf_check -o empty diff output/M_gcc.mk output/M_gcc.mk.canon
   atf_check -o empty diff output/M_unix.mk output/M_unix.mk.canon
   atf_check -o empty diff output/M_Windows_NT.mk output/M_Windows_NT.mk.canon
+  build_test(){
+    local variant=$1
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.1.log -e save:build1.1.err make -k VARIANT=${variant}
+    atf_check -s exit:0 -o save:build1.2.log -e save:build1.2.err make -k VARIANT=${variant}
+    atf_check -s exit:0 [ -x program ]
+    atf_check -s exit:0 [ -e library.a ]
+    atf_check -s exit:0 [ -e example_exe.o ]
+    atf_check -s exit:0 [ -e example_lib.o ]
+    atf_check -s exit:0 [ ! -e installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon ./program lorem.txt
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make clean
+    atf_check -s exit:0 [ -e program ]
+    atf_check -s exit:0 [ ! -e library.a ]
+    atf_check -s exit:0 [ ! -e example_exe.o ]
+    atf_check -s exit:0 [ ! -e example_lib.o ]
+    atf_check -s exit:0 [ ! -e installdir/bin/program ]
+
+    # test install target
+    atf_check -s exit:0 -o save:build3.1.log -e save:build3.1.err make install
+    atf_check -s exit:0 -o save:build3.2.log -e save:build3.2.err make install
+    atf_check -s exit:0 [ -x program ]
+    atf_check -s exit:0 [ -e library.a ]
+    atf_check -s exit:0 [ -e example_exe.o ]
+    atf_check -s exit:0 [ -e example_lib.o ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon installdir/bin/program lorem.txt
+    # test distclean target
+    atf_check -s exit:0 -o save:build4.log -e save:build4.err make distclean
+    atf_check -s exit:0 [ ! -e program ]
+    atf_check -s exit:0 [ ! -e library.a ]
+    atf_check -s exit:0 [ ! -e example_exe.o ]
+    atf_check -s exit:0 [ ! -e example_lib.o ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+
+    # cleanup
+    atf_check -s exit:0 -o empty rm build1.1.log build1.1.err
+    atf_check -s exit:0 -o empty rm build1.2.log build1.2.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.1.log build3.1.err
+    atf_check -s exit:0 -o empty rm build3.2.log build3.2.err
+    atf_check -s exit:0 -o empty rm build4.log build4.err
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test ""
+  # specific DEBUG VARIANT
+  build_test DEBUG
+  # RELEASE VARIANT
+  build_test RELEASE
+
+  # delete source
+  atf_check -s exit:0 -o empty rm output/example_exe.cpp output/example_exe.hpp
+  atf_check -s exit:0 -o empty rm output/example_lib.cpp output/example_lib.hpp
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
   atf_check -s exit:0 -o empty rm -f output/butter.log
   atf_check -s exit:0 -o empty git checkout HEAD -- .
