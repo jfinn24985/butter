@@ -1285,22 +1285,20 @@ proplang_boost_gen_body() {
   #----------------------- 
   # Boost variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file proplang.prj\n" patch <patch/boost.patch
-  atf_check -s exit:0 -o empty bouml proplang.prj -exec ../../source/src/butter/butter_exe -exit
-  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot output/Jamroot.canon
-  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Jamfile output/src/Jamfile.bjam.canon
-  atf_check -o empty diff output/src/fortran.f output/src/fortran.f.canon
-  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/doc/Jamfile output/doc/Jamfile.bjam.canon
-  atf_check -o empty diff output/local.jam output/local.jam.canon
-  atf_check -o empty diff output/Jamfile output/Jamfile.base.canon
-  atf_check -o empty diff output/CMakeLists.txt output/CMakeLists.txt.base.canon
-  atf_check -o empty diff output/doc/program.t2t output/doc/program.t2t.canon
-  atf_check -o empty diff output/t2t.bjam output/t2t.bjam.canon
-  atf_check -o empty diff output/t2t.jam output/t2t.jam.canon
-  atf_check -o empty diff output/t2t.cmake output/t2t.cmake.canon
-  atf_check -o empty diff output/t2t.make output/t2t.make.canon
+  setup_example proplang boost
+
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot canon/Jamroot.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Jamfile canon/src/Jamfile.bjam.canon
+  atf_check -o empty diff output/src/fortran.f canon/src/fortran.f.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/doc/Jamfile canon/doc/Jamfile.bjam.canon
+  atf_check -o empty diff output/local.jam canon/local.jam.canon
+  atf_check -o empty diff output/Jamfile canon/Jamfile.base.canon
+  atf_check -o empty diff output/CMakeLists.txt canon/CMakeLists.txt.base.canon
+  atf_check -o empty diff output/doc/program.t2t canon/doc/program.t2t.canon
+  atf_check -o empty diff output/t2t.bjam canon/t2t.bjam.canon
+  atf_check -o empty diff output/t2t.jam canon/t2t.jam.canon
+  atf_check -o empty diff output/t2t.cmake canon/t2t.cmake.canon
+  atf_check -o empty diff output/t2t.make canon/t2t.make.canon
   atf_check -s exit:0 -o empty rm output/Jamroot output/local.jam
   atf_check -s exit:0 -o empty rm output/src/Jamfile output/src/fortran.f
   atf_check -s exit:0 -o empty rm output/doc/Jamfile output/doc/program.t2t
