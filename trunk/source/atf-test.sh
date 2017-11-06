@@ -1194,6 +1194,9 @@ proplang_jam_gen_body() {
     atf_check -s exit:0 [ -e build/${builddir}/src/squareshare.a ]
     atf_check -s exit:0 [ -e build/${builddir}/src/squarestatic.a ]
     atf_check -s exit:0 [ -x build/${builddir}/src/static_sqr ]
+    atf_check -s exit:0 [ ! -e program.t2t ]
+    atf_check -s exit:0 [ ! -e program.html ]
+    atf_check -s exit:0 [ ! -e program.man ]
 
     atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/${builddir}/doc/program.html ../canon/program.html.canon
     atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/${builddir}/doc/program.man ../canon/program.man.canon
@@ -1213,6 +1216,7 @@ proplang_jam_gen_body() {
     atf_check -s exit:0 [ -e installdir/bin/squareshare.a ]
     atf_check -s exit:0 [ -e installdir/bin/squarestatic.a ]
     atf_check -s exit:0 [ -x installdir/bin/static_sqr ]
+    atf_check -s exit:0 [ -e program.t2t ]
     atf_check -s exit:0 [ -e program.html ]
     atf_check -s exit:0 [ -e program.man ]
     atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" program.html ../canon/program.html.canon
@@ -1241,6 +1245,7 @@ proplang_jam_gen_body() {
     atf_check -s exit:0 [ -e installdir/bin/squareshare.a ]
     atf_check -s exit:0 [ -e installdir/bin/squarestatic.a ]
     atf_check -s exit:0 [ -x installdir/bin/static_sqr ]
+    atf_check -s exit:0 [ -e program.t2t ]
     atf_check -s exit:0 [ -e program.html ]
     atf_check -s exit:0 [ -e program.man ]
 
@@ -1249,7 +1254,7 @@ proplang_jam_gen_body() {
     atf_check -s exit:0 -o empty rm jam3.log jam3.err
     atf_check -s exit:0 -o empty rm -rf build
     atf_check -s exit:0 -o empty rm -rf installdir
-    atf_check -s exit:0 -o empty rm program.html program.man
+    atf_check -s exit:0 -o empty rm program.t2t program.html program.man
     popd
   }
 
@@ -1265,7 +1270,6 @@ proplang_jam_gen_body() {
   atf_check -s exit:0 -o empty rm -rf output/src
   atf_check -s exit:0 -o empty rm -rf output/doc
   atf_check -s exit:0 -o empty rm -rf output/include
-  atf_check -s exit:0 -o empty rm output/program.t2t
 
   # clean up
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
