@@ -505,6 +505,12 @@ multidir_make_gen_body() {
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile canon.make/makefile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/makefile canon.make/src/Executable/makefile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/makefile canon.make/src/Library/makefile.canon
+  atf_check -o empty diff output/M_sys.mk canon.make/M_sys.mk.canon
+  atf_check -o empty diff output/M_cl.mk canon.make/M_cl.mk.canon
+  atf_check -o empty diff output/M_gcc.mk canon.make/M_gcc.mk.canon
+  atf_check -o empty diff output/M_unix.mk canon.make/M_unix.mk.canon
+  atf_check -o empty diff output/M_Windows_NT.mk canon.make/M_Windows_NT.mk.canon
+ 
   build_test(){
     local variant=$1
     pushd output
@@ -561,16 +567,12 @@ multidir_make_gen_body() {
   build_test RELEASE
 
   # Clean up
-  atf_check -o empty diff output/M_sys.mk canon.make/M_sys.mk.canon
-  atf_check -o empty diff output/M_cl.mk canon.make/M_cl.mk.canon
-  atf_check -o empty diff output/M_gcc.mk canon.make/M_gcc.mk.canon
-  atf_check -o empty diff output/M_unix.mk canon.make/M_unix.mk.canon
-  atf_check -o empty diff output/M_Windows_NT.mk canon.make/M_Windows_NT.mk.canon
   atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_test
 }
 
 
@@ -584,20 +586,57 @@ multilang_jam_gen_body() {
   #----------------------- 
   # Standard (jam) variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multilang.prj\n" patch <patch/jam.patch
-  atf_check -s exit:0 -o empty bouml multilang.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multilang" "jam"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile canon.jam/Jamfile.canon
   atf_check -o empty diff output/Jamrules canon.jam/Jamrules.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.jam/src/Executable/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.jam/src/Library/Jamfile.canon
   atf_check -o empty diff output/src/Library/example_c.c canon.jam/src/Library/example_c.c.canon
+
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
+    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
+    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
+
+    atf_check -s exit:0 -o file:output.canon ${builddir}/src/Executable/program lorem.txt
+    # test install target
+    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+    atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon installdir/bin/program lorem.txt
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
+    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
+    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+
+    atf_check -s exit:0 -o empty rm jam1.log jam1.err
+    atf_check -s exit:0 -o empty rm jam2.log jam2.err
+    atf_check -s exit:0 -o empty rm jam3.log jam3.err
+    atf_check -s exit:0 -o empty rm -rf ${builddir}
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" DEBUG
+  # specific DEBUG VARIANT
+  build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/Jamfile output/Jamrules
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_test
 }
 
 atf_test_case multilang_boost_gen
@@ -609,20 +648,56 @@ multilang_boost_gen_body() {
   #----------------------- 
   # Boost (bjam) variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multilang.prj\n" patch <patch/boost.patch
-  atf_check -s exit:0 -o empty bouml multilang.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multilang" "boost"
+  
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot canon.bjam/Jamroot.canon
   atf_check -o empty diff output/local.jam canon.bjam/local.jam.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/Jamfile canon.bjam/src/Executable/Jamfile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/Jamfile canon.bjam/src/Library/Jamfile.canon
   atf_check -o empty diff output/src/Library/example_c.c canon.bjam/src/Library/example_c.c.canon
+
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    local installdir=$3
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err bjam ${variant}
+    atf_check -s exit:0 [ -x build/src/Executable/${builddir}/program ]
+    atf_check -s exit:0 [ -e build/src/Library/${builddir}/link-static/library.a ]
+    atf_check -s exit:0 -o file:output.canon build/src/Executable/${builddir}/program lorem.txt
+    # no separate install target
+    atf_check -s exit:0 [ -x ${installdir}/program ]
+    atf_check -s exit:0 -o file:output.canon ${installdir}/program lorem.txt
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err bjam clean ${variant}
+    atf_check -s exit:0 [ ! -e build/src/Executable/${builddir}/program ]
+    atf_check -s exit:0 [ ! -e build/src/Library/${builddir}/link-static/library.a ]
+    atf_check -s exit:0 [ ! -e ${installdir}/program ]
+
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm -rf build
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" "*/debug" src/Executable/install_program
+  # specific DEBUG VARIANT
+  build_test debug "*/debug" src/Executable/install_program
+  # RELEASE VARIANT
+  build_test release "*/release" installdir/bin
+
+  atf_check -s exit:0 -o empty rmdir output/installdir
+
   atf_check -s exit:0 -o empty rm output/Jamroot output/local.jam
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_test
 }
 
 atf_test_case multilang_cmake_gen
@@ -634,20 +709,72 @@ multilang_cmake_gen_body() {
   #----------------------- 
   # CMake variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multilang.prj\n" patch <patch/cmake.patch
-  atf_check -s exit:0 -o empty bouml multilang.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multilang" "cmake"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt canon.cmake/CMakeLists.txt.canon
   atf_check -o empty diff output/local.cmake canon.cmake/local.cmake.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/CMakeLists.txt canon.cmake/src/Executable/CMakeLists.txt.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/CMakeLists.txt canon.cmake/src/Library/CMakeLists.txt.canon
   atf_check -o empty diff output/src/Library/example_c.c canon.cmake/src/Library/example_c.c.canon
+
+  build_test(){
+    local variant=$1
+    local installdir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} --build .
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile VERBOSE=1
+    atf_check -s exit:0 [ -x src/Executable/program ]
+    atf_check -s exit:0 [ -e src/Executable/CMakeFiles/program.dir/example_exe.cpp.o ]
+    atf_check -s exit:0 [ -e src/Library/library.a ]
+    atf_check -s exit:0 [ -e src/Library/CMakeFiles/library.dir/example_lib.cpp.o ]
+    atf_check -s exit:0 -o file:output.canon src/Executable/program lorem.txt
+    # test install target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile install VERBOSE=1
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ -s install_manifest.txt ]
+      atf_check -s exit:0 [ -e ${installdir}/bin/program ]
+      atf_check -s exit:0 -o file:output.canon ${installdir}/bin/program lorem.txt
+    else
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ ! -s install_manifest.txt ]
+    fi
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build3.log -e save:build3.err make -f Makefile clean VERBOSE=1
+    atf_check -s exit:0 [ ! -e src/Executable/program ]
+    atf_check -s exit:0 [ ! -e src/Executable/CMakeFiles/program.dir/example_exe.cpp.o ]
+    atf_check -s exit:0 [ ! -e src/Library/library.a ]
+    atf_check -s exit:0 [ ! -e src/Library/CMakeFiles/library.dir/example_lib.cpp.o ]
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -e ${installdir}/bin/program ]
+    fi
+
+    # cleanup
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.log build3.err
+    atf_check -s exit:0 -o empty rm CMakeCache.txt Makefile cmake_install.cmake install_manifest.txt
+
+    atf_check -s exit:0 -o empty rm -rf CMakeFiles
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" ""
+  # specific DEBUG VARIANT
+  build_test Debug ""
+  # RELEASE VARIANT
+  build_test Release "installdir"
+
   atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_test
 }
 
 atf_test_case multilang_make_gen
@@ -659,10 +786,8 @@ multilang_make_gen_body() {
   #----------------------- 
   # Make variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file multilang.prj\n" patch <patch/make.patch
-  atf_check -s exit:0 -o empty bouml multilang.prj -exec ../../source/src/butter/butter_exe -exit
+  setup_example "multilang" "make"
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile canon.make/makefile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Executable/makefile canon.make/src/Executable/makefile.canon
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/Library/makefile canon.make/src/Library/makefile.canon
@@ -672,11 +797,69 @@ multilang_make_gen_body() {
   atf_check -o empty diff output/M_gcc.mk canon.make/M_gcc.mk.canon
   atf_check -o empty diff output/M_unix.mk canon.make/M_unix.mk.canon
   atf_check -o empty diff output/M_Windows_NT.mk canon.make/M_Windows_NT.mk.canon
+ 
+  build_test(){
+    local variant=$1
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.1.log -e save:build1.1.err make -k VARIANT=${variant}
+    atf_check -s exit:0 -o save:build1.2.log -e save:build1.2.err make -k VARIANT=${variant}
+    atf_check -s exit:0 [ -x src/Executable/program ]
+    atf_check -s exit:0 [ -e src/Library/library.a ]
+    atf_check -s exit:0 [ -e src/Executable/example_exe.o ]
+    atf_check -s exit:0 [ -e src/Library/example_lib.o ]
+    atf_check -s exit:0 [ ! -e installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon src/Executable/program lorem.txt
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make clean
+    atf_check -s exit:0 [ -e src/Executable/program ]
+    atf_check -s exit:0 [ ! -e src/Library/library.a ]
+    atf_check -s exit:0 [ ! -e src/Executable/example_exe.o ]
+    atf_check -s exit:0 [ ! -e src/Library/example_lib.o ]
+    atf_check -s exit:0 [ ! -e installdir/bin/program ]
+
+    # test install target
+    atf_check -s exit:0 -o save:build3.1.log -e save:build3.1.err make install
+    atf_check -s exit:0 -o save:build3.2.log -e save:build3.2.err make install
+    atf_check -s exit:0 [ -x src/Executable/program ]
+    atf_check -s exit:0 [ -e src/Library/library.a ]
+    atf_check -s exit:0 [ -e src/Executable/example_exe.o ]
+    atf_check -s exit:0 [ -e src/Library/example_lib.o ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+    atf_check -s exit:0 -o file:output.canon installdir/bin/program lorem.txt
+    # test diszclean target
+    atf_check -s exit:0 -o save:build4.log -e save:build4.err make distclean
+    atf_check -s exit:0 [ ! -e src/Executable/program ]
+    atf_check -s exit:0 [ ! -e src/Library/library.a ]
+    atf_check -s exit:0 [ ! -e src/Executable/example_exe.o ]
+    atf_check -s exit:0 [ ! -e src/Library/example_lib.o ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+
+    # cleanup
+    atf_check -s exit:0 -o empty rm build1.1.log build1.1.err
+    atf_check -s exit:0 -o empty rm build1.2.log build1.2.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.1.log build3.1.err
+    atf_check -s exit:0 -o empty rm build3.2.log build3.2.err
+    atf_check -s exit:0 -o empty rm build4.log build4.err
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test ""
+  # specific DEBUG VARIANT
+  build_test DEBUG
+  # RELEASE VARIANT
+  build_test RELEASE
+
+  # Clean up
   atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
   atf_check -s exit:0 -o empty rm -rf output/src output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
+  unset build_test
 }
 
 
