@@ -1303,12 +1303,99 @@ proplang_boost_gen_body() {
   atf_check -o empty diff output/t2t.jam canon/t2t.jam.canon
   atf_check -o empty diff output/t2t.cmake canon/t2t.cmake.canon
   atf_check -o empty diff output/t2t.make canon/t2t.make.canon
+
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    local installdir=$3
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err bjam ${variant}
+    atf_check -s exit:0 [ -e build/${builddir}/doc/program.html ]
+    atf_check -s exit:0 [ -e build/${builddir}/doc/program.man ]
+    atf_check -s exit:0 [ -x build/${builddir}/src/fortprog ]
+    atf_check -s exit:0 [ -x build/${builddir}/src/source_test ]
+    atf_check -s exit:0 [ -x build/${builddir}/src/shared_sqr ]
+    atf_check -s exit:0 [ -e build/${builddir}/src/squareshare.a ]
+    atf_check -s exit:0 [ -e build/${builddir}/src/squarestatic.a ]
+    atf_check -s exit:0 [ -x build/${builddir}/src/static_sqr ]
+    atf_check -s exit:0 -o file:output.canon build/${builddir}/program lorem.txt
+    # no separate install target
+    atf_check -s exit:0 [ -x ${installdir}/fortprog ]
+    atf_check -s exit:0 [ -x ${installdir}/source_test ]
+    atf_check -s exit:0 [ -x ${installdir}/shared_sqr ]
+    atf_check -s exit:0 [ -e ${installdir}/squareshare.a ]
+    atf_check -s exit:0 [ -e ${installdir}/squarestatic.a ]
+    atf_check -s exit:0 [ -x ${installdir}/static_sqr ]
+    atf_check -s exit:0 [ -e program.t2t ]
+    atf_check -s exit:0 [ -e program.html ]
+    atf_check -s exit:0 [ -e program.man ]
+    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/${builddir}/doc/program.html ../canon/program.html.canon
+    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/${builddir}/doc/program.man ../canon/program.man.canon
+    atf_check -s exit:0 -o file:../canon/fortprog.canon build/${builddir}/src/fortprog
+    atf_check -s exit:0 -o file:../canon/source_test.canon build/${builddir}/src/source_test
+    atf_check -s exit:0 -o save:static_sqr.out build/${builddir}/src/static_sqr 3 2000
+    atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
+    atf_check -s exit:0 -o save:shared_sqr.out build/${builddir}/src/shared_sqr 3 2000
+    atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
+    atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
+
+    # no separate install target
+    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" program.html ../canon/program.html.canon
+    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" program.man ../canon/program.man.canon
+    atf_check -s exit:0 -o file:../canon/fortprog.canon ${installdir}/fortprog
+    atf_check -s exit:0 -o file:../canon/source_test.canon ${installdir}/source_test
+    atf_check -s exit:0 -o save:static_sqr.out ${installdir}/static_sqr 3 2000
+    atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
+    atf_check -s exit:0 -o save:shared_sqr.out ${installdir}/shared_sqr 3 2000
+    atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
+    atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err bjam clean ${variant}
+    atf_check -s exit:0 [ ! -e build/${builddir}/doc/program.html ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/doc/program.man ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/fortprog ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/source_test ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/shared_sqr ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/squareshare.a ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/squarestatic.a ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/static_sqr ]
+    atf_check -s exit:0 [ -x ${installdir}/fortprog ]
+    atf_check -s exit:0 [ -x ${installdir}/source_test ]
+    atf_check -s exit:0 [ -x ${installdir}/shared_sqr ]
+    atf_check -s exit:0 [ -e ${installdir}/squareshare.a ]
+    atf_check -s exit:0 [ -e ${installdir}/squarestatic.a ]
+    atf_check -s exit:0 [ -x ${installdir}/static_sqr ]
+    atf_check -s exit:0 [ -e program.t2t ]
+    atf_check -s exit:0 [ -e program.html ]
+    atf_check -s exit:0 [ -e program.man ]
+
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm -rf build
+    atf_check -s exit:0 -o empty rm -rf installdir
+    atf_check -s exit:0 -o empty rm program.t2t program.html program.man
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" "*/debug" install_program
+  # specific DEBUG VARIANT
+  build_test debug "*/debug" install_program
+  # RELEASE VARIANT
+  build_test release "*/release" installdir/bin
+
+  #remove source
+  atf_check -s exit:0 -o empty rm -rf output/lib
+  atf_check -s exit:0 -o empty rm -rf output/src
+  atf_check -s exit:0 -o empty rm -rf output/doc
+  atf_check -s exit:0 -o empty rm -rf output/include
+
+  # clean up
   atf_check -s exit:0 -o empty rm output/Jamroot output/local.jam
-  atf_check -s exit:0 -o empty rm output/src/Jamfile output/src/fortran.f
-  atf_check -s exit:0 -o empty rm output/doc/Jamfile output/doc/program.t2t
   atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/Jamfile
   atf_check -s exit:0 -o empty rm output/t2t.bjam output/t2t.cmake output/t2t.jam output/t2t.make
-  atf_check -s exit:0 -o empty rm -rf output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
