@@ -100,6 +100,7 @@ double square_root_halley (double x)
 
 #include <iostream>
 #include <string>
+#include <cstdio>
 #include <boost/format.hpp>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)

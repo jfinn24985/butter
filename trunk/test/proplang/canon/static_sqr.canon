@@ -1,0 +1,9 @@
+	Usage: program <sqr> <repeats>
+
+Start time    End Time      Message
+                            1.73205 : E 4.44089e-16
+13:03:36.350  13:03:37.013  Halley algorithm
+                            1.73205 : E 4.44089e-16
+13:03:37.013  13:03:37.639  Newton/Raphson algorithm
+                            1.73205 : E 4.44089e-16
+13:03:37.639  13:03:37.718  Lib function
