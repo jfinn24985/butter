@@ -1410,28 +1410,130 @@ proplang_cmake_gen_body() {
   #----------------------- 
   # CMake variant 
   #----------------------- 
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  atf_check -s exit:0 -o inline:"patching file proplang.prj\n" patch <patch/cmake.patch
-  atf_check -s exit:0 -o empty bouml proplang.prj -exec ../../source/src/butter/butter_exe -exit
-  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt output/CMakeLists.txt.canon
-  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/CMakeLists.txt output/src/CMakeLists.txt.canon
-  atf_check -o empty diff output/src/fortran.f output/src/fortran.f.canon
-  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/doc/CMakeLists.txt output/doc/CMakeLists.txt.canon
-  atf_check -o empty diff output/local.cmake output/local.cmake.canon
-  atf_check -o empty diff output/Jamfile output/Jamfile.base.canon
-  atf_check -o empty diff output/Jamroot output/Jamroot.base.canon
-  atf_check -o empty diff output/doc/program.t2t output/doc/program.t2t.canon
-  atf_check -o empty diff output/t2t.bjam output/t2t.bjam.canon
-  atf_check -o empty diff output/t2t.jam output/t2t.jam.canon
-  atf_check -o empty diff output/t2t.cmake output/t2t.cmake.canon
-  atf_check -o empty diff output/t2t.make output/t2t.make.canon
+  setup_example proplang cmake
+
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt canon/CMakeLists.txt.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/src/CMakeLists.txt canon/src/CMakeLists.txt.canon
+  atf_check -o empty diff output/src/fortran.f canon/src/fortran.f.canon
+  atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/doc/CMakeLists.txt canon/doc/CMakeLists.txt.canon
+  atf_check -o empty diff output/local.cmake canon/local.cmake.canon
+  atf_check -o empty diff output/Jamfile canon/Jamfile.base.canon
+  atf_check -o empty diff output/Jamroot canon/Jamroot.base.canon
+  atf_check -o empty diff output/doc/program.t2t canon/doc/program.t2t.canon
+  atf_check -o empty diff output/t2t.bjam canon/t2t.bjam.canon
+  atf_check -o empty diff output/t2t.jam canon/t2t.jam.canon
+  atf_check -o empty diff output/t2t.cmake canon/t2t.cmake.canon
+  atf_check -o empty diff output/t2t.make canon/t2t.make.canon
+
+  build_test(){
+    local variant=$1
+    local installdir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} --build .
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile VERBOSE=1
+    atf_check -s exit:0 [ -e doc/program.html ]
+    atf_check -s exit:0 [ -e doc/program.man ]
+    atf_check -s exit:0 [ -x src/fortprog ]
+    atf_check -s exit:0 [ -x src/source_test ]
+    atf_check -s exit:0 [ -x src/shared_sqr ]
+    atf_check -s exit:0 [ -e src/squareshare.so ]
+    atf_check -s exit:0 [ -e src/squarestatic.a ]
+    atf_check -s exit:0 [ -x rc/static_sqr ]
+    atf_check -s exit:0 [ ! -e program.t2t ]
+    atf_check -s exit:0 [ ! -e program.html ]
+    atf_check -s exit:0 [ ! -e program.man ]
+
+    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" doc/program.html ../canon/program.html.canon
+    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" doc/program.man ../canon/program.man.canon
+    atf_check -s exit:0 -o file:../canon/fortprog.canon src/fortprog
+    atf_check -s exit:0 -o file:../canon/source_test.canon src/source_test
+    atf_check -s exit:0 -o save:static_sqr.out src/static_sqr 3 2000
+    atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
+    atf_check -s exit:0 -o save:shared_sqr.out src/shared_sqr 3 2000
+    atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
+    atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
+
+    # test install target
+    atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile install VERBOSE=1
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -x ${installdir}/bin/fortprog ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/source_test ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/shared_sqr ]
+      atf_check -s exit:0 [ -e ${installdir}/bin/squareshare.so ]
+      atf_check -s exit:0 [ -e ${installdir}/bin/squarestatic.a ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/static_sqr ]
+      atf_check -s exit:0 [ -e ${installdir}/share/doc/program.t2t ]
+      atf_check -s exit:0 [ -e ${installdir}/share/html/program.html ]
+      atf_check -s exit:0 [ -e ${installdir}/share/man/program.man ]
+      atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" program.html ../canon/program.html.canon
+      atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" program.man ../canon/program.man.canon
+      atf_check -s exit:0 -o file:../canon/fortprog.canon ${installdir}/fortprog
+      atf_check -s exit:0 -o file:../canon/source_test.canon ${installdir}/source_test
+      atf_check -s exit:0 -o save:static_sqr.out ${installdir}/static_sqr 3 2000
+      atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
+      atf_check -s exit:0 -o save:shared_sqr.out ${installdir}/shared_sqr 3 2000
+      atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
+      atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
+    else
+      atf_check -s exit:0 [ -e install_manifest.txt ]
+      atf_check -s exit:0 [ ! -s install_manifest.txt ]
+    fi
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:build3.log -e save:build3.err make -f Makefile clean VERBOSE=1
+    atf_check -s exit:0 [ ! -e build/${builddir}/doc/program.html ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/doc/program.man ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/fortprog ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/source_test ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/shared_sqr ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/squareshare.a ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/squarestatic.a ]
+    atf_check -s exit:0 [ ! -e build/${builddir}/src/static_sqr ]
+    if [ "X" != "X${installdir}" ]; then
+      atf_check -s exit:0 [ -x ${installdir}/bin/fortprog ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/source_test ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/shared_sqr ]
+      atf_check -s exit:0 [ -e ${installdir}/bin/squareshare.so ]
+      atf_check -s exit:0 [ -e ${installdir}/bin/squarestatic.a ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/static_sqr ]
+      atf_check -s exit:0 [ -e ${installdir}/share/doc/program.t2t ]
+      atf_check -s exit:0 [ -e ${installdir}/share/html/program.html ]
+      atf_check -s exit:0 [ -e ${installdir}/share/man/program.man ]
+    fi
+
+    # cleanup
+    atf_check -s exit:0 -o empty rm build1.log build1.err
+    atf_check -s exit:0 -o empty rm build2.log build2.err
+    atf_check -s exit:0 -o empty rm build3.log build3.err
+    atf_check -s exit:0 -o empty rm CMakeCache.txt Makefile cmake_install.cmake install_manifest.txt
+
+    atf_check -s exit:0 -o empty rm -rf CMakeFiles
+    atf_check -s exit:0 -o empty rm -rf doc/CMakeFiles
+    atf_check -s exit:0 -o empty rm -rf src/CMakeFiles
+    #atf_check -s exit:0 -o empty rm -rf lib/exe/CMakeFiles
+    #atf_check -s exit:0 -o empty rm -rf lib/src/CMakeFiles
+    atf_check -s exit:0 -o empty rm -rf ${installdir}
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" ""
+  # specific DEBUG VARIANT
+  build_test Debug ""
+  # RELEASE VARIANT
+  build_test Release "installdir"
+
+  #remove source
+  atf_check -s exit:0 -o empty rm -rf output/lib
+  atf_check -s exit:0 -o empty rm -rf output/src
+  atf_check -s exit:0 -o empty rm -rf output/doc
+  atf_check -s exit:0 -o empty rm -rf output/include
+
+  # clean up
   atf_check -s exit:0 -o empty rm output/Jamroot output/local.cmake
-  atf_check -s exit:0 -o empty rm output/src/CMakeLists.txt output/src/fortran.f
-  atf_check -s exit:0 -o empty rm output/doc/CMakeLists.txt output/doc/program.t2t
   atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/Jamfile
   atf_check -s exit:0 -o empty rm output/t2t.bjam output/t2t.cmake output/t2t.jam output/t2t.make
-  atf_check -s exit:0 -o empty rm -rf output/include
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
