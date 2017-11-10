@@ -1,6 +1,6 @@
 format 75
 "butter-test" // butter::butter-test
-  revision 23
+  revision 28
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -166,6 +166,14 @@ ${inlines}
 	    cpp default "#include in source"
 	    classrelation_ref 183728 // <dependency>
 	  b parent class_ref 147113 // compound_artifact
+      end
+
+      classrelation 211888 // <dependency>
+	relation 211760 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 211888 // <dependency>
+	  b parent class_ref 168880 // compound_document
       end
 
       classrelation 183856 // <dependency>
@@ -498,6 +506,119 @@ ${body}
 	
 	comment "Test lifetime methods and static attributes
 list."
+      end
+
+      operation 221232 "compound_document_lifetime"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test lifetime methods and static attributes
+list."
+      end
+
+      operation 228912 "compound_document_access"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test compound document accessors (get and set):
+
+INFO: has_target,empty,size
+GET: close,date,preamble,version,get_target,target_at
+SET: add_target,add_target_entry,set_target_user,set_target_value,reset"
+      end
+
+      operation 244016 "compound_document_other"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test precondition failures for accessors
+
+GET: get_target[ no match for label ]
+GET: target_at[ invalid index ]
+SET: add_target[ duplicate label ]
+SET: add_target_entry[ duplicate label ]
+SET: set_target_user,set_target_value[ no match for label ]"
+      end
+
+      operation 243888 "compound_document_parse"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test compound_document parse method"
+      end
+
+      operation 243760 "compound_document_merge"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test compound document merge method"
+      end
+
+      operation 243632 "compound_document_write"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test compound document output routine"
       end
 
       operation 183088 "const_token_iterator_lifetime"
@@ -1102,7 +1223,7 @@ ${namespace_end}"
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Tue Oct 31 13:03:23 2017
+#Wed Nov 8 20:00:39 2017
 ##END:date
 ##START:preamble
 include $(ROOTDIR)/M_sys.mk
@@ -1112,10 +1233,10 @@ include $(ROOTDIR)/M_sys.mk
 BUTTER_TEST_BUTTER_EXECSRC :=  \\
 	core_test_suite.cpp
 BUTTER_TEST_BUTTER_EXEC_DINC := $(filter %$(sufdep), $(BUTTER_TEST_BUTTER_EXECSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_BUTTER_EXECSRC:.c=$(sufdep)))
-butter_exec$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm $(BOOST_LIB) -lboost_unit_test_framework
+butter_exec$(sufexe): LDFLAGS+= $(BOOST_LIB) -lboost_unit_test_framework -L${QTDIR}/lib64 -lqt-mt -lm
 butter_exec$(sufexe) $(BUTTER_TEST_BUTTER_EXEC_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT -DBOOST_TEST_DYN_LINK 
-BUTTER_TEST_BUTTER_EXEC_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
 BUTTER_TEST_BUTTER_EXEC_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
+BUTTER_TEST_BUTTER_EXEC_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
 
 BUTTER_TEST_BUTTER_EXEC_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_BUTTER_EXECSRC:.cpp=$(sufobj)))
 USEROBJ+=$(BUTTER_TEST_BUTTER_EXEC_OBJ)
@@ -1131,10 +1252,10 @@ TARGETS+=butter_exec$(sufexe)
 BUTTER_TEST_PLUGOUT_EXECSRC :=  \\
 	plugout_test_suite.cpp
 BUTTER_TEST_PLUGOUT_EXEC_DINC := $(filter %$(sufdep), $(BUTTER_TEST_PLUGOUT_EXECSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_PLUGOUT_EXECSRC:.c=$(sufdep)))
-plugout_exec$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm $(BOOST_LIB) -lboost_unit_test_framework
+plugout_exec$(sufexe): LDFLAGS+= $(BOOST_LIB) -lboost_unit_test_framework -L${QTDIR}/lib64 -lqt-mt -lm
 plugout_exec$(sufexe) $(BUTTER_TEST_PLUGOUT_EXEC_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT -DBOOST_TEST_DYN_LINK 
-BUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
 BUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
+BUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
 
 BUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_PLUGOUT_EXECSRC:.cpp=$(sufobj)))
 USEROBJ+=$(BUTTER_TEST_PLUGOUT_EXEC_OBJ)

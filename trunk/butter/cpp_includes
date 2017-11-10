@@ -35,3 +35,5 @@
 
 "QTextIStream" "#include <qtextstream.h>"
 
+"QValueVector" "#include <qvaluevector.h>"
+

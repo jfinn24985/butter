@@ -291,8 +291,8 @@ return Result;
 }
 
 location::location(const pathcmp & a_path)
-: children_(1)
-, packages_(1)
+: children_()
+, packages_()
 , parent_(nullptr)
 , path_(a_path)
 {

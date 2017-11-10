@@ -1,5 +1,15 @@
-class compound_document
-!!!206384.cpp!!!	compound_document()
+
+#include "butter/compound_document.h"
+#include "butter/basic_style.h"
+#include "butter/butter_constants.h"
+#include "butter/utility.h"
+#include "butter/style.h"
+
+// Manual include
+#include "butter/config.h"
+namespace butter {
+
+compound_document::compound_document() 
 : close_( butter::butter_constants::close_label, {}, {} )
 , date_( butter::butter_constants::date_label, {}, {} )
 , end_()
@@ -8,13 +18,24 @@ class compound_document
 , version_( butter::butter_constants::version_label, {}, {} )
 {}
 
-!!!207664.cpp!!!	add_target(in a_label : unistr, in a_prevalue : unistr, in a_value : unistr) : void
+
+
+void compound_document::add_target(QString a_label, QString a_prevalue, QString a_value) 
+{
 BUTTER_REQUIRE( ! this->has_target( a_label ), "Cannot insert a second target with the same name" );
 this->targets_.push_back( { a_label, a_prevalue, a_value } );
-!!!229296.cpp!!!	add_target_entry(in a_label : unistr) : void
+
+}
+
+void compound_document::add_target_entry(QString a_label) 
+{
 BUTTER_REQUIRE( ! this->has_target( a_label ), "Cannot insert a second target with the same name" );
 this->targets_.push_back( { a_label, {}, {} } );
-!!!214320.cpp!!!	get_target(in a_label : unistr) : compound_document::element_t
+
+}
+
+const compound_document::element_t& compound_document::get_target(QString a_label) const 
+{
 for( auto const& elem : this->targets_ )
 {
   if( elem.label == a_label ) return elem;
@@ -22,13 +43,21 @@ for( auto const& elem : this->targets_ )
 BUTTER_REQUIRE( false, "Unable to find target with the given label" );
 static element_t dummy;
 return dummy; // Should never get here
-!!!207024.cpp!!!	has_target(in a_label : unistr) : bool
+
+}
+
+bool compound_document::has_target(QString a_label) const 
+{
 for( auto const& elem : this->targets_ )
 {
   if( elem.label == a_label ) return true;
 }
 return false;
-!!!236848.cpp!!!	set_target(in a_label : unistr, in a_user : unistr, in a_value : unistr) : void
+
+}
+
+void compound_document::set_target(QString a_label, QString a_user, QString a_value) 
+{
 for( auto & elem : this->targets_ )
 {
   if( elem.label == a_label )
@@ -39,7 +68,11 @@ for( auto & elem : this->targets_ )
   }
 }
 BUTTER_REQUIRE( false, "Cannot set target value for non-existent target" );
-!!!214448.cpp!!!	set_target_user(in a_label : unistr, in a_preamble : unistr) : void
+
+}
+
+void compound_document::set_target_user(QString a_label, QString a_preamble) 
+{
 for( auto & elem : this->targets_ )
 {
   if( elem.label == a_label )
@@ -49,7 +82,11 @@ for( auto & elem : this->targets_ )
   }
 }
 BUTTER_REQUIRE( false, "Cannot set target value for non-existent target" );
-!!!236976.cpp!!!	set_target_value(in a_label : unistr, in a_value : unistr) : void
+
+}
+
+void compound_document::set_target_value(QString a_label, QString a_value) 
+{
 for( auto & elem : this->targets_ )
 {
   if( elem.label == a_label )
@@ -59,7 +96,11 @@ for( auto & elem : this->targets_ )
   }
 }
 BUTTER_REQUIRE( false, "Cannot set target value for non-existent target" );
-!!!237104.cpp!!!	target_at(in idx : uint) : compound_document::element_t
+
+}
+
+const compound_document::element_t& compound_document::target_at(unsigned int idx) const 
+{
 bool guard=false;
 this->targets_.at( idx, &guard );
 if( ! guard )
@@ -67,7 +108,11 @@ if( ! guard )
   throw std::out_of_range( "index out of range" );
 }
 return this->targets_.at( idx, &guard );
-!!!207152.cpp!!!	merge(in a_other : compound_document) : void
+
+}
+
+void compound_document::merge(const compound_document & a_other) 
+{
 auto do_merge = []( element_t & targ_, const element_t & src_ )
 {
   if ( ! src_.user.isEmpty() )
@@ -104,7 +149,11 @@ if( ! a_other.end_.isEmpty() )
 {
   this->end_.append( a_other.end_ );
 }
-!!!206896.cpp!!!	parse(inout a_is : QTextIStream, in a_style : basic_style) : void
+
+}
+
+void compound_document::parse(::QTextIStream & a_is, const basic_style & a_style) 
+{
 //XX QString capture_;
 //XX int state_ = 0; // 0 = unlabelled, 1 = labelled
 //XX string_pair_t * cache_ = NULL;
@@ -206,7 +255,11 @@ if( ! a_other.end_.isEmpty() )
 //XX     version.first = capture_;
 //XX   }
 //XX }
-!!!207408.cpp!!!	reset() : void
+
+}
+
+void compound_document::reset() 
+{
 for( auto & elem : this->targets_ )
 {
   elem.value.truncate( 0 );
@@ -219,7 +272,11 @@ if( ! this->close_.value.isEmpty() )
 {
   this->close_.value.truncate( 0 );
 }
-!!!207536.cpp!!!	write(out a_os : QTextOStream, in a_style : basic_style) : void
+
+}
+
+void compound_document::write(::QTextOStream & a_os, const basic_style & a_style) const 
+{
 auto do_write = []( QTextStream & a_os_, const element_t & a_cache_, const butter::basic_style & s_ )
 {
   if ( ! a_cache_.user.isEmpty () )
@@ -248,3 +305,8 @@ if ( ! this->end_.isEmpty() )
 {
   a_os << this->end_;
 }
+
+}
+
+
+} // namespace butter

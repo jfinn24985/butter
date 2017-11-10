@@ -243,8 +243,8 @@ for (const butter::location * tmp_ = this;
 }
 return Result;
 !!!142633.cpp!!!	location(in a_path : pathcmp)
-: children_(1)
-, packages_(1)
+: children_()
+, packages_()
 , parent_(nullptr)
 , path_(a_path)
 {

@@ -1,6 +1,6 @@
 format 75
 "butter" // butter
-  revision 206
+  revision 212
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -2947,22 +2947,50 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "An artifact that is made up of multiple-parts. It exposes an ordered list of 
-pair< string, string > that represent the parts of the artifact. These can
-be unlabelled or labelled depending on the content of the first entry in the
-pair.
+      comment "A compound document is used to manage documents that
+contain user and auto-generated content. The auto-generated
+content contains information about a build target, the
+user content is something manually added by the user,
+possibly build information for subsequent targets. When
+initially generated the targets will have the following
+order: (\"version\", \"date\", \"preamble\", [build targets]*,
+\"close\" {end}). The {end} target is a special unnamed
+pseudo-target that contains any user text added after the
+generated text. The user can manually reorder the build
+target sequence, though the order of \"version\", \"date\",
+\"preamble\" and \"close\" are fixed. The object maintains the
+information as a list of string pairs. The first element
+is any text manually added by the user and the second
+element is the auto generated text.
 
-* labelled parts are enclosed in \"start_phrase_\"/\"end_phrase_\" markers.
-* unlabelled parts are any non-whitespace outside part markers.
+NOTES:
 
-Standard build-file form is a compound_artifact with something like
-[version] version information
-[date] date
-[preamble] ...
-[target:....] ...
-[close] ...
+  * If the user supplies an artifact with the appropriate
+  name before a build generator is run, any text in the
+  document will be added between the \"date\" and \"preamble\"
+  sections.
 
-* destructor writes parts to artifact."
+  * (auto-generted) parts are enclosed in \"start_phrase_\" /
+  \"end_phrase_\" markers that are used to parse the document
+  back into a compound document.
+
+  * (user) parts are any non-whitespace outside the
+  markers. This information is stored with the following
+  auto-generated part, except when there is no following
+  target in which case it is the {end} text.
+
+Standard build-file form is a compound_document with the
+following initial order
+
+[version] generator version information
+[date] generation date
+[preamble] ... (optional)
+[target:....]* ...
+[close] ...  (optional)
+{end}  (optional)
+
+
+"
       classrelation 204976 // <dependency>
 	relation 204848 -_->
 	  a default
@@ -2995,45 +3023,183 @@ Standard build-file form is a compound_artifact with something like
 	  b parent class_ref 148393 // style
       end
 
-      class 169008 "string_pair_t"
-	visibility package stereotype "typedef" explicit_base_type "unistr"
-	cpp_decl "${comment}typedef std::pair< ${type}, ${type} > ${name};
+      class 175664 "element_t"
+	visibility package stereotype "struct"
+	cpp_decl "${comment}${template}struct ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
 "
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl "${comment}typedef ${type} ${name};
+	java_decl "${comment}${public}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	php_decl "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+	python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+	idl_decl "${comment}struct ${name} {
+${members}};
 "
 	explicit_switch_type ""
 	
+	attribute 148784 "label"
+	  public explicit_type "unistr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "The element's label"
+	end
+
+	attribute 148912 "user"
+	  public explicit_type "unistr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "The element's user-added text"
+	end
+
+	attribute 149040 "value"
+	  public explicit_type "unistr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  comment "The element's generated text"
+	end
+
+	operation 235824 "element_t"
+	  public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${name}${(}${)}${volatile} = default;
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 236720 "element_t"
+	  public explicit_return_type ""
+	  nparams 3
+	    param in name "a_label" explicit_type "unistr"
+	    param in name "a_user" explicit_type "unistr"
+	    param in name "a_value" explicit_type "unistr"
+	  cpp_decl "    ${comment}${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${volatile}
+: label( ${p0} )
+, user( ${p1} )
+, value( ${p2} )
+{}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 235952 "~element_t"
+	  public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${virtual}${name}${(}${)}${volatile} = default;
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 236080 "element_t"
+	  stereotype "move"
+	  public explicit_return_type ""
+	  nparams 1
+	    param inout name "source" type class_ref 175664 // element_t
+	  cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile}
+: label( std::move( ${p0}.label ) )
+, user( std::move( ${p0}.user ) )
+, value( std::move( ${p0}.value ) )
+{}
+
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 236208 "element_t"
+	  stereotype "copy"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "source" type class_ref 175664 // element_t
+	  cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile}
+: label( ${p0}.label )
+, user( ${p0}.user )
+, value( ${p0}.value )
+{}"
+	  
+	  
+	  
+	  
+	end
+
+	operation 236336 "operator="
+	  public return_type class_ref 175664 // element_t
+	  nparams 1
+	    param in name "source" type class_ref 175664 // element_t
+	  cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  this->swap( ${p0} );
+  return *this;
+}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 236464 "swap"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param inout name "other" type class_ref 175664 // element_t
+	  cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( label, ${p0}.label );
+  std::swap( user, ${p0}.user );
+  std::swap( value, ${p0}.value );
+}
+"
+	  
+	  
+	  
+	  
+	end
       end
 
-      class 169136 "value_type"
-	visibility package stereotype "typedef" explicit_base_type "unistr"
-	cpp_decl "${comment}typedef std::pair< ${type}, string_pair_t > ${name};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl "${comment}typedef ${type} ${name};
-"
-	explicit_switch_type ""
-	
-      end
-
-      attribute 141360 "close"
-	private type class_ref 148265 // string_pair_t
+      attribute 141360 "close_"
+	private type class_ref 175664 // element_t
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "The close texts"
+	comment "The close texts (optional)"
       end
 
-      attribute 141488 "date"
-	private type class_ref 148265 // string_pair_t
+      attribute 141488 "date_"
+	private type class_ref 175664 // element_t
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -3043,7 +3209,7 @@ Standard build-file form is a compound_artifact with something like
 	comment "The date texts"
       end
 
-      attribute 141616 "end"
+      attribute 141616 "end_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -3051,11 +3217,11 @@ Standard build-file form is a compound_artifact with something like
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "Any text at the end of the document."
+	comment "Any user text at the end of the document."
       end
 
-      attribute 141744 "preamble"
-	private type class_ref 148265 // string_pair_t
+      attribute 141744 "preamble_"
+	private type class_ref 175664 // element_t
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -3065,21 +3231,10 @@ Standard build-file form is a compound_artifact with something like
 	comment "The preamble texts"
       end
 
-      attribute 141872 "style_"
-	const_attribute private type class_ref 159017 // basic_style
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type}& ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "reference to style object"
-      end
-
       attribute 142000 "targets_"
-	private type class_ref 148265 // string_pair_t
+	private type class_ref 175664 // element_t
 	multiplicity "*"
-	stereotype "dict"
+	stereotype "valuevector"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
 "
 	java_decl ""
@@ -3089,21 +3244,8 @@ Standard build-file form is a compound_artifact with something like
 	comment "The artifact's target parts."
       end
 
-      attribute 142128 "target_order_"
-	private explicit_type "unistr"
-	multiplicity "*"
-	stereotype "valuelist"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The list of key in encounter-order."
-      end
-
-      attribute 142256 "version"
-	private type class_ref 148265 // string_pair_t
+      attribute 142256 "version_"
+	private type class_ref 175664 // element_t
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -3137,22 +3279,6 @@ ${body}
 	comment "Construct and initialise object from a_art"
       end
 
-      operation 206512 "compound_document"
-	public explicit_return_type ""
-	nparams 1
-	  param in name "a_style" type class_ref 159017 // basic_style
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile} 
-${body}
-"
-	
-	
-	
-	
-	comment "Construct and initialise object from a_art"
-      end
-
       operation 206640 "~compound_document"
 	public explicit_return_type ""
 	nparams 0
@@ -3166,24 +3292,56 @@ ${body}
 
       operation 206768 "compound_document"
 	stereotype "copy"
-	private explicit_return_type ""
+	public explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 168880 // compound_document
-	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile} = delete;
+	cpp_decl "    ${comment}${name}${(}const ${t0} & ${p0}${)}${volatile}
+: close_( ${p0}.close_ )
+, date_( ${p0}.date_ )
+, end_( ${p0}.end_ )
+, preamble_( ${p0}.preamble_ )
+, targets_( ${p0}.targets_ )
+, version_( ${p0}.version_ )
+{}"
+	
+	
+	
+	
+      end
+
+      operation 207792 "compound_document"
+	stereotype "move"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 168880 // compound_document
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile}
+: close_( std::move( ${p0}.close_ ) )
+, date_( std::move( ${p0}.date_ ) )
+, end_( std::move( ${p0}.end_ ) )
+, preamble_( std::move( ${p0}.preamble_ ) )
+, targets_( std::move( ${p0}.targets_ ) )
+, version_( std::move( ${p0}.version_ ) )
+{}
 "
 	
 	
 	
 	
-	comment "no copy"
       end
 
-      operation 207792 "compound_document"
-	stereotype "move"
-	private explicit_return_type ""
+      operation 236592 "swap"
+	public explicit_return_type "void"
 	nparams 1
 	  param inout name "source" type class_ref 168880 // compound_document
-	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract}
+{
+  std::swap( close_, ${p0}.close_ );
+  std::swap( date_, ${p0}.date_ );
+  std::swap( end_, ${p0}.end_ );
+  std::swap( preamble_, ${p0}.preamble_ );
+  std::swap( targets_, ${p0}.targets_ );
+  std::swap( version_, ${p0}.version_ );
+}
 "
 	
 	
@@ -3193,19 +3351,21 @@ ${body}
       end
 
       operation 207280 "operator="
-	private return_type class_ref 168880 // compound_document
+	public return_type class_ref 168880 // compound_document
 	nparams 1
 	  param in name "source" type class_ref 168880 // compound_document
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract} = delete;
-"
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  this->swap( ${p0} );
+  return *this;
+}"
 	
 	
 	
 	
-	comment "no assign"
       end
 
-      extra_member 162992 "METHODS"
+      extra_member 169520 "ACCESS"
 	
 	cpp "" ""
 	java ""
@@ -3214,13 +3374,15 @@ ${body}
 	idl ""
       end
 
-      operation 206896 "deserialise"
+      operation 207664 "add_target"
 	public explicit_return_type "void"
-	nparams 1
-	  param inout name "a_is" type class_ref 163113 // QTextIStream
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
+	nparams 3
+	  param in name "a_label" explicit_type "unistr"
+	  param in name "a_prevalue" explicit_type "unistr"
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -3229,10 +3391,109 @@ ${body}
 	
 	
 	
-	comment "Reset object and read-in a new artifact.
+	comment "Insert a new target into the document, with the
+given user and value text.
 
-The version, date, preamble and close are read as-is. Unlabelled sections preceding
-targets are read, but the content of the target section is left blank."
+\\pre not has_target( a_label )"
+      end
+
+      operation 229296 "add_target_entry"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_label" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Insert a new blank target into the document.
+
+\\pre not has_target( a_label )"
+      end
+
+      operation 221616 "close"
+	const public return_type class_ref 175664 // element_t
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->close_;
+}
+"
+	
+	
+	
+	
+	comment "Get the document close element (precedes end_text)."
+      end
+
+      operation 221360 "date"
+	const public return_type class_ref 175664 // element_t
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->date_;
+}
+"
+	
+	
+	
+	
+	comment "Get the date element."
+      end
+
+      operation 229040 "empty"
+	const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->targets_.isEmpty();
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 221872 "end_text"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->end_;
+}
+"
+	
+	
+	
+	
+	comment "Get any user supplied information at the end of the document"
+      end
+
+      operation 214320 "get_target"
+	const public return_type class_ref 175664 // element_t
+	nparams 1
+	  param in name "a_label" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type}& ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Get target element with a_label.
+
+\\pre has_target( a_label ) [or return an empty element]"
       end
 
       operation 207024 "has_target"
@@ -3253,6 +3514,287 @@ ${body}
 	comment "Check for the existance of a target."
       end
 
+      operation 222000 "preamble"
+	const public return_type class_ref 175664 // element_t
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->preamble_;
+}
+"
+	
+	
+	
+	
+	comment "Get the preamble element."
+      end
+
+      operation 250544 "set_close_user"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->close_.user, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set value data of the close element."
+      end
+
+      operation 250672 "set_close_value"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->close_.value, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set value data of the close element."
+      end
+
+      operation 250928 "set_date_user"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->date_.user, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set value data of the close element."
+      end
+
+      operation 250800 "set_date_value"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->date_.value, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set value data of the close element."
+      end
+
+      operation 251568 "set_end_text"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->end_, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set text at the end fo the document"
+      end
+
+      operation 251184 "set_preamble_user"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->preamble_.user, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set value data of the close element."
+      end
+
+      operation 251056 "set_preamble_value"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->preamble_.value, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set value data of the close element."
+      end
+
+      operation 236848 "set_target"
+	public explicit_return_type "void"
+	nparams 3
+	  param in name "a_label" explicit_type "unistr"
+	  param in name "a_user" explicit_type "unistr"
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Set element data of an existing target.
+
+\\pre has_target( a_label )"
+      end
+
+      operation 214448 "set_target_user"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_label" explicit_type "unistr"
+	  param in name "a_preamble" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Set user text of an existing target.
+
+\\pre has_target( a_label )"
+      end
+
+      operation 236976 "set_target_value"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_label" explicit_type "unistr"
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Set element data of an existing target.
+
+\\pre has_target( a_label )"
+      end
+
+      operation 251440 "set_version_user"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->version_.user, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set value data of the close element."
+      end
+
+      operation 251312 "set_version_value"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  std::swap( this->version_.value, ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Set value data of the close element."
+      end
+
+      operation 237104 "target_at"
+	const public return_type class_ref 175664 // element_t
+	nparams 1
+	  param in name "idx" explicit_type "uint"
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}const ${type}& ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Get target at a given index.
+
+\\pre idx < size"
+      end
+
+      operation 229168 "size"
+	const public explicit_return_type "size_t"
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->targets_.size();
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 222256 "version"
+	const public return_type class_ref 175664 // element_t
+	nparams 0
+	cpp_decl "    ${comment}${static}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${abstract}
+{
+  return this->version_;
+}
+"
+	
+	
+	
+	
+	comment "Get the version element."
+      end
+
+      extra_member 162992 "METHODS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+      end
+
       operation 207152 "merge"
 	public explicit_return_type "void"
 	nparams 1
@@ -3268,16 +3810,38 @@ ${body}
 	
 	
 	
-	comment "Merges the content of a_art into this artifact.
+	comment "Merges the content of two compound documents.
 
 Merge process:
-* Create temporary compound_artifact from a_art.
-* If any labelled sections exist in both artifacts then the content 
-from a_art is appended. If an unlabelled section exists before the
-labelled section then is is appended to any preceding unlabelled
-section or inserted if no existing labelled section exists.
-* If any sections remain then they are appended inorder to this 
-artifact. "
+
+* For any elements with the same label, append the other data to 
+  the element in this object.
+
+* Append any elements in the other object that are not in this
+  object."
+      end
+
+      operation 206896 "parse"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "a_is" type class_ref 163113 // QTextIStream
+	  param in name "a_style" type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Reset object and read-in a new artifact.
+
+The version, date, preamble and close are read as-is. User data preceding
+targets are read and the sequence order of targets is maintained, but the 
+content of the target section is left blank."
       end
 
       operation 207408 "reset"
@@ -3294,16 +3858,18 @@ ${body}
 	
 	
 	
-	comment "Emptys any target, preamble and close labelled sections"
+	comment "Emptys auto-generated values for all targets, preamble and close 
+labelled sections, leaving any user supplied data."
       end
 
-      operation 207536 "serialise"
+      operation 207536 "write"
 	const public explicit_return_type "void"
-	nparams 1
+	nparams 2
 	  param out name "a_os" type class_ref 162985 // QTextOStream
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
+	  param in name "a_style" type class_ref 159017 // basic_style
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -3313,24 +3879,6 @@ ${body}
 	
 	
 	comment "Output the parts into a_os"
-      end
-
-      operation 207664 "target"
-	public return_type class_ref 169008 // string_pair_t
-	nparams 1
-	  param in name "a_label" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Get a reference to the text for target with a_label. Insert if necessary"
       end
     end
 
@@ -7242,6 +7790,7 @@ ${namespace_end}"
 	artifact_ref 136361 // jam_generator
 	artifact_ref 137641 // gmake_generator
 	artifact_ref 138793 // butter_constants
+	artifact_ref 149296 // compound_document
 	artifact_ref 150825 // utility
 	artifact_ref 152233 // style
 	artifact_ref 152361 // compound_artifact
@@ -7421,6 +7970,31 @@ ${members}
 ${namespace_end}"
       associated_classes
 	class_ref 147113 // compound_artifact
+      end
+    end
+
+    artifact 149296 "compound_document"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_${NAME}_HPP
+#define @{PROJECT}_${NAME}_HPP
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// Manual include
+#include \"butter/config.h\"
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_classes
+	class_ref 168880 // compound_document
       end
     end
 
@@ -7961,7 +8535,7 @@ ${namespace_end}"
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Tue Oct 31 13:03:23 2017
+#Wed Nov 8 20:00:39 2017
 ##END:date
 ##START:preamble
 include $(ROOTDIR)/M_sys.mk
@@ -7970,16 +8544,17 @@ include $(ROOTDIR)/M_sys.mk
 ##START:target butter
 BUTTER_BUTTERSRC :=  \\
 	jam_generator.cpp \\
-	bjam_generator.cpp \\
-	cmake_generator.cpp \\
 	butter_constants.cpp \\
-	base_generator.cpp \\
-	style.cpp \\
-	basic_style.cpp \\
-	location.cpp \\
-	gmake_generator.cpp \\
 	utility.cpp \\
-	compound_artifact.cpp
+	bjam_generator.cpp \\
+	compound_artifact.cpp \\
+	location.cpp \\
+	base_generator.cpp \\
+	basic_style.cpp \\
+	gmake_generator.cpp \\
+	cmake_generator.cpp \\
+	compound_document.cpp \\
+	style.cpp
 BUTTER_BUTTER_DINC := $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.c=$(sufdep)))
 butter$(suflib): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 butter$(suflib) $(BUTTER_BUTTER_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
@@ -8002,10 +8577,10 @@ BUTTER_TEST_PATHSRC :=  \\
 BUTTER_TEST_PATH_DINC := $(filter %$(sufdep), $(BUTTER_TEST_PATHSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_PATHSRC:.c=$(sufdep)))
 test_path$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 test_path$(sufexe) $(BUTTER_TEST_PATH_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
+BUTTER_TEST_PATH_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
 
 path_test$(sufobj) : CCCFLAGS+=-fopenmp 
 
-BUTTER_TEST_PATH_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
 
 BUTTER_TEST_PATH_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_PATHSRC:.cpp=$(sufobj)))
 USEROBJ+=$(BUTTER_TEST_PATH_OBJ)
@@ -8025,8 +8600,8 @@ BUTTER_BUTTER_EXESRC :=  \\
 BUTTER_BUTTER_EXE_DINC := $(filter %$(sufdep), $(BUTTER_BUTTER_EXESRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_BUTTER_EXESRC:.c=$(sufdep)))
 butter_exe$(sufexe): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 butter_exe$(sufexe) $(BUTTER_BUTTER_EXE_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
-BUTTER_BUTTER_EXE_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
 BUTTER_BUTTER_EXE_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)
+BUTTER_BUTTER_EXE_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)
 
 BUTTER_BUTTER_EXE_OBJ+=$(filter %$(sufobj), $(BUTTER_BUTTER_EXESRC:.cpp=$(sufobj)))
 USEROBJ+=$(BUTTER_BUTTER_EXE_OBJ)

@@ -36,7 +36,7 @@
     "set" "QSet" "Vector" "set" "sequence"
     "dict" "QDict" "Vector" "list" "sequence"
     "valuelist" "QValueList" "Vector" "list" "sequence"
-    "vector" "QVector" "Vector" "list" "sequence"
+    "valuevector" "QValueVector" "Vector" "list" "sequence"
     "stack" "QStack" "Vector" "list" "sequence"
     "unique_ptr" "std::unique_ptr" "Vector" "list" "sequence"
     "shared_ptr" "std::tr1::shared_ptr" "ignored" "ignored" "ignored"

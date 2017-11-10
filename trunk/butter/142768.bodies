@@ -564,6 +564,678 @@ BOOST_CHECK( not std::is_move_constructible< butter::compound_artifact >::type{}
 BOOST_CHECK( not (std::is_assignable< butter::compound_artifact, butter::compound_artifact >::type{}) );
 BOOST_CHECK( not std::has_virtual_destructor< butter::compound_artifact >::type{});
 
+!!!221232.cpp!!!	compound_document_lifetime() : void
+// Lifetime method tests
+BOOST_CHECK( std::is_default_constructible< butter::compound_document >::type{} );
+BOOST_CHECK( std::is_copy_constructible< butter::compound_document >::type{} );
+BOOST_CHECK( std::is_move_constructible< butter::compound_document >::type{} );
+BOOST_CHECK( (std::is_assignable< butter::compound_document, butter::compound_document >::type{}) );
+BOOST_CHECK( not std::has_virtual_destructor< butter::compound_document >::type{});
+
+!!!228912.cpp!!!	compound_document_access() : void
+// Access method tests
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 0 );
+
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK( var1.close().user.isEmpty() );
+  BOOST_CHECK( var1.close().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK( var1.date().user.isEmpty() );
+  BOOST_CHECK( var1.date().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK( var1.preamble().user.isEmpty() );
+  BOOST_CHECK( var1.preamble().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK( var1.version().user.isEmpty() );
+  BOOST_CHECK( var1.version().value.isEmpty() );
+  BOOST_CHECK( var1.end_text().isEmpty() );
+
+  var1.set_close_user( "u1" );
+  var1.set_close_value( "v1" );
+  var1.set_date_user( "u2" );
+  var1.set_date_value( "v2" );
+  var1.set_preamble_user( "u3" );
+  var1.set_preamble_value( "v3" );
+  var1.set_version_user( "u4" );
+  var1.set_version_value( "v4" );
+  var1.set_end_text( "v5" );
+
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK_EQUAL( var1.close().user, "u1" );
+  BOOST_CHECK_EQUAL( var1.close().value, "v1" );
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK_EQUAL( var1.date().user, "u2" );
+  BOOST_CHECK_EQUAL( var1.date().value, "v2" );
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK_EQUAL( var1.preamble().user, "u3" );
+  BOOST_CHECK_EQUAL( var1.preamble().value, "v3" );
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK_EQUAL( var1.version().user, "u4" );
+  BOOST_CHECK_EQUAL( var1.version().value, "v4" );
+  BOOST_CHECK_EQUAL( var1.end_text(), "v5" );
+
+  BOOST_CHECK_NO_THROW( var1.reset() );
+
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK_EQUAL( var1.close().user, "u1" );
+  BOOST_CHECK( var1.close().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK_EQUAL( var1.date().user, "u2" );
+  BOOST_CHECK_EQUAL( var1.date().value, "v2" );
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK_EQUAL( var1.preamble().user, "u3" );
+  BOOST_CHECK( var1.preamble().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK_EQUAL( var1.version().user, "u4" );
+  BOOST_CHECK_EQUAL( var1.version().value, "v4" );
+  BOOST_CHECK_EQUAL( var1.end_text(), "v5" );
+
+}
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( ! var1.has_target( "a" ) );
+  var1.add_target_entry( "a" );
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).label, "a" );
+  BOOST_CHECK( var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
+  var1.set_target_user( "a", "value1" );
+  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
+  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
+  var1.set_target_value( "a", "value2" );
+  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
+  BOOST_CHECK( ! var1.get_target( "a" ).value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value2" );
+
+  var1.reset();
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
+  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
+}
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( ! var1.has_target( "a" ) );
+  var1.add_target( "a", "user1", "value1" );
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user1" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value1" );
+  var1.set_target_user( "a", "user2" );
+  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value1" );
+  var1.set_target_value( "a", "value2" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value2" );
+
+  var1.reset();
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
+  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
+}
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( ! var1.has_target( "b" ) );
+  var1.add_target_entry( "b" );
+  BOOST_CHECK( var1.has_target( "b" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "b" );
+
+  var1.add_target_entry( "a" );
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 2 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "b" );
+  BOOST_CHECK_EQUAL( var1.target_at( 1 ).label, "a" );
+}
+
+
+
+
+
+!!!244016.cpp!!!	compound_document_other() : void
+// Access method tests
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 0 );
+
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK( var1.close().user.isEmpty() );
+  BOOST_CHECK( var1.close().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK( var1.date().user.isEmpty() );
+  BOOST_CHECK( var1.date().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK( var1.preamble().user.isEmpty() );
+  BOOST_CHECK( var1.preamble().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK( var1.version().user.isEmpty() );
+  BOOST_CHECK( var1.version().value.isEmpty() );
+  BOOST_CHECK( var1.end_text().isEmpty() );
+}
+{
+  butter::compound_document var1;
+  try
+  {
+      auto a = var1.get_target( "a" );
+      BOOST_ERROR( "expected \"compound_document::get_target\" exception not thrown" );
+    }
+    catch( std::runtime_error const& err )
+    {
+      const std::string msg( err.what() );
+      // std::cout << msg << "\n";
+      BOOST_CHECK( msg.find( "Unable to find target with the given label" ) < msg.size() );
+    }
+    catch( std::exception const& err )
+    {
+      BOOST_ERROR( std::string( "exception thrown by \"compound_document::get_target\" was not expected type: " ) + err.what() );
+    }
+}
+{
+  butter::compound_document var1;
+  try
+  {
+      auto a = var1.target_at( 0 );
+      BOOST_ERROR( "expected \"compound_document::target_at\" exception not thrown" );
+    }
+    catch( std::out_of_range const& err )
+    {
+      const std::string msg( err.what() );
+      // std::cout << msg << "\n";
+      BOOST_CHECK( msg.find( "index out of range" ) < msg.size() );
+    }
+    catch( std::exception const& err )
+    {
+      BOOST_ERROR( std::string( "exception thrown by \"compound_document::target_at\" was not expected type: " ) + err.what() );
+    }
+}
+{
+  butter::compound_document var1;
+  var1.add_target_entry( "b" );
+  try
+  {
+      auto a = var1.get_target( "a" );
+      BOOST_ERROR( "expected \"compound_document::get_target\" exception not thrown" );
+    }
+    catch( std::runtime_error const& err )
+    {
+      const std::string msg( err.what() );
+      // std::cout << msg << "\n";
+      BOOST_CHECK( msg.find( "Unable to find target with the given label" ) < msg.size() );
+    }
+    catch( std::exception const& err )
+    {
+      BOOST_ERROR( std::string( "exception thrown by \"compound_document::get_target\" was not expected type: " ) + err.what() );
+    }
+}
+{
+  butter::compound_document var1;
+  var1.add_target_entry( "b" );
+  try
+  {
+      auto a = var1.target_at( 1 );
+      BOOST_ERROR( "expected \"compound_document::target_at\" exception not thrown" );
+    }
+    catch( std::out_of_range const& err )
+    {
+      const std::string msg( err.what() );
+      // std::cout << msg << "\n";
+      BOOST_CHECK( msg.find( "index out of range" ) < msg.size() );
+    }
+    catch( std::exception const& err )
+    {
+      BOOST_ERROR( std::string( "exception thrown by \"compound_document::target_at\" was not expected type: " ) + err.what() );
+    }
+}
+{
+  butter::compound_document var1;
+  var1.add_target_entry( "a" );
+  try
+  {
+      var1.add_target_entry( "a" );
+      BOOST_ERROR( "expected \"compound_document::add_target_entry\" exception not thrown" );
+    }
+    catch( std::runtime_error const& err )
+    {
+      const std::string msg( err.what() );
+      // std::cout << msg << "\n";
+      BOOST_CHECK( msg.find( "Cannot insert a second target with the same name" ) < msg.size() );
+    }
+    catch( std::exception const& err )
+    {
+      BOOST_ERROR( std::string( "exception thrown by \"compound_document::add_target_entry\" was not expected type: " ) + err.what() );
+    }
+}
+{
+  butter::compound_document var1;
+  var1.add_target( "a", "u1", "v1" );
+  try
+  {
+      var1.add_target( "a", "u2", "v2" );
+      BOOST_ERROR( "expected \"compound_document::add_target\" exception not thrown" );
+    }
+    catch( std::runtime_error const& err )
+    {
+      const std::string msg( err.what() );
+      // std::cout << msg << "\n";
+      BOOST_CHECK( msg.find( "Cannot insert a second target with the same name" ) < msg.size() );
+    }
+    catch( std::exception const& err )
+    {
+      BOOST_ERROR( std::string( "exception thrown by \"compound_document::add_target\" was not expected type: " ) + err.what() );
+    }
+}
+
+{
+  butter::compound_document var1;
+  var1.add_target( "a", "u1", "v1" );
+  try
+  {
+      var1.set_target_user( "b", "u2" );
+      BOOST_ERROR( "expected \"compound_document::set_target_user\" exception not thrown" );
+    }
+    catch( std::runtime_error const& err )
+    {
+      const std::string msg( err.what() );
+      // std::cout << msg << "\n";
+      BOOST_CHECK( msg.find( "Cannot set target value for non-existent target" ) < msg.size() );
+    }
+    catch( std::exception const& err )
+    {
+      BOOST_ERROR( std::string( "exception thrown by \"compound_document::set_target_user\" was not expected type: " ) + err.what() );
+    }
+}
+{
+  butter::compound_document var1;
+  var1.add_target( "a", "u1", "v1" );
+  try
+  {
+      var1.set_target_value( "b", "v2" );
+      BOOST_ERROR( "expected \"compound_document::set_target_value\" exception not thrown" );
+    }
+    catch( std::runtime_error const& err )
+    {
+      const std::string msg( err.what() );
+      // std::cout << msg << "\n";
+      BOOST_CHECK( msg.find( "Cannot set target value for non-existent target" ) < msg.size() );
+    }
+    catch( std::exception const& err )
+    {
+      BOOST_ERROR( std::string( "exception thrown by \"compound_document::set_target_value\" was not expected type: " ) + err.what() );
+    }
+}
+
+
+!!!243888.cpp!!!	compound_document_parse() : void
+// Access method tests
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 0 );
+
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK( var1.close().user.isEmpty() );
+  BOOST_CHECK( var1.close().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK( var1.date().user.isEmpty() );
+  BOOST_CHECK( var1.date().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK( var1.preamble().user.isEmpty() );
+  BOOST_CHECK( var1.preamble().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK( var1.version().user.isEmpty() );
+  BOOST_CHECK( var1.version().value.isEmpty() );
+  BOOST_CHECK( var1.end_text().isEmpty() );
+}
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( ! var1.has_target( "a" ) );
+  var1.add_target_entry( "a" );
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
+  BOOST_CHECK( var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
+  var1.set_target_user( "a", "value1" );
+  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
+  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
+  var1.set_target_value( "a", "value2" );
+  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
+  BOOST_CHECK( ! var1.get_target( "a" ).value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value2" );
+
+  var1.reset();
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
+  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
+}
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( ! var1.has_target( "a" ) );
+  var1.add_target( "a", "user1", "value1" );
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user1" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value1" );
+  var1.set_target_user( "a", "user2" );
+  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value1" );
+  var1.set_target_value( "a", "value2" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value2" );
+
+  var1.reset();
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
+  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
+}
+{
+  butter::compound_document var1;
+
+  BOOST_CHECK( ! var1.has_target( "b" ) );
+  var1.add_target_entry( "b" );
+  BOOST_CHECK( var1.has_target( "b" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "b" );
+
+  var1.add_target_entry( "a" );
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 2 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "b" );
+  BOOST_CHECK_EQUAL( var1.target_at( 1 ).label, "a" );
+}
+
+
+
+
+
+!!!243760.cpp!!!	compound_document_merge() : void
+// Merge var1 & var2 empty
+{
+  butter::compound_document var1;
+
+  butter::compound_document var2;
+
+  var1.merge( var2 );
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK( var1.close().user.isEmpty() );
+  BOOST_CHECK( var1.close().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK( var1.date().user.isEmpty() );
+  BOOST_CHECK( var1.date().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK( var1.preamble().user.isEmpty() );
+  BOOST_CHECK( var1.preamble().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK( var1.version().user.isEmpty() );
+  BOOST_CHECK( var1.version().value.isEmpty() );
+  BOOST_CHECK( var1.end_text().isEmpty() );
+  BOOST_CHECK( var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 0 );
+}
+// Merge var1, var2 non-target values
+{
+  butter::compound_document var1;
+
+  var1.set_close_user( "u11" );
+  var1.set_close_value( "v11" );
+  var1.set_date_user( "u21" );
+  var1.set_date_value( "v21" );
+  var1.set_preamble_user( "u31" );
+  var1.set_preamble_value( "v31" );
+  var1.set_version_user( "u41" );
+  var1.set_version_value( "v41" );
+  var1.set_end_text( "v51" );
+
+  butter::compound_document var2;
+
+  var2.set_close_user( "u12" );
+  var2.set_close_value( "v12" );
+  var2.set_date_user( "u22" );
+  var2.set_date_value( "v22" );
+  var2.set_preamble_user( "u32" );
+  var2.set_preamble_value( "v32" );
+  var2.set_version_user( "u42" );
+  var2.set_version_value( "v42" );
+  var2.set_end_text( "v52" );
+
+  var1.merge( var2 );
+
+  BOOST_CHECK( var1.empty() );
+
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK_EQUAL( var1.close().user, "u11u12" );
+  BOOST_CHECK_EQUAL( var1.close().value, "v11v12" );
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK_EQUAL( var1.date().user, "u21u22" );
+  BOOST_CHECK_EQUAL( var1.date().value, "v21v22" );
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK_EQUAL( var1.preamble().user, "u31u32" );
+  BOOST_CHECK_EQUAL( var1.preamble().value, "v31v32" );
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK_EQUAL( var1.version().user, "u41u42" );
+  BOOST_CHECK_EQUAL( var1.version().value, "v41v42" );
+  BOOST_CHECK_EQUAL( var1.end_text(), "v51v52" );
+
+}
+// Merge var1 empty, var2 has 1 target
+{
+  butter::compound_document var1;
+
+  butter::compound_document var2;
+
+  var2.add_target( "a", "value1", "value2" );
+
+  var1.merge( var2 );
+
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value2" );
+}
+// Merge var1 & var2 have different 1 targets
+{
+  butter::compound_document var1;
+  var1.add_target( "a", "user1", "value1" );
+
+  butter::compound_document var2;
+  var2.add_target( "b", "user1", "value1" );
+  var1.merge( var2 );
+
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( var1.has_target( "b" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 2 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user1" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value1" );
+  BOOST_CHECK_EQUAL( var1.target_at( 1 ).label, "b" );
+  BOOST_CHECK_EQUAL( var1.get_target( "b" ).user, "user1" );
+  BOOST_CHECK_EQUAL( var1.get_target( "b" ).value, "value1" );
+}
+// Merge var1 & var2 have 1 similar, 1 different targets
+{
+  butter::compound_document var1;
+  var1.add_target( "a", "user1", "value1" );
+  var1.add_target( "b", "user1", "value1" );
+
+  butter::compound_document var2;
+  var2.add_target( "b", "user2", "value2" );
+  var2.add_target( "c", "user2", "value2" );
+
+  var1.merge( var2 );
+
+  BOOST_CHECK( var1.has_target( "a" ) );
+  BOOST_CHECK( var1.has_target( "b" ) );
+  BOOST_CHECK( var1.has_target( "c" ) );
+  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.size(), 3 );
+  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user1" );
+  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value1" );
+  BOOST_CHECK_EQUAL( var1.target_at( 1 ).label, "b" );
+  BOOST_CHECK_EQUAL( var1.get_target( "b" ).user, "user1user2" );
+  BOOST_CHECK_EQUAL( var1.get_target( "b" ).value, "value1value2" );
+  BOOST_CHECK_EQUAL( var1.target_at( 2 ).label, "c" );
+  BOOST_CHECK_EQUAL( var1.get_target( "c" ).user, "user2" );
+  BOOST_CHECK_EQUAL( var1.get_target( "c" ).value, "value2" );
+}
+!!!243632.cpp!!!	compound_document_write() : void
+// Write method tests
+
+// ----------------------------
+// Empty objects give no result
+// ----------------------------
+{
+  butter::compound_document var1;
+  QString canon;
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::jam_generator::style );
+    BOOST_CHECK_EQUAL( result, canon );
+  }
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::bjam_generator::style );
+    BOOST_CHECK_EQUAL( result, canon );
+  }
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::cmake_generator::style );
+    BOOST_CHECK_EQUAL( result, canon );
+  }
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::gmake_generator::style );
+    BOOST_CHECK_EQUAL( result, canon );
+  }
+}
+// --------------------------
+// Single target gives output
+// --------------------------
+{
+  butter::compound_document var1;
+  {
+    // Build systems with "#" comments
+    QString canon( "user1\n##START:target a\nvalue1\n##END:target a\n" );
+    var1.add_target( "a", "user1\n", "value1\n" );
+    {
+      QString result;
+      QTextOStream os( &result );
+      var1.write( os, butter::jam_generator::style );
+      BOOST_CHECK_EQUAL( result, canon );
+    }
+    {
+      QString result;
+      QTextOStream os( &result );
+      var1.write( os, butter::bjam_generator::style );
+      BOOST_CHECK_EQUAL( result, canon );
+    }
+    {
+      QString result;
+      QTextOStream os( &result );
+      var1.write( os, butter::cmake_generator::style );
+      BOOST_CHECK_EQUAL( result, canon );
+    }
+    {
+      QString result;
+      QTextOStream os( &result );
+      var1.write( os, butter::gmake_generator::style );
+      BOOST_CHECK_EQUAL( result, canon );
+    }
+  }
+}
+// ----------------------------
+// Standard elements and target
+// ----------------------------
+{
+  butter::compound_document var1;
+
+  var1.set_close_user( "u1\n" );
+  var1.set_close_value( "v1\n" );
+  var1.set_date_user( "u2\n" );
+  var1.set_date_value( "v2\n" );
+  var1.set_preamble_user( "u3\n" );
+  var1.set_preamble_value( "v3\n" );
+  var1.set_version_user( "u4\n" );
+  var1.set_version_value( "v4\n" );
+  var1.set_end_text( "v5\n" );
+
+  {
+    // Build systems with "#" comments
+    QString canon( "u4\n##START:version\nv4\n##END:version\nu2\n##START:date\nv2\n##END:date\nu3\n##START:preamble\nv3\n##END:preamble\nuser1\n##START:target a\nvalue1\n##END:target a\nu1\n##START:close\nv1\n##END:close\nv5\n" );
+    var1.add_target( "a", "user1\n", "value1\n" );
+    {
+      QString result;
+      QTextOStream os( &result );
+      var1.write( os, butter::jam_generator::style );
+      BOOST_CHECK_EQUAL( result, canon );
+    }
+    {
+      QString result;
+      QTextOStream os( &result );
+      var1.write( os, butter::bjam_generator::style );
+      BOOST_CHECK_EQUAL( result, canon );
+    }
+    {
+      QString result;
+      QTextOStream os( &result );
+      var1.write( os, butter::cmake_generator::style );
+      BOOST_CHECK_EQUAL( result, canon );
+    }
+    {
+      QString result;
+      QTextOStream os( &result );
+      var1.write( os, butter::gmake_generator::style );
+      BOOST_CHECK_EQUAL( result, canon );
+    }
+  }
+}
+
 !!!183088.cpp!!!	const_token_iterator_lifetime() : void
 // Lifetime method tests
 BOOST_CHECK( std::is_default_constructible< butter::const_token_iterator >::type{} );
