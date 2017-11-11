@@ -1,6 +1,6 @@
 format 75
 "butter-test" // butter::butter-test
-  revision 28
+  revision 29
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -570,7 +570,75 @@ SET: add_target_entry[ duplicate label ]
 SET: set_target_user,set_target_value[ no match for label ]"
       end
 
-      operation 243888 "compound_document_parse"
+      operation 258096 "compound_document_parse_jam"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test compound_document parse method"
+      end
+
+      operation 258224 "compound_document_parse_bjam"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test compound_document parse method"
+      end
+
+      operation 258352 "compound_document_parse_cmake"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test compound_document parse method"
+      end
+
+      operation 243888 "compound_document_parse_gmake"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "
+"
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Test compound_document parse method"
+      end
+
+      operation 258480 "compound_document_parse_fail"
 	public explicit_return_type "void"
 	nparams 0
 	cpp_decl "

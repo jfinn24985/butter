@@ -739,113 +739,113 @@ BOOST_CHECK( not std::has_virtual_destructor< butter::compound_document >::type{
   butter::compound_document var1;
   try
   {
-      auto a = var1.get_target( "a" );
-      BOOST_ERROR( "expected \"compound_document::get_target\" exception not thrown" );
-    }
-    catch( std::runtime_error const& err )
-    {
-      const std::string msg( err.what() );
-      // std::cout << msg << "\n";
-      BOOST_CHECK( msg.find( "Unable to find target with the given label" ) < msg.size() );
-    }
-    catch( std::exception const& err )
-    {
-      BOOST_ERROR( std::string( "exception thrown by \"compound_document::get_target\" was not expected type: " ) + err.what() );
-    }
+    auto a = var1.get_target( "a" );
+    BOOST_ERROR( "expected \"compound_document::get_target\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    // std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "Unable to find target with the given label" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::get_target\" was not expected type: " ) + err.what() );
+  }
 }
 {
   butter::compound_document var1;
   try
   {
-      auto a = var1.target_at( 0 );
-      BOOST_ERROR( "expected \"compound_document::target_at\" exception not thrown" );
-    }
-    catch( std::out_of_range const& err )
-    {
-      const std::string msg( err.what() );
-      // std::cout << msg << "\n";
-      BOOST_CHECK( msg.find( "index out of range" ) < msg.size() );
-    }
-    catch( std::exception const& err )
-    {
-      BOOST_ERROR( std::string( "exception thrown by \"compound_document::target_at\" was not expected type: " ) + err.what() );
-    }
-}
-{
-  butter::compound_document var1;
-  var1.add_target_entry( "b" );
-  try
+    auto a = var1.target_at( 0 );
+    BOOST_ERROR( "expected \"compound_document::target_at\" exception not thrown" );
+  }
+  catch( std::out_of_range const & err )
   {
-      auto a = var1.get_target( "a" );
-      BOOST_ERROR( "expected \"compound_document::get_target\" exception not thrown" );
-    }
-    catch( std::runtime_error const& err )
-    {
-      const std::string msg( err.what() );
-      // std::cout << msg << "\n";
-      BOOST_CHECK( msg.find( "Unable to find target with the given label" ) < msg.size() );
-    }
-    catch( std::exception const& err )
-    {
-      BOOST_ERROR( std::string( "exception thrown by \"compound_document::get_target\" was not expected type: " ) + err.what() );
-    }
+    const std::string msg( err.what() );
+    // std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "index out of range" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::target_at\" was not expected type: " ) + err.what() );
+  }
 }
 {
   butter::compound_document var1;
   var1.add_target_entry( "b" );
   try
   {
-      auto a = var1.target_at( 1 );
-      BOOST_ERROR( "expected \"compound_document::target_at\" exception not thrown" );
-    }
-    catch( std::out_of_range const& err )
-    {
-      const std::string msg( err.what() );
-      // std::cout << msg << "\n";
-      BOOST_CHECK( msg.find( "index out of range" ) < msg.size() );
-    }
-    catch( std::exception const& err )
-    {
-      BOOST_ERROR( std::string( "exception thrown by \"compound_document::target_at\" was not expected type: " ) + err.what() );
-    }
+    auto a = var1.get_target( "a" );
+    BOOST_ERROR( "expected \"compound_document::get_target\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    // std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "Unable to find target with the given label" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::get_target\" was not expected type: " ) + err.what() );
+  }
+}
+{
+  butter::compound_document var1;
+  var1.add_target_entry( "b" );
+  try
+  {
+    auto a = var1.target_at( 1 );
+    BOOST_ERROR( "expected \"compound_document::target_at\" exception not thrown" );
+  }
+  catch( std::out_of_range const & err )
+  {
+    const std::string msg( err.what() );
+    // std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "index out of range" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::target_at\" was not expected type: " ) + err.what() );
+  }
 }
 {
   butter::compound_document var1;
   var1.add_target_entry( "a" );
   try
   {
-      var1.add_target_entry( "a" );
-      BOOST_ERROR( "expected \"compound_document::add_target_entry\" exception not thrown" );
-    }
-    catch( std::runtime_error const& err )
-    {
-      const std::string msg( err.what() );
-      // std::cout << msg << "\n";
-      BOOST_CHECK( msg.find( "Cannot insert a second target with the same name" ) < msg.size() );
-    }
-    catch( std::exception const& err )
-    {
-      BOOST_ERROR( std::string( "exception thrown by \"compound_document::add_target_entry\" was not expected type: " ) + err.what() );
-    }
+    var1.add_target_entry( "a" );
+    BOOST_ERROR( "expected \"compound_document::add_target_entry\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    // std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "Cannot insert a second target with the same name" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::add_target_entry\" was not expected type: " ) + err.what() );
+  }
 }
 {
   butter::compound_document var1;
   var1.add_target( "a", "u1", "v1" );
   try
   {
-      var1.add_target( "a", "u2", "v2" );
-      BOOST_ERROR( "expected \"compound_document::add_target\" exception not thrown" );
-    }
-    catch( std::runtime_error const& err )
-    {
-      const std::string msg( err.what() );
-      // std::cout << msg << "\n";
-      BOOST_CHECK( msg.find( "Cannot insert a second target with the same name" ) < msg.size() );
-    }
-    catch( std::exception const& err )
-    {
-      BOOST_ERROR( std::string( "exception thrown by \"compound_document::add_target\" was not expected type: " ) + err.what() );
-    }
+    var1.add_target( "a", "u2", "v2" );
+    BOOST_ERROR( "expected \"compound_document::add_target\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    // std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "Cannot insert a second target with the same name" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::add_target\" was not expected type: " ) + err.what() );
+  }
 }
 
 {
@@ -853,134 +853,351 @@ BOOST_CHECK( not std::has_virtual_destructor< butter::compound_document >::type{
   var1.add_target( "a", "u1", "v1" );
   try
   {
-      var1.set_target_user( "b", "u2" );
-      BOOST_ERROR( "expected \"compound_document::set_target_user\" exception not thrown" );
-    }
-    catch( std::runtime_error const& err )
-    {
-      const std::string msg( err.what() );
-      // std::cout << msg << "\n";
-      BOOST_CHECK( msg.find( "Cannot set target value for non-existent target" ) < msg.size() );
-    }
-    catch( std::exception const& err )
-    {
-      BOOST_ERROR( std::string( "exception thrown by \"compound_document::set_target_user\" was not expected type: " ) + err.what() );
-    }
+    var1.set_target_user( "b", "u2" );
+    BOOST_ERROR( "expected \"compound_document::set_target_user\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    // std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "Cannot set target value for non-existent target" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::set_target_user\" was not expected type: " ) + err.what() );
+  }
 }
 {
   butter::compound_document var1;
   var1.add_target( "a", "u1", "v1" );
   try
   {
-      var1.set_target_value( "b", "v2" );
-      BOOST_ERROR( "expected \"compound_document::set_target_value\" exception not thrown" );
-    }
-    catch( std::runtime_error const& err )
-    {
-      const std::string msg( err.what() );
-      // std::cout << msg << "\n";
-      BOOST_CHECK( msg.find( "Cannot set target value for non-existent target" ) < msg.size() );
-    }
-    catch( std::exception const& err )
-    {
-      BOOST_ERROR( std::string( "exception thrown by \"compound_document::set_target_value\" was not expected type: " ) + err.what() );
-    }
+    var1.set_target_value( "b", "v2" );
+    BOOST_ERROR( "expected \"compound_document::set_target_value\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    // std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "Cannot set target value for non-existent target" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::set_target_value\" was not expected type: " ) + err.what() );
+  }
 }
 
-
-!!!243888.cpp!!!	compound_document_parse() : void
+!!!258096.cpp!!!	compound_document_parse_jam() : void
 // Access method tests
 {
   butter::compound_document var1;
 
-  BOOST_CHECK( var1.empty() );
-  BOOST_CHECK_EQUAL( var1.size(), 0 );
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\n##START:date\n#Tue Oct 31 16:51:03 2017\n##END:date\n##START:preamble\nALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)src$(SLASH)Executable ;\n\nSubDir TOP src Executable ;\n\n##END:preamble\n##START:target program\nEXECUTABLE_PROGRAM_SRC =\n	<src!Executable>example_exe.cpp\n	;\n\nMain <src!Executable>program$(SUFEXE) :\n	$(EXECUTABLE_PROGRAM_SRC) ;\n\nLINKLIBS on <src!Executable>program$(SUFEXE) +=  $(LIBRARY_LIBRARY_LDFLAGS)  ;\nLinkLibraries <src!Executable>program$(SUFEXE) :\n	 <src!Library>library$(SUFLIB) \n	;\nInstallBin $(BINDIR) : <src!Executable>program$(SUFEXE) ;\n##END:target program\n" );
+
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::jam_generator::style );
+  }
+  BOOST_CHECK( ! var1.empty() );
+
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK( var1.version().user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().value, "#Butter version 1.2beta.175\n" );
+
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK( var1.date().user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().value, "#Tue Oct 31 16:51:03 2017\n" );
+
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK( var1.preamble().user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.preamble().value, "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)src$(SLASH)Executable ;\n\nSubDir TOP src Executable ;\n\n" );
 
   BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
   BOOST_CHECK( var1.close().user.isEmpty() );
   BOOST_CHECK( var1.close().value.isEmpty() );
+
+  BOOST_CHECK( var1.end_text().isEmpty() );
+
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_REQUIRE( var1.has_target( "program" ) );
+  BOOST_CHECK( var1.get_target( "program" ).user.isEmpty() );
+  BOOST_CHECK( ! var1.get_target( "program" ).value.isEmpty() );
+   
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::jam_generator::style );
+
+    BOOST_CHECK_EQUAL( result, buildfile );
+  }
+}
+!!!258224.cpp!!!	compound_document_parse_bjam() : void
+// Access method tests
+{
+  butter::compound_document var1;
+
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\n##START:date\n#Wed Nov 1 16:23:51 2017\n##END:date\n##START:target program\nexe program :\n	example_exe.cpp\n	/multidir/Library//library\n	:\n	;\n\ninstall install_program : program : <variant>release:<location>$(INSTALL_PREFIX)/$(BINDIR) \n		<variant>debug:<location>$(DEBUG_PREFIX)/\"src/Executable\" ;\n##END:target program\n" );
+
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::bjam_generator::style );
+  }
+  BOOST_CHECK( ! var1.empty() );
+
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK( var1.version().user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().value, "#Butter version 1.2beta.175\n" );
+
   BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
   BOOST_CHECK( var1.date().user.isEmpty() );
-  BOOST_CHECK( var1.date().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().value, "#Wed Nov 1 16:23:51 2017\n" );
+
   BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
   BOOST_CHECK( var1.preamble().user.isEmpty() );
   BOOST_CHECK( var1.preamble().value.isEmpty() );
+
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK( var1.close().user.isEmpty() );
+  BOOST_CHECK( var1.close().value.isEmpty() );
+
+  BOOST_CHECK( var1.end_text().isEmpty() );
+
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_REQUIRE( var1.has_target( "program" ) );
+  BOOST_CHECK( var1.get_target( "program" ).user.isEmpty() );
+  BOOST_CHECK( ! var1.get_target( "program" ).value.isEmpty() );
+
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::bjam_generator::style );
+
+    BOOST_CHECK_EQUAL( result, buildfile );
+  }
+}
+
+!!!258352.cpp!!!	compound_document_parse_cmake() : void
+// Access method tests
+{
+  butter::compound_document var1;
+
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\n##START:date\n#Wed Nov 1 16:41:09 2017\n##END:date\n##START:target program\nset (EXECUTABLE_PROGRAM program)\n\nset (EXECUTABLE_PROGRAM_SRC \n	example_exe.cpp)\nadd_executable (${EXECUTABLE_PROGRAM}\n	${EXECUTABLE_PROGRAM_SRC})\ntarget_link_libraries (${EXECUTABLE_PROGRAM}\n	library)\ninstall (TARGETS ${EXECUTABLE_PROGRAM}\n	RUNTIME DESTINATION ${BINDIR}\n	CONFIGURATIONS Release)\n\n##END:target program\n" );
+
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::cmake_generator::style );
+  }
+  BOOST_CHECK( ! var1.empty() );
+
   BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
   BOOST_CHECK( var1.version().user.isEmpty() );
-  BOOST_CHECK( var1.version().value.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().value, "#Butter version 1.2beta.175\n" );
+
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK( var1.date().user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().value, "#Wed Nov 1 16:41:09 2017\n" );
+
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK( var1.preamble().user.isEmpty() );
+  BOOST_CHECK( var1.preamble().value.isEmpty() );
+
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK( var1.close().user.isEmpty() );
+  BOOST_CHECK( var1.close().value.isEmpty() );
+
   BOOST_CHECK( var1.end_text().isEmpty() );
+
+  BOOST_CHECK_EQUAL( var1.size(), 1 );
+  BOOST_REQUIRE( var1.has_target( "program" ) );
+  BOOST_CHECK( var1.get_target( "program" ).user.isEmpty() );
+  BOOST_CHECK( ! var1.get_target( "program" ).value.isEmpty() );
+
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::cmake_generator::style );
+
+    BOOST_CHECK_EQUAL( result, buildfile );
+  }
 }
+
+!!!243888.cpp!!!	compound_document_parse_gmake() : void
+// Access method tests
 {
   butter::compound_document var1;
 
-  BOOST_CHECK( ! var1.has_target( "a" ) );
-  var1.add_target_entry( "a" );
-  BOOST_CHECK( var1.has_target( "a" ) );
-  BOOST_CHECK( ! var1.empty() );
-  BOOST_CHECK_EQUAL( var1.size(), 1 );
-  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
-  BOOST_CHECK( var1.get_target( "a" ).user.isEmpty() );
-  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
-  var1.set_target_user( "a", "value1" );
-  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
-  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
-  var1.set_target_value( "a", "value2" );
-  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
-  BOOST_CHECK( ! var1.get_target( "a" ).value.isEmpty() );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value2" );
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\n##START:date\n#Wed Nov 8 20:00:39 2017\n##END:date\n##START:preamble\ninclude $(ROOTDIR)/M_sys.mk\n\n##END:preamble\n##START:target butter_exec\nBUTTER_TEST_BUTTER_EXECSRC :=  \\\n	core_test_suite.cpp\nBUTTER_TEST_BUTTER_EXEC_DINC := $(filter %$(sufdep), $(BUTTER_TEST_BUTTER_EXECSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_BUTTER_EXECSRC:.c=$(sufdep)))\nbutter_exec$(sufexe): LDFLAGS+= $(BOOST_LIB) -lboost_unit_test_framework -L${QTDIR}/lib64 -lqt-mt -lm\nbutter_exec$(sufexe) $(BUTTER_TEST_BUTTER_EXEC_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT -DBOOST_TEST_DYN_LINK \nBUTTER_TEST_BUTTER_EXEC_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)\nBUTTER_TEST_BUTTER_EXEC_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)\n\nBUTTER_TEST_BUTTER_EXEC_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_BUTTER_EXECSRC:.cpp=$(sufobj)))\nUSEROBJ+=$(BUTTER_TEST_BUTTER_EXEC_OBJ)\nbutter_exec$(sufexe) : $(BUTTER_TEST_BUTTER_EXEC_SRC) $(BUTTER_TEST_BUTTER_EXEC_DINC)\n-include $(BUTTER_TEST_BUTTER_EXEC_DINC)\n$(eval $(call do_link_exe,butter_exec$(sufexe),$(BUTTER_TEST_BUTTER_EXEC_OBJ)))\n\nall :: butter_exec$(sufexe)\nTARGETS+=butter_exec$(sufexe)\n\n##END:target butter_exec\n##START:target plugout_exec\nBUTTER_TEST_PLUGOUT_EXECSRC :=  \\\n	plugout_test_suite.cpp\nBUTTER_TEST_PLUGOUT_EXEC_DINC := $(filter %$(sufdep), $(BUTTER_TEST_PLUGOUT_EXECSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_TEST_PLUGOUT_EXECSRC:.c=$(sufdep)))\nplugout_exec$(sufexe): LDFLAGS+= $(BOOST_LIB) -lboost_unit_test_framework -L${QTDIR}/lib64 -lqt-mt -lm\nplugout_exec$(sufexe) $(BUTTER_TEST_PLUGOUT_EXEC_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT -DBOOST_TEST_DYN_LINK \nBUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(ROOTDIR)/src/bouml/bouml$(suflib)\nBUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(ROOTDIR)/src/butter/butter$(suflib)\n\nBUTTER_TEST_PLUGOUT_EXEC_OBJ+=$(filter %$(sufobj), $(BUTTER_TEST_PLUGOUT_EXECSRC:.cpp=$(sufobj)))\nUSEROBJ+=$(BUTTER_TEST_PLUGOUT_EXEC_OBJ)\nplugout_exec$(sufexe) : $(BUTTER_TEST_PLUGOUT_EXEC_SRC) $(BUTTER_TEST_PLUGOUT_EXEC_DINC)\n-include $(BUTTER_TEST_PLUGOUT_EXEC_DINC)\n$(eval $(call do_link_exe,plugout_exec$(sufexe),$(BUTTER_TEST_PLUGOUT_EXEC_OBJ)))\n\nall :: plugout_exec$(sufexe)\nTARGETS+=plugout_exec$(sufexe)\n\n##END:target plugout_exec\n" );
 
-  var1.reset();
-  BOOST_CHECK( var1.has_target( "a" ) );
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::gmake_generator::style );
+  }
   BOOST_CHECK( ! var1.empty() );
-  BOOST_CHECK_EQUAL( var1.size(), 1 );
-  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "value1" );
-  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
-}
-{
-  butter::compound_document var1;
 
-  BOOST_CHECK( ! var1.has_target( "a" ) );
-  var1.add_target( "a", "user1", "value1" );
-  BOOST_CHECK( var1.has_target( "a" ) );
-  BOOST_CHECK( ! var1.empty() );
-  BOOST_CHECK_EQUAL( var1.size(), 1 );
-  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "a" );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user1" );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value1" );
-  var1.set_target_user( "a", "user2" );
-  BOOST_CHECK( ! var1.get_target( "a" ).user.isEmpty() );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value1" );
-  var1.set_target_value( "a", "value2" );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).value, "value2" );
+  BOOST_CHECK_EQUAL( var1.version().label, butter::butter_constants::version_label );
+  BOOST_CHECK( var1.version().user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.version().value, "#Butter version 1.2beta.175\n" );
 
-  var1.reset();
-  BOOST_CHECK( var1.has_target( "a" ) );
-  BOOST_CHECK( ! var1.empty() );
-  BOOST_CHECK_EQUAL( var1.size(), 1 );
-  BOOST_CHECK_EQUAL( var1.get_target( "a" ).user, "user2" );
-  BOOST_CHECK( var1.get_target( "a" ).value.isEmpty() );
-}
-{
-  butter::compound_document var1;
+  BOOST_CHECK_EQUAL( var1.date().label, butter::butter_constants::date_label );
+  BOOST_CHECK( var1.date().user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.date().value, "#Wed Nov 8 20:00:39 2017\n" );
 
-  BOOST_CHECK( ! var1.has_target( "b" ) );
-  var1.add_target_entry( "b" );
-  BOOST_CHECK( var1.has_target( "b" ) );
-  BOOST_CHECK( ! var1.empty() );
-  BOOST_CHECK_EQUAL( var1.size(), 1 );
-  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "b" );
+  BOOST_CHECK_EQUAL( var1.preamble().label, butter::butter_constants::preamble_label );
+  BOOST_CHECK( var1.preamble().user.isEmpty() );
+  BOOST_CHECK_EQUAL( var1.preamble().value, "include $(ROOTDIR)/M_sys.mk\n\n" );
 
-  var1.add_target_entry( "a" );
-  BOOST_CHECK( var1.has_target( "a" ) );
-  BOOST_CHECK( ! var1.empty() );
+  BOOST_CHECK_EQUAL( var1.close().label, butter::butter_constants::close_label );
+  BOOST_CHECK( var1.close().user.isEmpty() );
+  BOOST_CHECK( var1.close().value.isEmpty() );
+
+  BOOST_CHECK( var1.end_text().isEmpty() );
+
   BOOST_CHECK_EQUAL( var1.size(), 2 );
-  BOOST_CHECK_EQUAL( var1.target_at( 0 ).label, "b" );
-  BOOST_CHECK_EQUAL( var1.target_at( 1 ).label, "a" );
+  BOOST_REQUIRE( var1.has_target( "butter_exec" ) );
+  BOOST_CHECK( var1.get_target( "butter_exec" ).user.isEmpty() );
+  BOOST_CHECK( ! var1.get_target( "butter_exec" ).value.isEmpty() );
+   
+  BOOST_REQUIRE( var1.has_target( "plugout_exec" ) );
+  BOOST_CHECK( var1.get_target( "plugout_exec" ).user.isEmpty() );
+  BOOST_CHECK( ! var1.get_target( "plugout_exec" ).value.isEmpty() );
+
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::gmake_generator::style );
+
+    BOOST_CHECK_EQUAL( result, buildfile );
+  }
+}
+
+!!!258480.cpp!!!	compound_document_parse_fail() : void
+{
+  butter::compound_document var1;
+  // minimal ok 
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\n##START:date\n#Tue Oct 31 16:51:03 2017\n##END:date\n" );
+
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::jam_generator::style );
+  }   
+  {
+    QString result;
+    QTextOStream os( &result );
+    var1.write( os, butter::jam_generator::style );
+
+    BOOST_CHECK_EQUAL( result, buildfile );
+  }
+}
+// Bad parse data
+{
+  butter::compound_document var1;
+  // unrecognised section
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\n##START:data\n#Tue Oct 31 16:51:03 2017\n##END:data\n" );
+
+  try
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::jam_generator::style );
+    BOOST_ERROR( "expected \"compound_document::parse\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    //std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "<p><b>Fatal Error:</b> An unknown section type (in line <b>##START:data</b>) encountered while parsing a compound document.</p>" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::parse\" was not expected type: " ) + err.what() );
+  }
+}
+{
+  butter::compound_document var1;
+  // No VERSION end line section
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##START:date\n#Tue Oct 31 16:51:03 2017\n##END:date\n" );
+
+  try
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::jam_generator::style );
+    BOOST_ERROR( "expected \"compound_document::parse\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    //std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "<p>Badly formed artifact with section start inside a section</p>" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::parse\" was not expected type: " ) + err.what() );
+  }
+}
+{
+  butter::compound_document var1;
+  // no DATE end line 
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\n##START:date\n#Tue Oct 31 16:51:03 2017\n" );
+
+  try
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::jam_generator::style );
+    BOOST_ERROR( "expected \"compound_document::parse\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "Cannot set target value for non-existent target" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::parse\" was not expected type: " ) + err.what() );
+  }
+}
+{
+  butter::compound_document var1;
+  // START not directly after new line 
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\nHello World##START:date\n#Tue Oct 31 16:51:03 2017\n##END:date\n" );
+
+  try
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::jam_generator::style );
+    BOOST_ERROR( "expected \"compound_document::parse\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    //std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "<p><b>Fatal Error:</b> Section end phrase (in line <b>##END:date</b> encountered outside a section while parsing a compound document.</p>" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::parse\" was not expected type: " ) + err.what() );
+  }
+}
+{
+  butter::compound_document var1;
+  // Duplicate target 
+  QString buildfile( "##START:version\n#Butter version 1.2beta.175\n##END:version\n##START:date\n#Tue Oct 31 16:51:03 2017\n##END:date\n##START:target a\nA\n##END:target a\n##START:target a\nB\n##END:target a\n" );
+
+  try
+  {
+    QTextIStream is( &buildfile );
+    var1.parse( is, butter::jam_generator::style );
+    BOOST_ERROR( "expected \"compound_document::parse\" exception not thrown" );
+  }
+  catch( std::runtime_error const & err )
+  {
+    const std::string msg( err.what() );
+    //std::cout << msg << "\n";
+    BOOST_CHECK( msg.find( "Cannot insert a second target with the same name" ) < msg.size() );
+  }
+  catch( std::exception const & err )
+  {
+    BOOST_ERROR( std::string( "exception thrown by \"compound_document::parse\" was not expected type: " ) + err.what() );
+  }
 }
 
 

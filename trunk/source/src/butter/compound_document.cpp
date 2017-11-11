@@ -154,107 +154,109 @@ if( ! a_other.end_.isEmpty() )
 
 void compound_document::parse(::QTextIStream & a_is, const basic_style & a_style) 
 {
-//XX QString capture_;
-//XX int state_ = 0; // 0 = unlabelled, 1 = labelled
-//XX string_pair_t * cache_ = NULL;
-//XX for ( QString line_ = a_is.readLine();
-//XX   ! line_.isNull(); // Check for EOF
-//XX   line_ = a_is.readLine() )
-//XX {
-//XX   switch ( state_ )
-//XX   {
-//XX   case 0: // Unlabelled
-//XX   {
-//XX     if ( line_.startsWith( style_.start_phrase() ) )
-//XX     {
-//XX       if ( line_.contains( QString( butter::butter_constants::version_label ) ) )
-//XX       {
-//XX         cache_ = &version;
-//XX       }
-//XX       else if ( line_.contains( QString( butter::butter_constants::date_label ) ) )
-//XX       {
-//XX         cache_ = &date;
-//XX       }
-//XX       else if ( line_.contains( QString( butter::butter_constants::preamble_label ) ) )
-//XX       {
-//XX         cache_ = &preamble;
-//XX       }
-//XX       else if ( line_.contains( QString( butter::butter_constants::close_label ) ) )
-//XX       {
-//XX         cache_ = &close;
-//XX       }
-//XX       else if ( line_.contains( QString( butter::butter_constants::target_label ) ) )
-//XX       {
-//XX         const QString label_ = line_.mid( line_.find( QString( butter::butter_constants::target_label ) ) + butter::butter_constants::target_label.length() ).simplifyWhiteSpace();
-//XX         this->add_target_entry( label_ );
-//XX         cache_ = this->targets_.find( label_ );
-//XX       }
-//XX       else
-//XX       {
-//XX         QString name_( "<p><b>Fatal Error:</b> An unknown section type (in line <b>" );
-//XX         name_.append( line_ );
-//XX         name_.append( "</b>) encountered while parsing a compound document.</p>" );
-//XX         throw std::runtime_error( name_.utf8().data() );
-//XX       }
-//XX       if ( ! capture_.isEmpty() )
-//XX       {
-//XX         cache_->first = capture_;
-//XX         capture_.setUnicode( 0, 0 );
-//XX       }
-//XX       state_ = 1;
-//XX     }
-//XX     else if ( line_.startsWith( style_.end_phrase() ) )
-//XX     {
-//XX       QString name_( "<p><b>Fatal Error:</b> Section end phrase (in line <b>" );
-//XX       name_.append( line_ );
-//XX       name_.append( "</b> encountered outside a section while parsing a compound document.</p>" );
-//XX       throw std::runtime_error( name_.utf8().data() );
-//XX     }
-//XX     else
-//XX     {
-//XX       capture_ += line_;
-//XX       capture_ += '\n';
-//XX     }
-//XX   }
-//XX   break;
-//XX   case 1: // In a section
-//XX   {
-//XX     if ( line_.startsWith( style_.end_phrase() ) )
-//XX     {
-//XX       if ( ! capture_.isEmpty() )
-//XX       {
-//XX         cache_->second = capture_;
-//XX         capture_.setUnicode( 0, 0 );
-//XX       }
-//XX       state_ = 0;
-//XX     }
-//XX     else if ( line_.startsWith( style_.start_phrase() ) )
-//XX     {
-//XX       throw std::runtime_error( "<p>Badly formed artifact with section start inside a section</p>" );
-//XX     }
-//XX     else
-//XX     {
-//XX       capture_ += line_;
-//XX       capture_ += '\n';
-//XX     }
-//XX   }
-//XX   break;
-//XX   default: // Error!
-//XX     throw std::runtime_error( "<p>Programming error: at a default switch case.</p>" );
-//XX     break;
-//XX   }
-//XX }
-//XX if ( ! capture_.isEmpty() )
-//XX {
-//XX   if ( NULL != cache_ ) // Have there been sections?
-//XX   {
-//XX     end = capture_;
-//XX   }
-//XX   else
-//XX   {
-//XX     version.first = capture_;
-//XX   }
-//XX }
+QString capture_;
+int state_ = 0; // 0 = unlabelled, 1 = labelled
+element_t * cache_ = NULL;
+compound_document tmp;
+for ( QString line_ = a_is.readLine();
+  ! line_.isNull(); // Check for EOF
+  line_ = a_is.readLine() )
+{
+  switch ( state_ )
+  {
+  case 0: // Unlabelled
+  {
+    if ( line_.startsWith( a_style.start_phrase() ) )
+    {
+      if ( line_.contains( QString( butter::butter_constants::version_label ) ) )
+      {
+        cache_ = &tmp.version_;
+      }
+      else if ( line_.contains( QString( butter::butter_constants::date_label ) ) )
+      {
+        cache_ = &tmp.date_;
+      }
+      else if ( line_.contains( QString( butter::butter_constants::preamble_label ) ) )
+      {
+        cache_ = &tmp.preamble_;
+      }
+      else if ( line_.contains( QString( butter::butter_constants::close_label ) ) )
+      {
+        cache_ = &tmp.close_;
+      }
+      else if ( line_.contains( QString( butter::butter_constants::target_label ) ) )
+      {
+        const QString label_ = line_.mid( line_.find( QString( butter::butter_constants::target_label ) ) + butter::butter_constants::target_label.length() ).simplifyWhiteSpace();
+        tmp.add_target_entry( label_ );
+        cache_ = &tmp.targets_[ tmp.size() - 1 ];
+      }
+      else
+      {
+        QString name_( "<p><b>Fatal Error:</b> An unknown section type (in line <b>" );
+        name_.append( line_ );
+        name_.append( "</b>) encountered while parsing a compound document.</p>" );
+        throw std::runtime_error( name_.utf8().data() );
+      }
+      if ( ! capture_.isEmpty() )
+      {
+        cache_->user = capture_;
+        capture_.setUnicode( 0, 0 );
+      }
+      state_ = 1;
+    }
+    else if ( line_.startsWith( a_style.end_phrase() ) )
+    {
+      QString name_( "<p><b>Fatal Error:</b> Section end phrase (in line <b>" );
+      name_.append( line_ );
+      name_.append( "</b> encountered outside a section while parsing a compound document.</p>" );
+      throw std::runtime_error( name_.utf8().data() );
+    }
+    else
+    {
+      capture_ += line_;
+      capture_ += '\n';
+    }
+  }
+  break;
+  case 1: // In a section
+  {
+    if ( line_.startsWith( a_style.end_phrase() ) )
+    {
+      if ( ! capture_.isEmpty() )
+      {
+        cache_->value = capture_;
+        capture_.setUnicode( 0, 0 );
+      }
+      state_ = 0;
+    }
+    else if ( line_.startsWith( a_style.start_phrase() ) )
+    {
+      throw std::runtime_error( "<p>Badly formed artifact with section start inside a section</p>" );
+    }
+    else
+    {
+      capture_ += line_;
+      capture_ += '\n';
+    }
+  }
+  break;
+  default: // Error!
+    throw std::runtime_error( "<p>Programming error: at a default switch case.</p>" );
+    break;
+  }
+}
+if ( ! capture_.isEmpty() )
+{
+  if ( NULL != cache_ ) // Have there been sections?
+  {
+    tmp.end_ = capture_;
+  }
+  else
+  {
+    tmp.preamble_.user = capture_;
+  }
+}
+this->swap( tmp );
 
 }
 

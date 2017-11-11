@@ -71,6 +71,14 @@ class core_test_suite
 
 
 
+
+
+
+
+
+
+
+
 };
 
 #endif
