@@ -1,6 +1,6 @@
 format 75
 "butter" // butter
-  revision 213
+  revision 214
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -7693,6 +7693,119 @@ ${inlines}
       explicit_switch_type ""
       
       comment "(In progress) Class to generate rpm SPEC document."
+    end
+
+    class 182192 "target"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      comment "v3:  A generic representation of a step in the build process.
+
+For different target types the object data has different meanings:
+
+ source_     : converter_  : search_list_     : flags_
+ ------------------------------------------------------------
+
+ source code : compiler    : include dirs     : compile flags
+
+ object code : linker      : library dirs     : linker flags
+
+ executable  : installer   : install location : install flags
+"
+      attribute 156720 "type_"
+	private explicit_type "uint"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The type of target of this object
+
+ (0 = unknown, 1 = object file, 2 = executable or 3 = deliverable.)"
+      end
+
+      attribute 155568 "source_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The direct sources/sub-targets for this target.
+
+ (source code, object code, deliverable)"
+      end
+
+      classrelation 218416 // subtargets_ (<directional aggregation>)
+	relation 218288 o-->
+	  a role_name "subtargets_" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 218416 // subtargets_ (<directional aggregation>)
+	  b parent class_ref 182192 // target
+      end
+
+      attribute 155696 "search_list_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "List of directories to search for needed components of this target
+
+ (include dirs, lib dirs or install location)"
+      end
+
+      attribute 155824 "converter_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Program that converts the source(s) to the target.
+ 
+ (compiler, linker or installer)"
+      end
+
+      attribute 156848 "label_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Label (optional)"
+      end
+
+      attribute 155952 "flags_"
+	private explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Flags needed by the converter in addition to search directories and source list"
+      end
+
     end
   end
 

@@ -8,6 +8,10 @@ classcanvas 128432 class_ref 168880 // compound_document
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 333 389 2000
 end
+classcanvas 128560 class_ref 182192 // target
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 502 583 2000
+end
 classcanvas 128937 class_ref 7937 // UmlPackage
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 49 50 2000
@@ -84,6 +88,14 @@ relationcanvas 128176 relation_ref 155696 // <dependency>
   from ref 134825 z 2018 to point 426 261
   line 128304 z 2018 to ref 128048
   no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128688 relation_ref 218288 // <directional aggregation>
+  from ref 128560 z 2001 to point 525 690
+  line 128816 z 2001 to point 608 672
+  line 128944 z 2001 to point 602 606
+  line 129072 z 2001 to ref 128560
+  role_a_pos 558 580 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 135337 relation_ref 135337 // <composition>
