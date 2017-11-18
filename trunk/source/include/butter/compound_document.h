@@ -210,6 +210,29 @@ class compound_document
     void add_target_entry(QString a_label);
 
     /**
+     * Append to value data of the close element.
+     */
+    void append_close_value(QString a_value)
+    {
+      this->close_.value.append( a_value );
+    }
+
+    /**
+     * Append to value data of the preamble element.
+     */
+    void append_preamble_value(QString a_value)
+    {
+      this->preamble_.value.append( a_value );
+    }
+
+    /**
+     * Append to value data of an existing target.
+     * 
+     * \pre has_target( a_label )
+     */
+    void append_target_value(QString a_label, QString a_value);
+
+    /**
      * Get the document close element (precedes end_text).
      */
     const element_t& close() const
@@ -307,7 +330,7 @@ class compound_document
     }
 
     /**
-     * Set value data of the close element.
+     * Set value data of the preamble element.
      */
     void set_preamble_value(QString a_value)
     {

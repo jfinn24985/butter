@@ -577,23 +577,33 @@ if (! source_extra_.isEmpty ())
 void gmake_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) 
 {
 // Need to write the "M_sys" include line.
-QString tmp_;
-QTextOStream desc_os_ (&tmp_);
 {
-  const int e_ = rules_name.find(' ');
-  QString name_ (e_ < 0 ? rules_name : rules_name.left(e_));
-  desc_os_ << "include " << (pathcmp("$(ROOTDIR)") / name_).path_localised () << "\n\n";
+  QString tmp_;
+  QTextOStream desc_os_( &tmp_ );
+  {
+    const int e_ = rules_name.find( ' ' );
+    QString name_ ( e_ < 0 ? rules_name : rules_name.left( e_ ) );
+    desc_os_ << "include " << ( pathcmp( "$(ROOTDIR)" ) / name_ ).path_localised() << "\n\n";
+  }
+  a_art.document().append_preamble_value( tmp_ );
 }
 // Keep parent dir definitions.
-if (NULL != a_loc.parent ())
+if ( NULL != a_loc.parent() )
 {
   // Add us to base makefile
-  QString & link_ = a_sys.target (a_loc.path ().path ()).second;
-  link_.append ("dirs += ");
-  link_.append (pathcmp(root_dir ().create_relative (a_loc.full_path ())).path_localised ());
-  link_.append ("\n");
+  QString link( "dirs += " );
+  link.append( pathcmp( root_dir().create_relative( a_loc.full_path() ) ).path_localised() );
+  link.append( "\n" );
+  const QString label( a_loc.path().path() );
+  if( ! a_sys.document().has_target( label ) )
+  {
+    a_sys.document().add_target( label, "", link );
+  }
+  else
+  {
+    a_sys.document().append_target_value( label, link );
+  }
 }
-a_art.preamble.second.append (tmp_);
 
 
 }
@@ -749,7 +759,7 @@ QString init_text_;
     init_os_ << "LDFLAGS+=" << linkflag_ << "\n";
   }
 }
-a_sys.preamble.second = init_text_;
+a_sys.document().set_preamble_value( init_text_ );
 
 }
 

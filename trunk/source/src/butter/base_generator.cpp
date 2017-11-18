@@ -3,6 +3,7 @@
  */
 #include "butter/base_generator.h"
 #include "butter/butter_constants.h"
+#include "butter/compound_document.h"
 #include "butter/const_token_iterator.h"
 #include "butter/utility.h"
 #include "butter/location.h"
@@ -77,30 +78,30 @@ std::unique_ptr< compound_artifact > base_generator::get_artifact(location & a_l
 {
 // Get deployment views from current location's packages
 std::unique_ptr< compound_artifact > Result;
-if (a_loc.packages ().count () > 0)
+if( a_loc.packages().count() > 0 )
 {
-  QVector< UmlItem > docs_ = a_loc.find_uml_document (a_name);
+  QVector< UmlItem > docs_ = a_loc.find_uml_document( a_name );
   // If any documents found
-  if (! docs_.isEmpty ())
+  if( ! docs_.isEmpty() )
   {
-    Result = std::unique_ptr< compound_artifact >(new compound_artifact (dynamic_cast< UmlArtifact& >(*docs_.at (0))));
-    for (unsigned int k_ = 1; k_ < docs_.count (); ++k_)
+    Result = std::unique_ptr< compound_artifact >( new compound_artifact( dynamic_cast< UmlArtifact & >( *docs_.at( 0 ) ) ) );
+    for( unsigned int k_ = 1; k_ < docs_.count(); ++k_ )
     {
-      UmlItem * item_ = docs_.at (k_);
-      Result->merge (dynamic_cast< UmlArtifact& >(*item_));
-      log::com.trace (log::info, "<p><b>Note:</b> Removing duplicated build file from Package " + item_->parent ()->name () + "</p>\n");
-      // item_->parent ()->children ().remove (item_->parent ()->children ().findRef (item_));
-      item_->set_Name (("OLD_" + a_name).utf8 ());
+      UmlItem * item_ = docs_.at( k_ );
+      Result->merge( dynamic_cast< UmlArtifact & >( *item_ ) );
+      log::com.trace( log::info, "<p><b>Note:</b> Removing duplicated build file from Package " + item_->parent()->name() + "</p>\n" );
+      // item_->parent()->children().remove(item_->parent ()->children().findRef(item_));
+      item_->set_Name( ( "OLD_" + a_name ).utf8() );
     }
     // Reset the artifact (keeps section labels but empties content)
-    Result->reset ();
+    Result->document().reset();
   }
 }
-if (NULL == Result.get ())
+if( NULL == Result.get() )
 {
   // This will throw an error if no packages exist.
   // Result.reset (new compound_artifact (*a_loc.create_uml_document (a_name)));
-  Result = std::unique_ptr< compound_artifact >(new compound_artifact (*a_loc.create_uml_document (a_name)));
+  Result = std::unique_ptr< compound_artifact >( new compound_artifact( *a_loc.create_uml_document( a_name ) ) );
 }
 return Result;
 

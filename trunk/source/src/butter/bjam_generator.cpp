@@ -2,6 +2,7 @@
  * Boost Jam generator source file.
  */
 #include "butter/bjam_generator.h"
+#include "butter/compound_document.h"
 #include "bouml/UmlArtifact.h"
 #include "butter/compound_artifact.h"
 #include "butter/location.h"
@@ -129,17 +130,17 @@ if (! individual_.isEmpty ())
 
 void bjam_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) {
 // Add ourself to the system artifact (if not the top-level).
-if (NULL != a_loc.parent ())
+if ( NULL != a_loc.parent() )
 {
   QString tmp_;
-  QTextOStream os_ (&tmp_);
+  QTextOStream os_( &tmp_ );
   // Add definition for this sub-project to the top-level location
   // use-project /compchem/chemistry : src/chemistry ;
 
-  const QString dir_line_ = root_dir().create_relative (a_loc.full_path ());
-  os_ << "use-project /" << project_name_ << "/" << a_loc.path ().path () << " : " << dir_line_ << " ;\n";
+  const QString dir_line_ = root_dir().create_relative( a_loc.full_path () );
+  os_ << "use-project /" << project_name_ << "/" << a_loc.path().path() << " : " << dir_line_ << " ;\n";
   os_ << "build-project " << dir_line_ << " ;\n\n";
-  a_sys.close.second.append (tmp_);
+  a_sys.document().append_close_value( tmp_ );
 }
 }
 
@@ -319,32 +320,36 @@ if (! this->individual_obj_.isEmpty ())
 
 void bjam_generator::external_target(const location & a_current, const ::UmlArtifact & a_target, compound_artifact & a_sys) {
 // Get project name, if present
-QString value_;
-a_target.property_value( butter_constants::butter_project_name, value_ );
-BUTTER_CHECK( ! value_.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact." );
+QString project_label;
+a_target.property_value( butter_constants::butter_project_name, project_label );
+BUTTER_CHECK( ! project_label.isEmpty (), "Programming error, should not be in external_target if project attribute is not set on artifact." );
 // Get the external target section
-butter::compound_artifact::string_pair_t & proj_ = a_sys.target( value_ );
-// Construct a mini-project section.
-if( proj_.second.isEmpty () )
+QString proj_entry;
+if( a_sys.document().has_target( project_label ) )
 {
-  proj_.second.append( "#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\n" );
+  proj_entry = a_sys.document().get_target( project_label ).value;
+}
+// Construct a mini-project section.
+if( proj_entry.isEmpty () )
+{
+  proj_entry.append( "#\n# Section for project: " + project_label + "\n#\nproject " + project_label + " ;\n" );
 }
 // If this is a using directive - we don't need to do anything
-if( ! proj_.second.contains ( "using " ) )
+if( ! proj_entry.contains( "using " ) )
 {
   QString tmp_;
   if( a_target.property_value( butter_constants::butter_buildfile_name, tmp_ ) )
   {
     // This is a using directive; all definitions are assumed to be in the
     // given jamfile -> reset string
-    proj_.second = QString ( "#\n# Section for project: " + value_ + "\n#\nproject " + value_ + " ;\nusing " + tmp_ + " ;\n" );
+    proj_entry = QString( "#\n# Section for project: " + project_label + "\n#\nproject " + project_label + " ;\nusing " + tmp_ + " ;\n" );
   }
   else
   {
     QString template_( section( this->style.name(), const_cast< UmlArtifact & >( a_target ).description() ) );
     if( ! template_.isEmpty() )
     {
-      proj_.second.append( template_ + "\n" );
+      proj_entry.append( template_ + "\n" );
     }
     else
     {
@@ -352,22 +357,33 @@ if( ! proj_.second.contains ( "using " ) )
       find_hdr_link( a_target, includes_, linkflags_, cflags_, this->style.name(), true );
       if( ! ( includes_.isEmpty() && linkflags_.isEmpty() ) )
       {
-        proj_.second.append( "alias " + a_target.name() + " : : : : " );
+        proj_entry.append( "alias " + a_target.name() + " : : : : " );
         if( ! includes_.isEmpty () )
         {
-          proj_.second.append( "<include>\"" + includes_ + "\" " );
+          proj_entry.append( "<include>\"" + includes_ + "\" " );
         }
         if( ! linkflags_.isEmpty() )
         {
-          proj_.second.append( "<linkflags>\"" + linkflags_ + "\" " );
+          proj_entry.append( "<linkflags>\"" + linkflags_ + "\" " );
         }
         if( ! cflags_.isEmpty() )
         {
-          proj_.second.append( "<cxxflags>\"" + cflags_ + "\" <cflags>\"" + cflags_ + "\" " );
+          proj_entry.append( "<cxxflags>\"" + cflags_ + "\" <cflags>\"" + cflags_ + "\" " );
         }
-        proj_.second.append( ";\n\n" );
+        proj_entry.append( ";\n\n" );
       }
     }
+  }
+}
+if( ! proj_entry.isEmpty () )
+{
+  if( a_sys.document().has_target( project_label ) )
+  {
+    a_sys.document().set_target_value( project_label, proj_entry );
+  }
+  else
+  {
+    a_sys.document().add_target( project_label, {}, proj_entry );
   }
 }
 }
@@ -442,7 +458,7 @@ QString content_;
     os_ << ": build-dir build ;\n";
   }
 }
-a_sys.preamble.second = content_;
+a_sys.document().set_preamble_value( content_ );
 }
 
 void bjam_generator::install_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_loc_var, base_generator::install_type a_type, bool a_isdoc) 

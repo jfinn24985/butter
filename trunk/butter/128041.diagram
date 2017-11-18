@@ -6,7 +6,7 @@ classcanvas 128048 class_ref 159017 // basic_style
 end
 classcanvas 128432 class_ref 168880 // compound_document
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-  xyz 333 389 2000
+  xyz 339 452 2000
 end
 classcanvas 128560 class_ref 182192 // target
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -19,6 +19,10 @@ end
 classcanvas 129449 class_ref 1280 // CppSettings
   draw_all_relations default hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
   xyz 57 254 2005
+end
+classcanvas 129712 class_ref 157737 // cmake_generator
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 694 265 2000
 end
 classcanvas 134825 class_ref 132393 // location
   draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -98,6 +102,33 @@ relationcanvas 128688 relation_ref 218288 // <directional aggregation>
   role_a_pos 558 580 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
+relationcanvas 129200 relation_ref 224816 // <directional composition>
+  from ref 142633 z 2001 stereotype "<<unique_ptr>>" xyz 366.5 399.5 3000 to ref 128432
+  role_a_pos 423 426 3000 no_role_b
+  multiplicity_a_pos 381 426 3000 no_multiplicity_b
+end
+relationcanvas 129584 relation_ref 225200 // <dependency>
+  from ref 137385 z 2001 to ref 128432
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129840 relation_ref 225328 // <dependency>
+  from ref 129712 z 2001 to ref 128432
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129968 relation_ref 225456 // <dependency>
+  from ref 147241 z 2006 to ref 128432
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130096 relation_ref 225584 // <dependency>
+  from ref 141993 z 2018 to point 339 239
+  line 130224 z 2018 to point 339 393
+  line 130352 z 2018 to ref 128432
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
 relationcanvas 135337 relation_ref 135337 // <composition>
   from ref 134825 z 1999 stereotype "<<vector>>" xyz 312 101 3000 to point 357 126
   line 135465 z 1999 to point 268 126
@@ -117,7 +148,7 @@ relationcanvas 139177 relation_ref 144425 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 142505 relation_ref 154025 // <dependency>
-  from ref 141993 z 2001 to point 450 157
+  from ref 141993 z 2001 to point 378 144
   line 146985 z 2001 to ref 138921
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b

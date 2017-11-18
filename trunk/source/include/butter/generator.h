@@ -6,6 +6,7 @@
  */
 #include "butter/base_generator.h"
 #include "butter/basic_style.h"
+#include "butter/compound_document.h"
 #include "butter/const_token_iterator.h"
 #include "bouml/CppSettings.h"
 #include "butter/butter_constants.h"
@@ -56,87 +57,110 @@ class generator : public base_generator
 template<class derived>
 void generator<derived>::create_system(location & a_base, const ::UmlItem & a_project) 
 {
+// HELPER
+auto set_or_add_and_set = []( compound_artifact * ar, QString l, QString v )
+{
+  if( ar->document().has_target( l ) )
+  {
+    ar->document().set_target_value( l, v );
+  }
+  else
+  {
+    ar->document().add_target( l, {}, v );
+  }
+};
+auto append_or_add_and_set = []( compound_artifact * ar, QString l, QString v )
+{
+  if( ar->document().has_target( l ) )
+  {
+    ar->document().append_target_value( l, v );
+  }
+  else
+  {
+    ar->document().add_target( l, {}, v );
+  }
+};
 // Check for top-level system build-file document, create it from template.
-this->rules_file (a_base, a_project);
+this->rules_file( a_base, a_project );
 
 // Start building system
-std::unique_ptr< compound_artifact > system_artifact_ = get_artifact (a_base, static_cast< derived* >(this)->build_file_sysname);
+std::unique_ptr< compound_artifact > system_artifact_ = this->get_artifact( a_base, static_cast< derived * >( this )->build_file_sysname );
 
 // Set the project root directory
-this->root_dir (a_base.full_path ());
+this->root_dir( a_base.full_path() );
 // Perform style specific initialisation
-static_cast< derived* >(this)->initialise (a_base, a_project, *system_artifact_);
+static_cast< derived * >( this )->initialise( a_base, a_project, *system_artifact_ );
 // Get a reference to the current style.
-const butter::basic_style &style_ = butter::style::get_style ();
+const butter::basic_style & style_ = butter::style::get_style();
 
 //////////////
 // Process the project, handling items as we go.
 //
 
 QStack< location > location_stack_;
-location_stack_.push (&a_base); // Use a stack to eliminate recursion
-while (! location_stack_.isEmpty ())
+location_stack_.push( &a_base ); // Use a stack to eliminate recursion
+while( ! location_stack_.isEmpty() )
 {
-  location * top_ = location_stack_.pop ();
+  location * top_ = location_stack_.pop();
   // Push children onto stack
-  for (unsigned int ii_ = 0; ii_ < top_->children ().count (); ++ii_)
+  for( unsigned int ii_ = 0; ii_ < top_->children().count(); ++ii_ )
   {
-    location_stack_.push (top_->children ().at (ii_));
+    location_stack_.push( top_->children().at( ii_ ) );
   }
 
   std::unique_ptr< compound_artifact > current_; // The current build file.
   // Get deployment views from current location's packages
-  for (unsigned int i_ = 0; i_ < top_->packages ().count (); ++i_)
+  for( unsigned int i_ = 0; i_ < top_->packages().count(); ++i_ )
   {
-    UmlPackage * I_ = top_->packages().at (i_);
-    for (unsigned int j_ = 0; j_ < I_->children ().count (); ++j_)
+    UmlPackage * I_ = top_->packages().at( i_ );
+    for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
     {
-      UmlItem * J_ = I_->children ().at (j_);
-      if (aDeploymentView == J_->kind ())
+      UmlItem * J_ = I_->children().at( j_ );
+      if( aDeploymentView == J_->kind() )
       {
         // Scan for deployment views targets.
-        for (unsigned int k_ = 0; k_ < J_->children ().count (); ++ k_)
+        for( unsigned int k_ = 0; k_ < J_->children().count(); ++ k_ )
         {
-          UmlItem * item_ = J_->children ().at (k_);
-          if (anArtifact == item_->kind ())             // UmlArtifacts.
+          UmlItem * item_ = J_->children().at( k_ );
+          if ( anArtifact == item_->kind() )           // UmlArtifacts.
           {
-            const UmlArtifact &art_item_ = dynamic_cast < UmlArtifact& >(*item_);
-            const QString stereotype_label_ (const_cast< UmlArtifact& >(art_item_).stereotype ());
-            bool installable_ (false);
-            target_type target_type_ (executable); // The target's type, set to exe then change if library etc
-            if (stereotype_label_.contains (butter_constants::executable_stereotype, false)
-                || stereotype_label_.contains (butter_constants::library_stereotype, false))
+            const UmlArtifact & art_item_ = dynamic_cast < UmlArtifact & >( *item_ );
+            const QString stereotype_label_( const_cast< UmlArtifact & >( art_item_ ).stereotype() );
+            bool installable_( false );
+            target_type target_type_( executable ); // The target's type, set to exe then change if library etc
+            if( stereotype_label_.contains( butter_constants::executable_stereotype, false )
+              || stereotype_label_.contains( butter_constants::library_stereotype, false ) )
             {
               installable_ = true;
               QString value_;
-              if (art_item_.property_value (butter_constants::butter_project_name, value_))
+              if( art_item_.property_value( butter_constants::butter_project_name, value_ ) )
               {
                 //////////////////////////////////////////////////
                 // Is an external target for project 'value_'.
-                static_cast< derived* >(this)->external_target (*top_, art_item_, *system_artifact_);
+                static_cast< derived * >( this )->external_target( *top_, art_item_, *system_artifact_ );
               }
               else
               {
                 //////////////
                 // Is a local target
-                const QString target_name_ (art_item_.name ());
-                std::map< QCString, UmlArtifact* > assoc_arts_;
+                const QString target_name_( art_item_.name() );
+                std::map< QCString, UmlArtifact * > assoc_arts_;
                 // Make map to get sorted list of artifacts
-                for (unsigned int i_ = 0; i_ < const_cast<UmlArtifact&>(art_item_).associatedArtifacts().size (); ++i_)
+                for( unsigned int i_ = 0; i_ < const_cast<UmlArtifact &>( art_item_ ).associatedArtifacts().size(); ++i_ )
                 {
-                   UmlArtifact * current_art_ = const_cast<UmlArtifact&>(art_item_).associatedArtifacts().at(i_);
-                   assoc_arts_.insert(std::make_pair(current_art_->name(), current_art_));
+                  UmlArtifact * current_art_ = const_cast<UmlArtifact &>( art_item_ ).associatedArtifacts().at( i_ );
+                  assoc_arts_.insert( std::make_pair( current_art_->name(), current_art_ ) );
                 }
                 // Only process targets with associated entries.
-                if (! assoc_arts_.empty ())
+                if( ! assoc_arts_.empty() )
                 {
                   QString entry_;           // The target entry
                   {
-                    if (stereotype_label_.contains (butter_constants::library_stereotype, false))
+                    if ( stereotype_label_.contains( butter_constants::library_stereotype, false ) )
                     {
                       QString value_;
-                      if (art_item_.property_search (butter_constants::butter_lib_type_name, value_)
-                            && value_ == butter_constants::shared_value)
+                      if( art_item_.property_search( butter_constants::butter_lib_type_name, value_ )
+                        && value_ == butter_constants::shared_value )
                       {
                         target_type_ = shared_library;
                       }
@@ -144,77 +168,81 @@ while (! location_stack_.isEmpty ())
                       {
                         target_type_ = static_library;
                       }
-                      if (art_item_.property_value (butter_constants::butter_other_name, value_))
+                      if( art_item_.property_value( butter_constants::butter_other_name, value_ ) )
                       {
                         target_type_ = other;
                       }
                     }
                     QString compiler_, includes_, compflags_, ldflags_;
-                    art_item_.property_value (butter_constants::butter_compiler_name, compiler_);
-                    QTextOStream entry_os_ (&entry_);
+                    art_item_.property_value( butter_constants::butter_compiler_name, compiler_ );
+                    QTextOStream entry_os_( &entry_ );
                     ///////////////////
                     // Indicate the start of the target entry.
                     {
                       QString buildfile_;
-                      art_item_.property_value (butter_constants::butter_buildfile_name, buildfile_);
-                      static_cast< derived* >(this)->start_target(art_item_, entry_os_, buildfile_, compiler_, target_type_);
+                      art_item_.property_value( butter_constants::butter_buildfile_name, buildfile_ );
+                      static_cast< derived * >( this )->start_target( art_item_, entry_os_, buildfile_, compiler_, target_type_ );
                     }
                     ///////////////////
                     // Process the associated artifacts
-                    for (std::map< QCString, UmlArtifact* >::iterator itr = assoc_arts_.begin(); itr != assoc_arts_.end(); ++itr)
+                    for( std::map< QCString, UmlArtifact * >::iterator itr = assoc_arts_.begin(); itr != assoc_arts_.end(); ++itr )
                     {
-                      UmlArtifact *const current_art_ = itr->second;
-                      const QString stereotype_ (current_art_->stereotype ().data ());
-                      if (stereotype_ == butter_constants::library_stereotype)
+                      UmlArtifact * const current_art_ = itr->second;
+                      const QString stereotype_( current_art_->stereotype ().data () );
+                      if( stereotype_ == butter_constants::library_stereotype )
                       {
-                        static_cast< derived* >(this)->assoc_library (*current_art_, entry_os_
-                                            , includes_, ldflags_, compflags_);
+                        static_cast< derived * >( this )->assoc_library ( *current_art_, entry_os_
+                          , includes_, ldflags_, compflags_ );
                       }
-                      else if (stereotype_ == butter_constants::source_stereotype)
+                      else if( stereotype_ == butter_constants::source_stereotype )
                       {
                         QString src_inc_, src_flags_;
-                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name(), true); // Pass link flags to target
-                        static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
-                                            , current_art_->name () + "." + CppSettings::sourceExtension ()
-                                            , current_art_->name ()
-                                            , src_inc_
-                                            , src_flags_
-                                            , false);
+                        find_hdr_link ( *current_art_, src_inc_, ldflags_, src_flags_, style_.name(), true ); // Pass link flags to target
+                        static_cast< derived * >( this )->assoc_source( *current_art_, entry_os_
+                          , current_art_->name() + "." + CppSettings::sourceExtension()
+                          , current_art_->name()
+                          , src_inc_
+                          , src_flags_
+                          , false );
                       }
-                      else if (stereotype_ == butter_constants::document_stereotype)
+                      else if( stereotype_ == butter_constants::document_stereotype )
                       {
                         QString src_inc_, src_flags_;
-                        find_hdr_link (*current_art_, src_inc_, ldflags_, src_flags_, style_.name(), true); // Pass link flags to target
-                        QString basename_ (current_art_->name ());
-                        const int dot_ (basename_.findRev ('.'));
-                        if (-1 != dot_) basename_.truncate (dot_);
-                        static_cast< derived* >(this)->assoc_source (*current_art_, entry_os_
-                                            , current_art_->name ()
-                                            , basename_
-                                            , src_inc_
-                                            , src_flags_
-                                            , true);
+                        find_hdr_link( *current_art_, src_inc_, ldflags_, src_flags_, style_.name(), true ); // Pass link flags to target
+                        QString basename_( current_art_->name () );
+                        const int dot_( basename_.findRev ( '.' ) );
+                        if ( -1 != dot_ )
+                        {
+                          basename_.truncate ( dot_ );
+                        }
+                        static_cast< derived * >( this )->assoc_source( *current_art_, entry_os_
+                          , current_art_->name()
+                          , basename_
+                          , src_inc_
+                          , src_flags_
+                          , true );
                       }
                     }
                     ////////////////////
                     // End target
-                    find_hdr_link (art_item_, includes_, ldflags_, compflags_, style_.name(), false); // Pass link flags to target
-                    static_cast< derived* >(this)->end_target (art_item_, entry_os_
-                                            , includes_, ldflags_, compflags_, compiler_, target_type_);
+                    find_hdr_link( art_item_, includes_, ldflags_, compflags_, style_.name(), false ); // Pass link flags to target
+                    static_cast< derived * >( this )->end_target( art_item_, entry_os_
+                      , includes_, ldflags_, compflags_, compiler_, target_type_ );
                   }
-                  if (! entry_.isEmpty ())
+                  if( ! entry_.isEmpty() )
                   {
-                    if (NULL == top_->parent ())
-                    {  // Is local at base, use system_artifact_
-                      system_artifact_->target(target_name_).second = entry_;
+                    if( NULL == top_->parent() )
+                    {
+                      // Is local at base, use system_artifact_
+                      set_or_add_and_set( system_artifact_.get(), target_name_, entry_ );
                     }
                     else
                     {
-                      if (NULL == current_.get ())
+                      if( nullptr == current_ )
                       {
-                        current_ = get_artifact (*top_, static_cast< derived* >(this)->build_file_name);
+                        current_ = get_artifact( *top_, static_cast< derived * >( this )->build_file_name );
                       }
-                      current_->target (target_name_).second = entry_;
+                      set_or_add_and_set( current_.get(), target_name_, entry_ );
                     }
                   }
                 }
@@ -222,27 +250,27 @@ while (! location_stack_.isEmpty ())
             }
             //////////////
             // Handle installables
-            if (installable_ || stereotype_label_.contains (butter_constants::document_stereotype, false))
+            if( installable_ || stereotype_label_.contains( butter_constants::document_stereotype, false ) )
             {
               QString entry_;           // The install entry
               {
                 QString install_dir_;              // Location for install: DOCDIR,BINDIR etc
-                install_type install_type_ (base_generator::file); // How the target should be installed
+                install_type install_type_( base_generator::file ); // How the target should be installed
                 // Get the install property
-                art_item_.property_value (butter_constants::butter_install_name, install_dir_);
+                art_item_.property_value( butter_constants::butter_install_name, install_dir_ );
                 // For libraries and executables define some defaults.
-                if (stereotype_label_ == butter_constants::library_stereotype)
+                if( stereotype_label_ == butter_constants::library_stereotype )
                 {
                   // Check to see if this is an external library
                   QString project_;
-                  if (art_item_.property_value (butter_constants::butter_project_name, project_))
+                  if( art_item_.property_value( butter_constants::butter_project_name, project_ ) )
                   {
-                    install_dir_.truncate (0);
+                    install_dir_.truncate( 0 );
                   }
                   else
                   {
                     install_type_ = base_generator::lib;
-                    if (install_dir_.isEmpty ())
+                    if( install_dir_.isEmpty () )
                     {
                       install_dir_ = butter_constants::libdir_value;
                     }
@@ -250,41 +278,42 @@ while (! location_stack_.isEmpty ())
                     {
                       /////////////
                       // Reset install type to file to handle "other" targets
-                      if (install_dir_ != butter_constants::libdir_value
-                         && target_type_ == base_generator::other)
+                      if( install_dir_ != butter_constants::libdir_value
+                        && target_type_ == base_generator::other )
                       {
                         install_type_ = base_generator::file;
                       }
                     }
                   }
                 }
-                else if (stereotype_label_ == butter_constants::executable_stereotype)
+                else if( stereotype_label_ == butter_constants::executable_stereotype )
                 {
                   install_type_ = base_generator::bin;
-                  if (install_dir_.isEmpty ())
+                  if( install_dir_.isEmpty() )
                   {
                     install_dir_ = butter_constants::bindir_value;
                   }
                 }
-                if (! install_dir_.isEmpty () && install_dir_ != butter_constants::no_install_value)
+                if( ! install_dir_.isEmpty() && install_dir_ != butter_constants::no_install_value )
                 {
-                  QTextOStream entry_os_ (&entry_);
-                  static_cast< derived* >(this)->install_target (art_item_, entry_os_, install_dir_, install_type_, ! installable_);
+                  QTextOStream entry_os_( &entry_ );
+                  static_cast< derived * >( this )->install_target( art_item_, entry_os_, install_dir_, install_type_, ! installable_ );
                 }
               }
-              if (! entry_.isEmpty ())
+              if( ! entry_.isEmpty() )
               {
-                if (NULL == top_->parent ())
-                {  // Is local at base, use system_artifact_
-                  system_artifact_->target (art_item_.name ()).second.append (entry_);
+                if( nullptr == top_->parent() )
+                {
+                  // Is local at base, use system_artifact_
+                  append_or_add_and_set( system_artifact_.get(), art_item_.name(), entry_ );
                 }
                 else
                 {
-                  if (NULL == current_.get ())
+                  if ( nullptr == current_.get () )
                   {
-                    current_ = get_artifact (*top_, static_cast< derived* >(this)->build_file_name);
+                    current_ = get_artifact ( *top_, static_cast< derived * >( this )->build_file_name );
                   }
-                  current_->target (art_item_.name ()).second.append (entry_);
+                  append_or_add_and_set( current_.get(), art_item_.name(), entry_ );
                 }
               }
             }
@@ -295,10 +324,10 @@ while (! location_stack_.isEmpty ())
   }
 
   // End of current location
-  if (NULL != current_.get ())
+  if ( nullptr != current_.get () )
   {
     // add the inter-file link
-    static_cast< derived* >(this)->descendent_link (*current_.get (), *system_artifact_, *top_);
+    static_cast< derived * >( this )->descendent_link( *current_, *system_artifact_, *top_ );
   }
 }
 

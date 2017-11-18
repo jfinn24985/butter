@@ -8,6 +8,7 @@
 #include <memory>
 
 namespace butter { class butter_constants; } 
+namespace butter { class compound_document; } 
 namespace butter { class const_token_iterator; } 
 namespace butter { class pathcmp; } 
 namespace butter { class location; } 

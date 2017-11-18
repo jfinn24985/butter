@@ -1,5 +1,6 @@
 
 #include "butter/cmake_generator.h"
+#include "butter/compound_document.h"
 #include "butter/compound_artifact.h"
 #include "bouml/UmlArtifact.h"
 #include "butter/location.h"
@@ -57,12 +58,12 @@ const char * cmake_generator::default_rules[] = { "#\n"
 const QString cmake_generator::rules_name("local.cmake");
 
 cmake_generator::cmake_generator()
-: lib_set_ ()
-, project_name_ ()
-, depend_set_ ()
-, is_static_type_ (false)
-, language_set_ ()
-, sys_buildfile_ ()
+: lib_set_()
+, project_name_()
+, depend_set_()
+, is_static_type_(false)
+, language_set_()
+, sys_buildfile_()
 {}
 
 std::unique_ptr< base_generator > cmake_generator::create()
@@ -167,27 +168,27 @@ a_os << "\n\t" << a_filename;
 ///////////////////////////////
 // If src has hdr defined
 // add to target's includes.
-if (! a_src_inc.isEmpty ())
+if( ! a_src_inc.isEmpty() )
 {
   QString user_extra_;
   {
-    QTextOStream user_obj_ (&user_extra_);
+    QTextOStream user_obj_( &user_extra_ );
     user_obj_ << "\ninclude_directories (";
-    for (const_token_iterator e_, b_(a_src_inc, ' '); e_ != b_; ++b_)
+    for( const_token_iterator e_, b_( a_src_inc, ' ' ); e_ != b_; ++b_ )
     {
-      const QString val_(b_->c_str ());
-      if (! val_.isEmpty ())
+      const QString val_( b_->c_str () );
+      if( ! val_.isEmpty() )
       {
-        if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
+        if( QChar( '$' ) != val_[0] && QDir::isRelativePath( val_ ) )
         {
           user_obj_ << "${CMAKE_SOURCE_DIR}/";
         }
-        user_obj_ << mangle (val_) << " ";
+        user_obj_ << this->mangle( val_ ) << " ";
       }
     }
     user_obj_ << ")\n";
   }
-  this->individual_obj_.append (user_extra_);
+  this->individual_obj_.append( user_extra_ );
 }
 
 ///////////////////////////////
@@ -195,23 +196,23 @@ if (! a_src_inc.isEmpty ())
 // have to add properties for it.
 // set_source_files_properties (name COMPILE_FLAGS .. COMPILE_DEFINITIONS ..)
 QString comp_;
-if (a_isdoc)
+if( a_isdoc )
 {
   // Check if user has set the language,
   // if not assume it will be autodetected
-  a_target.property_value (butter_constants::butter_compiler_name, comp_);
+  a_target.property_value( butter_constants::butter_compiler_name, comp_ );
 }
 
-if (! a_src_flags.isEmpty () || ! comp_.isEmpty())
+if( ! a_src_flags.isEmpty() || ! comp_.isEmpty() )
 {
   QString user_extra_;
   {
-    QTextOStream user_obj_ (&user_extra_);
+    QTextOStream user_obj_( &user_extra_ );
     user_obj_ << "set_source_files_properties (" << a_filename
-    << "\n\tPROPERTIES";
-    if (! comp_.isEmpty() && "CCC" != comp_)
+      << "\n\tPROPERTIES";
+    if( ! comp_.isEmpty() && "CCC" != comp_ )
     {
-      if ("CC" == comp_)
+      if( "CC" == comp_ )
       {
         comp_ = "C";
       }
@@ -220,36 +221,48 @@ if (! a_src_flags.isEmpty () || ! comp_.isEmpty())
         comp_ = comp_.lower();
         comp_[0] = comp_[0].upper ();
       }
-      if (0 == this->language_set_.contains (comp_))
+      if( 0 == this->language_set_.contains( comp_ ) )
       {
-        this->language_set_.append (comp_);
+        this->language_set_.append( comp_ );
         // Update project header
-        this->preamble ();
+        QString init_text_;
+        {
+          QTextOStream init_os_( &init_text_ );
+          init_os_ << this->cmake_minimum_required_ << "\n\n"
+            << "project (" << this->project_name_;
+          // Handle languages if necessary
+          if( ! this->language_set_.isEmpty () )
+          {
+            init_os_ << " CXX " << this->language_set_.join( " " );
+          }
+          init_os_ << ")\n\n";
+        }
+        this->sys_buildfile_->document().set_preamble_value( init_text_ );
       }
       user_obj_ << "\n\tLANGUAGE " << comp_;
     }
-    if (! a_src_flags.isEmpty ())
+    if ( ! a_src_flags.isEmpty () )
     {
-      user_obj_ << "\n\tCOMPILE_FLAGS " << mangle (a_src_flags);
+      user_obj_ << "\n\tCOMPILE_FLAGS " << mangle ( a_src_flags );
     }
     user_obj_ << ")\n\n";
   }
-  this->individual_obj_.append (user_extra_);
+  this->individual_obj_.append ( user_extra_ );
 }
 }
 
 void cmake_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) 
 {
 // Keep parent dir definitions.
-if (NULL != a_loc.parent ())
+if ( NULL != a_loc.parent() )
 {
   // Add us to base makefile
   QString tmp_;
-  QTextOStream link_os_ (&tmp_);
+  QTextOStream link_os_( &tmp_ );
   link_os_ << "add_subdirectory (";
-  link_os_ << pathcmp(root_dir ().create_relative (a_loc.full_path ())).path ();
+  link_os_ << pathcmp( root_dir().create_relative( a_loc.full_path() ) ).path();
   link_os_ << ")\n";
-  a_sys.close.second.append (tmp_);
+  a_sys.document().append_close_value( tmp_ );
 }
 
 
@@ -367,42 +380,50 @@ else
 
 void cmake_generator::initialise(location & a_base, const ::UmlItem & a_project, compound_artifact & a_sys) 
 {
-BUTTER_REQUIRE (NULL == a_base.parent (), "initialise can only be called on the top-most location");
-this->project_name_ = a_project.name ().upper ();
+BUTTER_REQUIRE( NULL == a_base.parent(), "initialise can only be called on the top-most location" );
+this->project_name_ = a_project.name().upper();
 this->sys_buildfile_ = &a_sys;
-this->preamble ();
-
+if( a_sys.document().preamble().value.isEmpty() )
+{
+  QString init_text_;
+  {
+    QTextOStream init_os_( &init_text_ );
+    init_os_ << this->cmake_minimum_required_ << "\n\n"
+      << "project (" << this->project_name_ << ")\n\n";
+  }
+  a_sys.document().set_preamble_value( init_text_ );
+}
 QString proj_text_;
 {
-  QTextOStream proj_os_ (&proj_text_);
-  proj_os_ << "include (" << (pathcmp("${CMAKE_SOURCE_DIR}")
-                              / this->rules_name).path () << ")\n\n";
+  QTextOStream proj_os_( &proj_text_ );
+  proj_os_ << "include (" << ( pathcmp( "${CMAKE_SOURCE_DIR}" )
+      / this->rules_name ).path() << ")\n\n";
 
-  const pathcmp base_include_ (dynamic_cast< const UmlPackage& >(a_project).hdr_path ());
+  const pathcmp base_include_( dynamic_cast< const UmlPackage & >( a_project ).hdr_path() );
   {
     QString hdrs_;
-    a_project.property_value (butter_constants::butter_include_name, hdrs_);
-    if (! this->root_dir ().equality (base_include_))
+    a_project.property_value( butter_constants::butter_include_name, hdrs_ );
+    if( ! this->root_dir().equality( base_include_ ) )
     {
-      if (!hdrs_.isEmpty ())
+      if( ! hdrs_.isEmpty() )
       {
-        hdrs_.append (" ");
+        hdrs_.append( " " );
       }
-      hdrs_.append (this->root_dir ().create_relative (base_include_));
+      hdrs_.append( this->root_dir().create_relative( base_include_ ) );
     }
-    if (!hdrs_.isEmpty ())
+    if ( ! hdrs_.isEmpty() )
     {
       proj_os_ << "\ninclude_directories (";
-      for (const_token_iterator e_, b_(hdrs_, ' '); e_ != b_; ++b_)
+      for( const_token_iterator e_, b_( hdrs_, ' ' ); e_ != b_; ++b_ )
       {
-        const QString val_(b_->c_str ());
-        if (!val_.isEmpty ())
+        const QString val_( b_->c_str() );
+        if ( ! val_.isEmpty() )
         {
-          if (QChar('$') != val_[0] && QDir::isRelativePath (val_))
+          if( QChar( '$' ) != val_[0] && QDir::isRelativePath( val_ ) )
           {
             proj_os_ << "${CMAKE_SOURCE_DIR}/";
           }
-          proj_os_ << mangle (val_) << " ";
+          proj_os_ << mangle( val_ ) << " ";
         }
       }
       proj_os_ << ")\n";
@@ -410,21 +431,28 @@ QString proj_text_;
   }
   {
     QString link_;
-    if (a_project.property_search (butter_constants::butter_ldflags_name, link_))
+    if( a_project.property_search( butter_constants::butter_ldflags_name, link_ ) )
     {
-      proj_os_ << "set (CMAKE_EXE_LINKER_FLAGS " << mangle(link_)
-      << "\n\tCACHE STRING \"Project-wide linker flags.\" FORCE)\n";
+      proj_os_ << "set (CMAKE_EXE_LINKER_FLAGS " << mangle( link_ )
+        << "\n\tCACHE STRING \"Project-wide linker flags.\" FORCE)\n";
     }
   }
   {
     QString flag_;
-    if (a_project.property_search (butter_constants::butter_flags_name, flag_))
+    if( a_project.property_search( butter_constants::butter_flags_name, flag_ ) )
     {
-      proj_os_ << "add_definitions (" << mangle(flag_) << ")\n";
+      proj_os_ << "add_definitions (" << mangle( flag_ ) << ")\n";
     }
   }
 }
-a_sys.target(this->project_name_).second = proj_text_;
+if( a_sys.document().has_target( this->project_name_ ) )
+{
+  a_sys.document().set_target_value( this->project_name_, proj_text_ );
+}
+else
+{
+  a_sys.document().add_target( this->project_name_, {}, proj_text_ );
+}
 
 }
 
@@ -549,28 +577,6 @@ while (true)
 }
 return input;
 
-
-}
-
-void cmake_generator::preamble() 
-{
-if (this->sys_buildfile_->preamble.second.isEmpty ()
-     || ! this->language_set_.isEmpty ())
-{
-  QString init_text_;
-  {
-    QTextOStream init_os_ (&init_text_);
-    init_os_ << this->cmake_minimum_required_ << "\n\n"
-        << "project (" << this->project_name_;
-    // Handle languages if necessary
-    if (! this->language_set_.isEmpty ())
-    {
-      init_os_ << " CXX " << this->language_set_.join (" ");
-    }
-    init_os_ << ")\n\n";
-  }
-  this->sys_buildfile_->preamble.second = init_text_;
-}
 
 }
 

@@ -14,6 +14,16 @@ this->targets_.push_back( { a_label, a_prevalue, a_value } );
 !!!229296.cpp!!!	add_target_entry(in a_label : unistr) : void
 BUTTER_REQUIRE( ! this->has_target( a_label ), "Cannot insert a second target with the same name" );
 this->targets_.push_back( { a_label, {}, {} } );
+!!!265136.cpp!!!	append_target_value(in a_label : unistr, in a_value : unistr) : void
+for( auto & elem : this->targets_ )
+{
+  if( elem.label == a_label )
+  {
+    elem.value.append( a_value );
+    return;
+  }
+}
+BUTTER_REQUIRE( false, "Cannot set target value for non-existent target" );
 !!!214320.cpp!!!	get_target(in a_label : unistr) : compound_document::element_t
 for( auto const& elem : this->targets_ )
 {
@@ -54,7 +64,7 @@ for( auto & elem : this->targets_ )
 {
   if( elem.label == a_label )
   {
-    elem.value = a_value;
+    std::swap( elem.value, a_value );
     return;
   }
 }

@@ -10,6 +10,7 @@
 #include <qtextstream.h>
 
 
+namespace butter { class compound_document; } 
 namespace butter { class compound_artifact; } 
 class UmlArtifact;
 namespace butter { class location; } 
@@ -202,12 +203,6 @@ friend class generator<cmake_generator>;
      * CMAKE_BINARY_DIR
      */
     QString mangle(QString input);
-
-    /**
-     * Update the main buildfile's project entry.  This is called
-     * in initialise() and when adding a new compiler language.
-     */
-    void preamble();
 
 
   private:

@@ -1,6 +1,6 @@
 format 75
 "butter" // butter
-  revision 214
+  revision 215
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -110,6 +110,11 @@ construction document, ie jamfile, makefile, jamroot etc."
     classdiagram 129193 "generator"
       draw_all_relations default hide_attributes yes hide_operations yes hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
       size A4
+    end
+
+    sequencediagram 160688 "system generation"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A4
     end
 
     class 159017 "basic_style"
@@ -527,6 +532,14 @@ Actions
 	    cpp default "#include in source"
 	    classrelation_ref 154793 // <dependency>
 	  b parent class_ref 137001 // butter_constants
+      end
+
+      classrelation 225712 // <dependency>
+	relation 225584 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 225712 // <dependency>
+	  b parent class_ref 168880 // compound_document
       end
 
       classrelation 174889 // <dependency>
@@ -973,6 +986,14 @@ the Boost library."
 	    cpp default "${type}"
 	    classrelation_ref 162985 // <realization>
 	  b parent class_ref 150697 // generator
+      end
+
+      classrelation 225328 // <dependency>
+	relation 225200 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 225328 // <dependency>
+	  b parent class_ref 168880 // compound_document
       end
 
       extra_member 130345 "friend generator"
@@ -2007,6 +2028,14 @@ This plugout turns off this automatic behaviour for library targets.
 	  b parent class_ref 150697 // generator
       end
 
+      classrelation 225456 // <dependency>
+	relation 225328 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 225456 // <dependency>
+	  b parent class_ref 168880 // compound_document
+      end
+
       extra_member 146345 "friend generator"
 	
 	cpp "// Make out parent a friend.
@@ -2192,12 +2221,12 @@ using this string.
 	cpp_decl "    ${comment}${name}${(}${)}${volatile};
 "
 	cpp_def "${inline}${class}::${name}${(}${)}
-: lib_set_ ()
-, project_name_ ()
-, depend_set_ ()
-, is_static_type_ (false)
-, language_set_ ()
-, sys_buildfile_ ()
+: lib_set_()
+, project_name_()
+, depend_set_()
+, is_static_type_(false)
+, language_set_()
+, sys_buildfile_()
 {}
 "
 	java_def "  ${comment}${visibility}${final}${synchronized}${name}${(}${)}${throws} {
@@ -2491,24 +2520,6 @@ means converting () to {} and OUTPUTDIR to
 CMAKE_BINARY_DIR"
       end
 
-      operation 233385 "preamble"
-	public explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Update the main buildfile's project entry.  This is called
-in initialise() and when adding a new compiler language."
-      end
-
       operation 232233 "start_target"
 	private explicit_return_type "void"
 	nparams 5
@@ -2633,7 +2644,7 @@ Standard build-file form is a compound_artifact with something like
 	
       end
 
-      attribute 159401 "artifact"
+      attribute 159401 "artifact_"
 	public type class_ref 6913 // UmlArtifact
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} & ${name}${value};
 "
@@ -2644,48 +2655,15 @@ Standard build-file form is a compound_artifact with something like
 	comment "Reference to the object this compound artifact is representing."
       end
 
-      attribute 161321 "close"
-	public type class_ref 148265 // string_pair_t
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+      classrelation 224944 // doc_ (<directional composition>)
+	relation 224816 *-->
+	  stereotype "unique_ptr"
+	  a role_name "doc_" multiplicity "0..1" private
+	    comment "The representation of the description as a compound document."
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
 "
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The close texts"
-      end
-
-      attribute 161065 "date"
-	public type class_ref 148265 // string_pair_t
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The date texts"
-      end
-
-      attribute 161449 "end"
-	public explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "Any text at the end of the document."
-      end
-
-      attribute 161193 "preamble"
-	public type class_ref 148265 // string_pair_t
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The preamble texts"
+	    classrelation_ref 224944 // doc_ (<directional composition>)
+	  b parent class_ref 168880 // compound_document
       end
 
       attribute 199081 "style_"
@@ -2699,51 +2677,16 @@ Standard build-file form is a compound_artifact with something like
 	comment "reference to style object"
       end
 
-      attribute 159017 "targets_"
-	private type class_ref 148265 // string_pair_t
-	multiplicity "*"
-	stereotype "dict"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The artifact's target parts."
-      end
-
-      attribute 173097 "target_order_"
-	private explicit_type "unistr"
-	multiplicity "*"
-	stereotype "valuelist"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}< ${type} > ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The list of key in encounter-order."
-      end
-
-      attribute 160937 "version"
-	public type class_ref 148265 // string_pair_t
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	comment "The version texts."
-      end
-
       operation 236329 "compound_artifact"
 	public explicit_return_type ""
 	nparams 1
 	  param inout name "a_art" type class_ref 6913 // UmlArtifact
-	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}${)}${volatile};
-"
+	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}${)}${volatile};"
 	cpp_def "${inline}${class}::${name}${(}${t0} & ${p0}${)}${volatile} 
-${body}
+: artifact_( ${p0} )
+, doc_()
+, style_( butter::style::get_style() )
+{}
 "
 	
 	
@@ -2757,10 +2700,11 @@ ${body}
 	nparams 2
 	  param inout name "a_art" type class_ref 6913 // UmlArtifact
 	  param in name "a_style" type class_ref 159017 // basic_style
-	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile};
-"
-	cpp_def "${inline}${class}::${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile} 
-${body}
+	cpp_decl "    ${comment}${name}${(}${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}
+: artifact_( ${p0} )
+, doc_()
+, style_( ${p1} )
+{}
 "
 	
 	
@@ -2799,43 +2743,31 @@ ${body}
 	comment "no copy"
       end
 
-      operation 193065 "deserialise"
-	private explicit_return_type "void"
+      operation 265648 "compound_artifact"
+	stereotype "move"
+	private explicit_return_type ""
 	nparams 1
-	  param inout name "a_is" type class_ref 163113 // QTextIStream
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
+	  param inout name "source" type class_ref 147113 // compound_artifact
+	cpp_decl "    ${comment}${name}${(}${t0} && ${p0}${)}${volatile} = delete;
 "
 	
 	
 	
 	
-	comment "Reset object and read-in a new artifact.
-
-The version, date, preamble and close are read as-is. Unlabelled sections preceding
-targets are read, but the content of the target section is left blank."
+	comment "no copy"
       end
 
-      operation 198697 "has_target"
-	const public explicit_return_type "bool"
+      operation 196137 "operator="
+	private return_type class_ref 147113 // compound_artifact
 	nparams 1
-	  param in name "a_label" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
+	  param in name "source" type class_ref 147113 // compound_artifact
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract} = delete;
 "
 	
 	
 	
 	
-	comment "Check for the existance of a target."
+	comment "no assign"
       end
 
       operation 195241 "merge"
@@ -2865,25 +2797,12 @@ section or inserted if no existing labelled section exists.
 artifact. "
       end
 
-      operation 196137 "operator="
-	private return_type class_ref 147113 // compound_artifact
-	nparams 1
-	  param in name "source" type class_ref 147113 // compound_artifact
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract} = delete;
-"
-	
-	
-	
-	
-	comment "no assign"
-      end
-
-      operation 196265 "reset"
-	public explicit_return_type "void"
+      operation 265392 "document"
+	public return_type class_ref 168880 // compound_document
 	nparams 0
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${)}${const}${volatile}${abstract};
 "
-	cpp_def "${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}
+	cpp_def "${inline}${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}
 {
 ${body}
 }
@@ -2892,44 +2811,9 @@ ${body}
 	
 	
 	
-	comment "Emptys any target, preamble and close labelled sections"
+	comment " Access the artifact's description as a compound document."
       end
 
-      operation 192937 "serialise"
-	const public explicit_return_type "void"
-	nparams 1
-	  param out name "a_os" type class_ref 162985 // QTextOStream
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} & ${p0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Output the parts into a_os"
-      end
-
-      operation 198057 "target"
-	public return_type class_ref 148265 // string_pair_t
-	nparams 1
-	  param in name "a_label" explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
-"
-	cpp_def "${inline}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
-{
-${body}
-}
-"
-	
-	
-	
-	
-	comment "Get a reference to the text for target with a_label. Insert if necessary"
-      end
     end
 
     class 168880 "compound_document"
@@ -3417,6 +3301,59 @@ ${body}
 \\pre not has_target( a_label )"
       end
 
+      operation 265008 "append_close_value"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  this->close_.value.append( ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Append to value data of the close element."
+      end
+
+      operation 265264 "append_preamble_value"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract}
+{
+  this->preamble_.value.append( ${p0} );
+}
+"
+	
+	
+	
+	
+	comment "Append to value data of the preamble element."
+      end
+
+      operation 265136 "append_target_value"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "a_label" explicit_type "unistr"
+	  param in name "a_value" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment "Append to value data of an existing target.
+
+\\pre has_target( a_label )"
+      end
+
       operation 221616 "close"
 	const public return_type class_ref 175664 // element_t
 	nparams 0
@@ -3638,7 +3575,7 @@ ${body}
 	
 	
 	
-	comment "Set value data of the close element."
+	comment "Set value data of the preamble element."
       end
 
       operation 236848 "set_target"
@@ -4340,6 +4277,14 @@ descendent_link, external_target, initialise and local_target."
 	    cpp default "#include in header"
 	    classrelation_ref 155568 // <dependency>
 	  b parent class_ref 159017 // basic_style
+      end
+
+      classrelation 225584 // <dependency>
+	relation 225456 -_->
+	  a package
+	    cpp default "#include in header"
+	    classrelation_ref 225584 // <dependency>
+	  b parent class_ref 168880 // compound_document
       end
 
       classrelation 177577 // <dependency>
@@ -5468,6 +5413,7 @@ Responsibility
  - executable
  - non-standard target"
       end
+
     end
 
     class 134697 "jam_generator"
@@ -6067,6 +6013,7 @@ Responsibility
  - executable
  - non-standard target"
       end
+
     end
 
     class 132393 "location"
@@ -7805,7 +7752,23 @@ For different target types the object data has different meanings:
 	idl_decl ""
 	comment "Flags needed by the converter in addition to search directories and source list"
       end
+    end
 
+    class 188720 "QStack< location >"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit}
+{
+${members}
+};
+
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
     end
   end
 

@@ -3,10 +3,7 @@
 
 
 #include <qstring.h>
-#include <qdict.h>
-#include <qvaluelist.h>
-#include <qtextstream.h>
-
+#include <memory>
 
 // Manual includes
 #include <utility>
@@ -16,6 +13,7 @@ namespace butter { class butter_constants; }
 namespace butter { class pathcmp; } 
 namespace butter { class style; } 
 class UmlArtifact;
+namespace butter { class compound_document; } 
 
 namespace butter {
 
@@ -47,61 +45,34 @@ class compound_artifact
     /**
      * Reference to the object this compound artifact is representing.
      */
-    ::UmlArtifact & artifact;
-
-    /**
-     * The close texts
-     */
-    string_pair_t close;
-
-    /**
-     * The date texts
-     */
-    string_pair_t date;
-
-    /**
-     * Any text at the end of the document.
-     */
-    QString end;
-
-    /**
-     * The preamble texts
-     */
-    string_pair_t preamble;
+    ::UmlArtifact & artifact_;
 
 
   private:
+    /**
+     * The representation of the description as a compound document.
+     */
+    std::unique_ptr< compound_document > doc_;
+
     /**
      * reference to style object
      */
     const basic_style& style_;
 
-    /**
-     * The artifact's target parts.
-     */
-    QDict< string_pair_t > targets_;
-
-    /**
-     * The list of key in encounter-order.
-     */
-    QValueList< QString > target_order_;
-
 
   public:
-    /**
-     * The version texts.
-     */
-    string_pair_t version;
-
     /**
      * Construct and initialise object from a_art
      */
     compound_artifact(::UmlArtifact & a_art);
-
     /**
      * Construct and initialise object from a_art
      */
-    compound_artifact(::UmlArtifact & a_art, const basic_style & a_style);
+    compound_artifact(::UmlArtifact & a_art, const basic_style & a_style)
+    : artifact_( a_art )
+    , doc_()
+    , style_( a_style )
+    {}
 
     ~compound_artifact();
 
@@ -113,20 +84,17 @@ class compound_artifact
     compound_artifact(const compound_artifact & source) = delete;
 
     /**
-     * Reset object and read-in a new artifact.
-     * 
-     * The version, date, preamble and close are read as-is. Unlabelled sections preceding
-     * targets are read, but the content of the target section is left blank.
+     * no copy
      */
-    void deserialise(::QTextIStream & a_is);
+    compound_artifact(compound_artifact && source) = delete;
+
+    /**
+     * no assign
+     */
+    compound_artifact & operator=(const compound_artifact & source) = delete;
 
 
   public:
-    /**
-     * Check for the existance of a target.
-     */
-    bool has_target(QString a_label) const;
-
     /**
      * Merges the content of a_art into this artifact.
      * 
@@ -141,29 +109,10 @@ class compound_artifact
      */
     void merge(::UmlArtifact & a_art);
 
-
-  private:
     /**
-     * no assign
+     *  Access the artifact's description as a compound document.
      */
-    compound_artifact & operator=(const compound_artifact & source) = delete;
-
-
-  public:
-    /**
-     * Emptys any target, preamble and close labelled sections
-     */
-    void reset();
-
-    /**
-     * Output the parts into a_os
-     */
-    void serialise(::QTextOStream & a_os) const;
-
-    /**
-     * Get a reference to the text for target with a_label. Insert if necessary
-     */
-    string_pair_t & target(QString a_label);
+    compound_document & document();
 
 
 };

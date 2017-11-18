@@ -1,0 +1,282 @@
+format 75
+
+classinstance 128048 class_ref 133545 // bjam_generator
+  name ""   xyz 137 34 2000 life_line_z 2000
+classinstance 128560 class_ref 132393 // location
+  name "a_base"   xyz 219 76 2000 life_line_z 2000
+classinstance 128688 class_ref 7553 // UmlItem
+  name "a_proj"   xyz 267 23 2000 life_line_z 2000
+classinstance 129072 class_ref 147113 // compound_artifact
+  name "system_artifact"   xyz 292 251 2000 life_line_z 2000
+classinstance 130480 class_ref 132393 // location
+  name "top"   xyz 421 563 2000 life_line_z 2000
+classinstance 130608 class_ref 188720 // QStack< location >
+  name "loc_stack"   xyz 334 411 2005 life_line_z 2000
+classinstance 132912 class_ref 7937 // UmlPackage
+  name ""   xyz 463 721 2000 life_line_z 2000
+classinstance 133424 class_ref 7553 // UmlItem
+  name ""   xyz 535 769 2000 life_line_z 2000
+note 134576 "loop while stack is not empty"
+  xyzwh 27 532 2000 135 59
+note 134704 "loop over location::children"
+  xyzwh 30 654 2000 135 59
+note 134832 "loop over location::packages"
+  xyzwh 30 724 2000 147 61
+note 134960 "loop over UmlPackage::children"
+  xyzwh 32.5 794.5 2000 153 63
+note 135088 "If kind == deploymentView"
+  xyzwh 32 876 2000 127 63
+note 135600 "loop over UmlItem::children"
+  xyzwh 33.5 953.5 2000 135 59
+classinstance 135728 class_ref 7553 // UmlItem
+  name ""   xyz 591 934 2000 life_line_z 2000
+note 136496 "If kind == anArtifact
+look for build targets."
+  xyzwh 57 1035 2000 107 145
+classinstance 136624 class_ref 147113 // compound_artifact
+  name "current_"   xyz 593 1029 2000 life_line_z 2000
+note 137648 "add any targets to \"current\""
+  xyzwh 215 1111 2005 185 39
+durationcanvas 128176 classinstance_ref 128048 // :bjam_generator
+  xyzwh 184 190 2010 11 1061
+  overlappingdurationcanvas 128816
+    xyzwh 190 235 2020 11 25
+  end
+  overlappingdurationcanvas 129200
+    xyzwh 190 298 2020 11 33
+  end
+  overlappingdurationcanvas 129840
+    xyzwh 190 389 2020 11 25
+  end
+  overlappingdurationcanvas 130096
+    xyzwh 190 451 2020 11 25
+  end
+  overlappingdurationcanvas 137008
+    xyzwh 190 1077 2020 11 26
+  end
+  overlappingdurationcanvas 137776
+    xyzwh 190 1155 2020 11 25
+  end
+end
+durationcanvas 129456 classinstance_ref 129072 // system_artifact:compound_artifact
+  xyzwh 346 319 2010 11 37
+end
+durationcanvas 130736 classinstance_ref 130608 // loc_stack:QStack< location >
+  xyzwh 391 495 2010 11 25
+end
+durationcanvas 130992 classinstance_ref 130608 // loc_stack:QStack< location >
+  xyzwh 391 551 2010 11 28
+end
+durationcanvas 131376 classinstance_ref 130608 // loc_stack:QStack< location >
+  xyzwh 391 602 2010 11 32
+end
+durationcanvas 131760 classinstance_ref 130480 // top:location
+  xyzwh 444 623 2010 11 29
+end
+durationcanvas 132144 classinstance_ref 130480 // top:location
+  xyzwh 444 682 2010 11 43
+end
+durationcanvas 132400 classinstance_ref 130608 // loc_stack:QStack< location >
+  xyzwh 391 701 2010 11 25
+end
+durationcanvas 132656 classinstance_ref 130480 // top:location
+  xyzwh 444 753 2010 11 31
+end
+durationcanvas 133040 classinstance_ref 132912 // :UmlPackage
+  xyzwh 502 771 2010 11 35
+end
+durationcanvas 133552 classinstance_ref 132912 // :UmlPackage
+  xyzwh 502 832 2010 11 29
+end
+durationcanvas 133808 classinstance_ref 133424 // :UmlItem
+  xyzwh 562 850 2010 11 32
+end
+durationcanvas 134192 classinstance_ref 133424 // :UmlItem
+  xyzwh 562 906 2010 11 29
+end
+durationcanvas 135216 classinstance_ref 133424 // :UmlItem
+  xyzwh 562 961 2010 11 34
+end
+durationcanvas 135856 classinstance_ref 135728 // :UmlItem
+  xyzwh 618 984 2010 11 52
+end
+durationcanvas 136240 classinstance_ref 135728 // :UmlItem
+  xyzwh 618 1037 2010 11 25
+end
+durationcanvas 137264 classinstance_ref 136624 // current_:compound_artifact
+  xyzwh 647 1083 2010 11 30
+end
+lostfoundmsgsupport 128304 xyz 36 192 2015
+msg 128432 found_synchronous
+  from lostfoundmsgsupport_ref 128304
+  to durationcanvas_ref 128176
+  yz 190 2015 msg operation_ref 208809 // "create_system(inout a_base : location, in a_project : UmlItem) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "a_base, a_proj"
+  label_xy 65 171
+reflexivemsg 128944 synchronous
+  to durationcanvas_ref 128816
+  yz 235 2025 msg operation_ref 226473 // "rules_file(inout a_base : location, in a_project : UmlItem) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "a_base, a_proj"
+  label_xy 137 216
+reflexivemsg 129328 synchronous
+  to durationcanvas_ref 129200
+  yz 298 2025 msg operation_ref 194089 // "get_artifact(inout a_loc : location, in a_name : unistr) : compound_artifact"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "a_base, build_file_sysname"
+  label_xy 93 279
+msg 129584 synchronous
+  from durationcanvas_ref 129200
+  to durationcanvas_ref 129456
+  yz 319 2030 msg operation_ref 236329 // "compound_artifact(inout a_art : UmlArtifact)"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 269 300
+msg 129712 return
+  from durationcanvas_ref 129456
+  to durationcanvas_ref 128176
+  yz 345 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 129968 synchronous
+  to durationcanvas_ref 129840
+  yz 389 2025 msg operation_ref 244137 // "root_dir() : pathcmp"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 184 370
+reflexivemsg 130224 synchronous
+  to durationcanvas_ref 130096
+  yz 451 2025 msg operation_ref 152745 // "initialise(inout a_base : location, in a_project : UmlItem, inout a_sys : compound_artifact) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "a_base, a_proj, system_artifact"
+  label_xy 91 432
+msg 130864 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 130736
+  yz 495 2015 explicitmsg "push()"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "a_base"
+  label_xy 255 476
+msg 131120 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 130992
+  yz 551 2015 explicitmsg "isEmpty()"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 266 532
+msg 131248 return
+  from durationcanvas_ref 130992
+  to durationcanvas_ref 128176
+  yz 568 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 131504 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 131376
+  yz 602 2015 explicitmsg "pop()"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 279 583
+msg 131888 synchronous
+  from durationcanvas_ref 131376
+  to durationcanvas_ref 131760
+  yz 623 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 132016 return
+  from durationcanvas_ref 131760
+  to durationcanvas_ref 128176
+  yz 641 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 132272 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 132144
+  yz 682 2015 msg operation_ref 167081 // "children() : location"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 293 663
+msg 132528 synchronous
+  from durationcanvas_ref 132144
+  to durationcanvas_ref 132400
+  yz 702 2015 explicitmsg "push()"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 405 683
+msg 132784 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 132656
+  yz 753 2015 msg operation_ref 167337 // "packages() : UmlPackage"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 288 734
+msg 133168 synchronous
+  from durationcanvas_ref 132656
+  to durationcanvas_ref 133040
+  yz 771 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 133296 return
+  from durationcanvas_ref 133040
+  to durationcanvas_ref 128176
+  yz 793 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 133680 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 133552
+  yz 832 2015 msg operation_ref 46976 // "children() : UmlItem"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 322 813
+msg 133936 synchronous
+  from durationcanvas_ref 133552
+  to durationcanvas_ref 133808
+  yz 850 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 134064 return
+  from durationcanvas_ref 133808
+  to durationcanvas_ref 128176
+  yz 871 2025 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 134320 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 134192
+  yz 906 2015 msg operation_ref 45952 // "kind() : anItemKind"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 363 887
+msg 134448 return
+  from durationcanvas_ref 134192
+  to durationcanvas_ref 128176
+  yz 924 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 135344 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 135216
+  yz 961 2015 msg operation_ref 46976 // "children() : UmlItem"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 352 942
+msg 135984 synchronous
+  from durationcanvas_ref 135216
+  to durationcanvas_ref 135856
+  yz 984 2025 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 136112 return
+  from durationcanvas_ref 135856
+  to durationcanvas_ref 128176
+  yz 1003 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 136368 synchronous
+  from durationcanvas_ref 128176
+  to durationcanvas_ref 136240
+  yz 1037 2015 msg operation_ref 45952 // "kind() : anItemKind"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 391 1018
+reflexivemsg 137136 synchronous
+  to durationcanvas_ref 137008
+  yz 1077 2025 msg operation_ref 194089 // "get_artifact(inout a_loc : location, in a_name : unistr) : compound_artifact"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 173 1058
+msg 137392 synchronous
+  from durationcanvas_ref 137008
+  to durationcanvas_ref 137264
+  yz 1091 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 137520 return
+  from durationcanvas_ref 137264
+  to durationcanvas_ref 128176
+  yz 1102 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 137904 synchronous
+  to durationcanvas_ref 137776
+  yz 1155 2025 msg operation_ref 153001 // "descendent_link(inout a_art : compound_artifact, inout a_sys : compound_artifact, in a_loc : location) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 159 1136
+end

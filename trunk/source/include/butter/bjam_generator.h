@@ -12,6 +12,7 @@
 #include <qtextstream.h>
 
 
+namespace butter { class compound_document; } 
 class UmlArtifact;
 namespace butter { class compound_artifact; } 
 namespace butter { class location; } 

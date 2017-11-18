@@ -34,6 +34,20 @@ this->targets_.push_back( { a_label, {}, {} } );
 
 }
 
+void compound_document::append_target_value(QString a_label, QString a_value) 
+{
+for( auto & elem : this->targets_ )
+{
+  if( elem.label == a_label )
+  {
+    elem.value.append( a_value );
+    return;
+  }
+}
+BUTTER_REQUIRE( false, "Cannot set target value for non-existent target" );
+
+}
+
 const compound_document::element_t& compound_document::get_target(QString a_label) const 
 {
 for( auto const& elem : this->targets_ )
@@ -91,7 +105,7 @@ for( auto & elem : this->targets_ )
 {
   if( elem.label == a_label )
   {
-    elem.value = a_value;
+    std::swap( elem.value, a_value );
     return;
   }
 }

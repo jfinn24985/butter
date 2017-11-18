@@ -247,25 +247,26 @@ void jam_generator::check_properties(bool a_is_source, const ::UmlArtifact & a_s
 
 void jam_generator::descendent_link(compound_artifact & a_art, compound_artifact & a_sys, const location & a_loc) {
 // Need to write the TOP line.
-if (NULL != a_loc.parent ())
+if( NULL != a_loc.parent() )
 {
   QString subdir_line_;  // The text of the preamble section (mainly SubDir)
   // Create subpath (eg. src/chemistry) ;
-  const QString dir_line2_ = this->root_dir ().create_relative (a_loc.full_path ());
+  const QString dir_line2_{ this->root_dir().create_relative( a_loc.full_path() ) };
   // Create a space separated list of folders between here and TOP
-  const QString dir_line_ = pathcmp (dir_line2_).path_convert (" ");
+  const QString dir_line_{ pathcmp ( dir_line2_ ).path_convert ( " " ) };
   // Reset grist
-  this->grist_.truncate (0);
+  this->grist_.truncate( 0 );
   {
-    QTextOStream subdir_os_ (&subdir_line_);
+    QTextOStream subdir_os_{ &subdir_line_ };
     // Create LOCATE_TARGET
     subdir_os_ << "ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)"
-          << pathcmp(dir_line2_).path_convert("$(SLASH)") << " ;\n\n"
-          << "SubDir TOP " << dir_line_ << " ;\n\n";
+      << pathcmp( dir_line2_ ).path_convert( "$(SLASH)" ) << " ;\n\n"
+      << "SubDir TOP " << dir_line_ << " ;\n\n"
+      << a_art.document().preamble().value;
   }
-  a_art.preamble.second.insert (0, subdir_line_);
+  a_art.document().set_preamble_value( subdir_line_ );
   // Add definition to top-level
-  a_sys.close.second.append ("SubInclude TOP " + dir_line_ + " ;\n");
+  a_sys.document().append_close_value( "SubInclude TOP " + dir_line_ + " ;\n" );
 }
 }
 
@@ -441,7 +442,7 @@ QString content_;
     os_ << "CCFLAGS += " << property_value_ << " ;\n";
   }
 }
-a_sys.preamble.second = content_;
+a_sys.document().set_preamble_value( content_ );
 
 }
 
