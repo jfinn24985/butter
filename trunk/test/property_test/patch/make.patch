@@ -1,13 +1,11 @@
 Index: property_test.prj
 ===================================================================
---- property_test.prj	(revision 55)
-+++ property_test.prj	(working copy)
-@@ -37,6 +37,8 @@
- 
-   mark_for_import
+--- property_test.prj
++++ property_test.prj
+@@ -41,5 +41,5 @@ format 75
    
-+  ncouples 1
-+  key "butter style" value "make"
-   comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
-   package_ref 128041 // Library
- 
+   ncouples 3
+-  key "butter style" value "invalid"
++  key "butter style" value "gmake"
+   key "dummy1" value "property"
+   key "dummy2" value "property"
