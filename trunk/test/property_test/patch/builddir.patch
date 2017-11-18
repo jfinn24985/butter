@@ -1,7 +1,7 @@
-diff --git a/property_test.prj b/property_test.prj
-index d64cb3d..6a9100e 100644
---- a/property_test.prj
-+++ b/property_test.prj
+Index: property_test.prj
+===================================================================
+--- property_test.prj
++++ property_test.prj
 @@ -40,8 +40,9 @@ format 75
    mark_for_import
    
