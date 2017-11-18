@@ -1,0 +1,6 @@
+class example_exe
+!!!128041.cpp!!!	main(in argc : int, in argv : char) : int
+example_lib l;
+std::cout << l.get_message() << "\n";
+std::cout << this->get_message() << "\n";
+return 0;
