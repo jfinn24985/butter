@@ -1,6 +1,6 @@
 format 75
 "property_test"
-  revision 9
+  revision 10
   modified_by 48 "finnerty"
   cpp_root_dir "./output/include/"
 
@@ -40,7 +40,7 @@ format 75
   mark_for_import
   
   ncouples 3
-  key "butter style" value "standard"
+  key "butter style" value "invalid"
   key "dummy1" value "property"
   key "dummy2" value "property"
   comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
