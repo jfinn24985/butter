@@ -1,0 +1,15 @@
+Index: property_test.prj
+===================================================================
+--- property_test.prj
++++ property_test.prj
+@@ -40,8 +40,9 @@ format 75
+   mark_for_import
+   
+-  ncouples 3
++  ncouples 4
+   key "butter style" value "invalid"
+   key "dummy1" value "property"
+   key "dummy2" value "property"
++  key "butter type" value "shared"
+   comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
+   package_ref 128041 // Library
