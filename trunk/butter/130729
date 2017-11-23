@@ -1,6 +1,6 @@
 format 75
 "Build" // Build
-  revision 97
+  revision 100
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -1814,6 +1814,33 @@ dirs += src/butter
 ##START:target butter_test
 dirs += src/butter/butter_test
 ##END:target butter_test
+"
+    end
+
+    artifact 155824 "property_table.t2t"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "Property Tests
+Justin Finnerty
+
+
+
++ Properties tested independently +
+
+
+|| Object     | Property  | Generator 
+||            |           | Standard(Jam) | Boost   | CMake   | Gnu Make 
+------------------------------------------------------------------------ 
+*Top*Package  | style     | Supported
+              | log-level | Supported
+*Top*Package  | build-dir | Supported 
+              | base      | Supported 
+              | flags     | Supported 
+              | include 
+              | ldflags 
+              | type 
+              | version 
 "
     end
   end
