@@ -29,8 +29,65 @@ setup_example_top(){
     atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${prop}.patch
   fi
   atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}-top.patch
-  atf_check -s exit:0 -o save:butter.log.${genr}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
-  atf_check -s exit:0 -o save:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
+  atf_check -s exit:0 -o save:butter.log.${genr}.${prop}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
+  atf_check -s exit:0 -o file:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
+}
+
+
+atf_test_case property_basedir_jam_gen
+property_basedir_jam_gen_head() {
+  atf_set "descr" "Property (*top*)Package(butter base) with jam generator."
+}
+property_basedir_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: PROJECT.butter base + ../..
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example_top "property_test" "jam" "basedir"
+  atf_check -s exit:0 [ -e Jamrules ]
+  atf_check -s exit:0 [ -e Jamfile ]
+ 
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    # test base build target
+    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
+    atf_check -s exit:0 [ -x ${builddir}/output/src/Executable/program ]
+    atf_check -s exit:0 [ -e ${builddir}/output/src/Library/library.a ]
+    atf_check -s exit:0 -o file:output_default.canon ${builddir}/output/src/Executable/program
+    # test install target
+    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+    atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 -o file:output_default.canon installdir/bin/program
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
+    atf_check -s exit:0 [ ! -e ${builddir}/output/src/Executable/program ]
+    atf_check -s exit:0 [ ! -e ${builddir}/output/src/Library/library.a ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+
+    atf_check -s exit:0 -o empty rm jam1.log jam1.err
+    atf_check -s exit:0 -o empty rm jam2.log jam2.err
+    atf_check -s exit:0 -o empty rm jam3.log jam3.err
+    atf_check -s exit:0 -o empty rm -rf ${builddir}
+    atf_check -s exit:0 -o empty rm -rf installdir
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" DEBUG
+  # specific DEBUG VARIANT
+  build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty rm Jamfile Jamrules
+   atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+  unset build_test
 }
 
 
@@ -87,6 +144,7 @@ property_builddir_jam_gen_body() {
   popd
   unset build_test
 }
+
 
 ##atf_test_case property_builddir_boost_gen
 ##property_builddir_boost_gen_head() {
@@ -563,8 +621,8 @@ property_test_make_gen_body() {
 
 
 atf_init_test_cases() {
-    atf_add_test_case property_test_jam_gen
     atf_add_test_case property_builddir_jam_gen
+    atf_add_test_case property_basedir_jam_gen
     atf_add_test_case property_test_boost_gen
     atf_add_test_case property_test_cmake_gen
     atf_add_test_case property_test_make_gen
