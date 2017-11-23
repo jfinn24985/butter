@@ -33,6 +33,60 @@ setup_example_top(){
   atf_check -s exit:0 -o file:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
 }
 
+atf_test_case property_top_flags_jam_gen
+property_top_flags_jam_gen_head() {
+  atf_set "descr" "Property (*top*)Package(butter flags) with jam generator."
+}
+property_top_flags_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: PROJECT.butter flags + -DPROGRAM_MESSAGE='\"proj1 message\"' -DLIBRARY_MESSAGE='\"proj2 message\"' 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example_top "property_test" "jam" "top-flags"
+
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
+    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
+    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
+    atf_check -s exit:0 -o file:../output_top_flags.canon ${builddir}/src/Executable/program
+    # test install target
+    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+    atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 -o file:../output_top_flags.canon installdir/bin/program
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
+    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
+    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+
+    atf_check -s exit:0 -o empty rm jam1.log jam1.err
+    atf_check -s exit:0 -o empty rm jam2.log jam2.err
+    atf_check -s exit:0 -o empty rm jam3.log jam3.err
+    atf_check -s exit:0 -o empty rm -rf BUILD
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" DEBUG
+  # specific DEBUG VARIANT
+  build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+  unset build_test
+}
 
 atf_test_case property_basedir_jam_gen
 property_basedir_jam_gen_head() {
@@ -98,6 +152,7 @@ property_builddir_jam_gen_head() {
 property_builddir_jam_gen_body() {
   pushd ../test/property_test
   #----------------------- 
+  # Property: PROJECT.butter build-dir + BUILD
   # Standard (jam) variant 
   #----------------------- 
   setup_example_top "property_test" "jam" "builddir"
@@ -623,6 +678,7 @@ property_test_make_gen_body() {
 atf_init_test_cases() {
     atf_add_test_case property_builddir_jam_gen
     atf_add_test_case property_basedir_jam_gen
+    atf_add_test_case property_top_flags_jam_gen
     atf_add_test_case property_test_boost_gen
     atf_add_test_case property_test_cmake_gen
     atf_add_test_case property_test_make_gen
