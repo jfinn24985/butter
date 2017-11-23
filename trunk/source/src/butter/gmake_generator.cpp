@@ -279,7 +279,7 @@ const char * gmake_generator::default_rules_unix[] = { " # Definition of for loo
 , "#############################\n"
 , "PREFIX=$(ROOTDIR)/installdir\n"
 , "BINDIR?=$(PREFIX)/bin\n"
-, "LIBDIR?=$(PREFIX)/bin\n"
+, "LIBDIR?=$(PREFIX)/lib\n"
 , "INCLUDEDIR?=$(PREFIX)/include\n"
 , "DATADIR?=$(PREFIX)/share\n"
 , "DOCDIR?=$(DATADIR)/doc\n"

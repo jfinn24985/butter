@@ -1,6 +1,6 @@
 format 75
 "butter" // butter
-  revision 215
+  revision 216
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -1065,7 +1065,7 @@ friend class generator<bjam_generator>;" ""
 , \"constant DOCDIR : [ path.join share doc ] ;\\n\"
 , \"constant HTMLDIR : [ path.join share html ] ;\\n\"
 , \"constant INCDIR : include ;\\n\"
-, \"constant LIBDIR : bin ; # Shared libraries\\n\"
+, \"constant LIBDIR : lib ; # Shared libraries\\n\"
 , \"constant MANDIR  : [ path.join share man1 ] ;\\n\"
 , \"\\n\"
 , 0 }
@@ -2108,7 +2108,7 @@ friend class generator<cmake_generator>;" ""
 , \"set (DOCDIR share/doc)\\n\"
 , \"set (HTMLDIR share/html)\\n\"
 , \"set (INCLUDEDIR include)\\n\"
-, \"set (LIBDIR bin)\\n\"
+, \"set (LIBDIR lib)\\n\"
 , \"set (MANDIR share/man)\\n\"
 , \"\\n\"
 , 0 }
@@ -2813,7 +2813,6 @@ ${body}
 	
 	comment " Access the artifact's description as a compound document."
       end
-
     end
 
     class 168880 "compound_document"
@@ -4831,7 +4830,7 @@ using this string.
 , \"#############################\\n\"
 , \"PREFIX=$(ROOTDIR)/installdir\\n\"
 , \"BINDIR?=$(PREFIX)/bin\\n\"
-, \"LIBDIR?=$(PREFIX)/bin\\n\"
+, \"LIBDIR?=$(PREFIX)/lib\\n\"
 , \"INCLUDEDIR?=$(PREFIX)/include\\n\"
 , \"DATADIR?=$(PREFIX)/share\\n\"
 , \"DOCDIR?=$(DATADIR)/doc\\n\"
@@ -5413,7 +5412,6 @@ Responsibility
  - executable
  - non-standard target"
       end
-
     end
 
     class 134697 "jam_generator"
@@ -5517,7 +5515,7 @@ friend class generator<jam_generator>;" ""
 , \"DOCDIR = $(DATADIR)/doc ;\\n\"
 , \"HTMLDIR = $(DATADIR)/html ;\\n\"
 , \"INCDIR = $(PREFIX)/include ;\\n\"
-, \"LIBDIR = $(PREFIX)/bin ;\\n\"
+, \"LIBDIR = $(PREFIX)/lib ;\\n\"
 , \"MANDIR = $(DATADIR)/man1 ;\\n\"
 , \"\\n\"
 , \"######################################################\\n\"
@@ -6013,7 +6011,6 @@ Responsibility
  - executable
  - non-standard target"
       end
-
     end
 
     class 132393 "location"
@@ -8611,7 +8608,7 @@ ${namespace_end}"
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Wed Nov 8 20:00:39 2017
+#Thu Nov 23 23:30:27 2017
 ##END:date
 ##START:preamble
 include $(ROOTDIR)/M_sys.mk
@@ -8619,18 +8616,18 @@ include $(ROOTDIR)/M_sys.mk
 ##END:preamble
 ##START:target butter
 BUTTER_BUTTERSRC :=  \\
-	jam_generator.cpp \\
-	butter_constants.cpp \\
-	utility.cpp \\
-	bjam_generator.cpp \\
-	compound_artifact.cpp \\
-	location.cpp \\
 	base_generator.cpp \\
 	basic_style.cpp \\
-	gmake_generator.cpp \\
+	bjam_generator.cpp \\
+	butter_constants.cpp \\
 	cmake_generator.cpp \\
+	compound_artifact.cpp \\
 	compound_document.cpp \\
-	style.cpp
+	gmake_generator.cpp \\
+	jam_generator.cpp \\
+	location.cpp \\
+	style.cpp \\
+	utility.cpp
 BUTTER_BUTTER_DINC := $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.c=$(sufdep)))
 butter$(suflib): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 butter$(suflib) $(BUTTER_BUTTER_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 

@@ -47,7 +47,7 @@ const char * bjam_generator::default_rules[] = { "#\n"
 , "constant DOCDIR : [ path.join share doc ] ;\n"
 , "constant HTMLDIR : [ path.join share html ] ;\n"
 , "constant INCDIR : include ;\n"
-, "constant LIBDIR : bin ; # Shared libraries\n"
+, "constant LIBDIR : lib ; # Shared libraries\n"
 , "constant MANDIR  : [ path.join share man1 ] ;\n"
 , "\n"
 , 0 }

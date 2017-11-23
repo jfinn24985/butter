@@ -2,7 +2,7 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Wed Nov 8 20:00:39 2017
+#Thu Nov 23 23:30:27 2017
 ##END:date
 ##START:preamble
 include $(ROOTDIR)/M_sys.mk
@@ -10,18 +10,18 @@ include $(ROOTDIR)/M_sys.mk
 ##END:preamble
 ##START:target butter
 BUTTER_BUTTERSRC :=  \
-	jam_generator.cpp \
-	butter_constants.cpp \
-	utility.cpp \
-	bjam_generator.cpp \
-	compound_artifact.cpp \
-	location.cpp \
 	base_generator.cpp \
 	basic_style.cpp \
-	gmake_generator.cpp \
+	bjam_generator.cpp \
+	butter_constants.cpp \
 	cmake_generator.cpp \
+	compound_artifact.cpp \
 	compound_document.cpp \
-	style.cpp
+	gmake_generator.cpp \
+	jam_generator.cpp \
+	location.cpp \
+	style.cpp \
+	utility.cpp
 BUTTER_BUTTER_DINC := $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(BUTTER_BUTTERSRC:.c=$(sufdep)))
 butter$(suflib): LDFLAGS+= -L${QTDIR}/lib64 -lqt-mt -lm
 butter$(suflib) $(BUTTER_BUTTER_DINC) : CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 

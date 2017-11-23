@@ -46,7 +46,7 @@ const char * cmake_generator::default_rules[] = { "#\n"
 , "set (DOCDIR share/doc)\n"
 , "set (HTMLDIR share/html)\n"
 , "set (INCLUDEDIR include)\n"
-, "set (LIBDIR bin)\n"
+, "set (LIBDIR lib)\n"
 , "set (MANDIR share/man)\n"
 , "\n"
 , 0 }

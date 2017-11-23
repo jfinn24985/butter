@@ -59,7 +59,7 @@ property_libtype_shared_jam_gen_body() {
     # test install target
     atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
     atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/bin/library.a ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
     atf_check -s exit:0 -o file:../output_default.canon installdir/bin/program
     # no distclean target
     # test clean target
@@ -117,7 +117,7 @@ property_libtype_static_jam_gen_body() {
     # test install target
     atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
     atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/bin/library.a ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
     atf_check -s exit:0 -o file:../output_default.canon installdir/bin/program
     # no distclean target
     # test clean target
@@ -177,7 +177,7 @@ property_log_level_jam_gen_body() {
     # test install target
     atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
     atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/bin/library.a ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
     atf_check -s exit:0 -o file:../output_default.canon installdir/bin/program
     # no distclean target
     # test clean target
@@ -263,6 +263,7 @@ property_top_flags_jam_gen_body() {
     # test install target
     atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
     atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
     atf_check -s exit:0 -o file:../output_top_flags.canon installdir/bin/program
     # no distclean target
     # test clean target
@@ -270,6 +271,7 @@ property_top_flags_jam_gen_body() {
     atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
     atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
     atf_check -s exit:0 [ -e installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
 
     atf_check -s exit:0 -o empty rm jam1.log jam1.err
     atf_check -s exit:0 -o empty rm jam2.log jam2.err
@@ -319,6 +321,7 @@ property_basedir_jam_gen_body() {
     # test install target
     atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
     atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
     atf_check -s exit:0 -o file:output_default.canon installdir/bin/program
     # no distclean target
     # test clean target
@@ -326,6 +329,7 @@ property_basedir_jam_gen_body() {
     atf_check -s exit:0 [ ! -e ${builddir}/output/src/Executable/program ]
     atf_check -s exit:0 [ ! -e ${builddir}/output/src/Library/library.a ]
     atf_check -s exit:0 [ -e installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
 
     atf_check -s exit:0 -o empty rm jam1.log jam1.err
     atf_check -s exit:0 -o empty rm jam2.log jam2.err
@@ -375,6 +379,7 @@ property_builddir_jam_gen_body() {
     # test install target
     atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
     atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
     atf_check -s exit:0 -o file:../output_default.canon installdir/bin/program
     # no distclean target
     # test clean target
@@ -382,6 +387,7 @@ property_builddir_jam_gen_body() {
     atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
     atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
     atf_check -s exit:0 [ -e installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
 
     atf_check -s exit:0 -o empty rm jam1.log jam1.err
     atf_check -s exit:0 -o empty rm jam2.log jam2.err
