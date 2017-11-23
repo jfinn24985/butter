@@ -1,0 +1,21 @@
+Property Tests
+Justin Finnerty
+
+
+
++ Properties tested independently +
+
+
+|| Object     | Property  | Generator 
+||            |           | Standard(Jam) | Boost   | CMake   | Gnu Make 
+------------------------------------------------------------------------ 
+*Top*Package  | style     | Supported
+              | log-level | Supported
+*Top*Package  | build-dir | Supported 
+              | base      | Supported 
+              | flags     | Supported 
+              | type(shared) | Not Supported
+              | type(static) | (default)
+              | include 
+              | ldflags 
+              | version 
