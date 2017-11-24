@@ -1,0 +1,10 @@
+diff --git a/trunk/test/property_test/128041 b/trunk/test/property_test/128041
+index 658f82f..5ac5b05 100644
+--- a/trunk/test/property_test/128041
++++ b/trunk/test/property_test/128041
+@@ -152,4 +152,5 @@ ${namespace_end}
+       cpp_src "${comment}
+ ${includes}
++#include \"lib_message.hpp\"
+ #ifndef LIBRARY_MESSAGE
+ #define LIBRARY_MESSAGE \"default library message\"
