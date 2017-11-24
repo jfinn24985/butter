@@ -14,25 +14,15 @@ setup_example(){
     atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${prop}.patch
   fi
   atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}.patch
-  atf_check -s exit:0 -o save:butter.log.${genr}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
-  atf_check -s exit:0 -o save:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
 }
 
-# setup for projects when property is for the top level project
-setup_example_top(){
+run_plugouts(){
   local example=$1
   local genr=$2
   local prop=$3
-  atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
-  if [ "X${prop}" != "X" ]; then
-    atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${prop}.patch
-  fi
-  atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}-top.patch
   atf_check -s exit:0 -o save:butter.log.${genr}.${prop}.canon bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
-  atf_check -s exit:0 -o file:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
+  atf_check -s exit:0 -o save:cpp.log.canon bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
 }
-
 
 atf_test_case property_libtype_shared_jam_gen
 property_libtype_shared_jam_gen_head() {
@@ -44,7 +34,8 @@ property_libtype_shared_jam_gen_body() {
   # Property: PROJECT.butter type + static
   # Standard (jam) variant 
   #----------------------- 
-  setup_example_top "property_test" "jam" "top-libtype-shared"
+  setup_example "property_test" "jam-top" "top-libtype-shared"
+  run_plugouts "property_test" "jam" "top-libtype-shared"
   atf_check -o empty diff butter.log.jam.canon butter.log.jam.top-libtype-shared.canon 
  
   build_test(){
@@ -102,7 +93,8 @@ property_libtype_static_jam_gen_body() {
   # Property: PROJECT.butter type + static
   # Standard (jam) variant 
   #----------------------- 
-  setup_example_top "property_test" "jam" "top-libtype-static"
+  setup_example "property_test" "jam-top" "top-libtype-static"
+  run_plugouts "property_test" "jam" "top-libtype-static"
   atf_check -o empty diff butter.log.jam.canon butter.log.jam.top-libtype-static.canon 
  
   build_test(){
@@ -160,7 +152,8 @@ property_log_level_jam_gen_body() {
   # Property: PROJECT.butter log-level = 0 (default) 
   # Standard (jam) variant 
   #----------------------- 
-  setup_example_top "property_test" "jam" "loglevel0"
+  setup_example "property_test" "jam-top" "loglevel0"
+  run_plugouts "property_test" "jam" "loglevel0"
   atf_check -o empty diff butter.log.jam.canon butter.log.jam.loglevel0.canon 
   atf_check -s exit:0 [ -e output/include/butter.log ]
   atf_check -s exit:1 [ -s output/include/butter.log ]
@@ -204,7 +197,8 @@ property_log_level_jam_gen_body() {
   # Property: PROJECT.butter log-level = 1 (information) 
   # Standard (jam) variant 
   #----------------------- 
-  setup_example_top "property_test" "jam" "loglevel1"
+  setup_example "property_test" "jam-top" "loglevel1"
+  run_plugouts "property_test" "jam" "loglevel1"
   atf_check -s exit:0 [ -e output/include/butter.log ]
   atf_check -s exit:1 [ -s output/include/butter.log ]
 
@@ -220,7 +214,8 @@ property_log_level_jam_gen_body() {
   # Property: PROJECT.butter log-level = 2 (debug) 
   # Standard (jam) variant 
   #----------------------- 
-  setup_example_top "property_test" "jam" "loglevel2"
+  setup_example "property_test" "jam-top" "loglevel1"
+  run_plugouts "property_test" "jam" "loglevel1"
   atf_check -s exit:0 [ -e output/include/butter.log ]
   atf_check -s exit:1 [ -s output/include/butter.log ]
 
@@ -249,7 +244,8 @@ property_top_flags_jam_gen_body() {
   # Property: PROJECT.butter flags + -DPROGRAM_MESSAGE='\"proj1 message\"' -DLIBRARY_MESSAGE='\"proj2 message\"' 
   # Standard (jam) variant 
   #----------------------- 
-  setup_example_top "property_test" "jam" "top-flags"
+  setup_example "property_test" "jam-top" "top-flags"
+  run_plugouts "property_test" "jam" "top-flags"
 
   build_test(){
     local variant=$1
@@ -306,7 +302,8 @@ property_basedir_jam_gen_body() {
   # Property: PROJECT.butter base + ../..
   # Standard (jam) variant 
   #----------------------- 
-  setup_example_top "property_test" "jam" "basedir"
+  setup_example "property_test" "jam-top" "basedir"
+  run_plugouts "property_test" "jam" "basedir"
   atf_check -s exit:0 [ -e Jamrules ]
   atf_check -s exit:0 [ -e Jamfile ]
  
@@ -365,7 +362,8 @@ property_builddir_jam_gen_body() {
   # Property: PROJECT.butter build-dir + BUILD
   # Standard (jam) variant 
   #----------------------- 
-  setup_example_top "property_test" "jam" "builddir"
+  setup_example "property_test" "jam-top" "builddir"
+  run_plugouts "property_test" "jam" "builddir"
 
   build_test(){
     local variant=$1
