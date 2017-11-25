@@ -25,6 +25,82 @@ run_plugouts(){
 }
 
 
+atf_test_case property_lib_include_jam_gen
+property_lib_include_jam_gen_head() {
+  atf_set "descr" "Property Library Package(butter include) with jam generator."
+}
+property_lib_include_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Library.butter include + -s 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/libproj-include.patch
+  run_plugouts "property_test" "jam" "libproj-include"
+
+  # Flags for a library should apply to the using class?
+
+  build_test(){
+    local variant=$1
+    local builddir=$2
+    pushd output
+    # test base build target
+    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
+    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
+    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
+    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
+    pushd ${builddir}/src/Executable
+    atf_check -s exit:0 -o save:symbol objdump -t program
+    atf_check -s exit:1 -o ignore diff ../../../../canon/symbol symbol
+    popd
+
+    # test install target
+    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+    atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
+    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
+    pushd installdir/bin
+    atf_check -s exit:0 -o save:symbol objdump -t program
+    atf_check -s exit:1 -o ignore diff ../../../canon/symbol symbol
+    popd
+
+    # test install target
+    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+    atf_check -s exit:0 [ -x installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
+    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
+    # no distclean target
+    # test clean target
+    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
+    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
+    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
+    atf_check -s exit:0 [ -e installdir/bin/program ]
+    atf_check -s exit:0 [ -e installdir/lib/library.a ]
+
+    atf_check -s exit:0 -o empty rm jam1.log jam1.err
+    atf_check -s exit:0 -o empty rm jam2.log jam2.err
+    atf_check -s exit:0 -o empty rm jam3.log jam3.err
+    atf_check -s exit:0 -o empty rm -rf ${builddir}
+    atf_check -s exit:0 -o empty rm -rf installdir
+    popd
+  }
+
+  # default (DEBUG) VARIANT
+  build_test "" DEBUG
+  # specific DEBUG VARIANT
+  build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+  unset build_test
+}
+
 atf_test_case property_lib_ldflags_jam_gen
 property_lib_ldflags_jam_gen_head() {
   atf_set "descr" "Property Library Package(butter ldflags) with jam generator."
@@ -32,7 +108,7 @@ property_lib_ldflags_jam_gen_head() {
 property_lib_ldflags_jam_gen_body() {
   pushd ../test/property_test
   #----------------------- 
-  # Property: Library.butter flags + -DPROGRAM_MESSAGE='\"proj1 message\"' -DLIBRARY_MESSAGE='\"proj2 message\"' 
+  # Property: Library.butter ldflags + -s 
   # Standard (jam) variant 
   #----------------------- 
   setup_example "property_test" "jam"
@@ -1111,7 +1187,7 @@ atf_init_test_cases() {
     atf_add_test_case property_top_libtype_shared_jam_gen
     atf_add_test_case property_lib_flags_jam_gen
     atf_add_test_case property_lib_ldflags_jam_gen
-#    atf_add_test_case property_lib_include_jam_gen
+    atf_add_test_case property_lib_include_jam_gen
 #    atf_add_test_case property_lib_description_jam_gen
 #    atf_add_test_case property_lib_libtype_static_jam_gen
 #    atf_add_test_case property_lib_libtype_shared_jam_gen
