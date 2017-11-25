@@ -1,0 +1,16 @@
+index property_test.prj
+============================================================
+--- property_test.prj
++++ property_test.prj
+@@ -44,5 +44,10 @@ format 75
+   key "dummy1" value "property"
+   key "dummy2" value "property"
+-  comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
++  comment "Project to test single-directory multiple target use-case for \"butter\" plugout
++
++${butter_generic}
++FLAGS=-DPROGRAM_MESSAGE='\\\"generic1 message\\\"' -DLIBRARY_MESSAGE='\\\"generic2 message\\\"'
++HDR=include/other
++LINK=-s"
+   package_ref 128041 // Library
+ 
