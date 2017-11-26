@@ -1,0 +1,23 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sun Nov 26 12:49:26 2017
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)src$(SLASH)Library ;
+
+SubDir TOP src Library ;
+
+##END:preamble
+##START:target library
+LIBRARY_LIBRARY_SRC =
+	<src!Library>example_lib.cpp
+	;
+
+Library <src!Library>library$(SUFLIB) :
+	$(LIBRARY_LIBRARY_SRC) ;
+
+LIBRARY_LIBRARY_LDFLAGS =  ;
+InstallLib $(LIBDIR) : <src!Library>library$(SUFLIB) ;
+##END:target library

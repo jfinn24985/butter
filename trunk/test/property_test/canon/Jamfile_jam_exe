@@ -1,0 +1,26 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sun Nov 26 12:49:26 2017
+##END:date
+##START:preamble
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET)$(SLASH)src$(SLASH)Executable ;
+
+SubDir TOP src Executable ;
+
+##END:preamble
+##START:target program
+EXECUTABLE_PROGRAM_SRC =
+	<src!Executable>example_exe.cpp
+	;
+
+Main <src!Executable>program$(SUFEXE) :
+	$(EXECUTABLE_PROGRAM_SRC) ;
+
+LINKLIBS on <src!Executable>program$(SUFEXE) +=  $(LIBRARY_LIBRARY_LDFLAGS)  ;
+LinkLibraries <src!Executable>program$(SUFEXE) :
+	 <src!Library>library$(SUFLIB) 
+	;
+InstallBin $(BINDIR) : <src!Executable>program$(SUFEXE) ;
+##END:target program

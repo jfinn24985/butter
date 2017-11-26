@@ -24,6 +24,37 @@ run_plugouts(){
   atf_check -s exit:0 -o save:canon/cpp.log bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
 }
 
+check_jam_build(){
+  # Test if build files are similar or different to canonical version
+  # usage check_jam_build [0|!0] [0|!0] [0|!0] [0|!0]
+  #   0 : asserts top, lib, exe and/or sys files match canon
+  #   !0 : asserts top, lib, exe and/or sys files do not match canon
+  #   anything else : do not check.
+  local top=$1
+  local lib=$2
+  local exe=$3
+  local sys=$4
+  if [ 0 -eq ${top} ]; then
+     atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" canon/Jamfile_jam_top output/Jamfile
+  else
+     atf_check -o ignore -s exit:1 diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" canon/Jamfile_jam_top output/Jamfile
+  fi
+  if [ 0 -eq ${lib} ]; then
+     atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" canon/Jamfile_jam_lib output/src/Library/Jamfile
+  else
+     atf_check -o ignore -s exit:1 diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" canon/Jamfile_jam_lib output/src/Library/Jamfile
+  fi
+  if [ 0 -eq ${exe} ]; then
+     atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" canon/Jamfile_jam_exe output/src/Executable/Jamfile
+  else
+     atf_check -o ignore -s exit:1 diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" canon/Jamfile_jam_exe output/src/Executable/Jamfile
+  fi
+  if [ 0 -eq ${sys} ]; then
+     atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" canon/Jamrules_sys output/Jamrules
+  else
+     atf_check -o ignore -s exit:1 diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" canon/Jamrules_sys output/Jamrules
+  fi
+}
 
 atf_test_case property_lib_include_jam_gen
 property_lib_include_jam_gen_head() {
@@ -38,8 +69,10 @@ property_lib_include_jam_gen_body() {
   setup_example "property_test" "jam"
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/libproj-include.patch
   run_plugouts "property_test" "jam" "libproj-include"
-
-  # Flags for a library should apply to the using class?
+  check_jam_build 0 0 1 0
+  # "include" for a library project should be included for the library
+  # and its users?
+  
 
   build_test(){
     local variant=$1
@@ -114,6 +147,7 @@ property_lib_ldflags_jam_gen_body() {
   setup_example "property_test" "jam"
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/libproj-ldflags.patch
   run_plugouts "property_test" "jam" "libproj-ldflags"
+  check_jam_build 0 0 0 0
 
   # Flags for a library should apply to the using class?
 
@@ -191,6 +225,7 @@ property_lib_flags_jam_gen_body() {
   setup_example "property_test" "jam"
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/libproj-flags.patch
   run_plugouts "property_test" "jam" "libproj-flags"
+  check_jam_build 0 0 0 0
 
   # Flags for a library should apply to the using class?
 
@@ -252,6 +287,7 @@ property_version_jam_gen_body() {
   #----------------------- 
   setup_example "property_test" "jam-top" "version"
   run_plugouts "property_test" "jam" "version"
+  check_jam_build 0 0 0 0
 
   build_test(){
     local variant=$1
@@ -311,6 +347,7 @@ property_top_description_jam_gen_body() {
   #----------------------- 
   setup_example "property_test" "jam" "top_description"
   run_plugouts "property_test" "jam" "top_description"
+  check_jam_build 0 0 0 0
 
   build_test(){
     local variant=$1
@@ -374,6 +411,7 @@ property_top_ldflags_jam_gen_body() {
   #----------------------- 
   setup_example "property_test" "jam-top" "top-ldflags"
   run_plugouts "property_test" "jam" "top-ldflags"
+  check_jam_build 1 0 0 0
 
   build_test(){
     local variant=$1
@@ -487,6 +525,7 @@ property_top_include_jam_gen_body() {
   atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\n" patch -p0 <patch/other_header.patch
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/lib_source_include.patch
   run_plugouts "property_test" "jam" "top-include"
+  check_jam_build 1 0 1 0
 
   build_test(){
     local variant=$1
@@ -547,6 +586,7 @@ property_top_libtype_shared_jam_gen_body() {
   setup_example "property_test" "jam-top" "top-libtype-shared"
   run_plugouts "property_test" "jam" "top-libtype-shared"
   atf_check -o empty diff canon/butter.log.jam canon/butter.log.jam.top-libtype-shared 
+  check_jam_build 0 0 0 0
  
   build_test(){
     local variant=$1
@@ -606,6 +646,7 @@ property_top_libtype_static_jam_gen_body() {
   setup_example "property_test" "jam-top" "top-libtype-static"
   run_plugouts "property_test" "jam" "top-libtype-static"
   atf_check -o empty diff canon/butter.log.jam canon/butter.log.jam.top-libtype-static 
+  check_jam_build 0 0 0 0
  
   build_test(){
     local variant=$1
@@ -667,6 +708,7 @@ property_log_level_jam_gen_body() {
   atf_check -o empty diff canon/butter.log.jam canon/butter.log.jam.loglevel0 
   atf_check -s exit:0 [ -e output/include/butter.log ]
   atf_check -s exit:1 [ -s output/include/butter.log ]
+  check_jam_build 0 0 0 0
 
   build_test(){
     local variant=$1
@@ -711,6 +753,7 @@ property_log_level_jam_gen_body() {
   run_plugouts "property_test" "jam" "loglevel1"
   atf_check -s exit:0 [ -e output/include/butter.log ]
   atf_check -s exit:1 [ -s output/include/butter.log ]
+  check_jam_build 0 0 0 0
 
   # default (DEBUG) VARIANT
   build_test "" DEBUG
@@ -728,6 +771,7 @@ property_log_level_jam_gen_body() {
   run_plugouts "property_test" "jam" "loglevel1"
   atf_check -s exit:0 [ -e output/include/butter.log ]
   atf_check -s exit:1 [ -s output/include/butter.log ]
+  check_jam_build 0 0 0 0
 
   # default (DEBUG) VARIANT
   build_test "" DEBUG
@@ -756,6 +800,7 @@ property_top_flags_jam_gen_body() {
   #----------------------- 
   setup_example "property_test" "jam-top" "top-flags"
   run_plugouts "property_test" "jam" "top-flags"
+  check_jam_build 1 0 0 0
 
   build_test(){
     local variant=$1
@@ -874,6 +919,7 @@ property_builddir_jam_gen_body() {
   #----------------------- 
   setup_example "property_test" "jam-top" "builddir"
   run_plugouts "property_test" "jam" "builddir"
+  check_jam_build 1 0 0 0
 
   build_test(){
     local variant=$1
