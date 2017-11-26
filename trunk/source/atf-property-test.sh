@@ -897,7 +897,7 @@ property_builddir_jam_gen_body() {
 ##  unset build_test
 ##}
 ##
-##
+
 atf_test_case property_test_jam_gen
 property_test_jam_gen_head() {
   atf_set "descr" "Test Standard Jam generator on single directory project."
@@ -905,9 +905,10 @@ property_test_jam_gen_head() {
 property_test_jam_gen_body() {
   pushd ../test/property_test
   #----------------------- 
-  # Standard (jam) variant 
+  # Standard (jam) variant without defined properties (nul test)
   #----------------------- 
   setup_example "property_test" "jam"
+  run_plugouts "property_test" "jam" "nultest"
   check_jam_build 0 0 0 0
 
   # default (DEBUG) VARIANT
@@ -925,6 +926,7 @@ property_test_jam_gen_body() {
 }
 
 atf_init_test_cases() {
+    atf_add_test_case property_test_jam_gen
     atf_add_test_case property_builddir_jam_gen
     atf_add_test_case property_basedir_jam_gen
     atf_add_test_case property_version_jam_gen
