@@ -21,7 +21,7 @@ run_plugouts(){
   local genr=$2
   local prop=$3
   atf_check -s exit:0 -o save:canon/butter.log.${genr}.${prop} bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
-  atf_check -s exit:0 -o save:canon/cpp.log bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
+  atf_check -s exit:0 -o file:canon/cpp.log bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
 }
 
 check_jam_build(){
@@ -94,6 +94,36 @@ standard_build_test(){
   atf_check -s exit:0 -o empty rm jam3.log jam3.err
   atf_check -s exit:0 -o empty rm -rf ${builddir}
   atf_check -s exit:0 -o empty rm -rf installdir
+  popd
+}
+
+atf_test_case property_lib_libtype_shared_jam_gen
+property_lib_libtype_shared_jam_gen_head() {
+  atf_set "descr" "Property Library Package(butter type=shared) with jam generator."
+}
+property_lib_libtype_shared_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Library.butter type + shared 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/libproj-libtype-shared.patch
+  run_plugouts "property_test" "jam" "libproj-libtype-shared"
+  check_jam_build 0 0 0 0
+
+  # Flags for a library should apply to the using class?
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
 
@@ -879,6 +909,7 @@ atf_init_test_cases() {
     atf_add_test_case property_lib_ldflags_jam_gen
     atf_add_test_case property_lib_include_jam_gen
     atf_add_test_case property_lib_libtype_static_jam_gen
+    atf_add_test_case property_lib_libtype_shared_jam_gen
 #    atf_add_test_case property_lib_description_jam_gen
 #    atf_add_test_case property_lib_libtype_static_jam_gen
 #    atf_add_test_case property_lib_libtype_shared_jam_gen
