@@ -1,0 +1,11 @@
+128041
+============================================================
+--- a/128041
++++ b/128041
+@@ -29,4 +29,6 @@ format 75
+   cpp_h_dir "Library"
+   cpp_src_dir "../src/Library"
++  ncouples 1
++  key "butter type" value "static"
+   classview 128041 "Library"
+     //class diagram settings
