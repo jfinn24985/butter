@@ -56,6 +56,47 @@ check_jam_build(){
   fi
 }
 
+standard_build_test(){
+  local variant=$1
+  local builddir=$2
+  local output_fname=${3:-output_default}
+  pushd output
+  # test base build target
+  atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
+  atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
+  atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
+  atf_check -s exit:0 -o file:../canon/${output_fname} ${builddir}/src/Executable/program
+  pushd ${builddir}/src/Executable
+  atf_check -s exit:0 -o save:symbol objdump -t program
+  popd
+  atf_check -s exit:1 -o ignore diff ../canon/symbol ${builddir}/src/Executable/symbol
+
+  # test install target
+  atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
+  atf_check -s exit:0 [ -x installdir/bin/program ]
+  atf_check -s exit:0 [ -e installdir/lib/library.a ]
+  atf_check -s exit:0 -o file:../canon/${output_fname} installdir/bin/program
+  pushd installdir/bin
+  atf_check -s exit:0 -o save:symbol objdump -t program
+  popd
+  atf_check -s exit:1 -o ignore diff ../canon/symbol installdir/bin/symbol
+
+  # no distclean target
+  # test clean target
+  atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
+  atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
+  atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
+  atf_check -s exit:0 [ -e installdir/bin/program ]
+  atf_check -s exit:0 [ -e installdir/lib/library.a ]
+
+  atf_check -s exit:0 -o empty rm jam1.log jam1.err
+  atf_check -s exit:0 -o empty rm jam2.log jam2.err
+  atf_check -s exit:0 -o empty rm jam3.log jam3.err
+  atf_check -s exit:0 -o empty rm -rf ${builddir}
+  atf_check -s exit:0 -o empty rm -rf installdir
+  popd
+}
+
 atf_test_case property_lib_include_jam_gen
 property_lib_include_jam_gen_head() {
   atf_set "descr" "Property Library Package(butter include) with jam generator."
@@ -72,66 +113,19 @@ property_lib_include_jam_gen_body() {
   check_jam_build 0 0 1 0
   # "include" for a library project should be included for the library
   # and its users?
-  
-
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    pushd ${builddir}/src/Executable
-    atf_check -s exit:0 -o save:symbol objdump -t program
-    atf_check -s exit:1 -o ignore diff ../../../../canon/symbol symbol
-    popd
-
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    pushd installdir/bin
-    atf_check -s exit:0 -o save:symbol objdump -t program
-    atf_check -s exit:1 -o ignore diff ../../../canon/symbol symbol
-    popd
-
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
 
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 atf_test_case property_lib_ldflags_jam_gen
@@ -150,65 +144,18 @@ property_lib_ldflags_jam_gen_body() {
   check_jam_build 0 0 0 0
 
   # Flags for a library should apply to the using class?
-
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    pushd ${builddir}/src/Executable
-    atf_check -s exit:0 -o save:symbol objdump -t program
-    atf_check -s exit:1 -o ignore diff ../../../../canon/symbol symbol
-    popd
-
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    pushd installdir/bin
-    atf_check -s exit:0 -o save:symbol objdump -t program
-    atf_check -s exit:1 -o ignore diff ../../../canon/symbol symbol
-    popd
-
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -229,49 +176,18 @@ property_lib_flags_jam_gen_body() {
 
   # Flags for a library should apply to the using class?
 
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -289,49 +205,18 @@ property_version_jam_gen_body() {
   run_plugouts "property_test" "jam" "version"
   check_jam_build 0 0 0 0
 
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -349,53 +234,18 @@ property_top_description_jam_gen_body() {
   run_plugouts "property_test" "jam" "top_description"
   check_jam_build 0 0 0 0
 
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o save:../canon/output_default ${builddir}/src/Executable/program
-    pushd ${builddir}/src/Executable
-      atf_check -s exit:0 -o save:symbol.txt objdump -t program
-      atf_check -s exit:1 -o ignore diff symbol.txt ../../../../canon/symbol
-    popd
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -406,7 +256,7 @@ property_top_ldflags_jam_gen_head() {
 property_top_ldflags_jam_gen_body() {
   pushd ../test/property_test
   #----------------------- 
-  # Property: PROJECT.butter flags + -DPROGRAM_MESSAGE='\"proj1 message\"' -DLIBRARY_MESSAGE='\"proj2 message\"' 
+  # Property: PROJECT.butter ldflags + -s 
   # Standard (jam) variant 
   #----------------------- 
   setup_example "property_test" "jam-top" "top-ldflags"
@@ -460,45 +310,21 @@ property_top_ldflags_jam_gen_body() {
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
 
+  unset build_test
+
+  # Test of ldflags that are really for flags to see
+  # if the ldflags are used during compilation as well
+  # as only during linking. 
   setup_example "property_test" "jam-top" "top-ldflags-guard"
   run_plugouts "property_test" "jam" "top-ldflags-guard"
-
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
+  check_jam_build 1 0 0 0
 
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
@@ -507,7 +333,6 @@ property_top_ldflags_jam_gen_body() {
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -527,49 +352,18 @@ property_top_include_jam_gen_body() {
   run_plugouts "property_test" "jam" "top-include"
   check_jam_build 1 0 1 0
 
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_top_include ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_top_include installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG "output_top_include"
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG "output_top_include"
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE "output_top_include"
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -588,48 +382,18 @@ property_top_libtype_shared_jam_gen_body() {
   atf_check -o empty diff canon/butter.log.jam canon/butter.log.jam.top-libtype-shared 
   check_jam_build 0 0 0 0
  
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -647,49 +411,19 @@ property_top_libtype_static_jam_gen_body() {
   run_plugouts "property_test" "jam" "top-libtype-static"
   atf_check -o empty diff canon/butter.log.jam canon/butter.log.jam.top-libtype-static 
   check_jam_build 0 0 0 0
- 
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
 
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -710,37 +444,8 @@ property_log_level_jam_gen_body() {
   atf_check -s exit:1 [ -s output/include/butter.log ]
   check_jam_build 0 0 0 0
 
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
@@ -756,7 +461,7 @@ property_log_level_jam_gen_body() {
   check_jam_build 0 0 0 0
 
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
@@ -774,7 +479,7 @@ property_log_level_jam_gen_body() {
   check_jam_build 0 0 0 0
 
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
@@ -784,7 +489,6 @@ property_log_level_jam_gen_body() {
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -802,49 +506,18 @@ property_top_flags_jam_gen_body() {
   run_plugouts "property_test" "jam" "top-flags"
   check_jam_build 1 0 0 0
 
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_top_flags ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_top_flags installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG "output_top_flags"
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG "output_top_flags"
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE "output_top_flags"
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 atf_test_case property_basedir_jam_gen
@@ -921,49 +594,18 @@ property_builddir_jam_gen_body() {
   run_plugouts "property_test" "jam" "builddir"
   check_jam_build 1 0 0 0
 
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-    atf_check -s exit:0 -o file:../canon/output_default installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-    atf_check -s exit:0 [ -e installdir/lib/library.a ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf BUILD
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
-
   # default (DEBUG) VARIANT
-  build_test "" BUILD/DEBUG
+  standard_build_test "" BUILD/DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG BUILD/DEBUG
+  standard_build_test -sVARIANT=DEBUG BUILD/DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE BUILD/RELEASE
+  standard_build_test -sVARIANT=RELEASE BUILD/RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 
@@ -1176,48 +818,20 @@ property_test_jam_gen_body() {
   # Standard (jam) variant 
   #----------------------- 
   setup_example "property_test" "jam"
-
-  build_test(){
-    local variant=$1
-    local builddir=$2
-    pushd output
-    # test base build target
-    atf_check -s exit:0 -o save:jam1.log -e save:jam1.err jam ${variant}
-    atf_check -s exit:0 [ -x ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 -o save:../canon/output ${builddir}/src/Executable/program
-    # test install target
-    atf_check -s exit:0 -o save:jam2.log -e save:jam2.err jam install ${variant}
-    atf_check -s exit:0 [ -x installdir/bin/program ]
-    atf_check -s exit:0 -o file:../canon/output installdir/bin/program
-    # no distclean target
-    # test clean target
-    atf_check -s exit:0 -o save:jam3.log -e save:jam3.err jam clean ${variant}
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Executable/program ]
-    atf_check -s exit:0 [ ! -e ${builddir}/src/Library/library.a ]
-    atf_check -s exit:0 [ -e installdir/bin/program ]
-
-    atf_check -s exit:0 -o empty rm jam1.log jam1.err
-    atf_check -s exit:0 -o empty rm jam2.log jam2.err
-    atf_check -s exit:0 -o empty rm jam3.log jam3.err
-    atf_check -s exit:0 -o empty rm -rf ${builddir}
-    atf_check -s exit:0 -o empty rm -rf installdir
-    popd
-  }
+  check_jam_build 0 0 0 0
 
   # default (DEBUG) VARIANT
-  build_test "" DEBUG
+  standard_build_test "" DEBUG
   # specific DEBUG VARIANT
-  build_test -sVARIANT=DEBUG DEBUG
+  standard_build_test -sVARIANT=DEBUG DEBUG
   # RELEASE VARIANT
-  build_test -sVARIANT=RELEASE RELEASE
+  standard_build_test -sVARIANT=RELEASE RELEASE
 
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
-  unset build_test
 }
 
 atf_init_test_cases() {
