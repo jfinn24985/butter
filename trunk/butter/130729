@@ -1826,11 +1826,10 @@ Justin Finnerty
 
 
 
-+ Properties tested independently +
++ Properties tested independently with style standard(=jam) +
 
 
-|| Object     | Property  | Generator 
-||            |           | Standard(Jam) | Boost   | CMake   | Gnu Make 
+|| Object     | Property  | Result
 ------------------------------------------------------------------------ 
 *Top*Package  | style     | Supported
               | log-level | Supported
@@ -1855,7 +1854,12 @@ Justin Finnerty
               | type(shared) | Ignored
               | type(static) | Ignored
               | FLAGS/HDR/LINK | Ignored
-"
+*Lib*Source   | flags     | Applied to single source file
+              | include   | applied to single source file
+              | ldflags   | applied to users of library (but not the *static* library itself.)
+              | type(shared) | FAIL: \"shared\" added to source includes
+              | type(static) | FAIL: \"static\" added to source includes
+              | FLAGS/HDR/LINK | As per flags/include/ldflags properties"
     end
   end
 
