@@ -1,6 +1,6 @@
 format 75
 "Build" // Build
-  revision 106
+  revision 108
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -1859,6 +1859,12 @@ Justin Finnerty
               | ldflags   | applied to users of library (but not the *static* library itself.)
               | type(shared) | FAIL: \"shared\" added to source includes
               | type(static) | FAIL: \"static\" added to source includes
+              | FLAGS/HDR/LINK | As per flags/include/ldflags properties
+*Exe*Source   | flags     | applied to single source file
+              | include   | applied to single source file
+              | ldflags   | applied to executable
+              | type(shared) | Ignored
+              | type(static) | Ignored
               | FLAGS/HDR/LINK | As per flags/include/ldflags properties"
     end
   end

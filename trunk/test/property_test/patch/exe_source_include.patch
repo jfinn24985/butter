@@ -1,0 +1,10 @@
+128169
+============================================================
+--- a/trunk/test/property_test/128169
++++ b/trunk/test/property_test/128169
+@@ -179,4 +179,5 @@ ${namespace_end}
+       cpp_src "${comment}
+ ${includes}
++#include \"exe_message.hpp\"
+ #include <iostream>
+ #ifndef PROGRAM_MESSAGE

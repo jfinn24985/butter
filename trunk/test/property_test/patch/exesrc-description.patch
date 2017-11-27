@@ -1,0 +1,15 @@
+128169
+============================================================
+--- a/trunk/test/property_test/128169
++++ b/trunk/test/property_test/128169
+@@ -195,4 +195,10 @@ int main (int argc, const char** argv)
+ 	class_ref 128169 // example_exe
+       end
++      comment "Executable source to test \\\"butter\\\" plugout
++
++${butter_generic}
++FLAGS=-DPROGRAM_MESSAGE='\\\"generic1 message\\\"' -DLIBRARY_MESSAGE='\\\"generic2 message\\\"'
++HDR=include/other
++LINK=-s"
+     end
+ 

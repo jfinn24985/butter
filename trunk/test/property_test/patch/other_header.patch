@@ -12,3 +12,17 @@ diff -rpNU2 output.old/include/other/lib_message.hpp output/include/other/lib_me
 +#define LIBRARY_MESSAGE "other library message"
 +
 +#endif
+diff -rpNU2 output.old/include/other/exe_message.hpp output/include/other/exe_message.hpp
+--- output.old/include/other/exe_message.hpp	1970-01-01 01:00:00.000000000 +0100
++++ output/include/other/exe_message.hpp	2017-11-27 17:04:26.205268496 +0100
+@@ -0,0 +1,10 @@
++#ifndef EXE_MESSAGE_HPP
++#define EXE_MESSAGE_HPP
++
++#ifdef PROGRAM_MESSAGE
++#undef PROGRAM_MESSAGE
++#endif
++
++#define PROGRAM_MESSAGE "other program message"
++
++#endif

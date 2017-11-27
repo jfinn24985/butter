@@ -1,0 +1,11 @@
+128169
+============================================================
+--- a/trunk/test/property_test/128169
++++ b/trunk/test/property_test/128169
+@@ -195,4 +195,6 @@ int main (int argc, const char** argv)
+ 	class_ref 128169 // example_exe
+       end
++      ncouples 1
++      key "butter type" value "shared"
+     end
+ 

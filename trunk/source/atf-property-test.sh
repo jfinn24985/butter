@@ -99,6 +99,192 @@ standard_build_test(){
 }
 
 
+atf_test_case property_exesrc_description_jam_gen
+property_exesrc_description_jam_gen_head() {
+  atf_set "descr" "Description Executable.Source(HDR/FLAGS/LINK) with jam generator."
+}
+property_exesrc_description_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Description: Executable.Source.(HDR/FLAGS/LINK) 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exesrc-description.patch
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exe_source_include.patch
+  atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\npatching file output/include/other/exe_message.hpp\n" patch -p0 <patch/other_header.patch
+  run_plugouts "property_test" "jam" "exesrc-description"
+  check_jam_build 0 0 1 0
+
+  # Flags for a lib.source file should apply to the using class?
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG output_exe_include 0
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG output_exe_include 0
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE output_exe_include 0
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exesrc_libtype_shared_jam_gen
+property_exesrc_libtype_shared_jam_gen_head() {
+  atf_set "descr" "Property Executable.Source(butter type=shared) with jam generator."
+}
+property_exesrc_libtype_shared_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.Source.butter type + shared 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exesrc-libtype-shared.patch
+  run_plugouts "property_test" "jam" "exesrc-libtype-shared"
+  check_jam_build 0 0 0 0
+
+  # Flags for a lib.source file should apply to the using class?
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exesrc_libtype_static_jam_gen
+property_exesrc_libtype_static_jam_gen_head() {
+  atf_set "descr" "Property Executable.Source(butter type=static) with jam generator."
+}
+property_exesrc_libtype_static_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.Source.butter type + static 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exesrc-libtype-static.patch
+  run_plugouts "property_test" "jam" "exesrc-libtype-static"
+  check_jam_build 0 0 0 0
+
+  # Flags for a lib.source file should apply to the using class?
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exesrc_include_jam_gen
+property_exesrc_include_jam_gen_head() {
+  atf_set "descr" "Property Executable.Source(butter include) with jam generator."
+}
+property_exesrc_include_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.Source.butter include + -s 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exesrc-include.patch
+  atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\npatching file output/include/other/exe_message.hpp\n" patch -p0 <patch/other_header.patch
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exe_source_include.patch
+  run_plugouts "property_test" "jam" "exesrc-include"
+  check_jam_build 0 0 1 0
+  # "include" for a lib.source file should be only to this source
+
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG output_exe_include
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG output_exe_include
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE output_exe_include
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exesrc_ldflags_jam_gen
+property_exesrc_ldflags_jam_gen_head() {
+  atf_set "descr" "Property Executable.Source(butter ldflags) with jam generator."
+}
+property_exesrc_ldflags_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.Source.butter ldflags + -s 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exesrc-ldflags.patch
+  run_plugouts "property_test" "jam" "exesrc-ldflags"
+  check_jam_build 0 0 1 0
+
+  # LDFlags for a lib.source file should apply to the library users
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG output_default 0
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG output_default 0
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE output_default 0
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exesrc_flags_jam_gen
+property_exesrc_flags_jam_gen_head() {
+  atf_set "descr" "Property Executable.Source(butter flags) with jam generator."
+}
+property_exesrc_flags_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.Source.butter flags + -DPROGRAM_MESSAGE='\"proj1 message\"' -DLIBRARY_MESSAGE='\"proj2 message\"' 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exesrc-flags.patch
+  run_plugouts "property_test" "jam" "exesrc-flags"
+  check_jam_build 0 0 1 0
+
+# Flags for a lib.source file should apply to itself only
+
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG output_exesrc_flags
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG output_exesrc_flags
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE output_exesrc_flags
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+
 atf_test_case property_libsrc_description_jam_gen
 property_libsrc_description_jam_gen_head() {
   atf_set "descr" "Description Library.Source(HDR/FLAGS/LINK) with jam generator."
@@ -111,7 +297,7 @@ property_libsrc_description_jam_gen_body() {
   #----------------------- 
   setup_example "property_test" "jam"
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/libsrc-description.patch
-  atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\n" patch -p0 <patch/other_header.patch
+  atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\npatching file output/include/other/exe_message.hpp\n" patch -p0 <patch/other_header.patch
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/lib_source_include.patch
   run_plugouts "property_test" "jam" "libsrc-description"
   check_jam_build 0 1 0 0
@@ -203,7 +389,7 @@ property_libsrc_include_jam_gen_body() {
   #----------------------- 
   setup_example "property_test" "jam"
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/libsrc-include.patch
-  atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\n" patch -p0 <patch/other_header.patch
+  atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\npatching file output/include/other/exe_message.hpp\n" patch -p0 <patch/other_header.patch
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/lib_source_include.patch
   run_plugouts "property_test" "jam" "libsrc-include"
   check_jam_build 0 1 0 0
@@ -252,7 +438,6 @@ property_libsrc_ldflags_jam_gen_body() {
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
 }
-
 
 atf_test_case property_libsrc_flags_jam_gen
 property_libsrc_flags_jam_gen_head() {
@@ -812,7 +997,7 @@ property_top_include_jam_gen_body() {
   # Standard (jam) variant 
   #----------------------- 
   setup_example "property_test" "jam-top" "top-include"
-  atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\n" patch -p0 <patch/other_header.patch
+  atf_check -s exit:0 -o inline:"patching file output/include/other/lib_message.hpp\npatching file output/include/other/exe_message.hpp\n" patch -p0 <patch/other_header.patch
   atf_check -s exit:0 -o inline:"patching file 128041\n" patch <patch/lib_source_include.patch
   run_plugouts "property_test" "jam" "top-include"
   check_jam_build 1 0 1 0
@@ -1330,6 +1515,12 @@ atf_init_test_cases() {
     atf_add_test_case property_libsrc_libtype_static_jam_gen
     atf_add_test_case property_libsrc_libtype_shared_jam_gen
     atf_add_test_case property_libsrc_description_jam_gen
+    atf_add_test_case property_exesrc_flags_jam_gen
+    atf_add_test_case property_exesrc_ldflags_jam_gen
+    atf_add_test_case property_exesrc_include_jam_gen
+    atf_add_test_case property_exesrc_libtype_static_jam_gen
+    atf_add_test_case property_exesrc_libtype_shared_jam_gen
+    atf_add_test_case property_exesrc_description_jam_gen
 
 }
 
