@@ -1,6 +1,6 @@
 format 75
 "Build" // Build
-  revision 102
+  revision 106
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -1834,14 +1834,27 @@ Justin Finnerty
 ------------------------------------------------------------------------ 
 *Top*Package  | style     | Supported
               | log-level | Supported
-*Top*Package  | build-dir | Supported 
+              | build-dir | Supported 
               | base      | Supported 
-              | flags     | Supported 
+              | version   | Not Supported
+*Top*Package  | flags     | Supported 
+              | include   | Added to top Jamfile and users of library but not the library itself.
+              | ldflags   | Supported
+              | type(shared) | Ignored
+              | type(static) | Ignored
+              | FLAGS/HDR/LINK | Ignored
+*Lib*Package  | flags     | Ignored 
+              | include   | applied to users of library but not the library itself.
+              | ldflags   | Ignored
               | type(shared) | Not Supported
               | type(static) | (default)
-              | include   | Supported
-              | ldflags 
-              | version 
+              | FLAGS/HDR/LINK | Ignored
+*Exe*Package  | flags     | Ignored 
+              | include   | Ignored
+              | ldflags   | Ignored
+              | type(shared) | Ignored
+              | type(static) | Ignored
+              | FLAGS/HDR/LINK | Ignored
 "
     end
   end

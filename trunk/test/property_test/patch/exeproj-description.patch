@@ -1,0 +1,15 @@
+128169
+============================================================
+--- a/128169
++++ b/128169
+@@ -29,4 +29,10 @@ format 75
+   cpp_h_dir "Executable"
+   cpp_src_dir "../src/Executable"
++  comment "Project to test single-directory multiple target use-case for \"butter\" plugout
++
++${butter_generic}
++FLAGS=-DPROGRAM_MESSAGE='\\\"generic1 message\\\"' -DLIBRARY_MESSAGE='\\\"generic2 message\\\"'
++HDR=include/other
++LINK=-s"
+   classview 128169 "Executable"
+     //class diagram settings

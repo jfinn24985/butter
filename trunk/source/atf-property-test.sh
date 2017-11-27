@@ -97,6 +97,192 @@ standard_build_test(){
   popd
 }
 
+
+atf_test_case property_exe_description_jam_gen
+property_exe_description_jam_gen_head() {
+  atf_set "descr" "Description Executable Package(HDR/FLAGS/LINK) with jam generator."
+}
+property_exe_description_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Description: Executable.(HDR/FLAGS/LINK) 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exeproj-description.patch
+  run_plugouts "property_test" "jam" "exeproj-description"
+  check_jam_build 0 0 0 0
+
+  # Flags for a executable should apply to the using class?
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exe_libtype_shared_jam_gen
+property_exe_libtype_shared_jam_gen_head() {
+  atf_set "descr" "Property Executable Package(butter type=shared) with jam generator."
+}
+property_exe_libtype_shared_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.butter type + shared 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exeproj-libtype-shared.patch
+  run_plugouts "property_test" "jam" "exeproj-libtype-shared"
+  check_jam_build 0 0 0 0
+
+  # Flags for a executable should apply to the using class?
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exe_libtype_static_jam_gen
+property_exe_libtype_static_jam_gen_head() {
+  atf_set "descr" "Property Executable Package(butter type=static) with jam generator."
+}
+property_exe_libtype_static_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.butter type + static 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exeproj-libtype-static.patch
+  run_plugouts "property_test" "jam" "exeproj-libtype-static"
+  check_jam_build 0 0 0 0
+
+  # Flags for a executable should apply to the using class?
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exe_include_jam_gen
+property_exe_include_jam_gen_head() {
+  atf_set "descr" "Property Executable Package(butter include) with jam generator."
+}
+property_exe_include_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.butter include + -s 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exeproj-include.patch
+  run_plugouts "property_test" "jam" "exeproj-include"
+  check_jam_build 0 0 0 0
+  # "include" for a executable project should be included for the library
+  # and its users?
+
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+atf_test_case property_exe_ldflags_jam_gen
+property_exe_ldflags_jam_gen_head() {
+  atf_set "descr" "Property Executable Package(butter ldflags) with jam generator."
+}
+property_exe_ldflags_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.butter ldflags + -s 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exeproj-ldflags.patch
+  run_plugouts "property_test" "jam" "exeproj-ldflags"
+  check_jam_build 0 0 0 0
+
+  # Flags for a executable should apply to the using class?
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+
+atf_test_case property_exe_flags_jam_gen
+property_exe_flags_jam_gen_head() {
+  atf_set "descr" "Property Executable Package(butter flags) with jam generator."
+}
+property_exe_flags_jam_gen_body() {
+  pushd ../test/property_test
+  #----------------------- 
+  # Property: Executable.butter flags + -DPROGRAM_MESSAGE='\"proj1 message\"' -DLIBRARY_MESSAGE='\"proj2 message\"' 
+  # Standard (jam) variant 
+  #----------------------- 
+  setup_example "property_test" "jam"
+  atf_check -s exit:0 -o inline:"patching file 128169\n" patch <patch/exeproj-flags.patch
+  run_plugouts "property_test" "jam" "exeproj-flags"
+  check_jam_build 0 0 0 0
+
+# Flags for a executable should apply to the using class?
+
+  # default (DEBUG) VARIANT
+  standard_build_test "" DEBUG 
+  # specific DEBUG VARIANT
+  standard_build_test -sVARIANT=DEBUG DEBUG 
+  # RELEASE VARIANT
+  standard_build_test -sVARIANT=RELEASE RELEASE 
+
+  # Clean up
+  atf_check -s exit:0 -o empty rm -rf output
+  atf_check -s exit:0 -o empty git checkout HEAD -- .
+  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  popd
+}
+
+
+
 atf_test_case property_lib_description_jam_gen
 property_lib_description_jam_gen_head() {
   atf_set "descr" "Description Library Package(HDR/FLAGS/LINK) with jam generator."
@@ -943,6 +1129,12 @@ atf_init_test_cases() {
     atf_add_test_case property_lib_libtype_static_jam_gen
     atf_add_test_case property_lib_libtype_shared_jam_gen
     atf_add_test_case property_lib_description_jam_gen
+    atf_add_test_case property_exe_flags_jam_gen
+    atf_add_test_case property_exe_ldflags_jam_gen
+    atf_add_test_case property_exe_include_jam_gen
+    atf_add_test_case property_exe_libtype_static_jam_gen
+    atf_add_test_case property_exe_libtype_shared_jam_gen
+    atf_add_test_case property_exe_description_jam_gen
 
 }
 

@@ -1,0 +1,11 @@
+128169
+============================================================
+--- a/128169
++++ b/128169
+@@ -29,4 +29,6 @@ format 75
+   cpp_h_dir "Executable"
+   cpp_src_dir "../src/Executable"
++  ncouples 1
++  key "butter include" value "include/other"
+   classview 128169 "Executable"
+     //class diagram settings
