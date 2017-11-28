@@ -1,0 +1,15 @@
+128041
+============================================================
+--- a/trunk/test/property_test/128041
++++ b/trunk/test/property_test/128041
+@@ -168,4 +168,10 @@ ${namespace_end}"
+ 	artifact_ref 128169 // example_lib
+       end
++      comment "Library target to test \"butter\" plugout
++
++${butter_generic}
++FLAGS=-DPROGRAM_MESSAGE='\\\"generic1 message\\\"' -DLIBRARY_MESSAGE='\\\"generic2 message\\\"'
++HDR=include/other
++LINK=-s"
+     end
+   end

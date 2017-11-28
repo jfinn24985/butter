@@ -1,0 +1,11 @@
+128169
+============================================================
+--- a/trunk/test/property_test/128169
++++ b/trunk/test/property_test/128169
+@@ -203,4 +203,6 @@ int main (int argc, const char** argv)
+ 	artifact_ref 128681 // library
+       end
++      ncouples 1
++      key "butter ldflags" value "-s"
+     end
+   end

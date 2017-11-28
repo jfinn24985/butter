@@ -1,0 +1,15 @@
+128169
+============================================================
+--- a/trunk/test/property_test/128169
++++ b/trunk/test/property_test/128169
+@@ -203,4 +203,10 @@ int main (int argc, const char** argv)
+ 	artifact_ref 128681 // library
+       end
++      comment "Executable target to test \\\"butter\\\" plugout
++
++${butter_generic}
++FLAGS=-DPROGRAM_MESSAGE='\\\"generic1 message\\\"' -DLIBRARY_MESSAGE='\\\"generic2 message\\\"'
++HDR=include/other
++LINK=-s"
+     end
+   end

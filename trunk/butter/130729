@@ -1,6 +1,6 @@
 format 75
 "Build" // Build
-  revision 108
+  revision 110
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -1857,7 +1857,7 @@ Justin Finnerty
 *Lib*Source   | flags     | Applied to single source file
               | include   | applied to single source file
               | ldflags   | applied to users of library (but not the *static* library itself.)
-              | type(shared) | FAIL: \"shared\" added to source includes
+              | type(shared) | Ignored
               | type(static) | FAIL: \"static\" added to source includes
               | FLAGS/HDR/LINK | As per flags/include/ldflags properties
 *Exe*Source   | flags     | applied to single source file
@@ -1865,7 +1865,20 @@ Justin Finnerty
               | ldflags   | applied to executable
               | type(shared) | Ignored
               | type(static) | Ignored
-              | FLAGS/HDR/LINK | As per flags/include/ldflags properties"
+              | FLAGS/HDR/LINK | As per flags/include/ldflags properties
+*Lib*Artifact | flags     | Applied to local library source file(s)
+              | include   | applied to local library source file and users of library
+              | ldflags   | applied to users of library (but not the *static* library itself.)
+              | type(shared) | Ignored
+              | type(static) | Ignored
+              | FLAGS/HDR/LINK | Ignored
+*Exe*Artifact | flags     | applied to local executable source file(s)
+              | include   | applied to local executable source file(s)
+              | ldflags   | applied to executable
+              | type(shared) | Ignored
+              | type(static) | Ignored
+              | FLAGS/HDR/LINK | Ignored
+"
     end
   end
 

@@ -1,0 +1,11 @@
+128041
+============================================================
+--- a/trunk/test/property_test/128041
++++ b/trunk/test/property_test/128041
+@@ -168,4 +168,6 @@ ${namespace_end}"
+ 	artifact_ref 128169 // example_lib
+       end
++      ncouples 1
++      key "butter flags" value "-DPROGRAM_MESSAGE='\\\"proj1 message\\\"' -DLIBRARY_MESSAGE='\\\"proj2 message\\\"'"
+     end
+   end
