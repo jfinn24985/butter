@@ -1,3 +1,9 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sun Dec 3 22:52:10 2017
+##END:date
 if $(NT)
 {
 OPENMP = /openmp ;
@@ -11,12 +17,6 @@ OPENMP = -fopenmp ;
 FORTRANLIBS = -lgfortran ;
 FORTRAN = gfortran ;
 }
-##START:version
-#Butter version 1.2beta.175
-##END:version
-##START:date
-#Tue Oct 31 23:56:47 2017
-##END:date
 ##START:preamble
 BUILDDIR = build ;
 SubDir TOP ;
