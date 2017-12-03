@@ -20,7 +20,7 @@ DATADIR = $(PREFIX)/share ;
 DOCDIR = $(DATADIR)/doc ;
 HTMLDIR = $(DATADIR)/html ;
 INCDIR = $(PREFIX)/include ;
-LIBDIR = $(PREFIX)/bin ;
+LIBDIR = $(PREFIX)/lib ;
 MANDIR = $(DATADIR)/man1 ;
 
 ######################################################
