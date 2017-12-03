@@ -1,3 +1,9 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sun Dec 3 23:05:03 2017
+##END:date
 if (WIN32)
 set (OPENMP  -openmp)
 set (FORTRANLIBS vcf2c.lib -NODEFAULTLIB:msvcrt.lib -NODEFAULTLIB:msvcrtd.lib)
@@ -6,12 +12,6 @@ else (WIN32)
 set (OPENMP -fopenmp)
 set (FORTRANLIBS -lgfortran)
 endif (WIN32)
-##START:version
-#Butter version 1.2beta.175
-##END:version
-##START:date
-#Wed Nov 1 19:31:01 2017
-##END:date
 ##START:preamble
 cmake_minimum_required(VERSION 2.6)
 

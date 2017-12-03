@@ -12,6 +12,6 @@ set (DATADIR share)
 set (DOCDIR share/doc)
 set (HTMLDIR share/html)
 set (INCLUDEDIR include)
-set (LIBDIR bin)
+set (LIBDIR lib)
 set (MANDIR share/man)
 

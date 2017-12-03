@@ -9,6 +9,6 @@ constant DATADIR : share ; # Private libraries and static data
 constant DOCDIR : [ path.join share doc ] ;
 constant HTMLDIR : [ path.join share html ] ;
 constant INCDIR : include ;
-constant LIBDIR : bin ; # Shared libraries
+constant LIBDIR : lib ; # Shared libraries
 constant MANDIR  : [ path.join share man1 ] ;
 
