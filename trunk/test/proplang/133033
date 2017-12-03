@@ -1,6 +1,6 @@
 format 66
-"Test Property" // Test Property
-  revision 5
+"exe" // Test Property::exe
+  revision 7
   modified_by 41 "finnerty"
   // class settings
   //class diagram settings
@@ -26,10 +26,36 @@ format 66
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
-  comment "This package contains objects to test that properties known to butter are propagated correctly."
-  package_ref 130601 // src
+  cpp_h_dir "exe"
+  cpp_src_dir "../lib/exe"
+  deploymentview 132905 "exe"
+    //deployment diagram settings
+    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
+    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    artifact 140841 "exe"
+      stereotype "source"
+      cpp_h "#ifndef EXE_EXE_HPP_
+#define EXE_EXE_HPP_
 
-  package_ref 130729 // lib
+#ifndef EXE_FLAG
+#error Included file without defining EXE_FLAG
+#endif
 
-  package_ref 133033 // exe
+#endif
+
+"
+      cpp_src "#include \"Executable/example_exe.hpp\"
+#include <omp.h>
+#include <iostream>
+int main (int argc, const char** argv)
+{
+  std::cerr << \"Number of OpenMP processors = \" << omp_get_num_procs() << \"\\n\";
+  example_exe app_;
+  return app_.main (argc, argv);
+}
+"
+      associated_classes
+      end
+    end
+  end
 end
