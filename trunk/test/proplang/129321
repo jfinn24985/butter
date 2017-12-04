@@ -92,14 +92,11 @@ actions t2t
       comment "ifndef T2T_MAK
 T2T_MAK:=1
 T2T=txt2tags
-T2TOUT=-o # need space
-T2TIN=
-T2TFLAGS?=
-.man.t2t :
-	$(T2T) $(T2TFLAGS) $(T2TOUT)$< $(T2TIN)$>
-.html.t2t :
-	$(T2T) $(T2TFLAGS) $(T2TOUT)$< $(T2TIN)$>
- endif"
+%.man : %.t2t
+	$(T2T) $(T2TFLAGS) -o $@ $<
+%.html : %.t2t
+	$(T2T) $(T2TFLAGS) -o $@ $<
+endif"
     end
 
     artifact 134441 "Jamroot"
