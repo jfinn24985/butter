@@ -11,7 +11,7 @@ M_UNIX_MK:=1
 #############################
 PREFIX=$(ROOTDIR)/installdir
 BINDIR?=$(PREFIX)/bin
-LIBDIR?=$(PREFIX)/bin
+LIBDIR?=$(PREFIX)/lib
 INCLUDEDIR?=$(PREFIX)/include
 DATADIR?=$(PREFIX)/share
 DOCDIR?=$(DATADIR)/doc

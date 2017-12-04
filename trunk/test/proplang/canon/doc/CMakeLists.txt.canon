@@ -2,11 +2,11 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Wed Nov 1 19:31:01 2017
+#Mon Dec 4 10:08:26 2017
 ##END:date
 ##START:target program.t2t
 install (FILES program.t2t
-	DESTINATION ${DOC}
+	DESTINATION ${DOCDIR}
 	CONFIGURATIONS Release)
 
 ##END:target program.t2t
@@ -26,7 +26,7 @@ set_directory_properties (PROPERTIES
 add_custom_target (${DOC_PROGRAM_MAN}_TARGET ALL
 	DEPENDS ${DOC_PROGRAM_MAN})
 install (FILES ${DOC_PROGRAM_MAN}
-	DESTINATION ${MAN}
+	DESTINATION ${MANDIR}
 	CONFIGURATIONS Release)
 
 ##END:target program.man
@@ -46,7 +46,7 @@ set_directory_properties (PROPERTIES
 add_custom_target (${DOC_PROGRAM_HTML}_TARGET ALL
 	DEPENDS ${DOC_PROGRAM_HTML})
 install (FILES ${DOC_PROGRAM_HTML}
-	DESTINATION ${HTML}
+	DESTINATION ${HTMLDIR}
 	CONFIGURATIONS Release)
 
 ##END:target program.html

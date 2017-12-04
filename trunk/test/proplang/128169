@@ -36,7 +36,7 @@ format 66
       associated_artifacts
       end
       ncouples 1
-      key "butter install" value "DOC"
+      key "butter install" value "DOCDIR"
       comment "Program
 (C) 2010
 Justin Finnerty
@@ -53,7 +53,7 @@ This is a test of building an \"other\" library."
       end
       ncouples 4
       key "butter other" value "t2t"
-      key "butter install" value "MAN"
+      key "butter install" value "MANDIR"
       key "butter buildfile" value "t2t"
       key "butter flags" value "-t man"
       comment "For this file to be compiled requires:
@@ -77,7 +77,7 @@ This is a test of building an \"other\" library."
       ncouples 4
       key "butter other" value "t2t"
       key "butter buildfile" value "t2t"
-      key "butter install" value "HTML"
+      key "butter install" value "HTMLDIR"
       key "butter flags" value "--toc -t html"
       comment "For this file to be compiled requires:
 
