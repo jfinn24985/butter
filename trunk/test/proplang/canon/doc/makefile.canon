@@ -2,7 +2,7 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Wed Nov 1 19:39:43 2017
+#Tue Dec 5 13:22:49 2017
 ##END:date
 ##START:preamble
 include $(ROOTDIR)/M_sys.mk
@@ -21,7 +21,6 @@ DOC_PROGRAM_MANSRC :=  \
 	program.t2t
 program.man: T2TFLAGS+=-t man 
 program.man : $(DOC_PROGRAM_MANSRC) 
-	$(T2T) $(T2TFLAGS) program.man $(DOC_PROGRAM_MANSRC)
 
 
 all :: program.man
@@ -39,7 +38,6 @@ DOC_PROGRAM_HTMLSRC :=  \
 	program.t2t
 program.html: T2TFLAGS+=--toc -t html 
 program.html : $(DOC_PROGRAM_HTMLSRC) 
-	$(T2T) $(T2TFLAGS) program.html $(DOC_PROGRAM_HTMLSRC)
 
 
 all :: program.html

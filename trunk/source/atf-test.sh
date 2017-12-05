@@ -1569,7 +1569,7 @@ proplang_make_gen_body() {
     atf_check -s exit:0 -o file:../canon/source_test.canon src/source_test
     atf_check -s exit:0 -o save:static_sqr.out src/static_sqr 3 2000
     atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
-    atf_check -s exit:0 -o save:shared_sqr.out src/shared_sqr 3 2000
+    LD_LIBRARY_PATH=src atf_check -s exit:0 -o save:shared_sqr.out src/shared_sqr 3 2000
     atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
     atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
 
@@ -1581,7 +1581,7 @@ proplang_make_gen_body() {
     atf_check -s exit:0 [ -x src/source_test ]
     atf_check -s exit:0 [ -x src/shared_sqr ]
     atf_check -s exit:0 [ -e src/squareshare.so ]
-    atf_check -s exit:0 [ -e src/squarestatic.a ]
+    atf_check -s exit:0 [ ! -e src/squarestatic.a ]
     atf_check -s exit:0 [ -x src/static_sqr ]
 
     # test install target
@@ -1592,17 +1592,17 @@ proplang_make_gen_body() {
     atf_check -s exit:0 [ -e installdir/share/man1/program.man ]
     atf_check -s exit:0 [ -x installdir/bin/fortprog ]
     atf_check -s exit:0 [ -x installdir/bin/source_test ]
-    atf_check -s exit:0 [ -x installdir/lib/shared_sqr ]
+    atf_check -s exit:0 [ -x installdir/bin/shared_sqr ]
     atf_check -s exit:0 [ -e installdir/lib/squareshare.so ]
     atf_check -s exit:0 [ -e installdir/lib/squarestatic.a ]
     atf_check -s exit:0 [ -x installdir/bin/static_sqr ]
     atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" installdir/share/html/program.html ../canon/program.html.canon
     atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" installdir/share/man1/program.man ../canon/program.man.canon
-    atf_check -s exit:0 -o file:../canon/fortprog.canon ${installdir}/fortprog
-    atf_check -s exit:0 -o file:../canon/source_test.canon ${installdir}/source_test
-    atf_check -s exit:0 -o save:static_sqr.out ${installdir}/static_sqr 3 2000
+    atf_check -s exit:0 -o file:../canon/fortprog.canon installdir/bin/fortprog
+    atf_check -s exit:0 -o file:../canon/source_test.canon installdir/bin/source_test
+    atf_check -s exit:0 -o save:static_sqr.out installdir/bin/static_sqr 3 2000
     atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
-    atf_check -s exit:0 -o save:shared_sqr.out ${installdir}/shared_sqr 3 2000
+    LD_LIBRARY_PATH=installdir/lib atf_check -s exit:0 -o save:shared_sqr.out installdir/bin/shared_sqr 3 2000
     atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
     atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
 
@@ -1616,12 +1616,12 @@ proplang_make_gen_body() {
     atf_check -s exit:0 [ ! -e src/squareshare.so ]
     atf_check -s exit:0 [ ! -e src/squarestatic.a ]
     atf_check -s exit:0 [ ! -e src/static_sqr ]
-    atf_check -s exit:0 [ -e installdir/doc/program.t2t ]
-    atf_check -s exit:0 [ -e installdir/doc/program.html ]
-    atf_check -s exit:0 [ -e installdir/doc/program.man ]
+    atf_check -s exit:0 [ -e installdir/share/doc/program.t2t ]
+    atf_check -s exit:0 [ -e installdir/share/html/program.html ]
+    atf_check -s exit:0 [ -e installdir/share/man1/program.man ]
     atf_check -s exit:0 [ -x installdir/bin/fortprog ]
     atf_check -s exit:0 [ -x installdir/bin/source_test ]
-    atf_check -s exit:0 [ -x installdir/lib/shared_sqr ]
+    atf_check -s exit:0 [ -x installdir/bin/shared_sqr ]
     atf_check -s exit:0 [ -e installdir/lib/squareshare.so ]
     atf_check -s exit:0 [ -e installdir/lib/squarestatic.a ]
     atf_check -s exit:0 [ -x installdir/bin/static_sqr ]
