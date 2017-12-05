@@ -103,7 +103,7 @@ relationcanvas 128688 relation_ref 218288 // <directional aggregation>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129200 relation_ref 224816 // <directional composition>
-  from ref 142633 z 2001 stereotype "<<unique_ptr>>" xyz 366.5 399.5 3000 to ref 128432
+  from ref 142633 z 2001 stereotype "<<unique_ptr>>" xyz 366 399 3000 to ref 128432
   role_a_pos 423 426 3000 no_role_b
   multiplicity_a_pos 381 426 3000 no_multiplicity_b
 end

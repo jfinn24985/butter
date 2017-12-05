@@ -216,9 +216,7 @@ if (a_type == other)
   {
     a_os << this->qualified_target_name_ << ": " << other_type_ << "FLAGS+=" << a_ldflags << "\n";
   }
-  a_os << this->qualified_target_name_ << " : $(" << this->target_NAME () << "SRC) " << this->lib_set_ << "\n"
-        << "\t$(" << other_type_ << ") $(" << other_type_ << "FLAGS) " << this->qualified_target_name_
-            << " $(" << this->target_NAME () << "SRC)\n\n";
+  a_os << this->qualified_target_name_ << " : $(" << this->target_NAME () << "SRC) " << this->lib_set_ << "\n\n";
 }
 else
 {

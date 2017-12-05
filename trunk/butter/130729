@@ -1,6 +1,6 @@
 format 75
 "Build" // Build
-  revision 110
+  revision 112
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -1038,14 +1038,16 @@ actions t2t-action
 "
     end
 
-    artifact 160041 "t2t.mak"
+    artifact 160041 "t2t.make"
       stereotype "document"
       associated_artifacts
       end
       comment "T2T=txt2tags
-T2TFLAGS=-toc -t html -o
-.html.t2t :
-	$(T2T) $(T2TFLAGS) $< $>
+T2TFLAGS?=
+%.html : %.t2t
+	$(T2T) $(T2TFLAGS) -t html -o $@ $<
+%.man : %.t2t
+	$(T2T) $(T2TFLAGS) -t man -o $@ $<
  "
     end
 
@@ -1829,55 +1831,55 @@ Justin Finnerty
 + Properties tested independently with style standard(=jam) +
 
 
-|| Object     | Property  | Result
+|| Object     | Test name     | Property  | Result
 ------------------------------------------------------------------------ 
-*Top*Package  | style     | Supported
-              | log-level | Supported
-              | build-dir | Supported 
-              | base      | Supported 
-              | version   | Not Supported
-*Top*Package  | flags     | Supported 
-              | include   | Added to top Jamfile and users of library but not the library itself.
-              | ldflags   | Supported
-              | type(shared) | Ignored
-              | type(static) | Ignored
-              | FLAGS/HDR/LINK | Ignored
-*Lib*Package  | flags     | Ignored 
-              | include   | applied to users of library but not the library itself.
-              | ldflags   | Ignored
-              | type(shared) | Not Supported
-              | type(static) | (default)
-              | FLAGS/HDR/LINK | Ignored
-*Exe*Package  | flags     | Ignored 
-              | include   | Ignored
-              | ldflags   | Ignored
-              | type(shared) | Ignored
-              | type(static) | Ignored
-              | FLAGS/HDR/LINK | Ignored
-*Lib*Source   | flags     | Applied to single source file
-              | include   | applied to single source file
-              | ldflags   | applied to users of library (but not the *static* library itself.)
-              | type(shared) | Ignored
-              | type(static) | FAIL: \"static\" added to source includes
-              | FLAGS/HDR/LINK | As per flags/include/ldflags properties
-*Exe*Source   | flags     | applied to single source file
-              | include   | applied to single source file
-              | ldflags   | applied to executable
-              | type(shared) | Ignored
-              | type(static) | Ignored
-              | FLAGS/HDR/LINK | As per flags/include/ldflags properties
-*Lib*Artifact | flags     | Applied to local library source file(s)
-              | include   | applied to local library source file and users of library
-              | ldflags   | applied to users of library (but not the *static* library itself.)
-              | type(shared) | Ignored
-              | type(static) | Ignored
-              | FLAGS/HDR/LINK | Ignored
-*Exe*Artifact | flags     | applied to local executable source file(s)
-              | include   | applied to local executable source file(s)
-              | ldflags   | applied to executable
-              | type(shared) | Ignored
-              | type(static) | Ignored
-              | FLAGS/HDR/LINK | Ignored
+*Top*Package  | property_test | style     | Supported
+              | property_test | log-level | Supported
+              | property_test | build-dir | Supported 
+              | property_test | base      | Supported 
+              | property_test | version   | Not Supported
+*Top*Package  | property_test | flags     | Supported 
+              | property_test | include   | Added to top Jamfile and users of library but not the library itself.
+              | property_test | ldflags   | Supported
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | Ignored
+*Lib*Package  | property_test | flags     | Ignored 
+              | property_test | include   | applied to users of library but not the library itself.
+              | property_test | ldflags   | Ignored
+              | property_test | type(shared) | Not Supported
+              | property_test | type(static) | (default)
+              | property_test | FLAGS/HDR/LINK | Ignored
+*Exe*Package  | property_test | flags     | Ignored 
+              | property_test | include   | Ignored
+              | property_test | ldflags   | Ignored
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | Ignored
+*Lib*Source   | property_test | flags     | Applied to single source file
+              | property_test | include   | applied to single source file
+              | property_test | ldflags   | applied to users of library (but not the *static* library itself.)
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | FAIL: \"static\" added to source includes
+              | property_test | FLAGS/HDR/LINK | As per flags/include/ldflags properties
+*Exe*Source   | property_test | flags     | applied to single source file
+              | property_test | include   | applied to single source file
+              | property_test | ldflags   | applied to executable
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | As per flags/include/ldflags properties
+*Lib*Artifact | property_test | flags     | Applied to local library source file(s)
+              | property_test | include   | applied to local library source file and users of library
+              | property_test | ldflags   | applied to users of library (but not the *static* library itself.)
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | Ignored
+*Exe*Artifact | property_test | flags     | applied to local executable source file(s)
+              | property_test | include   | applied to local executable source file(s)
+              | property_test | ldflags   | applied to executable
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | Ignored
 "
     end
   end

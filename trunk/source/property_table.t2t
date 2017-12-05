@@ -3,19 +3,55 @@ Justin Finnerty
 
 
 
-+ Properties tested independently +
++ Properties tested independently with style standard(=jam) +
 
 
-|| Object     | Property  | Generator 
-||            |           | Standard(Jam) | Boost   | CMake   | Gnu Make 
+|| Object     | Test name     | Property  | Result
 ------------------------------------------------------------------------ 
-*Top*Package  | style     | Supported
-              | log-level | Supported
-*Top*Package  | build-dir | Supported 
-              | base      | Supported 
-              | flags     | Supported 
-              | type(shared) | Not Supported
-              | type(static) | (default)
-              | include 
-              | ldflags 
-              | version 
+*Top*Package  | property_test | style     | Supported
+              | property_test | log-level | Supported
+              | property_test | build-dir | Supported 
+              | property_test | base      | Supported 
+              | property_test | version   | Not Supported
+*Top*Package  | property_test | flags     | Supported 
+              | property_test | include   | Added to top Jamfile and users of library but not the library itself.
+              | property_test | ldflags   | Supported
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | Ignored
+*Lib*Package  | property_test | flags     | Ignored 
+              | property_test | include   | applied to users of library but not the library itself.
+              | property_test | ldflags   | Ignored
+              | property_test | type(shared) | Not Supported
+              | property_test | type(static) | (default)
+              | property_test | FLAGS/HDR/LINK | Ignored
+*Exe*Package  | property_test | flags     | Ignored 
+              | property_test | include   | Ignored
+              | property_test | ldflags   | Ignored
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | Ignored
+*Lib*Source   | property_test | flags     | Applied to single source file
+              | property_test | include   | applied to single source file
+              | property_test | ldflags   | applied to users of library (but not the *static* library itself.)
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | FAIL: "static" added to source includes
+              | property_test | FLAGS/HDR/LINK | As per flags/include/ldflags properties
+*Exe*Source   | property_test | flags     | applied to single source file
+              | property_test | include   | applied to single source file
+              | property_test | ldflags   | applied to executable
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | As per flags/include/ldflags properties
+*Lib*Artifact | property_test | flags     | Applied to local library source file(s)
+              | property_test | include   | applied to local library source file and users of library
+              | property_test | ldflags   | applied to users of library (but not the *static* library itself.)
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | Ignored
+*Exe*Artifact | property_test | flags     | applied to local executable source file(s)
+              | property_test | include   | applied to local executable source file(s)
+              | property_test | ldflags   | applied to executable
+              | property_test | type(shared) | Ignored
+              | property_test | type(static) | Ignored
+              | property_test | FLAGS/HDR/LINK | Ignored
