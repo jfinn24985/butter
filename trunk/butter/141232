@@ -760,7 +760,23 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      comment "Test core functionality that is dependent on bouml."
+      comment "Test core functionality that is dependent on bouml.
+
+
+base_generator::create_system( loc, top_pack )
+
+base_generator::find_hdr_link( item, &hdr, &link, &flag, sec_label, BOOL )
+
+base_generator::get_artifact( loc, name )
+
+generator::*
+bjam_generator::*
+cmake_generator::*
+gmake_generator::*
+jam_generator::*
+location::*
+log::*
+"
       classrelation 190512 // <dependency>
 	relation 190384 -_->
 	  a default
