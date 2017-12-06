@@ -2,7 +2,7 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Sun Dec 3 23:01:04 2017
+#Wed Dec 6 14:38:27 2017
 ##END:date
 if $(NT)
 {
@@ -10,10 +10,10 @@ constant OPENMP : /openmp ;
 }
 else if $(UNIX)
 {
-using gfortran ;
 constant OPENMP : -fopenmp ;
-constant FORTRANLIBS : -lgfortran ;
 }
+using gfortran ;
+constant FORTRANLIBS : -lgfortran ;
 ##START:preamble
 # Include local constants
 path-constant topdir : . ;

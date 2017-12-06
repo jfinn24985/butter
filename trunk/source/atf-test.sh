@@ -1302,78 +1302,115 @@ proplang_boost_gen_body() {
     pushd output
     # test base build target
     atf_check -s exit:0 -o save:build1.log -e save:build1.err bjam ${variant}
-    atf_check -s exit:0 [ -e build/${builddir}/doc/program.html ]
-    atf_check -s exit:0 [ -e build/${builddir}/doc/program.man ]
-    atf_check -s exit:0 [ -x build/${builddir}/src/fortprog ]
-    atf_check -s exit:0 [ -x build/${builddir}/src/source_test ]
-    atf_check -s exit:0 [ -x build/${builddir}/src/shared_sqr ]
-    atf_check -s exit:0 [ -e build/${builddir}/src/squareshare.a ]
-    atf_check -s exit:0 [ -e build/${builddir}/src/squarestatic.a ]
-    atf_check -s exit:0 [ -x build/${builddir}/src/static_sqr ]
-    atf_check -s exit:0 -o file:output.canon build/${builddir}/program ../input/lorem.txt
-    # no separate install target
-    atf_check -s exit:0 [ -x ${installdir}/bin/fortprog ]
-    atf_check -s exit:0 [ -x ${installdir}/bin/source_test ]
-    atf_check -s exit:0 [ -x ${installdir}/bin/shared_sqr ]
-    atf_check -s exit:0 [ -e ${installdir}/lib/squareshare.a ]
-    atf_check -s exit:0 [ -e ${installdir}/lib/squarestatic.a ]
-    atf_check -s exit:0 [ -x ${installdir}/bin/static_sqr ]
-    atf_check -s exit:0 [ -e ${installdir}/share/doc/program.t2t ]
-    atf_check -s exit:0 [ -e ${installdir}/share/html/program.html ]
-    atf_check -s exit:0 [ -e ${installdir}/share/man1/program.man ]
-    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/${builddir}/doc/program.html ../canon/program.html.canon
-    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/${builddir}/doc/program.man ../canon/program.man.canon
-    atf_check -s exit:0 -o file:../canon/fortprog.canon build/${builddir}/src/fortprog
-    atf_check -s exit:0 -o file:../canon/source_test.canon build/${builddir}/src/source_test
-    atf_check -s exit:0 -o save:static_sqr.out build/${builddir}/src/static_sqr 3 2000
+    atf_check -s exit:0 [ -e build/doc/${builddir}/program.html ]
+    atf_check -s exit:0 [ -e build/doc/${builddir}/program.man ]
+    atf_check -s exit:0 [ -x build/src/${builddir}/fortprog ]
+    atf_check -s exit:0 [ -x build/src/${builddir}/source_test ]
+    atf_check -s exit:0 [ -x build/src/${builddir}/shared_sqr ]
+    atf_check -s exit:0 [ -e build/src/${builddir}/libsquareshare.so ]
+    atf_check -s exit:0 [ -e build/src/${builddir}/link-static/libsquarestatic.a ]
+    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/doc/${builddir}/program.html ../canon/program.html.canon
+    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/doc/${builddir}/program.man ../canon/program.man.canon
+    atf_check -s exit:0 -o file:../canon/fortprog.canon build/src/${builddir}/fortprog
+    atf_check -s exit:0 -o file:../canon/source_test.canon build/src/${builddir}/source_test
+    atf_check -s exit:0 -o save:static_sqr.out build/src/${builddir}/static_sqr 3 2000
     atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
-    atf_check -s exit:0 -o save:shared_sqr.out build/${builddir}/src/shared_sqr 3 2000
+    LD_LIBRARY_PATH=build/src/${builddir} atf_check -s exit:0 -o save:shared_sqr.out build/src/${builddir}/shared_sqr 3 2000
     atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
     atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
+    # no separate install target
+    atf_check -s exit:0 [ -x build/src/${builddir}/static_sqr ]
+    if [ "X" == "X${installdir}" ]; then
+      # dummy install targets for debug
+      atf_check -s exit:0 [ -x src/install_fortprog/fortprog ]
+      atf_check -s exit:0 [ -x src/install_source_test/source_test ]
+      atf_check -s exit:0 [ -x src/install_shared_sqr/shared_sqr ]
+      atf_check -s exit:0 [ -e src/install_squareshare/libsquareshare.so ]
+      atf_check -s exit:0 [ -e src/install_squarestatic/libsquarestatic.a ]
+      atf_check -s exit:0 [ -x src/install_static_sqr/static_sqr ]
+      atf_check -s exit:0 [ -e doc/install_program.t2t/program.t2t ]
+      atf_check -s exit:0 [ -e doc/install_program.html/program.html ]
+      atf_check -s exit:0 [ -e doc/install_program.man/program.man ]
+      atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/doc/${builddir}/program.html ../canon/program.html.canon
+      atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" build/doc/${builddir}/program.man ../canon/program.man.canon
+      atf_check -s exit:0 -o file:../canon/fortprog.canon src/install_fortprog/fortprog
+      atf_check -s exit:0 -o file:../canon/source_test.canon src/install_source_test/source_test
+      atf_check -s exit:0 -o save:static_sqr.out src/install_static_sqr/static_sqr 3 2000
+      atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
+      LD_LIBRARY_PATH=src/install_squareshare atf_check -s exit:0 -o save:shared_sqr.out src/install_shared_sqr/shared_sqr 3 2000
+      atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
+      atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
 
-    # no separate install target
-    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" program.html ../canon/program.html.canon
-    atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" program.man ../canon/program.man.canon
-    atf_check -s exit:0 -o file:../canon/fortprog.canon ${installdir}/fortprog
-    atf_check -s exit:0 -o file:../canon/source_test.canon ${installdir}/source_test
-    atf_check -s exit:0 -o save:static_sqr.out ${installdir}/static_sqr 3 2000
-    atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
-    atf_check -s exit:0 -o save:shared_sqr.out ${installdir}/shared_sqr 3 2000
-    atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
-    atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
+    else
+      # real install target
+      atf_check -s exit:0 [ -x ${installdir}/bin/fortprog ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/source_test ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/shared_sqr ]
+      atf_check -s exit:0 [ -e ${installdir}/lib/libsquareshare.so ]
+      atf_check -s exit:0 [ -e ${installdir}/lib/libsquarestatic.a ]
+      atf_check -s exit:0 [ -x ${installdir}/bin/static_sqr ]
+      atf_check -s exit:0 [ -e ${installdir}/share/doc/program.t2t ]
+      atf_check -s exit:0 [ -e ${installdir}/share/html/program.html ]
+      atf_check -s exit:0 [ -e ${installdir}/share/man1/program.man ]
+      atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" ${installdir}/share/html/program.html ../canon/program.html.canon
+      atf_check -o empty diff --ignore-matching-lines="cmdline: txt2tags" ${installdir}/share/man1/program.man ../canon/program.man.canon
+      atf_check -s exit:0 -o file:../canon/fortprog.canon ${installdir}/bin/fortprog
+      atf_check -s exit:0 -o file:../canon/source_test.canon ${installdir}/bin/source_test
+      atf_check -s exit:0 -o save:static_sqr.out ${installdir}/bin/static_sqr 3 2000
+      atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" static_sqr.out ../canon/static_sqr.canon
+      LD_LIBRARY_PATH=${installdir}/lib atf_check -s exit:0 -o save:shared_sqr.out ${installdir}/bin/shared_sqr 3 2000
+      atf_check -o empty diff --ignore-matching-lines="[0-9][0-9]:[0-9][0-9]:[0-9][0-9][.][0-9][0-9][0-9] *" shared_sqr.out ../canon/shared_sqr.canon
+      atf_check -s exit:0 -o empty rm static_sqr.out shared_sqr.out
+
+    fi 
     # no distclean target
     # test clean target
     atf_check -s exit:0 -o save:build2.log -e save:build2.err bjam clean ${variant}
-    atf_check -s exit:0 [ ! -e build/${builddir}/doc/program.html ]
-    atf_check -s exit:0 [ ! -e build/${builddir}/doc/program.man ]
-    atf_check -s exit:0 [ ! -e build/${builddir}/src/fortprog ]
-    atf_check -s exit:0 [ ! -e build/${builddir}/src/source_test ]
-    atf_check -s exit:0 [ ! -e build/${builddir}/src/shared_sqr ]
-    atf_check -s exit:0 [ ! -e build/${builddir}/src/squareshare.a ]
-    atf_check -s exit:0 [ ! -e build/${builddir}/src/squarestatic.a ]
-    atf_check -s exit:0 [ ! -e build/${builddir}/src/static_sqr ]
-    atf_check -s exit:0 [ -x ${installdir}/bin/fortprog ]
-    atf_check -s exit:0 [ -x ${installdir}/bin/source_test ]
-    atf_check -s exit:0 [ -x ${installdir}/bin/shared_sqr ]
-    atf_check -s exit:0 [ -e ${installdir}/lib/squareshare.a ]
-    atf_check -s exit:0 [ -e ${installdir}/lib/squarestatic.a ]
-    atf_check -s exit:0 [ -x ${installdir}/bin/static_sqr ]
-    atf_check -s exit:0 [ -e ${installdir}/share/doc/program.t2t ]
-    atf_check -s exit:0 [ -e ${installdir}/share/html/program.html ]
-    atf_check -s exit:0 [ -e ${installdir}/share/man1/program.man ]
+    atf_check -s exit:0 [ ! -e build/doc/${builddir}/program.html ]
+    atf_check -s exit:0 [ ! -e build/doc/${builddir}/program.man ]
+    atf_check -s exit:0 [ ! -e build/src/${builddir}/fortprog ]
+    atf_check -s exit:0 [ ! -e build/src/${builddir}/source_test ]
+    atf_check -s exit:0 [ ! -e build/src/${builddir}/shared_sqr ]
+    atf_check -s exit:0 [ ! -e build/src/${builddir}/libsquareshare.so ]
+    atf_check -s exit:0 [ ! -e build/src/${builddir}/link-static/libsquarestatic.a ]
+    atf_check -s exit:0 [ ! -e build/src/${builddir}/static_sqr ]
+    if [ "X" == "X${installdir}" ]; then
+      # dummy install targets for debug
+      atf_check -s exit:0 [ ! -e src/install_fortprog/fortprog ]
+      atf_check -s exit:0 [ ! -e src/install_source_test/source_test ]
+      atf_check -s exit:0 [ ! -e src/install_shared_sqr/shared_sqr ]
+      atf_check -s exit:0 [ ! -e src/install_squareshare/libsquareshare.so ]
+      atf_check -s exit:0 [ ! -e src/install_squarestatic/libsquarestatic.a ]
+      atf_check -s exit:0 [ ! -e src/install_static_sqr/static_sqr ]
+      atf_check -s exit:0 [ ! -e doc/install_program.t2t/program.t2t ]
+      atf_check -s exit:0 [ ! -e doc/install_program.html/program.html ]
+      atf_check -s exit:0 [ ! -e doc/install_program.man/program.man ]
+      atf_check -s exit:0 -o empty rm -rf src/install_*
+      atf_check -s exit:0 -o empty rm -rf doc/install_*
+    else
+      # real install target
+      atf_check -s exit:0 [ ! -e ${installdir}/bin/fortprog ]
+      atf_check -s exit:0 [ ! -e ${installdir}/bin/source_test ]
+      atf_check -s exit:0 [ ! -e ${installdir}/bin/shared_sqr ]
+      atf_check -s exit:0 [ ! -e ${installdir}/lib/libsquareshare.so ]
+      atf_check -s exit:0 [ ! -e ${installdir}/lib/libsquarestatic.a ]
+      atf_check -s exit:0 [ ! -e ${installdir}/bin/static_sqr ]
+      atf_check -s exit:0 [ ! -e ${installdir}/share/doc/program.t2t ]
+      atf_check -s exit:0 [ ! -e ${installdir}/share/html/program.html ]
+      atf_check -s exit:0 [ ! -e ${installdir}/share/man1/program.man ]
+      atf_check -s exit:0 -o empty rm -rf installdir
+    fi
 
     atf_check -s exit:0 -o empty rm build1.log build1.err
     atf_check -s exit:0 -o empty rm build2.log build2.err
     atf_check -s exit:0 -o empty rm -rf build
-    atf_check -s exit:0 -o empty rm -rf installdir
-    atf_check -s exit:0 -o empty rm program.t2t program.html program.man
     popd
   }
 
   # default (DEBUG) VARIANT
-  build_test "" "*/debug" install_program
+  build_test "" "*/debug" ""
   # specific DEBUG VARIANT
-  build_test debug "*/debug" install_program
+  build_test debug "*/debug" ""
   # RELEASE VARIANT
   build_test release "*/release" installdir
 

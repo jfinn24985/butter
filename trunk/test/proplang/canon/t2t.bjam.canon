@@ -1,25 +1,55 @@
-import feature : feature ;
-import toolset : flags ;
-import make ;
-
 if ! $(.t2t_initialized)
 {
-.t2t_initialized = true ;
-.default_t2tflags = -t html ;
-feature t2tflags : : free ;
-flags t2t OPTIONS <t2tflags> ;
-
-rule t2t
-{
-  if ! $(OPTIONS)
+  .t2t_initialized = true ;
+  module t2t
   {
-    OPTIONS = $(.default_t2tflags) ;
+    import feature : feature ;
+    import toolset : flags ;
+    # Set up ability to use "t2tflags" as options
+    feature t2tflags : : free ;
+    flags t2t OPTIONS <t2tflags> ;
+
+    import type ;
+    type.register T2T : t2t ;
+    type.register MAN : man ;
+    # HTML files already registered.
+    
+    rule t2t.t2tman ( target : source : properties * )
+    {
+      if ! $(OPTIONS)
+      {
+        OPTIONS = -t man ;
+      }
+      dot2t $(target) : $(source) : $(properties) ;
+    }
+    rule t2t.t2thtml ( target : source : properties * )
+    {
+      if ! $(OPTIONS)
+      {
+        OPTIONS = -t html ;
+      }
+      dot2t $(target) : $(source) : $(properties) ;
+    }
+    
+    actions dot2t
+    {
+      txt2tags $(OPTIONS) -o $(<) $(>)
+    }
+
+    import generators ;
+    generators.register-standard t2t.t2tman : T2T : MAN ;
+    generators.register-standard t2t.t2thtml : T2T : HTML ;
+  }
+  rule t2t ( target : source : properties * )
+  {
+    import type ;
+    if [ type.type $(target) ] = MAN {
+      man $(target) : $(source) : $(properties) ;
+    }
+    else
+    {
+      html $(target) : $(source) : $(properties) ;
+    }
   }
 }
 
-actions t2t
-{
-  txt2tags $(OPTIONS) -o $(<) $(>)
-}
-
-}
