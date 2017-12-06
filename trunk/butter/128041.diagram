@@ -129,6 +129,12 @@ relationcanvas 130096 relation_ref 225584 // <dependency>
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
+relationcanvas 130480 relation_ref 232112 // <dependency>
+  from ref 141993 z 3006 to point 360 78
+  line 130608 z 3006 to ref 135209
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
 relationcanvas 135337 relation_ref 135337 // <composition>
   from ref 134825 z 1999 stereotype "<<vector>>" xyz 312 101 3000 to point 357 126
   line 135465 z 1999 to point 268 126

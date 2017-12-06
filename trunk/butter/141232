@@ -1,6 +1,6 @@
 format 75
 "butter-test" // butter::butter-test
-  revision 30
+  revision 31
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -340,7 +340,7 @@ ${body}
 	comment "Test lifetime methods and static non-bouml methods
 
 Static methods to test:
-  section"
+  build_target_NAME"
       end
 
       operation 199600 "base_gen_merge_string_list"
@@ -357,7 +357,8 @@ ${body}
 	
 	
 	
-	comment "Test static non-bouml method"
+	comment "Test static non-bouml method: merge_string_list
+  "
       end
 
       operation 199856 "base_gen_section"
@@ -374,7 +375,7 @@ ${body}
 	
 	
 	
-	comment "Test static non-bouml method"
+	comment "Test static non-bouml method: section"
       end
 
       operation 175280 "location_lifetime"

@@ -133,9 +133,16 @@ if (-1 != l_start)
 // else ...
 // Found no section titles --> return empty string
 return Result;
-!!!244777.cpp!!!	to_target_NAME(in a_target : UmlArtifact) : unistr
-QString Result (a_target.package ().filename ());
-Result.append ("_");
-Result.append(const_cast< UmlArtifact& >(a_target).name ());
-Result.replace( QChar{'.'}, QChar{'_'} );
-return Result.upper ();
+!!!272176.cpp!!!	build_target_NAME(in package_name : unistr, in target_name : unistr) : unistr
+if( not package_name.isEmpty() )
+{
+  package_name.append( "_" );
+  package_name.append( target_name );
+}
+else
+{
+  std::swap( package_name, target_name );
+}
+package_name.replace( QChar{'.'}, QChar{'_'} );
+package_name.replace( QChar{'-'}, QChar{'_'} );
+return package_name.upper();

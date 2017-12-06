@@ -583,7 +583,7 @@ return input;
 void cmake_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream & a_os, QString a_build_file, QString a_compiler, base_generator::target_type a_type) {
 /////////////////
 // Initialise variables for the new target
-this->target_NAME (a_target);
+this->target_NAME( a_target.package().filename(), a_target.name() );
 this->other_target_type_.truncate (0);    // An "other" target type.
 this->lib_set_.truncate (0);              // Set of included libraries
 this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled

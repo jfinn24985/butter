@@ -910,7 +910,7 @@ void gmake_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStrea
 /////////////////
 // Initialise variables for the new target
 this->qualified_target_name_ = a_target.name ();
-this->target_NAME (a_target);
+this->target_NAME( a_target.package().filename(), this->qualified_target_name_ );
 this->other_target_type_.truncate (0);    // An "other" target type.
 this->lib_set_.truncate (0);              // Set of included libraries
 this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled

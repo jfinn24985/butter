@@ -179,7 +179,7 @@ else
     QString defn_;
     {
       QTextOStream os_( &defn_ );
-      os_ << " $(" << to_target_NAME( a_target ) << "_LDFLAGS) ";
+      os_ << " $(" << this->build_target_NAME( a_target.package().filename(), a_target.name() ) << "_LDFLAGS) ";
     }
     a_ldflags.append( defn_ );
   }
@@ -511,7 +511,7 @@ default: // static libraries (only static libraries supported!)
   }
   break;
 }
-this->target_NAME (a_target);
+this->target_NAME( a_target.package().filename(), name_ );
 
 // Target label for non-standard targets
 this->other_target_type_.truncate (0);

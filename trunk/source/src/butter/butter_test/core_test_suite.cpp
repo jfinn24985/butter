@@ -346,7 +346,7 @@ BOOST_AUTO_TEST_CASE( pathcmp_methods )
  * Test lifetime methods and static non-bouml methods
  * 
  * Static methods to test:
- *   section
+ *   build_target_NAME
  */
 BOOST_AUTO_TEST_CASE( base_generator_lifetime )
 {
@@ -359,12 +359,32 @@ BOOST_CHECK( not std::is_move_constructible< butter::base_generator >::type{} );
 BOOST_CHECK( not (std::is_assignable< butter::base_generator, butter::base_generator >::type{}) );
 BOOST_CHECK( std::has_virtual_destructor< butter::base_generator >::type{});
 
-
+{
+  QString pack{ "anon" };
+  QString name{ "some.txt" };
+  BOOST_CHECK_EQUAL( "ANON_SOME_TXT", butter::base_generator::build_target_NAME( pack, name ) );
+}
+{
+  QString pack{};
+  QString name{ "some.txt" };
+  BOOST_CHECK_EQUAL( "SOME_TXT", butter::base_generator::build_target_NAME( pack, name ) );
+}
+{
+  QString pack{ "anon" };
+  QString name{ "some.more.txt" };
+  BOOST_CHECK_EQUAL( "ANON_SOME_MORE_TXT", butter::base_generator::build_target_NAME( pack, name ) );
+}
+{
+  QString pack{ "anon" };
+  QString name{ "some-more.txt" };
+  BOOST_CHECK_EQUAL( "ANON_SOME_MORE_TXT", butter::base_generator::build_target_NAME( pack, name ) );
+}
 
 }
 
 /**
- * Test static non-bouml method
+ * Test static non-bouml method: merge_string_list
+ *   
  */
 BOOST_AUTO_TEST_CASE( base_gen_merge_string_list )
 {
@@ -415,7 +435,7 @@ BOOST_AUTO_TEST_CASE( base_gen_merge_string_list )
 }
 
 /**
- * Test static non-bouml method
+ * Test static non-bouml method: section
  */
 BOOST_AUTO_TEST_CASE( base_gen_section )
 {

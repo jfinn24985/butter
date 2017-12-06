@@ -399,7 +399,7 @@ a_os << "install install_" << name_ << " : " << name_
 // Reset variables
 this->other_target_type_.truncate (0);
 this->individual_obj_.truncate (0);
-this->target_NAME (a_target);
+this->target_NAME( a_target.package().filename(), a_target.name() );
 this->is_other_ = (a_type == other);
 ///////////////////////
 // Start target definition

@@ -1,6 +1,6 @@
 format 75
 "butter" // butter
-  revision 217
+  revision 218
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -550,6 +550,14 @@ Actions
 	  b parent class_ref 161321 // const_token_iterator
       end
 
+      classrelation 232240 // <dependency>
+	relation 232112 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 232240 // <dependency>
+	  b parent class_ref 6913 // UmlArtifact
+      end
+
       class 139305 "install_type"
 	visibility public stereotype "enum"
 	cpp_decl "${comment}enum ${name} {
@@ -705,7 +713,7 @@ ${items}};
 	python_decl ""
 	idl_decl ""
 	comment "An \"other\" target library type name.  This is the name that is used for the
-label/converted for the build rule.  See inidividual styles to see how this
+label/converted for the build rule.  See individual styles to see how this
 is used and what requirements there are for supporting it in each style."
       end
 
@@ -731,7 +739,7 @@ is used and what requirements there are for supporting it in each style."
 	php_decl ""
 	python_decl ""
 	idl_decl ""
-	comment "The version of the target name to use with variables."
+	comment "The version of the current target name to use with variables."
       end
 
       operation 191785 "create_system"
@@ -894,14 +902,16 @@ to get style specific data from target artifact description fields."
 all uppercase version of target.)"
       end
 
-      operation 244521 "target_NAME"
+      operation 272304 "target_NAME"
 	public explicit_return_type "void"
-	nparams 1
-	  param in name "a_target" type class_ref 6913 // UmlArtifact
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract}
+	nparams 2
+	  param in name "pack" explicit_type "unistr"
+	  param in name "target" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${abstract}
 {
-  target_NAME_ = to_target_NAME (a_target);
-}"
+  target_NAME_ = this->build_target_NAME( ${p0}, ${p1} );
+}
+"
 	
 	
 	
@@ -909,21 +919,22 @@ all uppercase version of target.)"
 	comment "Set the version of target name to value created by to_target_NAME"
       end
 
-      operation 244777 "to_target_NAME"
+      operation 272176 "build_target_NAME"
 	class_operation public explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_target" type class_ref 6913 // UmlArtifact
-	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${abstract};"
-	cpp_def "${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
-  ${body}
+	nparams 2
+	  param in name "package_name" explicit_type "unistr"
+	  param in name "target_name" explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}
+{
+${body}
 }
 "
 	
 	
 	
 	
-	comment "Create the version of target name for variables (generally
-all uppercase version of location + target.)"
       end
 
       operation 249257 "base_generator"

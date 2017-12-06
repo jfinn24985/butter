@@ -280,7 +280,26 @@ BOOST_CHECK( not std::is_move_constructible< butter::base_generator >::type{} );
 BOOST_CHECK( not (std::is_assignable< butter::base_generator, butter::base_generator >::type{}) );
 BOOST_CHECK( std::has_virtual_destructor< butter::base_generator >::type{});
 
-
+{
+  QString pack{ "anon" };
+  QString name{ "some.txt" };
+  BOOST_CHECK_EQUAL( "ANON_SOME_TXT", butter::base_generator::build_target_NAME( pack, name ) );
+}
+{
+  QString pack{};
+  QString name{ "some.txt" };
+  BOOST_CHECK_EQUAL( "SOME_TXT", butter::base_generator::build_target_NAME( pack, name ) );
+}
+{
+  QString pack{ "anon" };
+  QString name{ "some.more.txt" };
+  BOOST_CHECK_EQUAL( "ANON_SOME_MORE_TXT", butter::base_generator::build_target_NAME( pack, name ) );
+}
+{
+  QString pack{ "anon" };
+  QString name{ "some-more.txt" };
+  BOOST_CHECK_EQUAL( "ANON_SOME_MORE_TXT", butter::base_generator::build_target_NAME( pack, name ) );
+}
 !!!199600.cpp!!!	base_gen_merge_string_list() : void
 // Static method tests
 {

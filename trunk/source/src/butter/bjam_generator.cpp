@@ -476,7 +476,7 @@ void bjam_generator::start_target(const ::UmlArtifact & a_target, ::QTextOStream
 // Reset variables
 this->other_target_type_.truncate (0);
 this->individual_obj_.truncate (0);
-this->target_NAME (a_target);
+this->target_NAME( a_target.package().filename(), a_target.name() );
 this->is_other_ = (a_type == other);
 ///////////////////////
 // Start target definition

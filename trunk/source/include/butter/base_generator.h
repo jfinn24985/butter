@@ -10,11 +10,11 @@
 namespace butter { class butter_constants; } 
 namespace butter { class compound_document; } 
 namespace butter { class const_token_iterator; } 
+class UmlArtifact;
 namespace butter { class pathcmp; } 
 namespace butter { class location; } 
 class UmlItem;
 namespace butter { class compound_artifact; } 
-class UmlArtifact;
 
 namespace butter {
 
@@ -94,7 +94,7 @@ class base_generator
 
     /**
      * An "other" target library type name.  This is the name that is used for the
-     * label/converted for the build rule.  See inidividual styles to see how this
+     * label/converted for the build rule.  See individual styles to see how this
      * is used and what requirements there are for supporting it in each style.
      */
     QString other_target_type_;
@@ -107,7 +107,7 @@ class base_generator
     std::unique_ptr< pathcmp > root_dir_;
 
     /**
-     * The version of the target name to use with variables.
+     * The version of the current target name to use with variables.
      */
     QString target_NAME_;
 
@@ -179,15 +179,13 @@ class base_generator
     /**
      * Set the version of target name to value created by to_target_NAME
      */
-    void target_NAME(const ::UmlArtifact & a_target)
+    void target_NAME(QString pack, QString target)
     {
-      target_NAME_ = to_target_NAME (a_target);
+      target_NAME_ = this->build_target_NAME( pack, target );
     }
-    /**
-     * Create the version of target name for variables (generally
-     * all uppercase version of location + target.)
-     */
-    static QString to_target_NAME(const ::UmlArtifact & a_target);
+
+    static QString build_target_NAME(QString package_name, QString target_name);
+
     explicit base_generator();
 
     virtual ~base_generator();

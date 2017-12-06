@@ -487,7 +487,7 @@ return input;
 !!!232233.cpp!!!	start_target(in a_target : UmlArtifact, out a_os : QTextOStream, in a_build_file : unistr, in a_compiler : unistr, in a_type : base_generator::target_type) : void
 /////////////////
 // Initialise variables for the new target
-this->target_NAME (a_target);
+this->target_NAME( a_target.package().filename(), a_target.name() );
 this->other_target_type_.truncate (0);    // An "other" target type.
 this->lib_set_.truncate (0);              // Set of included libraries
 this->individual_obj_.truncate (0);       // Set of sources that need to be individually compiled

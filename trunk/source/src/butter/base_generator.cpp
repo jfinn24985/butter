@@ -5,11 +5,11 @@
 #include "butter/butter_constants.h"
 #include "butter/compound_document.h"
 #include "butter/const_token_iterator.h"
+#include "bouml/UmlArtifact.h"
 #include "butter/utility.h"
 #include "butter/location.h"
 #include "bouml/UmlItem.h"
 #include "butter/compound_artifact.h"
-#include "bouml/UmlArtifact.h"
 
 // Manual includes
 #include <qregexp.h>
@@ -175,13 +175,21 @@ void base_generator::root_dir(const pathcmp & a_path)
   root_dir_ = std::unique_ptr < pathcmp >(new pathcmp (a_path));
 }
 
-QString base_generator::to_target_NAME(const ::UmlArtifact & a_target)
+QString base_generator::build_target_NAME(QString package_name, QString target_name)
+
 {
-  QString Result (a_target.package ().filename ());
-  Result.append ("_");
-  Result.append(const_cast< UmlArtifact& >(a_target).name ());
-  Result.replace( QChar{'.'}, QChar{'_'} );
-  return Result.upper ();
+if( not package_name.isEmpty() )
+{
+  package_name.append( "_" );
+  package_name.append( target_name );
+}
+else
+{
+  std::swap( package_name, target_name );
+}
+package_name.replace( QChar{'.'}, QChar{'_'} );
+package_name.replace( QChar{'-'}, QChar{'_'} );
+return package_name.upper();
 
 }
 
