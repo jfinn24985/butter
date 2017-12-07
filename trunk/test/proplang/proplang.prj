@@ -37,10 +37,8 @@ format 66
 
   mark_for_import
   
-  ncouples 9
-  key "butter base" value "."
+  ncouples 7
   key "butter version" value "1.4"
-  key "butter type" value "shared"
   key "butter flags" value "-DPROJ_FLAG"
   key "butter ldflags" value "$(OPENMP)"
   key "butter build-dir" value "build"
