@@ -1491,8 +1491,8 @@ property_log_level_jam_gen_body() {
   # Property: PROJECT.butter log-level = 2 (debug) 
   # Standard (jam) variant 
   #----------------------- 
-  setup_example "property_test" "jam-top" "loglevel1"
-  run_plugouts "property_test" "jam" "loglevel1"
+  setup_example "property_test" "jam-top" "loglevel2"
+  run_plugouts "property_test" "jam" "loglevel2"
   atf_check -s exit:0 [ -e output/include/butter.log ]
   atf_check -s exit:1 [ -s output/include/butter.log ]
   check_jam_build 0 0 0 0
