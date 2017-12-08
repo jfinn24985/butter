@@ -1,0 +1,11 @@
+Index: property_test.prj
+===================================================================
+--- property_test.prj
++++ property_test.prj
+@@ -41,5 +41,5 @@ format 75
+   
+   ncouples 4
+-  key "butter style" value "invalid"
++  key "butter style" value "cmake"
+   key "dummy1" value "property"
+   key "dummy2" value "property"
