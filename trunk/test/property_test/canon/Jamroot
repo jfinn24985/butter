@@ -1,0 +1,26 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Thu Dec 7 20:54:16 2017
+##END:date
+##START:preamble
+# Include local constants
+path-constant topdir : . ;
+include local.jam ;
+
+# Set project's global settings
+project property_test
+	: requirements <debug-symbols>on:<define>"DEBUG=1"
+	<debug-symbols>off:<define>"DEBUG=0"
+	<include>$(topdir)/"include" 
+	: build-dir build ;
+##END:preamble
+##START:close
+use-project /property_test/Library : src/Library ;
+build-project src/Library ;
+
+use-project /property_test/Executable : src/Executable ;
+build-project src/Executable ;
+
+##END:close

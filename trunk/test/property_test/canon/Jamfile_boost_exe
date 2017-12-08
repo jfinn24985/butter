@@ -1,0 +1,16 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Thu Dec 7 20:54:16 2017
+##END:date
+##START:target program
+exe program :
+	example_exe.cpp
+	/property_test/Library//library
+	:
+	;
+
+install install_program : program : <variant>release:<location>$(INSTALL_PREFIX)/$(BINDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"src/Executable" ;
+##END:target program
