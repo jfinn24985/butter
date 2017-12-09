@@ -117,14 +117,6 @@ standard_build_test(){
       atf_check -s exit:0 [ -e installdir/lib/library.a ]
     fi
     atf_check -s exit:0 -o empty rm -rf installdir
-  else
-    # debug version
-    atf_check -s exit:0 [ ! -e src/Executable/program ]
-    if [ "X${shared}" = "X1" ] ; then
-      atf_check -s exit:0 [ ! -e src/Library/library.so ]
-    else
-      atf_check -s exit:0 [ ! -e src/Library/library.a ]
-    fi
   fi
   atf_check -s exit:0 -o empty rm -rf src/Executable/CMakefiles
   atf_check -s exit:0 -o empty rm src/Executable/cmake_install.cmake src/Executable/Makefile
