@@ -4,7 +4,7 @@ Index: property_test.prj
 +++ property_test.prj
 @@ -41,5 +41,5 @@ format 75
    
-   ncouples 3
+   ncouples 4
 -  key "butter style" value "invalid"
 +  key "butter style" value "make"
    key "dummy1" value "property"

@@ -1,0 +1,26 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sat Dec 9 12:43:02 2017
+##END:date
+##START:preamble
+include $(ROOTDIR)/M_sys.mk
+
+##END:preamble
+##START:target library
+LIBRARY_LIBRARYSRC :=  \
+	example_lib.cpp
+LIBRARY_LIBRARY_DINC := $(filter %$(sufdep), $(LIBRARY_LIBRARYSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(LIBRARY_LIBRARYSRC:.c=$(sufdep)))
+LIBRARY_LIBRARY_OBJ+=$(filter %$(sufobj), $(LIBRARY_LIBRARYSRC:.cpp=$(sufobj)))
+USEROBJ+=$(LIBRARY_LIBRARY_OBJ)
+library$(suflib) : $(LIBRARY_LIBRARY_SRC) $(LIBRARY_LIBRARY_DINC)
+-include $(LIBRARY_LIBRARY_DINC)
+$(eval $(call do_archive,library$(suflib),$(LIBRARY_LIBRARY_OBJ)))
+
+all :: library$(suflib)
+TARGETS+=library$(suflib)
+
+$(eval $(call do_install,library$(suflib),LIB))
+
+##END:target library

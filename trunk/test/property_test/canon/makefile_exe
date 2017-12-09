@@ -1,0 +1,28 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Sat Dec 9 12:43:02 2017
+##END:date
+##START:preamble
+include $(ROOTDIR)/M_sys.mk
+
+##END:preamble
+##START:target program
+EXECUTABLE_PROGRAMSRC :=  \
+	example_exe.cpp
+EXECUTABLE_PROGRAM_DINC := $(filter %$(sufdep), $(EXECUTABLE_PROGRAMSRC:.cpp=$(sufdep))) $(filter %$(sufdep), $(EXECUTABLE_PROGRAMSRC:.c=$(sufdep)))
+EXECUTABLE_PROGRAM_OBJ+=$(ROOTDIR)/src/Library/library$(suflib)
+
+EXECUTABLE_PROGRAM_OBJ+=$(filter %$(sufobj), $(EXECUTABLE_PROGRAMSRC:.cpp=$(sufobj)))
+USEROBJ+=$(EXECUTABLE_PROGRAM_OBJ)
+program$(sufexe) : $(EXECUTABLE_PROGRAM_SRC) $(EXECUTABLE_PROGRAM_DINC)
+-include $(EXECUTABLE_PROGRAM_DINC)
+$(eval $(call do_link_exe,program$(sufexe),$(EXECUTABLE_PROGRAM_OBJ)))
+
+all :: program$(sufexe)
+TARGETS+=program$(sufexe)
+
+$(eval $(call do_install,program$(sufexe),BIN))
+
+##END:target program
