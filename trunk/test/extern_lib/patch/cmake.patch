@@ -1,0 +1,11 @@
+extern_lib.prj
+==================================================
+--- a/extern_lib.prj
++++ b/extern_lib.prj
+@@ -40,4 +40,6 @@ format 75
+   mark_for_import
+   
++  ncouples 1
++  key "butter style" value "cmake"
+   package_ref 141360 // External
+ 
