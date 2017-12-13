@@ -1,0 +1,25 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Mon Dec 11 23:59:03 2017
+##END:date
+##START:preamble
+BUILDDIR = $(SLASH)home$(SLASH)finnerty$(SLASH)src$(SLASH)butter$(SLASH)trunk$(SLASH)test$(SLASH)extern_lib2$(SLASH)output ;
+SubDir TOP ;
+OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
+##END:preamble
+##START:target program
+__PROGRAM_SRC =
+	<.>example_exe.cc
+	;
+
+Main <.>program$(SUFEXE) :
+	$(__PROGRAM_SRC) ;
+
+LINKLIBS on <.>program$(SUFEXE) += -L${QTDIR}/lib64 -lqt-mt ;
+ObjectCcFlags $(__PROGRAM_SRC) : -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT ;
+ObjectC++Flags $(__PROGRAM_SRC) : -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT ;
+ObjectHdrs $(__PROGRAM_SRC) : ${QTDIR}/include ;
+InstallBin $(BINDIR) : <.>program$(SUFEXE) ;
+##END:target program

@@ -1,0 +1,47 @@
+##START:version
+#Butter version 1.2beta.175
+##END:version
+##START:date
+#Mon Dec 11 23:43:08 2017
+##END:date
+##START:preamble
+# Include local constants
+path-constant topdir : . ;
+include local.jam ;
+
+# Set project's global settings
+project extern_lib2
+	: requirements <debug-symbols>on:<define>"DEBUG=1"
+	<debug-symbols>off:<define>"DEBUG=0"
+	: build-dir build ;
+##END:preamble
+##START:target program
+exe program :
+	example_exe.cc
+	/qt//qt
+	:
+	;
+
+install install_program : program : <variant>release:<location>$(INSTALL_PREFIX)/$(BINDIR) 
+		<variant>debug:<location>$(DEBUG_PREFIX)/"" ;
+##END:target program
+##START:target qt
+#
+# Section for project: qt
+#
+project qt ;
+
+# Example for using pkg-config information in boost jam
+import string ;
+.qtcompileflags = [ string.join [ string.words [ SHELL "pkg-config qt-mt --cflags-only-other" ] ] : " " ] ;
+.qtincprefix = [ MATCH "-I\(.*\)" : [ string.words [ SHELL "pkg-config qt-mt --cflags-only-I" ] ] ] ;
+.qtlibprefix = [ MATCH "-L\(.*\)" : string.join [ string.words [ SHELL "pkg-config qt-mt --libs-only-L" ] ] ] ;
+.qtlinkflags = [ string.join [ MATCH "(.*)" : [ string.words [ SHELL "pkg-config qt-mt --libs-only-l" ] ] ] : " " ] ;
+alias qt : : : : <include>$(.qtincprefix) 
+   <library-path>$(.qtlibprefix)
+   <cflags>$(.qtcompileflags)
+   <cxxflags>$(.qtcompileflags)
+   <cflags>"-DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT"
+   <linkflags>$(.qtlinkflags)
+   <allow>qt-mt ;
+##END:target qt
