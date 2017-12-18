@@ -3,7 +3,160 @@ Butter Project (version 1.1beta)
 August 2010
 
 
+=Preface=
+
+==Expected from Reader==
+
+Can create a C++ project in //bouml//.
+
+Has some experience compiling program using a build system
+such as make.
+
+==What this document covers==
+
+How to enter build information into a bouml project and use
+the //butter// plugout to generate a working build system
+
+==What this document does not cover==
+
+How to solve compiler error messages.
+
+
 =Introduction=
+
+==Benefits==
+
+==Portability==
+
+==How it works==
+
+==Limitations==
+
+==?Evolution?==
+
+=Fundamentals=
+
+==Build systems==
+
++ A build system reads an input file.
++ Determines which targets are active.
++ Determines which targets need to be updated.
++ Run the commands to update the targets.
++ Special meta-targets (all, clean, install, distclean)
+
+
+===Common meta-targets===
+
++ //all// (default) target
++ //clean// target
++ //install// target
++ //distclean// target
+
+
+===Common build variants===
+
++ //debug// (default) variant
++ //release// variant
+
+
+===What build systems require===
+
++ Include directories for headers
++ Preprocessor directives
++ Compiler control flags
+ + Optimisation
+ + Warnings and errors
+ + Language specification
+ + Control flags
++ Dependent library location and names
++ List of executable and library targets
++ List of sources and dependencies for each target
+
+
+===Selecting a build system===
+
+===Generated files===
+
++ Project specific files.
++ Project independent files.
++ How to edit these files.
+
+
+===Build style: standard (jam)===
+
++ Pros
++ Cons
++ Project-specific files: Jamfile
++ Independent file: Jamrules
+
+
+===Build style: boost (bjam)===
+
++ Pros
++ Cons
++ Project-specific files: Jamroot
++ Independent file: local.bjam
+
+
+===Build style: cmake (cmake)===
+
++ Pros
++ Cons
++ Project-specific files: CMakeLists.txt
++ Independent file: local.cmake
+
+
+===Build style: make (GNU make)===
+
++ Pros
++ Cons
++ Project-specific files: makefile
++ Independent file: M_sys.mk etc.
++ Why does make have so many files
+
+
+==Targets==
+
+===Libraries and executables===
+
++ Uses artifact associations
++ Targets can depend on other targets
++ Static or shared libraries
+
+
+==Controlling the build==
+
+===User-defined properties===
+
+===Description field===
+
+===Include directories===
+
+===Compiler flags===
+
++ Preprocessor directives
++ Compiler control flags
+ + Optimisation
+ + Warnings and errors
+ + Language specification
+ + Control flags
+
+
+===Linker flags===
+
+
+==Advanced target dependencies==
+
++ Beyond artifact associations
+
+
+===Dependent library location and names===
+
++ External libraries imported
+
+
+
+
 
 The //bouml// program is a great tool for creating C++ projects using UML notation.
 With the existing //genpro// plugout you generate build systems for single target
