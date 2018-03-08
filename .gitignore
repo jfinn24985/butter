@@ -1,12 +1,22 @@
+# bouml use session file
+*.session
+
+# Edittor temporary files
 *.swp
+
+# Ignorable build files
 trunk/source/build/
 make.*log
 *.o
 *.d
+
+# Ignorable build targets
 trunk/source/src/bouml/bouml.a
 trunk/source/src/butter/butter.a
 trunk/source/src/butter/butter_exe
 trunk/source/src/butter/test_path
 *_exec
+
+# Ignorable test output
 test.err
 test.log
