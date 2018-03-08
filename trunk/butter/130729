@@ -1,6 +1,6 @@
 format 75
 "Build" // Build
-  revision 112
+  revision 114
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -43,38 +43,47 @@ August 2010
 
 =Introduction=
 
-The //bouml// program is a great tool for creating C++ projects using UML notation.
-With the existing //genpro// plugout you generate build systems for single target
-projects and the //html// plugout generates documentation of your classes.  UML and
-the //bouml// program allow you to completely define complex projects
-with inter-target dependencies, non-C++ source artifacts, as well as project related documentation and licenses.  This lets the user place every detail about the project
-into a single //bouml// \"document\".  The existing plugouts only allow the user to
-turn a fraction of this into files on disk.
+The //bouml// program is a great tool for creating C++ projects
+using UML notation.  With the existing //genpro// plugout you
+generate build systems for single target projects and the //html//
+plugout generates documentation of your classes.  UML and the
+//bouml// program allow you to completely define complex projects
+with inter-target dependencies, non-C++ source artifacts, as well
+as project related documentation and licenses.  This lets the
+user place every detail about the project into a single //bouml//
+\"document\".  The existing plugouts only allow the user to turn a
+fraction of this into files on disk.
 
-The //butter// plugout was churned out to allow more features present in a
-UML project to be converted to disk.  It performs two main functions. The simplest
-function is to write //document// stereotype artifacts to disk. For example this
-allows you to include a project's user documentation or non-C++ source files.  The
-second function is to create a single build and installation system from the
-defined targets.  This approach allows build-system [properties #properties] to be
-specified on sources as-well-as build targets such as libraries and executables.
-The generated [build artifacts #buildfile] are then placed back into the UML project where
-some user-editing is possible. Currently, four build tool **styles** are supported: Boost jam,
-standard jam, CMake and GNU make[* #GNU_note]. With this plugout //bouml// becomes
-an even more powerful tool for developing projects using UML.
+The //butter// plugout was churned out to allow more features
+present in a UML project to be converted to disk.  It performs two
+main functions. The simplest function is to write //document//
+stereotype artifacts to disk. For example this allows you to
+include a project's user documentation or non-C++ source files.
+The second function is to create a single build and installation
+system from the defined targets.  This approach allows build-system
+[properties #properties] to be specified on sources as-well-as
+build targets such as libraries and executables.  The generated
+[build artifacts #buildfile] are then placed back into the UML
+project where some user-editing is possible. Currently, four build
+tool **styles** are supported: Boost jam, standard jam, CMake and
+GNU make[* #GNU_note]. With this plugout //bouml// becomes an even
+more powerful tool for developing projects using UML.
 
 === Note for Windows users ===[GNU_note]
 
-The **make** style generates makefiles specifically for the GNU //make// program
-and will not work with others.  The GNU make program is available for Windows
-from [http://gnuwin32.sourceforge.net/packages/make.htm].  It is also the default
-//make// program in the Cygwin or MingW systems.
+The **make** style generates makefiles specifically
+for the GNU //make// program and may not work with
+others.  The GNU make program is available for Windows from
+[http://gnuwin32.sourceforge.net/packages/make.htm].  It is also
+the default //make// program in the Cygwin or MingW systems.
 
 == Feature Overview ==
 + Build information stored directly within the //bouml// project.
-+ Source, executable and library artifacts can all contain build information.
++ Source, executable and library artifacts can all contain build
+information.
 + Artifacts with the //document// stereotype are written to disk:
- + Project documentation such as licenses, readmes and user documentation.
+ + Project documentation such as licenses, readmes and user
+ documentation.
  + Non-C++ source.
 + Interchangability of build **styles**
  + Works //out-of-the-box// for simple C++ projects.
@@ -84,7 +93,8 @@ from [http://gnuwin32.sourceforge.net/packages/make.htm].  It is also the defaul
 + Support for Unix-like and Microsoft Windows-like systems.
 + Direct support for basic installation
 + Support for non-C++ source code compilation
-+ Support for arbitrary compile-like actions such as documentation generation
++ Support for arbitrary compile-like actions such as documentation
+generation
 
 
 == Quick Example ==
@@ -105,24 +115,25 @@ The minimal extra steps to create build system are.
 
 == External libraries ==
 
-To use an external library you can add the needed include, compile flag and
-link flags as [properties #properties] directly on targets.  Alternatively you
-can create an artifact for the external library (an example is given for
-the Qt3 library in the [in-depth tutorial #eg_external_library]) where
-you define include, compile flag and link flags and then associate
-this library with the project targets.
+To use an external library you can add the needed include, compile
+flag and link flags as [properties #properties] directly on targets.
+Alternatively you can create an artifact for the external library
+(an example is given for the Qt3 library in the [in-depth tutorial
+#eg_external_library]) where you define include, compile flag and
+link flags and then associate this library with the project targets.
 
 == Compilers ==
 
-The CMake and boost jam systems provide multi-compiler support within the
-build tools themselves.  The standard jam and GNU make styles provide
-settings for the GNU compiler collection and the Microsoft compiler.
-The user can also readily define additional compilers for these two styles.
+The CMake and boost jam systems provide multi-compiler support
+within the build tools themselves.  The standard jam and GNU make
+styles provide settings for the GNU compiler collection and the
+Microsoft compiler.  The user can also readily define additional
+compilers for these two styles.
 
 == Targets and Variants ==
 
-The plugout directly supports a ``debug`` and a ``release`` variant across
-all build styles.  The default build variant is debug.
+The plugout directly supports a ``debug`` and a ``release`` variant
+across all build styles.  The default build variant is debug.
 
 The build systems have several common targets.
 * The default is to build all project targets as the ``debug`` variant.
@@ -1880,6 +1891,315 @@ Justin Finnerty
               | property_test | type(shared) | Ignored
               | property_test | type(static) | Ignored
               | property_test | FLAGS/HDR/LINK | Ignored
+"
+    end
+
+    artifact 162352 "use_cases.t2t"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "Supported uses cases
+Justin Finnerty
+
+
+
++ Introduction +
+
+The build system is generated from *artifacts* in the 
+the project's various *deployment* views.
+The generated build system creates build rules to
+generate *targets*. These *targets* are artifacts 
+with the *library* or *executable* stereotype.
+
+What follows is a series of usage scenarios that
+demonstrate how to use the plugout.  The scenarios
+go from simple usage to more complex.
+
+When run for the first time the *plugout* generates
+the appropriate build files on disk and as artifacts
+with the *document* stereotype in the bouml project.
+
+In this document artifacts are sometimes refered to
+only by their stereotype, for example an *artifact* with
+the *library* stereotype is refered to just as a 
+*library*. 
+
+++ Single source directory targets ++
+
+The most important limitation when using the plgout is that
+each target (library or executable) can only be
+associated with source files from its own directory.
+This limitation does not exist for associating
+libraries to executables.  Therefore to create
+an executable from sources in multiple directories
+you simply need to create intermediate libraries 
+from the sources in each directory and 
+associate these libraries, instead of the sources,
+with the executable.  
+
+
++ Self-contained projects +
+
+Projects that do not refer to external libraries
+and consist only of code within the bouml project
+may only need to define appropriate
+library and executable artifacts to generate a
+usable build system.  In these cases the only
+property you might have to define is the *butter style* 
+property, to select the desired build system
+(*standard*(default), *boost*, *cmake* or *make*),
+on the top-level package.
+
+++ Single directory self-contained project ++
+
+If your project's sources are all in one directory you
+can create static libraries or executables. This
+simple case occurs when we have:
+
+- all source files are those automatically generated by bouml.
+
+- all generated source files occupy a single directory on
+  disk (header files can be in separate directories).
+
+
+To generate a build system your project must have.
+
+- one or more targets (libraries or executables).
+
+- each library or executable includes all immediately dependent
+  objects in its *Associated artifacts* tab (including dependent
+  libraries).
+
+- a source artifact can be associated with several targets,
+  but it can only be associated once with each target. 
+  This association can be direct or indirect via inclusion of
+  a library associated with the source artifact.
+
+
+This type of usage can be found in the *single_test* and 
+*multi_target* example projects.
+
+++ Mulitple directory self-contained project ++
+
+If your project's sources are all multiple directories you
+can create static libraries or executables as long as each
+target is only associated with source artifacts in its
+directory. To create an executable from sources in 
+multiple directories you create intermediate libraries 
+from the sources in each directory and 
+associate these libraries, instead of the sources,
+with the executable.  This case occurs when we have:
+
+- all source files are those automatically generated by bouml.
+
+
+To generate a build system your project must have.
+
+- each library or executable, in its *Associated artifacts* tab,
+  only includes source artifacts from the directory containing
+  the library or executable.
+
+- each library or executable includes source artifacts from other
+  directories via intermediate libraries that contain these
+  sources in its *Associated artifacts* tab.
+
+- a source artifact can be associated with several targets,
+  but it can only be associated once with each target. 
+  This association can be direct or indirect via inclusion of
+  a library associated with the source artifact.
+
+
+
+   TIP: You **can not** create a build target that includes source files
+   from different directories. You **can** create a build target
+   that includes libraries from different directories. Therefore,
+   for a project where the source code resides in several directories
+   you create a library in each directory that includes the sources
+   from that directory.  You can then associate these libraries
+   with the executable targets.
+
+This type of usage can be found in the *multidir* example project.
+
++ Referring to external libraries +
+
+Most projects refer to some external libraries.  For references to
+external classes this is done using the external check-box on the C++
+tab of the class definition.  The plugout attempts to make refering
+to an external library almost as straightforward and can be done in
+two ways.  The first method just adds the needed flags directly to
+the build system. The second relies on you defining a library 
+artifact within the bouml project which you associate with your targets.
+
+++ Using bouml library type artifacts ++
+
+To add an external library you follow the following steps. For simple 
+cases using this method keeps the information build system neutral,
+allowing you to switch build system style without problems.
+
+- Define a library artifact, usually with the same name as
+  the external library.
+
+- Add the property \"butter project\" with some meaningful value
+  to the library artifact.  This is *essential* as it is what tells
+  the plugout that this is an external library rather than a local
+  library of the project.**LINK** Using the same value for the
+  \"butter project\" property groups libraries together, for example
+  using \"boost\" or \"qt\" to group libraries from the same vender.
+
+- Optionally add \"butter include\" property with a value containing a 
+  list of required header directories for the external library.**LINK**
+
+- Optionally add \"butter flags\" property with a value containing the 
+  required compiler flags for the external library.**LINK**
+
+- Optionally add \"butter ldflags\" property with a value containing the 
+  required compiler link flags for the external library.**LINK**
+
+- Alternatively you can define these compiler include, flag and link 
+  options in the description text of the library.**LINK** Using the
+  description text also allows you to define build system neutral 
+  as well as build system specific overrides of these options.
+  (see the *extern_lib* example)
+
+
++++ Value Merging. +++
+
+The plugout attempts to remove any duplicated entries when it builds
+the various command lines in the build system.  This means you
+usually don't need to worry about including multiple definitions,
+for example when including property values from several libraries.
+(However, the plugout only looks for duplicated text, not for the
+actual values of variables or of actual paths which means duplications
+are still possible.)
+
+For example, lets say you define artifacts for the boost
+''filesystem'' and ''serialization'' libraries that both use the
+''BUTTER_LIB'' variable and both include the boost ''system''
+library. You define the \"butter ldflags\" values for each library as:
+
+- Library artifact ''filesystem'' property \"butter ldflags\" =
+''$(BUTTER_LIB) -lboost_filesystem -lboost_system''
+
+- Library artifact ''serialization'' property \"butter ldflags\" = 
+''$(BUTTER_LIB) -lboost_serialization -lboost_system''. 
+
+
+You then associate these libraries with your target.  When
+generating the linker flags for the target, the plugout sees and
+discards the duplicated text so the result for the target would
+be equivalent to ''$(BUTTER_LIB) -lboost_filesystem -lboost_system
+-lboost_serialization''.
+
+
+++ Direct definitions ++
+
+Users can add build instructions and variable definitions of their
+own directly into the build system (see Editing build files**LINK**).
+This mean you can add the needed flags and includes for the external
+library directly.  Alternatively, you can combine direct definitions
+with defining properties on artifacts from the previous method to
+abstract common information into user-defined build system variables.
+
++++ Global definitions +++
+
+To add a library to all targets you could simply add the following
+to the build file.  For example if you are using the *make* style
+you could add the following to the top-level ''makefile'' artifact.
+
+'''
+##END:...
+
+CPPFLAGS+=-I/some/path/to/include
+LDFLAGS+=-L/some/path/to/lib -lsome_lib
+
+##START:...
+'''
+
++++ Target specific definitions +++
+
+For external projects that have a lot of related libraries, such
+as ''boost'' or ''qt'', you can combine direct definitions with
+defining properties on artifacts.  In this case you could set the
+include, flag and linker flag properties of each library artifact
+with values that contain user-defined build variables such as
+''$(VARIABLE_NAME)''. Then you include a definition of each variable
+in a build file (alternatively you can also give values for these
+variables on the command line).
+
+For example on your library artifact(s) you could define the properties:
+
+- \"butter include\" = ''$(SOME_LIB_INC)''
+
+- \"butter ldflags\" = ''$(SOME_LIB_LOC) -lsome_lib''
+
+
+Then if you are using the *make* style you could add the following
+to the top-level ''makefile'' artifact.
+
+'''
+SOME_LIB_INC=/some/path/to/include
+SOME_LIB_LOC=-L/some/path/to/lib
+'''
+
+Note that here the SOME_LIB_INC variable is a path or list of paths not
+prefixed by ''-I'' but the path(s) in SOME_LIB_LOC are prefixed with
+''-L''.
+
++ Editing and adding build system files +
+[sec:edit-buildfile]
+
+For fine control of a build system the user can add extra definitions
+and build instructions to the initial build system generated by the
+plugout.  This allows considerable scope for fine-tuning of the final
+build system, at the expense of limiting the styles that can be used.
+
+The plugout produces or replaces document type artifacts containing
+the build system when run.**LINK**  The documents it produces are
+of two types. The first type contains the project specific build
+instructions.  These are updated each time the plugout is run.
+They can be easily identified because the *description* field will 
+contain text with sections delineated using comment lines like.
+
+'''
+##START:???
+...
+##END:???
+'''
+
+The build instructions generated by the plugout are contained between
+these start and end lines.
+
+The second type of file generated by the plugout contain
+non-project specific build information.  For example the
+*make* style will create a file named ''M_sys.mk''.  These
+files are only generated if no artifact with that name 
+exists in the base directory of the project.  
+
+Both types of files can be edited by the user. In the first
+type all text outside the start and end delineation lines 
+(ie between adjacent ''##END:..'' and ''##START:..'' lines) 
+is retained when the plugout is run. This
+allows the user to add extra definitions and build instructions
+to these files. These instructions will always remain in the same
+position relative the plugout text preceding it, giving very fine
+grained control over where user definitions will be encountered.
+*NOTE* If an artifact with the name of one of these first type of
+build files exists in the project before the plugout is run, its
+content will be merged into the top of any generated build file. This
+can be used to distribute user additions to the build system
+without distributing all the automatically generated parts.
+  
+In the second type, the plugout only creates the artifact if
+it does not exist.  Once it exists the user can add or edit
+the build instructions as desired.  
+
+The plugout also writes the contents of the *description*
+field of all artifacts with the *document* 
+stereotype to disk along with the build files it creates.
+This means that you can write your own build files to the 
+build system that can be included into the build system.
+
+
 "
     end
   end

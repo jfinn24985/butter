@@ -5,21 +5,24 @@ August 2010
 
 =Preface=
 
-==Expected from Reader==
+==Intended Reader==
 
 Can create a C++ project in //bouml//.
 
 Has some experience compiling program using a build system
 such as make.
 
-==What this document covers==
+==What is covered==
 
 How to enter build information into a bouml project and use
 the //butter// plugout to generate a working build system
 
-==What this document does not cover==
+==What is not covered==
 
-How to solve compiler error messages.
+How to solve compiler error messages.  Not a manual for the
+build systems themselves.
+
+How to extend the butter plugout.
 
 
 =Introduction=
@@ -32,17 +35,21 @@ How to solve compiler error messages.
 
 ==Limitations==
 
-==?Evolution?==
+==Evolution==
 
-=Fundamentals=
+=Build system basics=
 
-==Build systems==
+==Fundamentals==
 
 + A build system reads an input file.
 + Determines which targets are active.
 + Determines which targets need to be updated.
 + Run the commands to update the targets.
-+ Special meta-targets (all, clean, install, distclean)
+
+
+===User-defined build targets===
+
++ executables and libraries
 
 
 ===Common meta-targets===
@@ -73,16 +80,16 @@ How to solve compiler error messages.
 + List of sources and dependencies for each target
 
 
-===Selecting a build system===
-
-===Generated files===
+==Generated files==
 
 + Project specific files.
 + Project independent files.
 + How to edit these files.
 
 
-===Build style: standard (jam)===
+==Selecting a build style==
+
+==Build style: standard (jam)==
 
 + Pros
 + Cons
@@ -90,7 +97,7 @@ How to solve compiler error messages.
 + Independent file: Jamrules
 
 
-===Build style: boost (bjam)===
+==Build style: boost (bjam)==
 
 + Pros
 + Cons
@@ -98,7 +105,7 @@ How to solve compiler error messages.
 + Independent file: local.bjam
 
 
-===Build style: cmake (cmake)===
+==Build style: cmake (cmake)==
 
 + Pros
 + Cons
@@ -106,7 +113,7 @@ How to solve compiler error messages.
 + Independent file: local.cmake
 
 
-===Build style: make (GNU make)===
+==Build style: make (GNU make)==
 
 + Pros
 + Cons
@@ -115,24 +122,30 @@ How to solve compiler error messages.
 + Why does make have so many files
 
 
+=Managing the build system=
+
 ==Targets==
 
-===Libraries and executables===
+===Executables===
+
++ Uses artifact associations
++ Targets can depend on other targets
+
+
+===Libraries===
 
 + Uses artifact associations
 + Targets can depend on other targets
 + Static or shared libraries
 
 
-==Controlling the build==
+==User-defined properties==
 
-===User-defined properties===
+==Description field==
 
-===Description field===
+==Include directories==
 
-===Include directories===
-
-===Compiler flags===
+==Compiler flags==
 
 + Preprocessor directives
 + Compiler control flags
@@ -142,20 +155,34 @@ How to solve compiler error messages.
  + Control flags
 
 
-===Linker flags===
+==Linker flags==
 
+
+=Useful features=
 
 ==Advanced target dependencies==
 
 + Beyond artifact associations
 
 
-===Dependent library location and names===
+==Dependent library location and names==
 
 + External libraries imported
 
 
+==Alternative target types==
 
+t2t and python build targets
+
+=Reference=
+
+==Build Style Capabilities==
+
+
+==Properties==
+
+
+=Index=
 
 
 The //bouml// program is a great tool for creating C++ projects using UML notation.

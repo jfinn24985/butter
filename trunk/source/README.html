@@ -10,8 +10,371 @@
 <FONT SIZE="4">August 2010</FONT>
 </CENTER>
 
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
 
-<H1>Introduction</H1>
+  <OL>
+  <LI><A HREF="#toc1">Preface</A>
+    <UL>
+    <LI><A HREF="#toc2">1.1. Intended Reader</A>
+    <LI><A HREF="#toc3">1.2. What is covered</A>
+    <LI><A HREF="#toc4">1.3. What is not covered</A>
+    </UL>
+  <LI><A HREF="#toc5">Introduction</A>
+    <UL>
+    <LI><A HREF="#toc6">2.1. Benefits</A>
+    <LI><A HREF="#toc7">2.2. Portability</A>
+    <LI><A HREF="#toc8">2.3. How it works</A>
+    <LI><A HREF="#toc9">2.4. Limitations</A>
+    <LI><A HREF="#toc10">2.5. Evolution</A>
+    </UL>
+  <LI><A HREF="#toc11">Build system basics</A>
+    <UL>
+    <LI><A HREF="#toc12">3.1. Fundamentals</A>
+      <UL>
+      <LI><A HREF="#toc13">3.1.1. User-defined build targets</A>
+      <LI><A HREF="#toc14">3.1.2. Common meta-targets</A>
+      <LI><A HREF="#toc15">3.1.3. Common build variants</A>
+      <LI><A HREF="#toc16">3.1.4. What build systems require</A>
+      </UL>
+    <LI><A HREF="#toc17">3.2. Generated files</A>
+    <LI><A HREF="#toc18">3.3. Selecting a build style</A>
+    <LI><A HREF="#toc19">3.4. Build style: standard (jam)</A>
+    <LI><A HREF="#toc20">3.5. Build style: boost (bjam)</A>
+    <LI><A HREF="#toc21">3.6. Build style: cmake (cmake)</A>
+    <LI><A HREF="#toc22">3.7. Build style: make (GNU make)</A>
+    </UL>
+  <LI><A HREF="#toc23">Managing the build system</A>
+    <UL>
+    <LI><A HREF="#toc24">4.1. Targets</A>
+      <UL>
+      <LI><A HREF="#toc25">4.1.1. Executables</A>
+      <LI><A HREF="#toc26">4.1.2. Libraries</A>
+      </UL>
+    <LI><A HREF="#toc27">4.2. User-defined properties</A>
+    <LI><A HREF="#toc28">4.3. Description field</A>
+    <LI><A HREF="#toc29">4.4. Include directories</A>
+    <LI><A HREF="#toc30">4.5. Compiler flags</A>
+    <LI><A HREF="#toc31">4.6. Linker flags</A>
+    </UL>
+  <LI><A HREF="#toc32">Useful features</A>
+    <UL>
+    <LI><A HREF="#toc33">5.1. Advanced target dependencies</A>
+    <LI><A HREF="#toc34">5.2. Dependent library location and names</A>
+    <LI><A HREF="#toc35">5.3. Alternative target types</A>
+    </UL>
+  <LI><A HREF="#toc36">Reference</A>
+    <UL>
+    <LI><A HREF="#toc37">6.1. Build Style Capabilities</A>
+    <LI><A HREF="#toc38">6.2. Properties</A>
+    </UL>
+  <LI><A HREF="#toc39">Index</A>
+      <UL>
+      <LI><A HREF="#GNU_note">7.0.1. Note for Windows users</A>
+      </UL>
+  <LI><A HREF="#toc41">7.1. Feature Overview</A>
+    <UL>
+    <LI><A HREF="#toc42">7.2. Quick Example</A>
+    <LI><A HREF="#toc43">7.3. External libraries</A>
+    <LI><A HREF="#toc44">7.4. Compilers</A>
+    <LI><A HREF="#toc45">7.5. Targets and Variants</A>
+    <LI><A HREF="#toc46">7.6. Possible future directions</A>
+    <LI><A HREF="#toc47">7.7. Butter version and license information</A>
+    </UL>
+  <LI><A HREF="#toc48">Installation</A>
+    <UL>
+    <LI><A HREF="#toc49">8.1. Building butter</A>
+    <LI><A HREF="#toc50">8.2. Adding butter to bouml</A>
+    </UL>
+  <LI><A HREF="#local_config">Local Customisation</A>
+  <LI><A HREF="#limits">Important concepts and guidelines</A>
+  <LI><A HREF="#toc53">Including build information in bouml</A>
+    <UL>
+    <LI><A HREF="#properties">11.1. Properties</A>
+      <UL>
+      <LI><A HREF="#toc55">11.1.1. Project package specific properties</A>
+      <LI><A HREF="#art_prop">11.1.2. Artifact properties</A>
+      </UL>
+    <LI><A HREF="#desc_enc">11.2. Artifact Descriptions</A>
+    <LI><A HREF="#buildfile">11.3. Artifacts named Jamfile/Jamroot/makefile</A>
+    <LI><A HREF="#specialfile">11.4. Build style special artifacts</A>
+    </UL>
+  <LI><A HREF="#advanced">Advanced usage</A>
+    <UL>
+    <LI><A HREF="#toc61">12.1. Installation feature</A>
+    <LI><A HREF="#toc62">12.2. Documentation/man pages</A>
+    <LI><A HREF="#multi">12.3. Multi-language programming</A>
+    <LI><A HREF="#boost_limit">12.4. Boost jam limitations</A>
+    <LI><A HREF="#toc65">12.5. Jam standard limitations</A>
+    <LI><A HREF="#make_limit">12.6. Make limitations</A>
+    </UL>
+  <LI><A HREF="#toc67">In-depth Tutorial</A>
+    <UL>
+    <LI><A HREF="#toc68">13.1. Build Project</A>
+    <LI><A HREF="#toc69">13.2. Initial set-up</A>
+    <LI><A HREF="#eg_external_library">13.3. External library target</A>
+      <UL>
+      <LI><A HREF="#toc71">13.3.1. Style specific options</A>
+      </UL>
+    <LI><A HREF="#toc72">13.4. Internal Targets</A>
+    <LI><A HREF="#toc73">13.5. Documents</A>
+    <LI><A HREF="#toc74">13.6. Build file headers</A>
+    <LI><A HREF="#toc75">13.7. Create the build system</A>
+    <LI><A HREF="#toc76">13.8. Review the style global definition file</A>
+    <LI><A HREF="#toc77">13.9. Building the project</A>
+    <LI><A HREF="#toc78">13.10. Conclusion</A>
+    </UL>
+  </OL>
+
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+
+<A NAME="toc1"></A>
+<H1>1. Preface</H1>
+
+<A NAME="toc2"></A>
+<H2>1.1. Intended Reader</H2>
+
+<P>
+Can create a C++ project in <I>bouml</I>.
+</P>
+<P>
+Has some experience compiling program using a build system
+such as make.
+</P>
+
+<A NAME="toc3"></A>
+<H2>1.2. What is covered</H2>
+
+<P>
+How to enter build information into a bouml project and use
+the <I>butter</I> plugout to generate a working build system
+</P>
+
+<A NAME="toc4"></A>
+<H2>1.3. What is not covered</H2>
+
+<P>
+How to solve compiler error messages.  Not a manual for the
+build systems themselves.
+</P>
+<P>
+How to extend the butter plugout.
+</P>
+
+<A NAME="toc5"></A>
+<H1>2. Introduction</H1>
+
+<A NAME="toc6"></A>
+<H2>2.1. Benefits</H2>
+
+<A NAME="toc7"></A>
+<H2>2.2. Portability</H2>
+
+<A NAME="toc8"></A>
+<H2>2.3. How it works</H2>
+
+<A NAME="toc9"></A>
+<H2>2.4. Limitations</H2>
+
+<A NAME="toc10"></A>
+<H2>2.5. Evolution</H2>
+
+<A NAME="toc11"></A>
+<H1>3. Build system basics</H1>
+
+<A NAME="toc12"></A>
+<H2>3.1. Fundamentals</H2>
+
+<OL>
+<LI>A build system reads an input file.
+<LI>Determines which targets are active.
+<LI>Determines which targets need to be updated.
+<LI>Run the commands to update the targets.
+</OL>
+
+<A NAME="toc13"></A>
+<H3>3.1.1. User-defined build targets</H3>
+
+<OL>
+<LI>executables and libraries
+</OL>
+
+<A NAME="toc14"></A>
+<H3>3.1.2. Common meta-targets</H3>
+
+<OL>
+<LI><I>all</I> (default) target
+<LI><I>clean</I> target
+<LI><I>install</I> target
+<LI><I>distclean</I> target
+</OL>
+
+<A NAME="toc15"></A>
+<H3>3.1.3. Common build variants</H3>
+
+<OL>
+<LI><I>debug</I> (default) variant
+<LI><I>release</I> variant
+</OL>
+
+<A NAME="toc16"></A>
+<H3>3.1.4. What build systems require</H3>
+
+<OL>
+<LI>Include directories for headers
+<LI>Preprocessor directives
+<LI>Compiler control flags
+ <OL>
+ <LI>Optimisation
+ <LI>Warnings and errors
+ <LI>Language specification
+ <LI>Control flags
+ </OL>
+<LI>Dependent library location and names
+<LI>List of executable and library targets
+<LI>List of sources and dependencies for each target
+</OL>
+
+<A NAME="toc17"></A>
+<H2>3.2. Generated files</H2>
+
+<OL>
+<LI>Project specific files.
+<LI>Project independent files.
+<LI>How to edit these files.
+</OL>
+
+<A NAME="toc18"></A>
+<H2>3.3. Selecting a build style</H2>
+
+<A NAME="toc19"></A>
+<H2>3.4. Build style: standard (jam)</H2>
+
+<OL>
+<LI>Pros
+<LI>Cons
+<LI>Project-specific files: Jamfile
+<LI>Independent file: Jamrules
+</OL>
+
+<A NAME="toc20"></A>
+<H2>3.5. Build style: boost (bjam)</H2>
+
+<OL>
+<LI>Pros
+<LI>Cons
+<LI>Project-specific files: Jamroot
+<LI>Independent file: local.bjam
+</OL>
+
+<A NAME="toc21"></A>
+<H2>3.6. Build style: cmake (cmake)</H2>
+
+<OL>
+<LI>Pros
+<LI>Cons
+<LI>Project-specific files: CMakeLists.txt
+<LI>Independent file: local.cmake
+</OL>
+
+<A NAME="toc22"></A>
+<H2>3.7. Build style: make (GNU make)</H2>
+
+<OL>
+<LI>Pros
+<LI>Cons
+<LI>Project-specific files: makefile
+<LI>Independent file: M_sys.mk etc.
+<LI>Why does make have so many files
+</OL>
+
+<A NAME="toc23"></A>
+<H1>4. Managing the build system</H1>
+
+<A NAME="toc24"></A>
+<H2>4.1. Targets</H2>
+
+<A NAME="toc25"></A>
+<H3>4.1.1. Executables</H3>
+
+<OL>
+<LI>Uses artifact associations
+<LI>Targets can depend on other targets
+</OL>
+
+<A NAME="toc26"></A>
+<H3>4.1.2. Libraries</H3>
+
+<OL>
+<LI>Uses artifact associations
+<LI>Targets can depend on other targets
+<LI>Static or shared libraries
+</OL>
+
+<A NAME="toc27"></A>
+<H2>4.2. User-defined properties</H2>
+
+<A NAME="toc28"></A>
+<H2>4.3. Description field</H2>
+
+<A NAME="toc29"></A>
+<H2>4.4. Include directories</H2>
+
+<A NAME="toc30"></A>
+<H2>4.5. Compiler flags</H2>
+
+<OL>
+<LI>Preprocessor directives
+<LI>Compiler control flags
+ <OL>
+ <LI>Optimisation
+ <LI>Warnings and errors
+ <LI>Language specification
+ <LI>Control flags
+ </OL>
+</OL>
+
+<A NAME="toc31"></A>
+<H2>4.6. Linker flags</H2>
+
+<A NAME="toc32"></A>
+<H1>5. Useful features</H1>
+
+<A NAME="toc33"></A>
+<H2>5.1. Advanced target dependencies</H2>
+
+<OL>
+<LI>Beyond artifact associations
+</OL>
+
+<A NAME="toc34"></A>
+<H2>5.2. Dependent library location and names</H2>
+
+<OL>
+<LI>External libraries imported
+</OL>
+
+<A NAME="toc35"></A>
+<H2>5.3. Alternative target types</H2>
+
+<P>
+t2t and python build targets
+</P>
+
+<A NAME="toc36"></A>
+<H1>6. Reference</H1>
+
+<A NAME="toc37"></A>
+<H2>6.1. Build Style Capabilities</H2>
+
+<A NAME="toc38"></A>
+<H2>6.2. Properties</H2>
+
+<A NAME="toc39"></A>
+<H1>7. Index</H1>
 
 <P>
 The <I>bouml</I> program is a great tool for creating C++ projects using UML notation.
@@ -37,7 +400,7 @@ an even more powerful tool for developing projects using UML.
 </P>
 
 <A NAME="GNU_note"></A>
-<H3>Note for Windows users</H3>
+<H3>7.0.1. Note for Windows users</H3>
 
 <P>
 The <B>make</B> style generates makefiles specifically for the GNU <I>make</I> program
@@ -46,7 +409,8 @@ from [<A HREF="http://gnuwin32.sourceforge.net/packages/make.htm">http://gnuwin3
 <I>make</I> program in the Cygwin or MingW systems.
 </P>
 
-<H2>Feature Overview</H2>
+<A NAME="toc41"></A>
+<H2>7.1. Feature Overview</H2>
 
 <OL>
 <LI>Build information stored directly within the <I>bouml</I> project.
@@ -71,7 +435,8 @@ from [<A HREF="http://gnuwin32.sourceforge.net/packages/make.htm">http://gnuwin3
 <LI>Support for arbitrary compile-like actions such as documentation generation
 </OL>
 
-<H2>Quick Example</H2>
+<A NAME="toc42"></A>
+<H2>7.2. Quick Example</H2>
 
 <P>
 Create a <I>bouml</I> project as usual.
@@ -95,7 +460,8 @@ The minimal extra steps to create build system are.
 <LI>Use GNU <CODE>make</CODE> to build executable.
 </OL>
 
-<H2>External libraries</H2>
+<A NAME="toc43"></A>
+<H2>7.3. External libraries</H2>
 
 <P>
 To use an external library you can add the needed include, compile flag and
@@ -106,7 +472,8 @@ you define include, compile flag and link flags and then associate
 this library with the project targets.
 </P>
 
-<H2>Compilers</H2>
+<A NAME="toc44"></A>
+<H2>7.4. Compilers</H2>
 
 <P>
 The CMake and boost jam systems provide multi-compiler support within the
@@ -115,7 +482,8 @@ settings for the GNU compiler collection and the Microsoft compiler.
 The user can also readily define additional compilers for these two styles.
 </P>
 
-<H2>Targets and Variants</H2>
+<A NAME="toc45"></A>
+<H2>7.5. Targets and Variants</H2>
 
 <P>
 The plugout directly supports a <CODE>debug</CODE> and a <CODE>release</CODE> variant across
@@ -153,7 +521,8 @@ Example invocations are:
   bjam clean
 </PRE>
 
-<H2>Possible future directions</H2>
+<A NAME="toc46"></A>
+<H2>7.6. Possible future directions</H2>
 
 <OL>
 <LI>Improve the generated build-files to increase functionality and portability.
@@ -166,7 +535,8 @@ existing styles.  In particular I mainly work on linux so suggestions to make th
 to other operating systems are welcome.
 </P>
 
-<H2>Butter version and license information</H2>
+<A NAME="toc47"></A>
+<H2>7.7. Butter version and license information</H2>
 
 <P>
 This is the second beta release of the <I>butter</I> project. It is fully functional and a very
@@ -179,9 +549,11 @@ The source code, documentation and associated bouml project files are released u
 Public License.
 </P>
 
-<H1>Installation</H1>
+<A NAME="toc48"></A>
+<H1>8. Installation</H1>
 
-<H2>Building butter</H2>
+<A NAME="toc49"></A>
+<H2>8.1. Building butter</H2>
 
 <P>
 The <I>butter</I> project contains the <I>butter</I> files and properties needed to create a
@@ -194,7 +566,8 @@ When built in debug mode (ie with -DDEBUG) <I>butter</I> will pause when it star
 box with, if possible, the process id.  This allows you to attach a debugger if needed.
 </P>
 
-<H2>Adding butter to bouml</H2>
+<A NAME="toc50"></A>
+<H2>8.2. Adding butter to bouml</H2>
 
 <P>
 The <I>butter</I> plugout always operates on the entire project so it does not care where
@@ -219,7 +592,7 @@ tab and add something like the following:
 </TABLE>
 
 <A NAME="local_config"></A>
-<H1>Local Customisation</H1>
+<H1>9. Local Customisation</H1>
 
 <P>
 As explained later, the plugout generates two types of build file. The first are project
@@ -246,7 +619,7 @@ by the environment variable <CODE>HOME</CODE>) with names like
 </P>
 
 <A NAME="limits"></A>
-<H1>Important concepts and guidelines</H1>
+<H1>10. Important concepts and guidelines</H1>
 
 <P>
 The plugout has the goal of creating build systems that are reasonably
@@ -303,7 +676,8 @@ style is <I>standard jam</I>.
  </UL>
 </UL>
 
-<H1>Including build information in bouml</H1>
+<A NAME="toc53"></A>
+<H1>11. Including build information in bouml</H1>
 
 <P>
 <I>Butter</I> has a goal of being easy to use in simple cases and flexible enough
@@ -341,7 +715,7 @@ file with the artifact's name.
 </P>
 
 <A NAME="properties"></A>
-<H2>Properties</H2>
+<H2>11.1. Properties</H2>
 
 <P>
 The following table gives an overview of the available properties, the <I>bouml</I>
@@ -484,7 +858,8 @@ all <I>butter</I> properties are the word <CODE>butter</CODE> followed by a keyw
 </TR>
 </TABLE>
 
-<H3>Project package specific properties</H3>
+<A NAME="toc55"></A>
+<H3>11.1.1. Project package specific properties</H3>
 
 <DL>
 <DT>butter style = boost | cmake | standard | make</DT><DD>
@@ -511,7 +886,7 @@ been compiled with debugging).
 </DL>
 
 <A NAME="art_prop"></A>
-<H3>Artifact properties</H3>
+<H3>11.1.2. Artifact properties</H3>
 
 <P>
 Those properties with an (*) may be inherited from parent objects up to
@@ -595,7 +970,7 @@ should not be written to disk or limited to the named style. By default
 </DL>
 
 <A NAME="desc_enc"></A>
-<H2>Artifact Descriptions</H2>
+<H2>11.2. Artifact Descriptions</H2>
 
 <P>
 The <I>butter</I> plugout can use the description from target artifacts
@@ -631,7 +1006,7 @@ labels are not present then the section is written as-is into the build file.
 </P>
 
 <A NAME="buildfile"></A>
-<H2>Artifacts named Jamfile/Jamroot/makefile</H2>
+<H2>11.3. Artifacts named Jamfile/Jamroot/makefile</H2>
 
 <P>
 The plugout creates artifacts for the build system file in the project.
@@ -659,7 +1034,7 @@ It is an error for an artifact to exist with the build-system name if it is not 
 </P>
 
 <A NAME="specialfile"></A>
-<H2>Build style special artifacts</H2>
+<H2>11.4. Build style special artifacts</H2>
 
 <P>
 Each styles uses an artifact containing global definitions at the
@@ -702,9 +1077,10 @@ could save them into your <I>bouml</I> template project.
 </P>
 
 <A NAME="advanced"></A>
-<H1>Advanced usage</H1>
+<H1>12. Advanced usage</H1>
 
-<H2>Installation feature</H2>
+<A NAME="toc61"></A>
+<H2>12.1. Installation feature</H2>
 
 <P>
 All build targets are added to the default invocation of the build tool. In
@@ -729,7 +1105,8 @@ is <CODE>BINDIR</CODE>.  The install location can be changed by setting the
 variables.
 </P>
 
-<H2>Documentation/man pages</H2>
+<A NAME="toc62"></A>
+<H2>12.2. Documentation/man pages</H2>
 
 <P>
 Let us assume that you have the text for a man page written in txt2tags markup
@@ -757,7 +1134,7 @@ from the <CODE>README.t2t</CODE>.
 </P>
 
 <A NAME="multi"></A>
-<H2>Multi-language programming</H2>
+<H2>12.3. Multi-language programming</H2>
 
 <P>
 <I>Butter</I> allows the easy inclusion of source files from other programming
@@ -776,7 +1153,7 @@ whenever the <I>flags</I> property is defined.
 </UL>
 
 <A NAME="boost_limit"></A>
-<H2>Boost jam limitations</H2>
+<H2>12.4. Boost jam limitations</H2>
 
 <P>
 It is impossible to specify the compiler/linker to use with a particular target.
@@ -799,7 +1176,8 @@ This limitation means that it is impossible to create executables that have mixe
 language sources that are not linked using the C++ compiler.
 </P>
 
-<H2>Jam standard limitations</H2>
+<A NAME="toc65"></A>
+<H2>12.5. Jam standard limitations</H2>
 
 <P>
 The <CODE>standard</CODE> <CODE>jam</CODE> program has the limitation that include
@@ -852,7 +1230,7 @@ flags and libraries from the same source file (<CODE>matmul_blas.c</CODE>).
 </PRE>
 
 <A NAME="make_limit"></A>
-<H2>Make limitations</H2>
+<H2>12.6. Make limitations</H2>
 
 <P>
 (1)  The current make style requires a make program (eg GNU make) that allows
@@ -874,9 +1252,11 @@ so you can manually cut-and-paste to change the order directories and targets
 are built to reduce this problem.
 </P>
 
-<H1>In-depth Tutorial</H1>
+<A NAME="toc67"></A>
+<H1>13. In-depth Tutorial</H1>
 
-<H2>Build Project</H2>
+<A NAME="toc68"></A>
+<H2>13.1. Build Project</H2>
 
 <P>
 The following example uses the <I>butter</I> bouml project as an example. In this project
@@ -896,7 +1276,8 @@ package.
 <LI><I>External</I> contains the references to external classes and libraries.
 </UL>
 
-<H2>Initial set-up</H2>
+<A NAME="toc69"></A>
+<H2>13.2. Initial set-up</H2>
 
 <P>
 The <I>butter</I> system assumes that the bouml source root directory, as specified in the generation
@@ -961,7 +1342,7 @@ static. To do this I set the following user properties on the base package:
 </PRE>
 
 <A NAME="eg_external_library"></A>
-<H2>External library target</H2>
+<H2>13.3. External library target</H2>
 
 <P>
 The bouml API uses the QT3 library and this is used as a basis library for the <I>butter</I>
@@ -996,7 +1377,8 @@ define the include directories and link flags. Note that the include directories
 without <CODE>-I</CODE>.
 </P>
 
-<H3>Style specific options</H3>
+<A NAME="toc71"></A>
+<H3>13.3.1. Style specific options</H3>
 
 <P>
 Using the <CODE>${butter_generic}</CODE> marker gives <I>butter</I> information to translate into
@@ -1029,7 +1411,8 @@ so an alternative for that must be used.
 because that includes <CODE>-I</CODE>.
 </P>
 
-<H2>Internal Targets</H2>
+<A NAME="toc72"></A>
+<H2>13.4. Internal Targets</H2>
 
 <P>
 A feature of the library is that a target can only contain source artifacts from within the
@@ -1049,14 +1432,16 @@ is associated with the artifacts for <I>butter</I> classes and the main source. 
 is associated to both the <CODE>qt</CODE> and the <CODE>bouml</CODE> libraries.
 </P>
 
-<H2>Documents</H2>
+<A NAME="toc73"></A>
+<H2>13.5. Documents</H2>
 
 <P>
 In addition to creating build files <I>butter</I> will also write any artifacts with the <B>document</B>
 stereotype. I therefore create a README document artifact in the <I>Build</I> package.
 </P>
 
-<H2>Build file headers</H2>
+<A NAME="toc74"></A>
+<H2>13.6. Build file headers</H2>
 
 <P>
 The boost version of jam understands the concept of build variants. This is not present in the
@@ -1081,7 +1466,8 @@ what I might copy from the <CODE>buildfile</CODE> artifact into the <CODE>Jamroo
   ##START: PREAMBLE
 </PRE>
 
-<H2>Create the build system</H2>
+<A NAME="toc75"></A>
+<H2>13.7. Create the build system</H2>
 
 <P>
 We have now defined our basic build system. We can now select any item that has
@@ -1103,7 +1489,8 @@ except here we have run it before so it only writes any changed documents.
   Skipping unchanged document : /tmp/butter/makefile.sys
 </PRE>
 
-<H2>Review the style global definition file</H2>
+<A NAME="toc76"></A>
+<H2>13.8. Review the style global definition file</H2>
 
 <P>
 Note at the bottom of the trace in the last section it mentions the document <CODE>makefile.sys</CODE>.
@@ -1125,7 +1512,8 @@ project base, creating the Deployment View if necessary. If no package exists
 then it is also created (defaulting to being named <CODE>Build</CODE>).
 </P>
 
-<H2>Building the project</H2>
+<A NAME="toc77"></A>
+<H2>13.9. Building the project</H2>
 
 <P>
 All the created build systems attempt to ensure dependencies are met on a
@@ -1138,7 +1526,8 @@ directory-by-directory basis, but across directories is not handled (see make
 or <CODE>bjam</CODE> once, but must run <CODE>make -k</CODE> several times.
 </P>
 
-<H2>Conclusion</H2>
+<A NAME="toc78"></A>
+<H2>13.10. Conclusion</H2>
 
 <P>
 As our project continues we may add classes, change class (and artifact) names and so on. This
@@ -1150,5 +1539,5 @@ project directory.
 </P>
 
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -t html /home/finnerty/src/butter/README.t2t -->
+<!-- cmdline: txt2tags -t html -\-enum-title -\-toc /home/finnerty/src/butter/trunk/source/README.t2t -->
 </BODY></HTML>

@@ -1,6 +1,6 @@
 format 75
 "butter" // butter
-  revision 218
+  revision 219
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -966,6 +966,31 @@ ${body}
 	
 	
 	
+      end
+
+      operation 278832 "quote_string"
+	class_operation public explicit_return_type "string"
+	nparams 1
+	  param in name "phrase" explicit_type "string"
+	cpp_decl "    ${comment}${static}${virtual}${type} ${name}${(}${t0} ${p0}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}
+{
+${body}
+}
+"
+	
+	
+	
+	
+	comment " Add necessary quoting to an input string.
+
+ A user of the system may want to set a preprocessor 
+ flag of [-DSOMETEXT=\"Help Text.\"] as a property value
+ with the same text. The generators must be able to 
+ quote/escape this text so that it is correctly passed
+ to the final command.
+"
       end
     end
 
