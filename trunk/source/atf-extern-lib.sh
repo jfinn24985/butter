@@ -150,9 +150,9 @@ extern_lib_cmake_gen_body() {
     local installdir=$2
     pushd output
     # test base build target
-    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} --build .
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} -D QTDIR=${QTDIR} --build .
     atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile VERBOSE=1
-    atf_check -s exit:0 [ -x test ]
+    atf_check -s exit:0 [ -x program ]
     atf_check -s exit:0 [ -e CMakeFiles/program.dir/example_exe.cc.o ]
     atf_check -s exit:0 -o file:../canon/output ./program ../input/lorem.zip
     # test install target
@@ -192,15 +192,9 @@ extern_lib_cmake_gen_body() {
   build_test Debug ""
   # RELEASE VARIANT
   build_test Release "installdir"
- 
-  # remove source
-  pushd output
-  atf_check -s exit:0 -o empty rm example_exe.cc example_exe.hh
-  popd
 
   # Clean up
-  atf_check -s exit:0 -o empty rm output/CMakeLists.txt output/local.cmake
-  atf_check -s exit:0 -o empty rm -f output/butter.log
+  atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
   popd
@@ -268,14 +262,8 @@ extern_lib_make_gen_body() {
   # RELEASE VARIANT
   build_test RELEASE
 
-  # remove source
-  pushd output
-  atf_check -s exit:0 -o empty rm example_exe.cc example_exe.hh
-  popd
-
   # Clean up
-  atf_check -s exit:0 -o empty rm output/makefile output/M_sys.mk output/M_cl.mk output/M_gcc.mk output/M_unix.mk output/M_Windows_NT.mk
-  atf_check -s exit:0 -o empty rm -f output/butter.log
+  atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
   atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
 
