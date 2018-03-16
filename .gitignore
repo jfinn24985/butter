@@ -7,8 +7,6 @@
 # Ignorable build files
 trunk/source/build/
 make.*log
-*.o
-*.d
 
 # Ignorable build targets
 trunk/source/src/bouml/bouml.a
@@ -20,3 +18,36 @@ trunk/source/src/butter/test_path
 # Ignorable test output
 test.err
 test.log
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
