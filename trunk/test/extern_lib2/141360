@@ -89,8 +89,8 @@ format 75
       stereotype "document"
       associated_artifacts
       end
-      comment "CPPFLAGS+=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
-LDFLAGS+=-L${QTDIR}/lib64 -lqt-mt"
+      comment "QTFLAGS=-I${QTDIR}/include -DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT 
+QTLIB=-L${QTDIR}/lib64 -lqt-mt"
     end
 
     artifact 148144 "qt.cmake"

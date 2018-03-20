@@ -217,6 +217,7 @@ extern_lib2_make_gen_body() {
   #-------------- 
   setup_example "extern_lib2" "make"
 
+  atf_check -s exit:0 -o inline:"patching file makefile\n" patch -d output <patch/makefile.patch
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/makefile canon/makefile
   atf_check -o empty diff output/M_sys.mk canon/M_sys.mk
   atf_check -o empty diff output/M_cl.mk canon/M_cl.mk

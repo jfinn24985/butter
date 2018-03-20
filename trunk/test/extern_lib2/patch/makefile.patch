@@ -1,0 +1,10 @@
+--- makefile	2018-03-20 21:35:13.437147317 +0100
++++ makefile.new	2018-03-20 21:35:09.319145226 +0100
+@@ -10,6 +10,7 @@
+ include $(ROOTDIR)/M_sys.mk
+ 
+ ##END:preamble
++include $(ROOTDIR)/qt.mk
+ ##START:target program
+ __PROGRAMSRC :=  \
+ 	example_exe.cc
