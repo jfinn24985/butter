@@ -97,9 +97,12 @@ LDFLAGS+=-L${QTDIR}/lib64 -lqt-mt"
       stereotype "document"
       associated_artifacts
       end
-      comment "include_directories (${QTDIR}/include)
-append (COMPILE_FLAGS \"-DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT \")
-set (QT_LINK_LIBS \"-L${QTDIR}/lib64 -lqt-mt\")"
+      comment "# Get qt3 settings from pkg-config
+find_package(PkgConfig)
+pkg_check_modules(QT3 REQUIRED qt-mt)
+
+string(REPLACE \";\" \" \" QTFLAGS \"${QT3_CFLAGS}\")
+string(REPLACE \";\" \" \" QTLIB \"${QT3_LDFLAGS}\")"
     end
 
     artifact 148272 "qt.jam"

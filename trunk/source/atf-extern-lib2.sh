@@ -146,6 +146,7 @@ extern_lib2_cmake_gen_body() {
   #-------------- 
   setup_example "extern_lib2" "cmake"
 
+  atf_check -s exit:0 -o inline:"patching file CMakeLists.txt\n" patch -d output <patch/CMakeLists.patch
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/CMakeLists.txt canon/CMakeLists.txt
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.cmake canon/local.cmake
 
@@ -154,7 +155,7 @@ extern_lib2_cmake_gen_body() {
     local installdir=$2
     pushd output
     # test base build target
-    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} -D QTDIR=${QTDIR} --build .
+    atf_check -s exit:0 -o save:build1.log -e save:build1.err cmake -G "Unix Makefiles" -D CMAKE_BUILD_TYPE=${variant} --build .
     atf_check -s exit:0 -o save:build2.log -e save:build2.err make -f Makefile VERBOSE=1
     atf_check -s exit:0 [ -x program ]
     atf_check -s exit:0 [ -e CMakeFiles/program.dir/example_exe.cc.o ]
