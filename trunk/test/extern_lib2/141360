@@ -1,6 +1,6 @@
 format 75
 "External" // External
-  revision 3
+  revision 4
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -115,8 +115,13 @@ QTLIB = `pkg-config qt-mt --libs` ;"
       stereotype "document"
       associated_artifacts
       end
-      comment "# Example for using pkg-config information in boost jam
+      comment "## NOTE #
+# Needs to be renamed qt.jam (overwriting standard jam \"qt.jam\" file)
+
+# Example for using pkg-config information in boost jam
 import string ;
+# empty init rule
+rule init { }
 .qtcompileflags = [ string.join [ string.words [ SHELL \"pkg-config qt-mt --cflags-only-other\" ] ] : \" \" ] ;
 .qtincprefix = [ MATCH \"-I\\(.*\\)\" : [ string.words [ SHELL \"pkg-config qt-mt --cflags-only-I\" ] ] ] ;
 .qtlibprefix = [ MATCH \"-L\\(.*\\)\" : string.join [ string.words [ SHELL \"pkg-config qt-mt --libs-only-L\" ] ] ] ;

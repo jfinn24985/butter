@@ -2,7 +2,7 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Mon Dec 11 23:43:08 2017
+#Tue Mar 20 20:16:39 2018
 ##END:date
 ##START:preamble
 # Include local constants
@@ -30,18 +30,5 @@ install install_program : program : <variant>release:<location>$(INSTALL_PREFIX)
 # Section for project: qt
 #
 project qt ;
-
-# Example for using pkg-config information in boost jam
-import string ;
-.qtcompileflags = [ string.join [ string.words [ SHELL "pkg-config qt-mt --cflags-only-other" ] ] : " " ] ;
-.qtincprefix = [ MATCH "-I\(.*\)" : [ string.words [ SHELL "pkg-config qt-mt --cflags-only-I" ] ] ] ;
-.qtlibprefix = [ MATCH "-L\(.*\)" : string.join [ string.words [ SHELL "pkg-config qt-mt --libs-only-L" ] ] ] ;
-.qtlinkflags = [ string.join [ MATCH "(.*)" : [ string.words [ SHELL "pkg-config qt-mt --libs-only-l" ] ] ] : " " ] ;
-alias qt : : : : <include>$(.qtincprefix) 
-   <library-path>$(.qtlibprefix)
-   <cflags>$(.qtcompileflags)
-   <cxxflags>$(.qtcompileflags)
-   <cflags>"-DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT"
-   <linkflags>$(.qtlinkflags)
-   <allow>qt-mt ;
+using qt ;
 ##END:target qt
