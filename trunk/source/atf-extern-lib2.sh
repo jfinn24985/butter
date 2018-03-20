@@ -8,7 +8,7 @@ setup_example(){
   local example=$1
   local genr=$2
   atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"# On branch extern-lib2-test\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}.patch
   atf_check -s exit:0 -o save:canon/butter.log.${genr} bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
   atf_check -s exit:0 -o file:canon/cpp.log bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit

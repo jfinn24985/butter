@@ -1,6 +1,6 @@
 format 75
 "External" // External
-  revision 2
+  revision 3
   modified_by 48 "finnerty"
   // class settings
   //class diagram settings
@@ -77,9 +77,11 @@ format 75
       stereotype "library"
       associated_artifacts
       end
-      ncouples 2
+      ncouples 4
       key "butter project" value "qt"
       key "butter buildfile" value "qt"
+      key "butter flags" value "$(QTFLAGS)"
+      key "butter ldflags" value "$(QTLIB)"
       comment "Reference the qt3 library."
     end
 
@@ -105,17 +107,8 @@ set (QT_LINK_LIBS \"-L${QTDIR}/lib64 -lqt-mt\")"
       associated_artifacts
       end
       comment "# Example for using pkg-config information in ordinary jam
-.qtcompileflags = [ string.join [ string.words [ SHELL \"pkg-config qt-mt --cflags-only-other\" ] ] : \" \" ] ;
-.qtincprefix = [ MATCH \"-I\\(.*\\)\" : [ string.words [ SHELL \"pkg-config qt-mt --cflags-only-I\" ] ] ] ;
-.qtlibprefix = [ MATCH \"-L\\(.*\\)\" : string.join [ string.words [ SHELL \"pkg-config qt-mt --libs-only-L\" ] ] ] ;
-.qtlinkflags = [ string.join [ MATCH \"(.*)\" : [ string.words [ SHELL \"pkg-config qt-mt --libs-only-l\" ] ] ] : \" \" ] ;
-alias qt : : : : <include>$(.qtincprefix) 
-   <library-path>$(.qtlibprefix)
-   <cflags>$(.qtcompileflags)
-   <cxxflags>$(.qtcompileflags)
-   <cflags>\"-DQT_NO_DEBUG -DQT_SHARED -DQT_THREAD_SUPPORT\"
-   <linkflags>$(.qtlinkflags)
-   <allow>qt-mt ;"
+QTFLAGS = `pkg-config qt-mt --cflags` ;
+QTLIB = `pkg-config qt-mt --libs` ;"
     end
 
     artifact 148400 "qt.bjam"
