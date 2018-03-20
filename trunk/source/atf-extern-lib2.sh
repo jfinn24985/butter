@@ -25,6 +25,8 @@ extern_lib2_jam_gen_body() {
   #-----------------------
   setup_example "extern_lib2" "jam"
 
+  atf_check -s exit:0 -o inline:"patching file Jamfile\n" patch -d output <patch/Jamfile.jam.patch
+
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamfile canon/Jamfile
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamrules canon/Jamrules
 
@@ -66,7 +68,7 @@ extern_lib2_jam_gen_body() {
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"# On branch extern-lib2-test\nnothing to commit, working directory clean\n" git status .
   popd
   unset build_test
 }

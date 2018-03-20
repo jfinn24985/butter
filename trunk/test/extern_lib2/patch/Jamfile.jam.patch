@@ -1,0 +1,8 @@
+--- output/Jamfile.new	2018-03-20 17:38:23.517210666 +0100
++++ output/Jamfile	2018-03-20 17:50:06.740652853 +0100
+@@ -10,4 +10,5 @@
+ OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
+ ##END:preamble
++include qt.jam ;
+ ##START:target program
+ __PROGRAM_SRC =

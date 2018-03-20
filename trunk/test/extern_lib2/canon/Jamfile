@@ -2,13 +2,14 @@
 #Butter version 1.2beta.175
 ##END:version
 ##START:date
-#Fri Mar 16 18:11:41 2018
+#Tue Mar 20 17:54:42 2018
 ##END:date
 ##START:preamble
 BUILDDIR = $(SLASH)home$(SLASH)finnerty$(SLASH)src$(SLASH)butter$(SLASH)trunk$(SLASH)test$(SLASH)extern_lib2$(SLASH)output ;
 SubDir TOP ;
 OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
 ##END:preamble
+include qt.jam ;
 ##START:target program
 __PROGRAM_SRC =
 	<.>example_exe.cc
@@ -17,5 +18,8 @@ __PROGRAM_SRC =
 Main <.>program$(SUFEXE) :
 	$(__PROGRAM_SRC) ;
 
+LINKLIBS on <.>program$(SUFEXE) += $(QTLIB) ;
+ObjectCcFlags $(__PROGRAM_SRC) : $(QTFLAGS) ;
+ObjectC++Flags $(__PROGRAM_SRC) : $(QTFLAGS) ;
 InstallBin $(BINDIR) : <.>program$(SUFEXE) ;
 ##END:target program
