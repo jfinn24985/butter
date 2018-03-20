@@ -3,12 +3,13 @@
 # Location of bouml standard installation.
 BOUML_LOC=/usr/lib/bouml
 BUTTER_EXE=../../source/src/butter/butter_exe
+GIT_BRANCH=extern-lib2-test
 
 setup_example(){
   local example=$1
   local genr=$2
   atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch extern-lib2-test\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"# On branch ${GIT_BRANCH}\nnothing to commit, working directory clean\n" git status .
   atf_check -s exit:0 -o inline:"patching file ${example}.prj\n" patch <patch/${genr}.patch
   atf_check -s exit:0 -o save:canon/butter.log.${genr} bouml ${example}.prj -execnogui ${BUTTER_EXE} -test:ok -exit
   atf_check -s exit:0 -o file:canon/cpp.log bouml ${example}.prj -execnogui ${BOUML_LOC}/cpp_generator -exit
@@ -68,7 +69,7 @@ extern_lib2_jam_gen_body() {
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch extern-lib2-test\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"# On branch ${GIT_BRANCH}\nnothing to commit, working directory clean\n" git status .
   popd
   unset build_test
 }
@@ -86,6 +87,7 @@ extern_lib2_boost_gen_body() {
 
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/Jamroot canon/Jamroot
   atf_check -o empty diff --ignore-matching-lines="#[MTWFS][aouehr][neduit] [JFMASOND][aepuco][nbrylgptvc] [0-9][0-9]* [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [0-9][0-9][0-9][0-9] *" output/local.jam canon/local.jam
+  atf_check -o ignore mv output/qt.bjam output/qt.jam
 
   build_test(){
     local variant=$1
@@ -128,7 +130,7 @@ extern_lib2_boost_gen_body() {
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"# On branch ${GIT_BRANCH}\nnothing to commit, working directory clean\n" git status .
   popd
   unset build_test
 }
@@ -198,7 +200,7 @@ extern_lib2_cmake_gen_body() {
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"# On branch ${GIT_BRANCH}\nnothing to commit, working directory clean\n" git status .
   popd
   unset build_test
 }
@@ -267,7 +269,7 @@ extern_lib2_make_gen_body() {
   # Clean up
   atf_check -s exit:0 -o empty rm -rf output
   atf_check -s exit:0 -o empty git checkout HEAD -- .
-  atf_check -s exit:0 -o inline:"# On branch master\nnothing to commit, working directory clean\n" git status .
+  atf_check -s exit:0 -o inline:"# On branch ${GIT_BRANCH}\nnothing to commit, working directory clean\n" git status .
 
   popd
   unset build_test
