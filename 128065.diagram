@@ -1,0 +1,146 @@
+format 223
+
+classcanvas 128065 class_ref 128065 // BuildFile
+  classdiagramsettings member_max_width 0 end
+  xyz 46 264 2000
+end
+classcanvas 128193 class_ref 128193 // BuildStyle
+  classdiagramsettings member_max_width 0 end
+  xyzwh 367 125 2000 163 129
+end
+classcanvas 128321 class_ref 8193 // UmlArtifact
+  classdiagramsettings member_max_width 0 end
+  xyz 236 41 2000
+end
+classcanvas 128449 class_ref 128321 // BuildLocation
+  classdiagramsettings member_max_width 0 end
+  xyz 51 127 2000
+end
+classcanvas 128833 class_ref 128449 // BuildProject
+  classdiagramsettings member_max_width 0 end
+  xyz 159 434 2000
+end
+classcanvas 128961 class_ref 128577 // BuildLibrary
+  classdiagramsettings member_max_width 0 end
+  xyz 254 578 2000
+end
+classcanvas 129089 class_ref 128705 // BuildExecutable
+  classdiagramsettings member_max_width 0 end
+  xyz 451 425 2000
+end
+classcanvas 130241 class_ref 129089 // BuildOther
+  classdiagramsettings member_max_width 0 end
+  xyz 360 419 2000
+end
+classcanvas 130625 class_ref 129217 // BuildParagraph
+  classdiagramsettings member_max_width 0 end
+  xyz 201 225 2000
+end
+note 132289 "# build paragraph
+
+{target_type()|default} name
+DEPENDS: {direct_source} {library_targets} [generate]
+CFLAGS: {target_type_compiler_flagname|default}: {compiler_flags} {indirect_compiler_flags}
+LFLAGS:  {target_type_link_flagname|default}: {linker_flags} {indirect_linker_flags}
+HDR: {direct_source.header}
+SRC:  {direct_source} {library_targets}
+
+"
+  xyzwh 544 35 2000 291 191
+note 132417 "Inherit properties:
+
+PROP = direct PROP | indirect PROP & ! inherit PROP"
+  xyzwh 476 274 2000 323 69
+classcanvas 136385 class_ref 8833 // UmlItem
+  classdiagramsettings member_max_width 0 end
+  xyz 347 21 2005
+end
+relationcanvas 128705 relation_ref 128193 // <directional composition>
+  from ref 128449 z 2001 to ref 128065
+  role_a_pos 107 245 3000 no_role_b
+  multiplicity_a_pos 80 245 3000 no_multiplicity_b
+end
+relationcanvas 130753 relation_ref 129345 // <directional composition>
+  from ref 130625 z 2001 to ref 128193
+  role_a_pos 324 217 3000 no_role_b
+  multiplicity_a_pos 349 242 3000 no_multiplicity_b
+end
+relationcanvas 130881 relation_ref 129473 // <generalisation>
+  from ref 128833 z 2001 to ref 130625
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132033 relation_ref 130241 // <directional composition>
+  from ref 130241 z 2001 to point 398 483
+  line 134849 z 2001 to point 292 482
+  line 132929 z 2001 to ref 128961
+  role_a_pos 305 559 3000 no_role_b
+  multiplicity_a_pos 278 559 3000 no_multiplicity_b
+end
+relationcanvas 133057 relation_ref 128833 // <composition>
+  from ref 128833 z 2001 to point 202 510
+  line 133569 z 2001 to point 509 512
+  line 133697 z 2001 to ref 129089
+  role_a_pos 516 470 3000 role_b_pos 212 479 3000
+  multiplicity_a_pos 489 470 3000 multiplicity_b_pos 185 479 3000
+end
+relationcanvas 133185 relation_ref 128961 // <composition>
+  decenter_begin 481
+  decenter_end 141
+  from ref 128833 z 2001 to point 185 510
+  line 133953 z 2001 to point 266 511
+  line 134337 z 2001 to ref 128961
+  role_a_pos 275 559 3000 role_b_pos 208 479 3000
+  multiplicity_a_pos 248 559 3000 multiplicity_b_pos 181 479 3000
+end
+relationcanvas 133313 relation_ref 129089 // <composition>
+  from ref 128833 z 2001 to point 311 454
+  line 135105 z 2001 to ref 130241
+  role_a_pos 266 425 3000 role_b_pos 255 435 3000
+  multiplicity_a_pos 342 450 3000 multiplicity_b_pos 255 460 3000
+end
+relationcanvas 133441 relation_ref 130113 // <directional composition>
+  decenter_begin 192
+  decenter_end 823
+  from ref 129089 z 2001 to point 473 500
+  line 134465 z 2001 to point 326 499
+  line 134593 z 2001 to ref 128961
+  role_a_pos 333 559 3000 no_role_b
+  multiplicity_a_pos 306 559 3000 no_multiplicity_b
+end
+relationcanvas 135233 relation_ref 130753 // <generalisation>
+  from ref 128961 z 2001 to ref 130625
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135361 relation_ref 130881 // <generalisation>
+  from ref 130241 z 2001 to ref 130625
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135489 relation_ref 131009 // <generalisation>
+  from ref 129089 z 2001 to ref 130625
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135617 relation_ref 131137 // <directional composition>
+  from ref 128449 z 2001 to ref 128321
+  role_a_pos 173 66 3000 no_role_b
+  multiplicity_a_pos 218 91 3000 no_multiplicity_b
+end
+relationcanvas 135745 relation_ref 131265 // <directional aggregation>
+  from ref 128449 z 2001 to ref 128193
+  role_a_pos 277 162 3000 no_role_b
+  multiplicity_a_pos 349 187 3000 no_multiplicity_b
+end
+relationcanvas 135873 relation_ref 131393 // <directional composition>
+  decenter_begin 815
+  decenter_end 768
+  from ref 128449 z 2001 to point 220 166
+  line 136001 z 2001 to point 220 202
+  line 136129 z 2001 to point 123 201
+  line 136257 z 2001 to ref 128449
+  role_a_pos 133 182 3000 no_role_b
+  multiplicity_a_pos 106 182 3000 no_multiplicity_b
+end
+end
