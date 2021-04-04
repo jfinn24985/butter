@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 2
+  revision 4
   modified_by 48 "finnerty"
   // class settings
   
@@ -88,6 +88,111 @@ ${body}
 	
 	
       end
+
+      operation 162864 "test_access"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 162992 "test_copy_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 163120 "test_assignment"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 163248 "test_move"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 169776 "test_reset"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 169904 "test_merge"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 170032 "test_write"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
     end
   end
 
@@ -103,12 +208,17 @@ ${body}
 
     artifact 130352 "compound_document_test"
       stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+
+#endif
+"
       cpp_src "${comment}
-/*
-#include \"compound_document_test.h\"
-*/
 ${includes}
 
+#define BOOST_TEST_DYN_LINK // only in one file
 #define BOOST_TEST_MODULE compound_artifact_test
 #include <boost/test/unit_test.hpp>
 

@@ -6,46 +6,46 @@ classcanvas 128048 class_ref 129840 // compound_document
 end
 classcanvas 128176 class_ref 129968 // document_element
   classdiagramsettings member_max_width 0 end
-  xyz 585 47.3 3005
+  xyz 586.2 45.9 3005
 end
 classcanvas 129712 class_ref 131888 // compound_document_test
   classdiagramsettings member_max_width 0 end
-  xyz 474 816.6 2000
+  xyz 474 837 2000
 end
 classcanvas 129968 class_ref 129328 // butter_constants
   classdiagramsettings hide_attributes yes member_max_width 0 end
-  xyz 566 578.4 2005
+  xyz 566 578.2 2005
 end
 line 128304 ---+
-  from ref 128176 z 3006 to point 487.6 436.2
+  from ref 128176 z 3006 to point 487.2 436.4
   line 129456 z 3006 to ref 128048
 relationcanvas 128432 relation_ref 129712 // <directional composition>
-  from ref 128048 z 3006 to point 402.6 276.2
+  from ref 128048 z 3006 to point 402.2 276.4
   line 129328 z 3006 to ref 128176
-  role_a_pos 521 204 3000 no_role_b
+  role_a_pos 504 182 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128560 relation_ref 129840 // <directional composition>
-  from ref 128048 z 3006 to point 405.8 190.8
+  from ref 128048 z 3006 to point 405.6 190.6
   line 129200 z 3006 to ref 128176
-  role_a_pos 521 177 3000 no_role_b
+  role_a_pos 513 162 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128688 relation_ref 129968 // <directional composition>
-  from ref 128048 z 3006 to point 423 327.6
+  from ref 128048 z 3006 to point 423 327.2
   line 129584 z 3006 to ref 128176
-  role_a_pos 481 219 3000 no_role_b
+  role_a_pos 473 202 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128816 relation_ref 130096 // <directional composition>
-  from ref 128048 z 3006 stereotype "<<valuevector>>" xyz 351 337 3006 to ref 128176
-  role_a_pos 491 215 3000 no_role_b
+  from ref 128048 z 3006 stereotype "<<valuevector>>" xyz 378 320.5 3006 to ref 128176
+  role_a_pos 493 212 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128944 relation_ref 130224 // <directional composition>
-  from ref 128048 z 3006 to point 523 465.8
+  from ref 128048 z 3006 to point 523 465.6
   line 129072 z 3006 to ref 128176
-  role_a_pos 591 384 3000 no_role_b
+  role_a_pos 601 380 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 129840 relation_ref 133424 // <dependency>
