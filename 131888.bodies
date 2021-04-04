@@ -1,0 +1,6 @@
+class compound_document_test
+!!!156336.cpp!!!	test_empty_constructor()
+butter::compount_document doc;
+BOOST_CHECK_EQUAL(0, doc.size());
+BOOST_CHECK(doc.empty());
+

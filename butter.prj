@@ -1,7 +1,8 @@
-format 223
+format 224
 "butter"
-  revision 104
-  modified_by 65 "finnerty"
+  revision 106
+  modified_by 48 "finnerty"
+  cpp_root_dir "/tmp/finnerty/butter2/butter/"
 
 
   
@@ -35,7 +36,7 @@ format 223
    show_infonote yes drawing_language uml show_stereotype_properties no end
   
   class_color yellow duration_color transparent continuation_color gray note_color blue fragment_color transparent subject_color transparent usecase_color yellow package_color transparent component_color green artifact_color green deploymentnode_color gray state_color yellow stateaction_color transparent activity_color transparent activityregion_color transparent activitypartition_color transparent activityaction_color transparent parameterpin_color white generalization_color black 
-  dpi 0
+  dpi 96
   font_size 9
   diagram_format A4
 
@@ -44,9 +45,16 @@ format 223
 
   mark_for_import
   
-  ncouples 1
+  ncouples 2
   key "gen_doc_with_c++" value ""
+  key "PROJECT" value "BUTTER"
+  package_ref 128304 // External
+
   package_ref 256 // API BASE
 
   package_ref 641 // API USER
+
+  package_ref 128048 // finnerty
+
+  package_ref 128176 // Unit-tests
 end

@@ -1,0 +1,142 @@
+format 224
+"Unit-tests" // Unit-tests
+  revision 2
+  modified_by 48 "finnerty"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "test"
+  cpp_src_dir "test"
+  classview 128176 "unit-tests"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    associated_deployment_view deploymentview_ref 128304 // unit-tests
+    class 131888 "compound_document_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 133552 // <dependency>
+	relation 133424 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 133552 // <dependency>
+	  b parent class_ref 129840 // compound_document
+      end
+
+      operation 156336 "test_empty_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+  end
+
+  deploymentview 128304 "unit-tests"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    deploymentdiagram 128304 "Unit tests"
+      deploymentdiagramsettings
+       end
+      size A4
+    end
+
+    artifact 130352 "compound_document_test"
+      stereotype "source"
+      cpp_src "${comment}
+/*
+#include \"compound_document_test.h\"
+*/
+${includes}
+
+#define BOOST_TEST_MODULE compound_artifact_test
+#include <boost/test/unit_test.hpp>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 131888 // compound_document_test
+      end
+    end
+
+    artifact 137008 "unittest"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 130352 // compound_document_test
+	artifact_ref 130480 // butter.lib
+      end
+      ncouples 10
+      key "genpro pro" value "/tmp/finnerty/butter2/butter/test/unittest.pro"
+      key "genpro path" value "/tmp/finnerty/butter2/butter"
+      key "genpro target" value "/tmp/finnerty/butter2/butter/test/unittest"
+      key "genpro tmplt" value "app"
+      key "genpro config" value "debug warn_on qt console"
+      key "genpro defines" value "WITHCPP"
+      key "genpro includepath" value ""
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value "build"
+      key "genpro footer" value "QT += qt3support"
+    end
+  end
+end

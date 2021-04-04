@@ -19,3 +19,9 @@
 
 "QAsciiDict" "#include <qasciidict.h>"
 
+"QTextIStream" "#include <qtextstream.h>"
+
+"QTextOStream" "#include <qtextstream.h>"
+
+"Q3ValueVector" "#include <q3valuevector.h>"
+

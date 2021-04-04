@@ -1,0 +1,18 @@
+class bjam_generator
+!!!132272.cpp!!!	create() : std::unique_ptr< base_generator >
+  std::unique_ptr< base_generator > Result (new bjam_generator);
+  return Result;
+!!!132656.cpp!!!	descendent_link(inout a_art : compound_artifact, inout a_sys : compound_artifact, in a_loc : location) : void
+// Add ourself to the system artifact (if not the top-level).
+if ( NULL != a_loc.parent() )
+{
+  QString tmp_;
+  QTextOStream os_( &tmp_ );
+  // Add definition for this sub-project to the top-level location
+  // use-project /compchem/chemistry : src/chemistry ;
+
+  const QString dir_line_ = root_dir().create_relative( a_loc.full_path () );
+  os_ << "use-project /" << project_name_ << "/" << a_loc.path().path() << " : " << dir_line_ << " ;\n";
+  os_ << "build-project " << dir_line_ << " ;\n\n";
+  a_sys.document().append_close_value( tmp_ );
+}

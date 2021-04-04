@@ -1,0 +1,100 @@
+class location
+!!!148528.cpp!!!	location(in a_path : pathcmp)
+  children_.setAutoDelete( true );
+!!!148656.cpp!!!	location(in a_path : pathcmp, inout a_parent : location)
+  children_.setAutoDelete( true );
+!!!149296.cpp!!!	find(inout a_location : location, in a_path : pathcmp) : location
+butter::pathcmp const parent_path_ (a_location->full_path ());
+BUTTER_REQUIRE (parent_path_.has_subpath (a_path), "This location is not a parent of the given path");
+butter::pathcmp const diff_path_ (parent_path_.create_relative (a_path));
+for (unsigned int i_ = 0; i_ < diff_path_.depth (); ++i_)
+{
+  butter::location * tmp_ = NULL;
+  for (unsigned int j_ = 0; j_ < a_location->children_.count (); ++j_)
+  {
+    if (a_location->children_.at (j_)->path_ == diff_path_.leaf_at (i_))
+    {
+      tmp_ = a_location->children_.at (j_);
+      break;
+    }
+  }
+  if (NULL == tmp_)
+  {
+    break; // At closest point
+  }
+  else
+  {
+    a_location = tmp_;
+  }
+}
+return a_location;
+
+!!!149424.cpp!!!	full_path() : pathcmp
+butter::pathcmp Result;
+// Process locations from here to base
+for (const butter::location * tmp_ = this;
+	true;
+	tmp_ = tmp_->parent_)
+{
+  Result = tmp_->path_ / Result;
+  if (NULL == tmp_->parent_) break;
+}
+return Result;
+
+!!!149936.cpp!!!	add_package(inout a_package : UmlPackage) : void
+if( this->packages_.count() == this->packages_.size() )
+{
+  this->packages_.resize( this->packages_.size() + 1 );
+}
+this->packages_.insert( this->packages_.count(), &a_package );
+
+!!!150064.cpp!!!	create_as_child(in a_path : pathcmp) : location
+butter::pathcmp const parent_path_( this->full_path() );
+BUTTER_REQUIRE( parent_path_.has_subpath( a_path ), "This location is not a parent of the given path" );
+butter::pathcmp const diff_path_( parent_path_.create_relative( a_path ) );
+butter::location * cursor_ = this;
+for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
+{
+  std::unique_ptr< location > tmp_( new location(diff_path_.leaf_at(i_), *cursor_ ) );
+  if( cursor_->children_.count() == cursor_->children_.size() )
+  {
+    cursor_->children_.resize( cursor_->children_.size() + 1 );
+  }
+  cursor_->children_.insert( cursor_->children_.count(), tmp_.release() );
+  cursor_ = cursor_->children_.at( cursor_->children_.count() - 1 );
+}
+return cursor_;
+
+!!!150192.cpp!!!	serialize(inout a_os : QTextOStream) : void
+  BUTTER_ALWAYS (DEBUG, "Programming error: attempt to get debug info in release build");
+if (DEBUG)
+{
+  a_os << "<<BEGIN location [" << full_path ().path () << "]\n";
+  if (packages_.count () > 0)
+  {
+    a_os << "Packages:\n";
+    for (unsigned int i_(0); i_ < packages_.count (); ++i_)
+    {
+      a_os << "[" << i_ << "] = " << packages_.at (i_)->name () << "\n";
+    }
+  }
+  if (children_.count () > 0)
+  {
+    a_os << "Children:\n";
+    for (unsigned int i_(0); i_ < children_.count (); ++i_)
+    {
+      a_os << "[" << i_ << "] = " << children_.at (i_)->path ().path () << "\n";
+    }
+  }
+  a_os << "<<END location [" << full_path ().path () << "]\n";
+
+// Perform serialization in a top-down manner.
+  if (children_.count () > 0)
+  {
+    for (unsigned int i_(0); i_ < children_.count (); ++i_)
+    {
+      children_.at (i_)->serialize (a_os);
+    }
+  }
+}
+
