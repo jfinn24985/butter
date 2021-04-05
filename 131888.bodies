@@ -173,36 +173,6 @@ BOOST_CHECK(doc1["element"].label == "element");
 BOOST_CHECK(doc1["element"].user == "Some user text\n");
 BOOST_CHECK(doc1["element"].value == "Some value\n");
 BOOST_CHECK_EQUAL(1, doc1.size());
-!!!169776.cpp!!!	test_reset()
-butter::compound_document doc;
-
-doc["element"].value = "Some value\n";
-doc["element"].user = "Some user text\n";
-doc.close().user = "Close user\n";
-doc.close().value = "Close value\n";
-doc.date().user = "Date user\n";
-doc.date().value = "Date value\n";
-doc.preamble().user = "preamble user\n";
-doc.preamble().value = "preamble value\n";
-doc.version().user = "version user\n";
-doc.version().value = "version value\n";
-doc.postscript() = "postscript\n";
-
-doc.reset();
-
-BOOST_CHECK(doc["element"].label == "element");
-BOOST_CHECK(doc["element"].value.isEmpty());
-BOOST_CHECK(doc["element"].user == "Some user text\n");
-BOOST_CHECK(doc.close().value.isEmpty());
-BOOST_CHECK(doc.close().user == "Close user\n");
-BOOST_CHECK(doc.date().value == "Date value\n");
-BOOST_CHECK(doc.date().user == "Date user\n");
-BOOST_CHECK(doc.preamble().value.isEmpty());
-BOOST_CHECK(doc.preamble().user == "preamble user\n");
-BOOST_CHECK(doc.version().value == "version value\n");
-BOOST_CHECK(doc.version().user == "version user\n");
-BOOST_CHECK(doc.postscript() == "postscript\n");
-
 !!!169904.cpp!!!	test_merge()
 butter::compound_document doc;
 
@@ -275,6 +245,57 @@ BOOST_CHECK(doc["element1"].value == "Some1 value\n");
 BOOST_CHECK(doc["element2"].user == "Some2 user text1\n");
 BOOST_CHECK(doc["element2"].value == "Some2 value1\n");
 
+!!!176560.cpp!!!	test_parse()
+butter::compound_document doc;
+
+QString canon{ "version user\n## BEGIN version\nversion value\n## END version\nDate user\n## BEGIN date\nDate value\n## END date\npreamble user\n## BEGIN preamble\npreamble value\n## END preamble\nSome user text\n## BEGIN target element\nSome value\n## END target element\nClose user\n## BEGIN close\nClose value\n## END close\npostscript\n" };
+
+QTextIStream iss(&canon);
+
+doc.parse(iss, { "## BEGIN " }, { "## END " } );
+
+
+BOOST_CHECK(doc["element"].value == "Some value\n");
+BOOST_CHECK(doc["element"].user == "Some user text\n");
+BOOST_CHECK(doc.close().user == "Close user\n");
+BOOST_CHECK(doc.close().value == "Close value\n");
+BOOST_CHECK(doc.date().user == "Date user\n");
+BOOST_CHECK(doc.date().value == "Date value\n");
+BOOST_CHECK(doc.preamble().user == "preamble user\n");
+BOOST_CHECK(doc.preamble().value == "preamble value\n");
+BOOST_CHECK(doc.version().user == "version user\n");
+BOOST_CHECK(doc.version().value == "version value\n");
+BOOST_CHECK(doc.postscript() == "postscript\n");
+!!!169776.cpp!!!	test_reset()
+butter::compound_document doc;
+
+doc["element"].value = "Some value\n";
+doc["element"].user = "Some user text\n";
+doc.close().user = "Close user\n";
+doc.close().value = "Close value\n";
+doc.date().user = "Date user\n";
+doc.date().value = "Date value\n";
+doc.preamble().user = "preamble user\n";
+doc.preamble().value = "preamble value\n";
+doc.version().user = "version user\n";
+doc.version().value = "version value\n";
+doc.postscript() = "postscript\n";
+
+doc.reset();
+
+BOOST_CHECK(doc["element"].label == "element");
+BOOST_CHECK(doc["element"].value.isEmpty());
+BOOST_CHECK(doc["element"].user == "Some user text\n");
+BOOST_CHECK(doc.close().value.isEmpty());
+BOOST_CHECK(doc.close().user == "Close user\n");
+BOOST_CHECK(doc.date().value == "Date value\n");
+BOOST_CHECK(doc.date().user == "Date user\n");
+BOOST_CHECK(doc.preamble().value.isEmpty());
+BOOST_CHECK(doc.preamble().user == "preamble user\n");
+BOOST_CHECK(doc.version().value == "version value\n");
+BOOST_CHECK(doc.version().user == "version user\n");
+BOOST_CHECK(doc.postscript() == "postscript\n");
+
 !!!170032.cpp!!!	test_write()
 butter::compound_document doc;
 
@@ -295,6 +316,6 @@ QTextOStream os(&buf);
 
 doc.write(os, { "## BEGIN " }, { "## END " } );
 
-QTextOStream cos(stdout);
-cos << buf;
+QString canon{ "version user\n## BEGIN version\nversion value\n## END version\nDate user\n## BEGIN date\nDate value\n## END date\npreamble user\n## BEGIN preamble\npreamble value\n## END preamble\nSome user text\n## BEGIN target element\nSome value\n## END target element\nClose user\n## BEGIN close\nClose value\n## END close\npostscript\n" };
 
+BOOST_CHECK(buf == canon);

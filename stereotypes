@@ -1,16 +1,16 @@
 
-  package_stereotypes  6 "facade" "framework" "model library" "stub" "toplevel" "profile"
+  package_stereotypes  7 "facade" "framework" "model" "library" "stub" "toplevel" "profile"
     -_-> 3 "access" "import" "from"
   end
   
   class_stereotypes  23 "actor" "auxiliary" "boundary" "control" "entity" "enum" "enum_pattern" "exception" "focus" "implementationClass" "interface" "@interface" "metaclass" "stereotype" "struct" "type" "typedef" "union" "utility" "enum_class" "template_typedef" "table" "trait"
-    ---- 4 "list" "set" "vector" "map"
-    ---> 4 "list" "set" "vector" "map"
+    ---- 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
+    ---> 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
     ---|> 4 "{complete,disjoint}" "{incomplete,disjoint}" "{complete,overlapping}" "{incomplete,overlapping}"
-    o--- 4 "list" "set" "vector" "map"
-    *--- 4 "list" "set" "vector" "map"
-    o--> 4 "list" "set" "vector" "map"
-    *--> 4 "list" "set" "vector" "map"
+    o--- 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
+    *--- 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
+    o--> 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
+    *--> 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
     -_-> 4 "friend" "from" "import" "instantiate"
     -_-|> 1 "bind"
   end
@@ -27,7 +27,7 @@
   end
   
   attribute_stereotypes  4 "list" "set" "vector" "map"
-  operation_stereotypes  0
+  operation_stereotypes  4 "const" "move" "deleted" "default"
   state_stereotypes  3 "machine" "submachine" "top"
   activity_stereotypes  0
   flow_stereotypes  3 "interrupt" "multicast" "multireceive"

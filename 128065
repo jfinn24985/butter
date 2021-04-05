@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 4
+  revision 6
   modified_by 48 "finnerty"
   // class settings
   
@@ -59,6 +59,11 @@ format 224
 
     classdiagram 128176 "location"
       classdiagramsettings draw_all_relations yes member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 134960 "location 2"
+      classdiagramsettings member_max_width 0 end
       size A4
     end
 
@@ -1887,18 +1892,63 @@ Responsibilities:
  - base
  - log-level
  - style
+
+Location objects form a tree like structure that parallels a filesystem 
+directory structure, except locations may be sparse.
+
+Axioms:
+
+1) There is exactly one root location containing all other locations
+
+2) A location can have children more than one level deep in the filesystem
+
+3) A location can not have a child A that's directory is a 
+  subdirectory of child B. { If child B exists when child A is added then
+  it is forwarded to child B. If child A exists when child B is added then
+  child A is relocated to child B }
+
+Example 1:
+
+.../ rootpath <*> / subpath1     / subpathA     / subpathX <*>
+                  / subpath2 <*> / subpathB <*>
+
+gives
+
+[location:rootpath].children{ [location:subpathX], 
+    [location:subpath2].children{ [location:subpathB] } }
+
+Example 2:
+
+.../ rootpath1 <*>
+.../ rootpath2 <*>
+
+gives
+
+[location:common_parent(rootpath1,rootpath2)].children{ 
+    [location:rootpath1], [location:rootpath2] }
+
+
 "
+      classrelation 140976 // <dependency>
+	relation 140592 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 140976 // <dependency>
+	  b parent class_ref 138416 // location_set
+      end
+
       classrelation 132144 // children_ (<composition>)
 	relation 132144 *---
 	  stereotype "vector"
-	  a role_name "children_" private
+	  a role_name "children_" multiplicity "*" private
 	    comment "The child nodes (managed)
 "
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 132144 // children_ (<composition>)
 	  b role_name "parent_" multiplicity "1" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 133424 // parent_ (<composition>)
       end
@@ -1907,28 +1957,8 @@ Responsibilities:
 	relation_ref 132144 // <composition>
       end
 
-      classrelation 133168 // buildfile_ (<directional aggregation>)
-	relation 133168 o-->
-	  stereotype "reference"
-	  a role_name "buildfile_" multiplicity "1" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
-"
-	    classrelation_ref 133168 // buildfile_ (<directional aggregation>)
-	  b parent class_ref 8193 // UmlArtifact
-      end
-
-      classrelation 133296 // buildfile_content_ (<directional composition>)
-	relation 133296 *-->
-	  stereotype "unique_ptr"
-	  a role_name "buildfile_content_" multiplicity "0..1" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
-"
-	    classrelation_ref 133296 // buildfile_content_ (<directional composition>)
-	  b parent class_ref 129840 // compound_document
-      end
-
       attribute 146608 "path_"
-	private explicit_type "QDir"
+	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -1937,20 +1967,49 @@ Responsibilities:
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
+	comment "* Relative path from parent to this location. If no parent then is the \"location_base_path\"@.
+* Path may not yet exist on filesystem.
+
+@location_base_path is defined as the relative path to the base_path location in the bouml project.
+The bouml base_path location is either relative to the project working directory or absolute. We 
+assume QDir::exists(base_path) or QDir::mkdir(base_path) will succeed and therefore so will
+QDir::exists(location_base_path) or QDir::mkdir(location_base_path)."
+      end
+
+      attribute 153392 "state_"
+	private explicit_type "any"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "An opaque structure used by the butter system to manage build system creation."
+      end
+
+      extra_member 135344 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
       end
 
       operation 148528 "location"
-	preserve_cpp_body_indent public explicit_return_type ""
-	nparams 1
-	  param in name "a_path" type class_ref 128432 // pathcmp
-	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract};"
+	preserve_cpp_body_indent private explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract};"
 	cpp_def "// -
 
-${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}${)}
+${inline}${typeprefix}${class}::${name}${(}${)}
 : children_()
-, packages_()
 , parent_(nullptr)
-, path_(a_path)
+, path_('.')
+, state_()
 {
 ${body}}
 "
@@ -1958,16 +2017,15 @@ ${body}}
 	
 	
 	
-	comment "Ctor for location tree root objects (a_path is full
-path or relative to a base path.)"
+	comment "Ctor for location tree root objects"
       end
 
       operation 148784 "~location"
 	preserve_cpp_body_indent public explicit_return_type ""
 	nparams 0
-	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
 "
 	
 	
@@ -1979,14 +2037,14 @@ path or relative to a base path.)"
       operation 148656 "location"
 	preserve_cpp_body_indent private explicit_return_type ""
 	nparams 2
-	  param in name "a_path" type class_ref 128432 // pathcmp
+	  param in name "a_path" explicit_type "unistr"
 	  param inout name "a_parent" type class_ref 128560 // location
-	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} & ${p1}${v1}${)}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}
 : children_()
-, packages_()
-, parent_( &a_parent )
-, path_( a_path )
+, parent_(&a_parent)
+, path_(a_path)
+, state_(nullptr)
 {
 ${body}}
 "
@@ -1999,6 +2057,7 @@ ${body}}
       end
 
       operation 148912 "location"
+	stereotype "deleted"
 	cpp_deleted private explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 128560 // location
@@ -2010,7 +2069,8 @@ ${body}}
 	comment "no copy"
       end
 
-      operation 149040 "operator ="
+      operation 149040 "operator="
+	stereotype "deleted"
 	cpp_deleted private return_type class_ref 128560 // location
 	nparams 1
 	  param in name "source" type class_ref 128560 // location
@@ -2022,12 +2082,23 @@ ${body}}
 	comment "no assign"
       end
 
+      extra_member 135472 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
       operation 149168 "children"
-	const constvalue cpp_inline public explicit_return_type "QVector< location >"
+	stereotype "const"
+	const constvalue public explicit_return_type "QVector< location >"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
-      return children_;
-    };"
+   return children_;
+}"
 	
 	
 	
@@ -2035,27 +2106,9 @@ ${body}}
 	comment "Get the children!"
       end
 
-      operation 149296 "find"
-	class_operation preserve_cpp_body_indent public return_type class_ref 128560 // location
-	nparams 2
-	  param inout name "a_location" type class_ref 128560 // location
-	  param in name "a_path" type class_ref 128432 // pathcmp
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} * ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Attempt to find a location pointer for the given path. Will return the \"closest\" 
-location if no exact match is found.
-
-\\pre a_location.parent_path(a_path)"
-      end
-
       operation 149424 "full_path"
-	preserve_cpp_body_indent const public return_type class_ref 128432 // pathcmp
+	stereotype "const"
+	preserve_cpp_body_indent const public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};"
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
@@ -2065,54 +2118,317 @@ location if no exact match is found.
 	
 	
 	
-	comment "This gives the fully qualifed path of the location (relative to
-the base path.)"
-      end
+	comment "The path from the parent location, this is an empty string for the top-level location
 
-      operation 149552 "packages"
-	const constvalue cpp_inline public explicit_return_type "QVector< UmlPackage >"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
-      return packages_;
-    };"
-	
-	
-	
-	
-	comment "The packages associated with this location"
+(\\see location_set::offset_path and \\see location::full_path)"
       end
 
       operation 149680 "parent"
-	const cpp_inline public return_type class_ref 128560 // location
+	stereotype "const"
+	const public return_type class_ref 128560 // location
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * const ${name}${(}${)}${const}${volatile}${abstract} {
-      return parent_;
-    };"
+   return parent_;
+}"
 	
 	
 	
 	
-	comment "The parent location, this is nul for the top-level locations"
+	comment "The parent location of this location, or nul for the top-level location."
       end
 
       operation 149808 "path"
-	const constvalue cpp_inline public return_type class_ref 128432 // pathcmp
+	stereotype "const"
+	const constvalue public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
-      return path_;
-    };"
+  return path_;
+}"
 	
 	
 	
 	
-	comment "The leaf node of sub-locs and the base-path for top-level locs"
+	comment "The path to the root location of the containing location set.
+
+(\\see location_set::offset_path and \\see location::full_path)"
       end
 
-      operation 149936 "add_package"
-	preserve_cpp_body_indent public explicit_return_type "void"
-	nparams 1
-	  param inout name "a_package" explicit_type "UmlPackage"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+      operation 185904 "value"
+	stereotype "const"
+	const constvalue public explicit_return_type "any"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} const ${name}${(}${)}${const}${volatile}${abstract} {
+  return state_;
+}"
+	
+	
+	
+	
+	comment "The value content of this location"
+      end
+
+      extra_member 135600 "METHOD"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 149552 "value"
+	public explicit_return_type "any"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+  return state_;
+}"
+	
+	
+	
+	
+	comment "The value content of this location"
+      end
+
+    end
+
+    class 138416 "location_set"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "Container for the set of locations that will be used in defining the build system."
+      attribute 154032 "offset_path_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "This defines the offset between the base_path used in the bouml project
+and the locations contained in the set.  "
+      end
+
+      classrelation 140464 // root_ (<directional composition>)
+	relation 140208 *-->
+	  stereotype "unique_ptr"
+	  a role_name "root_" multiplicity "0..1" private
+	    comment "The root of the location set"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 140464 // root_ (<directional composition>)
+	  b parent class_ref 128560 // location
+      end
+
+      class 138672 "location_set_iterator"
+	visibility package 
+	cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	comment "Depth first movement (category FwdIterator)"
+	classrelation 140848 // <dependency>
+	  relation 140464 -_->
+	    stereotype "friend"
+	    a public
+	      cpp default "#include in source"
+	      classrelation_ref 140848 // <dependency>
+	    b parent class_ref 138416 // location_set
+	end
+
+	class 139184 "category"
+	  visibility package stereotype "typedef" explicit_base_type "std::forward_iterator_category"
+	  cpp_decl "${comment}typedef ${type} ${name};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_2_2 python_decl ""
+	  idl_decl "${comment}typedef ${type} ${name};
+"
+	  explicit_switch_type ""
+	  mysql_decl ""
+	  
+	end
+
+	attribute 153520 "loc_"
+	  private type class_ref 128560 // location
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	operation 183088 "operator++"
+	  public return_type class_ref 138672 // location_set_iterator
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 184112 "operator*"
+	  public return_type class_ref 128560 // location
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract} { return *loc_; }
+"
+	  
+	  
+	  
+	  
+	  comment "Return a reference to the current location.  This is undefined if iterator == end."
+	end
+
+	operation 184496 "location_set_iterator"
+	  private explicit_return_type ""
+	  nparams 2
+	    param out name "loc" type class_ref 128560 // location
+	    param in name "descend" explicit_type "bool"
+	  cpp_decl "    ${comment}${inline}${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${throw}: loc_(${p0}) {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	  comment "Only location_set can create iterators with real content"
+	end
+
+	operation 185008 "location_set_iterator"
+	  public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw}: loc_(nullptr) {}
+"
+	  
+	  
+	  
+	  
+	  comment "Constructor for \"end\" iterator"
+	end
+
+	operation 184624 "~location_set_iterator"
+	  public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	  cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 184752 "location_set_iterator"
+	  stereotype "copy"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "source" type class_ref 138672 // location_set_iterator
+	  cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}: loc_(source.loc_) {}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 185264 "location_set_iterator"
+	  stereotype "move"
+	  public explicit_return_type ""
+	  nparams 1
+	    param inout name "source" type class_ref 138672 // location_set_iterator
+	  cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${)}${volatile}${throw}: loc_(std::move(source.loc_)) {}
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 184880 "operator="
+	  public return_type class_ref 138672 // location_set_iterator
+	  nparams 1
+	    param in name "source" type class_ref 138672 // location_set_iterator
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract}{ swap(${p0}); return *this; }
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 185392 "swap"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param inout name "other" type class_ref 138672 // location_set_iterator
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract} { std::swap(loc_, ${p0}.loc_ ); }
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 185520 "operator=="
+	  public explicit_return_type "bool"
+	  nparams 1
+	    param in name "other" type class_ref 138672 // location_set_iterator
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract}{ return loc_ == other.loc_; }
+"
+	  
+	  
+	  
+	  
+	end
+
+	operation 185648 "operator!="
+	  public explicit_return_type "bool"
+	  nparams 1
+	    param in name "other" type class_ref 138672 // location_set_iterator
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract}{ return loc_ != other.loc_; }
+"
+	  
+	  
+	  
+	  
+	end
+      end
+
+      operation 183472 "begin"
+	public return_type class_ref 138672 // location_set_iterator
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
@@ -2120,16 +2436,14 @@ the base path.)"
 	
 	
 	
-	comment "Add the package as a client of the location.
-
-\\pre path of a_package = full_path"
+	comment "Get first location in depth first search"
       end
 
-      operation 150064 "create_as_child"
-	preserve_cpp_body_indent public return_type class_ref 128560 // location
-	nparams 1
-	  param in name "a_path" type class_ref 128432 // pathcmp
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+      operation 183600 "end"
+	public return_type class_ref 138672 // location_set_iterator
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
@@ -2137,10 +2451,107 @@ the base path.)"
 	
 	
 	
-	comment "Create a new location object as a descendent of this location.  The
-created object is owned by this object or one of its descendents.
+      end
 
-\\pre full_path.has_subpath( a_path )"
+      operation 150064 "insert"
+	preserve_cpp_body_indent public return_type class_ref 138672 // location_set_iterator
+	nparams 1
+	  param in name "a_path" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Create a new location object and return an iterator to it.
+
+\\pre find(a_path) = end
+
+The created object is owned by this object or one of its
+descendents.
+
+[Programming notes] There are three possible insertion options.
+
+A) a_path is not a subdirectory of the current root location:
+A new root location is created and the current root's path is
+altered before adding as a child.  A new location is added to
+the new root with this path. The offset_path is adjusted for
+the new root location.
+
+B) A subdirectory of any existing location.  With the existing
+location being the closest match (eg new path is a/b/c/d,
+existing location has fullpath a/b and no children with
+fullpath a/b/c).
+
+B1) The existing location has a child that is a subdirectory
+of the new path (eg new path is a/b/c, existing location has
+fullpath a/b and children exist with fullpaths a/b/c/...). A new
+location is added with the new path and the child (or children)
+moved to the new location with altered paths.
+
+B2) The existing location has a child with only a partial
+match or no match to the new path (eg new path is a/b/c and
+no existing children have fullpaths a/b/c/...). Add a location
+as child with the new path.
+"
+      end
+
+      operation 183856 "find"
+	public return_type class_ref 138672 // location_set_iterator
+	nparams 1
+	  param in name "path" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Search for matching location, if no matching location return end()
+
+path is assumed to be relative to the bouml project_package.cppSrcDir"
+      end
+
+      operation 183344 "topdown"
+	stereotype "vector"
+	const public return_type class_ref 128560 // location
+	multiplicity "*"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${stereotype}< ${type} > ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${stereotype}< ${type} > ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Get the sequence of locations in top-down order.
+
+This is provided as the (begin,end) iterator traversal operates
+in a depth-first type order."
+      end
+
+      operation 185776 "offset_path"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "The offset between the locations in the set and the
+base_path of the bouml project.
+
+For UmlArtifact_A in location_B -> UmlArtifact_A.package.cppSrcDir ~= rootpackage.cppSrcDir / offset_path / location_B.full_path"
       end
 
       operation 150192 "serialize"
@@ -2564,6 +2975,7 @@ by some arbitrary string \"a_trans\"."
 	comment "Change to a new internal path."
       end
     end
+
   end
 
   deploymentview 128065 "butter"

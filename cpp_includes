@@ -25,3 +25,5 @@
 
 "Q3ValueVector" "#include <q3valuevector.h>"
 
+"QDir" "#include <qdir.h>"
+

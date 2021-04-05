@@ -1,0 +1,150 @@
+class location_set
+!!!183472.cpp!!!	begin() : location_set::location_set_iterator
+return location_set_iterator(this->root_.get(), true);
+!!!183600.cpp!!!	end() : location_set::location_set_iterator
+return location_set_iterator();
+!!!150064.cpp!!!	insert(in a_path : unistr) : location_set::location_set_iterator
+QDir const search_path_{ this->offset_path_ + '/' + a_path };
+BUTTER_REQUIRE(end() == find(a_path), "This location is already present in the set" );
+// 
+// [Programming notes] There are three possible insertion options.
+// 
+// A) a_path is not a subdirectory of the current root location:
+// A new root location is created and the current root's path is
+// altered before adding as a child.  A new location is added to
+// the new root with this path. The offset_path is adjusted for
+// the new root location.
+// 
+// B) A subdirectory of any existing location.  With the existing
+// location being the closest match (eg new path is a/b/c/d,
+// existing location has fullpath a/b and no children with
+// fullpath a/b/c).
+// 
+// B1) The existing location has a child that is a subdirectory
+// of the new path (eg new path is a/b/c, existing location has
+// fullpath a/b and children exist with fullpaths a/b/c/...). A new
+// location is added with the new path and the child (or children)
+// moved to the new location with altered paths.
+// 
+// B2) The existing location has a child with only a partial
+// match or no match to the new path (eg new path is a/b/c and
+// no existing children have fullpaths a/b/c/...). Add a location
+// as child with the new path.
+// 
+QDir top_path_{ this->offset_path_ + '/' + root->path_ };
+if(search_path.cleanPath().startsWith(top_path_.cleanPath()))
+{
+  // case B
+  QString p_{ search_path.cleanPath().mid(top_path_.cleanPath().size()) };
+  //  ^ used size to also remove last separator
+  location * loc_ = root_.get();
+  QStringList parts_;
+  if (QDir::separator() == '/')
+  {
+    parts_ = p_.split('/');
+  }
+  else
+  {
+    QChar regex[] { '[', '/', QDir::separator(), ']', '0' };
+    QRegExp re{ regex }
+    parts_ = p_.split(re);
+  }
+  QString np_;
+  for(QString s_ : parts_)
+  {
+    np_ = (np_.empty() ? s_ : np_ + '/' + s_);
+    for(location * ll_ : loc_->children_)
+    {
+      if(ll_.path() == np_)
+      {
+        // Need to descend into location
+        loc_ = ll_;
+        np_.clear();
+        break;
+      }
+    }
+  }
+  // loc_ now closest location, check for children that should be
+  // moved to children of the new location
+  std::unique_ptr< location > newloc_{ new location(np_, loc_) };
+  location * cursor_{ newloc_.get() };
+  loc_->children_.push_back( newloc_.release() );
+  // (np should contain the remaining path)
+  if(! loc_->children_.empty())
+  {
+    for(unsigned int i_ = 0; i_ != loc_->children_.size(); ++i)
+    {
+      if(loc_->children_[i]->path().startsWith(np_))
+      {
+        // Need to transfer into new location
+        newloc_->children_.push_back(loc_->children_.take(i));
+        --i;
+        newloc_->children_.last().path_ = newloc_->children_.last().path_.mid(np_.size());
+      }
+  }
+} 
+//butter::pathcmp const diff_path_( parent_path_.create_relative( a_path ) );
+//butter::location * cursor_ = this;
+//for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
+//{
+//  std::unique_ptr< location > tmp_( new location(diff_path_.leaf_at(i_), *cursor_ ) );
+//  if( cursor_->children_.count() == cursor_->children_.size() )
+//  {
+//    cursor_->children_.resize( cursor_->children_.size() + 1 );
+//  }
+//  cursor_->children_.insert( cursor_->children_.count(), tmp_.release() );
+//  cursor_ = cursor_->children_.at( cursor_->children_.count() - 1 );
+//}
+//return cursor_;
+//
+!!!183344.cpp!!!	topdown() : location [*]
+Q3PtrVector< location > v;
+location * loc{ this };
+// build vector
+unsigned int idx{ 0 };
+v.push_back(loc);
+while( idx != v.size() )
+{
+  if( ! v[idx]->children_.empty() )
+  {
+    for( location * a : v[idx].children_ )
+    {
+      v.push_back(a);
+    }
+  }
+  ++idx;
+}
+return v;
+!!!150192.cpp!!!	serialize(inout a_os : QTextOStream) : void
+  BUTTER_ALWAYS (DEBUG, "Programming error: attempt to get debug info in release build");
+if (DEBUG)
+{
+  a_os << "<<BEGIN location [" << full_path ().path () << "]\n";
+  if (packages_.count () > 0)
+  {
+    a_os << "Packages:\n";
+    for (unsigned int i_(0); i_ < packages_.count (); ++i_)
+    {
+      a_os << "[" << i_ << "] = " << packages_.at (i_)->name () << "\n";
+    }
+  }
+  if (children_.count () > 0)
+  {
+    a_os << "Children:\n";
+    for (unsigned int i_(0); i_ < children_.count (); ++i_)
+    {
+      a_os << "[" << i_ << "] = " << children_.at (i_)->path ().path () << "\n";
+    }
+  }
+  a_os << "<<END location [" << full_path ().path () << "]\n";
+
+// Perform serialization in a top-down manner.
+  if (children_.count () > 0)
+  {
+    for (unsigned int i_(0); i_ < children_.count (); ++i_)
+    {
+      children_.at (i_)->serialize (a_os);
+    }
+  }
+}
+

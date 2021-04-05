@@ -6,7 +6,7 @@ classcanvas 128048 class_ref 128560 // location
 end
 classcanvas 129328 class_ref 129840 // compound_document
   classdiagramsettings hide_attributes yes hide_operations yes member_max_width 0 end
-  xyz 625 217 2000
+  xyz 622 213 2000
 end
 classcanvas 129456 class_ref 8193 // UmlArtifact
   classdiagramsettings member_max_width 0 end
@@ -14,31 +14,14 @@ classcanvas 129456 class_ref 8193 // UmlArtifact
 end
 classcanvas 130864 class_ref 128432 // pathcmp
   classdiagramsettings member_max_width 0 end
-  xyz 503 311 2000
+  xyz 473 92 2000
 end
 relationcanvas 128176 relation_ref 132144 // <composition>
   decenter_begin 197
-  from ref 128048 z 3006 stereotype "<<vector>>" xyz 160 132.5 3006 to point 157 131
+  from ref 128048 z 3006 stereotype "<<vector>>" xyz 160 126.5 3006 to point 157 131
   line 128304 z 3006 to point 157 267
   line 128432 z 3006 to ref 128048
-  role_a_pos 171 233 3000 role_b_pos 183 96 3000
-  no_multiplicity_a multiplicity_b_pos 234 145 3000
-end
-relationcanvas 129584 relation_ref 133168 // <directional aggregation>
-  decenter_begin 77
-  from ref 128048 z 3006 stereotype "<<reference>>" xyz 452.5 32.5 3000 to ref 129456
-  role_a_pos 583 43 3000 no_role_b
-  multiplicity_a_pos 644 92 3000 no_multiplicity_b
-end
-relationcanvas 129840 relation_ref 133296 // <directional composition>
-  decenter_begin 99
-  from ref 128048 z 3006 stereotype "<<unique_ptr>>" xyz 475 151.5 3000 to ref 129328
-  role_a_pos 524 184 3000 no_role_b
-  multiplicity_a_pos 634 233 3000 no_multiplicity_b
-end
-relationcanvas 130992 relation_ref 132400 // <directional composition>
-  from ref 128048 z 3006 to ref 130864
-  role_a_pos 504 501 3000 no_role_b
-  no_multiplicity_a no_multiplicity_b
+  role_a_pos 171 220 3000 role_b_pos 183 90 3000
+  multiplicity_a_pos 237 269 3000 multiplicity_b_pos 234 139 3000
 end
 end

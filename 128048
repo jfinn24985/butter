@@ -1,6 +1,6 @@
 format 224
 "finnerty" // finnerty
-  revision 2
+  revision 3
   modified_by 48 "finnerty"
   // class settings
   
@@ -4618,6 +4618,7 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 128560 // location
+	class_ref 138416 // location_set
       end
     end
 

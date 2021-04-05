@@ -1,13 +1,13 @@
 format 224
 "butter"
-  revision 106
+  revision 107
   modified_by 48 "finnerty"
   cpp_root_dir "/tmp/finnerty/butter2/butter/"
 
 
   
   // class settings
-  default_attribute_visibility protected default_relation_visibility protected default_operation_visibility public
+  default_attribute_visibility private default_relation_visibility private default_operation_visibility public
   
   classdiagramsettings draw_all_relations yes hide_attributes no hide_operations no hide_getset_operations no hide_ports no show_members_full_definition no show_members_visibility no show_members_stereotype no show_members_context no show_members_multiplicity no show_members_initialization no show_attribute_modifiers no member_max_width 127 show_parameter_dir yes show_parameter_name yes package_name_in_tab no class_drawing_mode natural drawing_language uml show_context_mode no auto_label_position yes show_relation_modifiers no show_relation_visibility no show_infonote no shadow yes gradient none show_stereotype_properties no end
   
