@@ -27,7 +27,7 @@
     "unistr" "QString" "String" "string" "${type}" "${type} &" "${type} &" "${type}"
     "path" "QDir" "String" "string" "${type}" "${type} &" "${type} &" "${type}"
   
-  relations_stereotypes 7 // uml cpp java pythonidl
+  relations_stereotypes 8 // uml cpp java pythonidl
     "sequence" "Q3PtrVector" "Vector" "list" "sequence"
     "vector" "Q3PtrVector" "Vector" "list" "sequence"
     "list" "QPtrList" "Vector" "list" "sequence"
@@ -35,6 +35,7 @@
     "dict" "Q3Dict" "Hashtable" "list" "sequence"
     "map" "QMap" "HashTable" "dict" "sequence"
     "valuevector" "Q3ValueVector" "Vector" "list" "sequence"
+    "qvector" "QVector" "Vector" "list" "sequence"
   
   classes_stereotypes 17 // uml cpp java php python idl
     "class" "class" "class" "class" "class" "valuetype"

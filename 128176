@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 5
+  revision 6
   modified_by 48 "finnerty"
   // class settings
   
@@ -74,7 +74,7 @@ ${inlines}
 	  b parent class_ref 129840 // compound_document
       end
 
-      operation 156336 "test_empty_constructor"
+      operation 156336 "compdoc_empty_constructor"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -89,7 +89,7 @@ ${body}
 	
       end
 
-      operation 162864 "test_access"
+      operation 162864 "compdoc_access"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -104,7 +104,7 @@ ${body}
 	
       end
 
-      operation 162992 "test_copy_constructor"
+      operation 162992 "compdoc_copy_constructor"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -119,7 +119,7 @@ ${body}
 	
       end
 
-      operation 163120 "test_assignment"
+      operation 163120 "compdoc_assignment"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -134,7 +134,7 @@ ${body}
 	
       end
 
-      operation 163248 "test_move"
+      operation 163248 "compdoc_move"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -149,7 +149,7 @@ ${body}
 	
       end
 
-      operation 169904 "test_merge"
+      operation 169904 "compdoc_merge"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -164,7 +164,7 @@ ${body}
 	
       end
 
-      operation 176560 "test_parse"
+      operation 176560 "compdoc_parse"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -179,7 +179,7 @@ ${body}
 	
       end
 
-      operation 169776 "test_reset"
+      operation 169776 "compdoc_reset"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -194,7 +194,7 @@ ${body}
 	
       end
 
-      operation 170032 "test_write"
+      operation 170032 "compdoc_write"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -208,6 +208,74 @@ ${body}
 	
 	
       end
+    end
+
+    class 145712 "location_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 147632 // <dependency>
+	relation 147248 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 147632 // <dependency>
+	  b parent class_ref 128560 // location
+      end
+
+      operation 192432 "location_root_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 193584 "location_child_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 193712 "location_value_method"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
     end
   end
 
@@ -245,23 +313,50 @@ ${namespace_end}"
       end
     end
 
+    artifact 143536 "location_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#define BOOST_TEST_MODULE location
+#include <boost/test/unit_test.hpp>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 145712 // location_test
+      end
+    end
+
     artifact 137008 "unittest"
       stereotype "executable"
       associated_artifacts
 	artifact_ref 130352 // compound_document_test
-	artifact_ref 130480 // butter.lib
+	artifact_ref 143536 // location_test
       end
       ncouples 10
-      key "genpro pro" value "/tmp/finnerty/butter2/butter/test/unittest.pro"
+      key "genpro pro" value "/home/finnerty/tmp/butter2/butter/test/unittest.pro"
       key "genpro path" value "/tmp/finnerty/butter2/butter"
-      key "genpro target" value "/tmp/finnerty/butter2/butter/test/unittest"
+      key "genpro target" value "/home/finnerty/tmp/butter2/butter/test/unittest"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt console"
       key "genpro defines" value "WITHCPP"
-      key "genpro includepath" value ""
+      key "genpro includepath" value ".."
       key "genpro dependpath" value ""
       key "genpro objectsdir" value "build"
       key "genpro footer" value "QT += qt3support"
+      simplerelation 128048
+	-_->
+	  on artifact_ref 130480 // butter.lib
+      end
     end
   end
 end

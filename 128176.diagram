@@ -18,10 +18,10 @@ classcanvas 130864 class_ref 128432 // pathcmp
 end
 relationcanvas 128176 relation_ref 132144 // <composition>
   decenter_begin 197
-  from ref 128048 z 3006 stereotype "<<vector>>" xyz 160 126.5 3006 to point 157 131
+  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 172 119 3006 to point 157 131
   line 128304 z 3006 to point 157 267
   line 128432 z 3006 to ref 128048
-  role_a_pos 171 220 3000 role_b_pos 183 90 3000
-  multiplicity_a_pos 237 269 3000 multiplicity_b_pos 234 139 3000
+  role_a_pos 193 188 3000 role_b_pos 202 79 3000
+  multiplicity_a_pos 239 221 3000 multiplicity_b_pos 237 112 3000
 end
 end

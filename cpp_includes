@@ -27,3 +27,5 @@
 
 "QDir" "#include <qdir.h>"
 
+"QVector" "#include <qvector.h>"
+

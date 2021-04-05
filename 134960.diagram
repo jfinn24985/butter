@@ -2,36 +2,40 @@ format 224
 
 classcanvas 128048 class_ref 138416 // location_set
   classdiagramsettings member_max_width 0 end
-  xyz 42 75.9 2000
+  xyz 41.1 75.9 2000
 end
 classcanvas 128944 class_ref 128560 // location
   classdiagramsettings member_max_width 0 end
-  xyz 279.9 71.6 3005
+  xyz 283.6 75 3005
 end
 classcanvas 129712 class_ref 138672 // location_set_iterator
   classdiagramsettings member_max_width 0 end
-  xyz 582.9 47 2006
+  xyz 582.6 47.4 2006
+end
+classcanvas 131120 class_ref 145712 // location_test
+  classdiagramsettings member_max_width 0 end
+  xyz 390.6 362.9 2000
 end
 relationcanvas 129072 relation_ref 132144 // <composition>
   decenter_end 582
-  from ref 128944 z 3006 stereotype "<<vector>>" xyz 420 105 3006 to point 465.1 258
-  line 129456 z 3006 to point 466.6 17.6
+  from ref 128944 z 3006 stereotype "<<qvector>>" xyz 377.5 248.5 3006 to point 465.9 258
+  line 129456 z 3006 to point 466.6 17.3
   line 129200 z 3006 to point 338 18
   line 129328 z 3006 to ref 128944
-  role_a_pos 350 43 3000 role_b_pos 390 234 3000
-  multiplicity_a_pos 319 43 3000 multiplicity_b_pos 390 283 3000
+  role_a_pos 336 51 3000 role_b_pos 366 214 3000
+  multiplicity_a_pos 310 51 3000 multiplicity_b_pos 365 248 3000
 end
 relationcanvas 129584 relation_ref 140208 // <directional composition>
   decenter_begin 671
-  from ref 128048 z 3006 stereotype "<<unique_ptr>>" xyz 153.5 265 3000 to ref 128944
-  role_a_pos 228 235 3000 no_role_b
-  multiplicity_a_pos 238 284 3000 no_multiplicity_b
+  from ref 128048 z 3006 stereotype "<<unique_ptr>>" xyz 155 270.5 3000 to ref 128944
+  role_a_pos 244 201 3000 no_role_b
+  multiplicity_a_pos 251 234 3000 no_multiplicity_b
 end
 line 129840 ---+ decenter_begin 431
   from ref 129712 z 2007 to ref 128048
 relationcanvas 130352 relation_ref 140464 // <dependency>
-  from ref 129712 z 2007 stereotype "<<friend>>" xyz 639 26.5 3000 to point 682.6 5.8
-  line 130480 z 2007 to point 101.2 7.6
+  from ref 129712 z 2007 stereotype "<<friend>>" xyz 639 26 3000 to point 682.8 5.9
+  line 130480 z 2007 to point 101.1 7.3
   line 130608 z 2007 to ref 128048
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
@@ -39,9 +43,14 @@ end
 relationcanvas 130736 relation_ref 140592 // <dependency>
   decenter_begin 174
   decenter_end 820
-  from ref 128944 z 3006 stereotype "<<friend>>" xyz 252 41 3000 to point 296.2 33
-  line 130864 z 3006 to point 135.8 35.8
+  from ref 128944 z 3006 stereotype "<<friend>>" xyz 254 42.5 3000 to point 296.6 33.5
+  line 130864 z 3006 to point 135.9 35.9
   line 130992 z 3006 to ref 128048
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131248 relation_ref 147248 // <dependency>
+  from ref 131120 z 3006 to ref 128944
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end

@@ -1,9 +1,10 @@
 class location
-!!!148528.cpp!!!	location(in a_path : unistr)
-  children_.setAutoDelete( true );
-!!!148656.cpp!!!	location(in a_path : path, inout a_parent : location)
-  children_.setAutoDelete( true );
-!!!149424.cpp!!!	full_path() : pathcmp
+!!!148784.cpp!!!	~location()
+for(location * c : children_) delete c;
+  
+!!!148656.cpp!!!	location(in a_path : unistr, inout a_parent : location)
+a_parent.children_.push_back(this);
+!!!149424.cpp!!!	full_path() : unistr
 QString result(this->path_);
 // Process locations from here to root
 for (const butter::location * tmp_ = this->parent_;

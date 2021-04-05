@@ -1,6 +1,6 @@
 format 224
 "finnerty" // finnerty
-  revision 3
+  revision 4
   modified_by 48 "finnerty"
   // class settings
   
@@ -4368,29 +4368,6 @@ ${namespace_end}"
       end
     end
 
-    artifact 128432 "butter_constants"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 129328 // butter_constants
-      end
-    end
-
     artifact 128560 "cmake_generator"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -4434,33 +4411,6 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 129200 // compound_artifact
-      end
-    end
-
-    artifact 128816 "compound_document"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-// manual includes
-#include \"config.h\"
-#include \"butter_constants.h\"
-// end
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 129840 // compound_document
       end
     end
 
@@ -4595,30 +4545,6 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 130864 // jam_generator
-      end
-    end
-
-    artifact 129456 "location"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 128560 // location
-	class_ref 138416 // location_set
       end
     end
 
