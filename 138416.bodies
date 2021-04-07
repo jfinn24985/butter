@@ -1,9 +1,81 @@
 class location_set
 !!!183472.cpp!!!	begin() : location_set::location_set_iterator
-return location_set_iterator(this->root_.get(), true);
+return (root_ ? location_set_iterator(root_.get(), true) : location_set_iterator());
 !!!183600.cpp!!!	end() : location_set::location_set_iterator
 return location_set_iterator();
+!!!183856.cpp!!!	find(in path : unistr) : location_set::location_set_iterator
+QString real_{ offset_path() + '/' + path };
+for(auto it_{ begin() }; it_ != end(); ++it_)
+{
+  if(it_->full_path() == real_)
+  {
+    return it_;
+  }
+}
+return location_set_iterator();
+!!!183344.cpp!!!	topdown() : location [*]
+QVector< location * > v;
+if(this->root_)
+{
+  location * loc{ this->root_.get() };
+  // build vector
+  int idx{ 0 };
+  v.push_back(loc);
+  while( idx != v.size() )
+  {
+    if( ! v[idx]->children_.empty() )
+    {
+      for( location * a : v[idx]->children_ )
+      {
+        v.push_back(a);
+      }
+    }
+    ++idx;
+  }
+}
+return v;
+!!!150192.cpp!!!	serialize(inout a_os : QTextOStream) : void
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+BUTTER_ALWAYS(DEBUG, "Programming error: attempt to get debug info in release build");
+if (DEBUG)
+{
+  location const * top_ = nullptr;
+  int i_ = 0;
+  for(location * loc_ : topdown())
+  {
+    if (loc_->parent() == top_ && top_ != nullptr)
+    {
+      a_os << "<<END location [" << top_->full_path () << "]\n";
+      i_ = 0;
+    }
+    a_os << "[" << i_ << "] = " << loc_->path() << "\n";
+    ++i_;
+    if (loc_->parent() == top_)
+    {
+      top_ = loc_;
+      a_os << "<<BEGIN location [" << top_->full_path() << "]\n";
+    }
+    // if (loc_->packages_.count () > 0)
+    // {
+    //   a_os << "Packages:\n";
+    //   for (unsigned int i_(0); i_ < packages_.count (); ++i_)
+    //   {
+    //     a_os << "[" << i_ << "] = " << packages_.at (i_)->name () << "\n";
+    //   }
+    // }
+  }
+}
+
 !!!150064.cpp!!!	insert(in a_path : unistr) : location_set::location_set_iterator
+if(! root_)
+{
+  // Empty root so this is the current "root" location
+  offset_path_ = a_path;
+  root_.reset(new location());
+  return location_set_iterator(root_.get(), false);
+}
 QDir const search_path_{ this->offset_path_ + '/' + a_path };
 BUTTER_REQUIRE(end() == find(a_path), "This location is already present in the set" );
 //
@@ -99,65 +171,3 @@ else
   // case A
   return location_set_iterator();
 }
-!!!183856.cpp!!!	find(in path : unistr) : location_set::location_set_iterator
-QString real_{ offset_path() + '/' + path };
-for(auto it_{ begin() }; it_ != end(); ++it_)
-{
-  if(it_->full_path() == real_)
-  {
-    return it_;
-  }
-}
-return location_set_iterator();
-!!!183344.cpp!!!	topdown() : location [*]
-QVector< location * > v;
-location * loc{ this->root_.get() };
-// build vector
-int idx{ 0 };
-v.push_back(loc);
-while( idx != v.size() )
-{
-  if( ! v[idx]->children_.empty() )
-  {
-    for( location * a : v[idx]->children_ )
-    {
-      v.push_back(a);
-    }
-  }
-  ++idx;
-}
-return v;
-!!!150192.cpp!!!	serialize(inout a_os : QTextOStream) : void
-#ifndef DEBUG
-#define DEBUG 1
-#endif
-BUTTER_ALWAYS(DEBUG, "Programming error: attempt to get debug info in release build");
-if (DEBUG)
-{
-  location const * top_ = nullptr;
-  int i_ = 0;
-  for(location * loc_ : topdown())
-  {
-    if (loc_->parent() == top_ && top_ != nullptr)
-    {
-      a_os << "<<END location [" << top_->full_path () << "]\n";
-      i_ = 0;
-    }
-    a_os << "[" << i_ << "] = " << loc_->path() << "\n";
-    ++i_;
-    if (loc_->parent() == top_)
-    {
-      top_ = loc_;
-      a_os << "<<BEGIN location [" << top_->full_path() << "]\n";
-    }
-    // if (loc_->packages_.count () > 0)
-    // {
-    //   a_os << "Packages:\n";
-    //   for (unsigned int i_(0); i_ < packages_.count (); ++i_)
-    //   {
-    //     a_os << "[" << i_ << "] = " << packages_.at (i_)->name () << "\n";
-    //   }
-    // }
-  }
-}
-

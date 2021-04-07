@@ -1,0 +1,34 @@
+class location_set_test
+!!!207536.cpp!!!	location_set_constructor()
+butter::location_set loc;
+BOOST_CHECK(loc.begin() == loc.end());
+BOOST_CHECK("" == loc.offset_path());
+BOOST_CHECK(loc.topdown().empty());
+BOOST_CHECK(loc.find("path") == loc.end());
+
+!!!207920.cpp!!!	location_set_insert_method()
+butter::location_set loc;
+loc.insert("path");
+BOOST_CHECK(loc.begin() != loc.end());
+BOOST_CHECK("path" == loc.offset_path());
+BOOST_CHECK(! loc.topdown().empty());
+//BOOST_CHECK(loc.find("path") != loc.end());
+
+!!!208048.cpp!!!	location_set_insert_multiple()
+butter::location_set loc;
+loc.insert("path1");
+loc.insert("path1/path2");
+loc.insert("path1/path3");
+loc.insert("path1/path2/path4");
+BOOST_CHECK(loc.begin() != loc.end());
+BOOST_CHECK("path1" == loc.offset_path());
+BOOST_CHECK_EQUAL(4, loc.topdown().size());
+
+//BOOST_CHECK(loc.find("path") != loc.end());
+
+!!!207792.cpp!!!	location_set_value_method()
+butter::location loc;
+int dpi{ 314 };
+const QString t{ '.' };
+loc.value(&dpi);
+BOOST_CHECK_EQUAL(314, *reinterpret_cast<const int *>(loc.value()));

@@ -2,19 +2,19 @@ format 224
 
 classcanvas 128048 class_ref 138416 // location_set
   classdiagramsettings member_max_width 0 end
-  xyz 39.9 75.9 2000
+  xyz 34.9 75.9 2000
 end
 classcanvas 128944 class_ref 128560 // location
   classdiagramsettings member_max_width 0 end
-  xyz 283.1 75 3005
+  xyz 283.3 75 3005
 end
 classcanvas 129712 class_ref 138672 // location_set_iterator
   classdiagramsettings member_max_width 0 end
-  xyz 582.8 45.9 2006
+  xyz 582.5 45.9 2006
 end
 classcanvas 131120 class_ref 145712 // location_test
   classdiagramsettings member_max_width 0 end
-  xyz 390.1 362.9 2000
+  xyz 390.9 362.9 2000
 end
 relationcanvas 129072 relation_ref 132144 // <composition>
   decenter_end 582
@@ -27,9 +27,9 @@ relationcanvas 129072 relation_ref 132144 // <composition>
 end
 relationcanvas 129584 relation_ref 140208 // <directional composition>
   decenter_begin 671
-  from ref 128048 z 3006 stereotype "<<unique_ptr>>" xyz 154 270 3000 to ref 128944
-  role_a_pos 244 201 3000 no_role_b
-  multiplicity_a_pos 251 234 3000 no_multiplicity_b
+  from ref 128048 z 3006 stereotype "<<unique_ptr>>" xyz 155.5 310 3000 to ref 128944
+  role_a_pos 244 210 3000 no_role_b
+  multiplicity_a_pos 251 243 3000 no_multiplicity_b
 end
 line 129840 ---+ decenter_begin 431
   from ref 129712 z 2007 to ref 128048

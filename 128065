@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 9
+  revision 10
   modified_by 48 "finnerty"
   // class settings
   
@@ -2245,7 +2245,7 @@ and the locations contained in the set.  "
       end
 
       class 138672 "location_set_iterator"
-	visibility package 
+	visibility public 
 	cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
 ${inlines}
@@ -2505,6 +2505,93 @@ ${inlines}
 	end
       end
 
+      extra_member 142128 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 206896 "location_set"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw}
+: offset_path_()
+, root_()
+{}
+"
+	
+	
+	
+	
+      end
+
+      operation 207024 "~location_set"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
+"
+	
+	
+	
+	
+      end
+
+      operation 207152 "location_set"
+	stereotype "copy"
+	cpp_deleted private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 138416 // location_set
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 207408 "location_set"
+	stereotype "move"
+	cpp_deleted private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 138416 // location_set
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${)}${volatile}${throw} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 207280 "operator="
+	cpp_deleted private return_type class_ref 138416 // location_set
+	nparams 1
+	  param in name "source" type class_ref 138416 // location_set
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      extra_member 142256 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
       operation 183472 "begin"
 	public return_type class_ref 138672 // location_set_iterator
 	nparams 0
@@ -2532,6 +2619,89 @@ ${inlines}
 	
 	
 	
+      end
+
+      operation 183856 "find"
+	public return_type class_ref 138672 // location_set_iterator
+	nparams 1
+	  param in name "path" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Search for matching location, if no matching location return end()
+
+path is assumed to be relative to the bouml project_package.cppSrcDir"
+      end
+
+      operation 185776 "offset_path"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+   return offset_path_;
+}
+"
+	
+	
+	
+	
+	comment "The offset between the locations in the set and the
+base_path of the bouml project.
+
+For UmlArtifact_A in location_B -> UmlArtifact_A.package.cppSrcDir ~= rootpackage.cppSrcDir / offset_path / location_B.full_path"
+      end
+
+      operation 183344 "topdown"
+	stereotype "qvector"
+	const public return_type class_ref 128560 // location
+	multiplicity "*"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${stereotype}< ${type} * > ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${stereotype}< ${type} * > ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Get the sequence of locations in top-down order.
+
+This is provided as the (begin,end) iterator traversal operates
+in a depth-first type order."
+      end
+
+      operation 150192 "serialize"
+	preserve_cpp_body_indent const public explicit_return_type "void"
+	nparams 1
+	  param inout name "a_os" explicit_type "QTextOStream"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "This descends the location tree writing debug information to
+a_os as it goes.
+
+(Only if NO_LOG is undefined)"
+      end
+
+      extra_member 142384 "MODIFY"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
       end
 
       operation 150064 "insert"
@@ -2578,79 +2748,6 @@ no existing children have fullpaths a/b/c/...). Add a location
 as child with the new path.
 "
       end
-
-      operation 183856 "find"
-	public return_type class_ref 138672 // location_set_iterator
-	nparams 1
-	  param in name "path" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Search for matching location, if no matching location return end()
-
-path is assumed to be relative to the bouml project_package.cppSrcDir"
-      end
-
-      operation 183344 "topdown"
-	stereotype "qvector"
-	const public return_type class_ref 128560 // location
-	multiplicity "*"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${stereotype}< ${type} * > ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${stereotype}< ${type} * > ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Get the sequence of locations in top-down order.
-
-This is provided as the (begin,end) iterator traversal operates
-in a depth-first type order."
-      end
-
-      operation 185776 "offset_path"
-	const public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
-   return offset_path_;
-}
-"
-	
-	
-	
-	
-	comment "The offset between the locations in the set and the
-base_path of the bouml project.
-
-For UmlArtifact_A in location_B -> UmlArtifact_A.package.cppSrcDir ~= rootpackage.cppSrcDir / offset_path / location_B.full_path"
-      end
-
-      operation 150192 "serialize"
-	preserve_cpp_body_indent const public explicit_return_type "void"
-	nparams 1
-	  param inout name "a_os" explicit_type "QTextOStream"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "This descends the location tree writing debug information to
-a_os as it goes.
-
-(Only if NO_LOG is undefined)"
-      end
     end
 
     class 128432 "pathcmp"
@@ -2671,7 +2768,7 @@ ${inlines}
 The methods defined in this derived class allow some operations that do
 not reference the operating system.  This means that comparisons etc
 are for absolute paths without resolving symlinks."
-      class 131376 "typedef3"
+      class 131376 "path_type"
 	visibility protected stereotype "typedef" explicit_base_type "QDir"
 	cpp_decl "${comment}typedef ${type} ${name};
 "
@@ -2689,7 +2786,7 @@ are for absolute paths without resolving symlinks."
 	  a private
 	    cpp default "${type}"
 	    classrelation_ref 132784 // <generalisation>
-	  b parent class_ref 131376 // typedef3
+	  b parent class_ref 131376 // path_type
       end
 
       attribute 140848 "default_separator_"
