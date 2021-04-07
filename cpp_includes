@@ -29,3 +29,5 @@
 
 "QVector" "#include <qvector.h>"
 
+"std::unique_ptr" "#include <memory>"
+

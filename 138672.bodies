@@ -16,7 +16,7 @@ if(nullptr == loc_) // if no loc_, already at end
     while(loc_->parent())
     {
       // up to parent, seach for next sibling
-      for(unsigned int i = 0; i != loc_->parent()->children_.size(); ++i)
+      for(int i = 0; i != loc_->parent()->children_.size(); ++i)
       {
         if(loc_ == loc_->parent()->children().at(i))
         {
@@ -37,12 +37,13 @@ if(nullptr == loc_) // if no loc_, already at end
         }
       }
       // no sibling, check next parent
-      loc_ = loc_->parent();
+      loc_ = loc_->parent_;
     }
     // no next,
     return *this;
   }
 }
+return *this;
 !!!184496.cpp!!!	location_set_iterator(out loc : location, in descend : bool)
 if(descend)
 {

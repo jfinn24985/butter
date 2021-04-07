@@ -4,13 +4,13 @@
   end
   
   class_stereotypes  23 "actor" "auxiliary" "boundary" "control" "entity" "enum" "enum_pattern" "exception" "focus" "implementationClass" "interface" "@interface" "metaclass" "stereotype" "struct" "type" "typedef" "union" "utility" "enum_class" "template_typedef" "table" "trait"
-    ---- 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
-    ---> 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
+    ---- 7 "list" "set" "vector" "map" "unique_ptr" "shared_ptr" "qvector"
+    ---> 7 "list" "set" "vector" "map" "unique_ptr" "shared_ptr" "qvector"
     ---|> 4 "{complete,disjoint}" "{incomplete,disjoint}" "{complete,overlapping}" "{incomplete,overlapping}"
-    o--- 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
-    *--- 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
-    o--> 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
-    *--> 6 "list" "set" "vector" "map" "unique_ptr" "shared_ptr"
+    o--- 7 "list" "set" "vector" "map" "unique_ptr" "shared_ptr" "qvector"
+    *--- 7 "list" "set" "vector" "map" "unique_ptr" "shared_ptr" "qvector"
+    o--> 7 "list" "set" "vector" "map" "unique_ptr" "shared_ptr" "qvector"
+    *--> 7 "list" "set" "vector" "map" "unique_ptr" "shared_ptr" "qvector"
     -_-> 4 "friend" "from" "import" "instantiate"
     -_-|> 1 "bind"
   end
