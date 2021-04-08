@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 7
+  revision 8
   modified_by 48 "finnerty"
   // class settings
   
@@ -358,6 +358,148 @@ ${body}
 	
       end
     end
+
+    class 165680 "enumerate_path_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      extra_member 149808 "op<<(os, QString)"
+	
+	cpp "" "std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      classrelation 160944 // <dependency>
+	relation 160560 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 160944 // <dependency>
+	  b parent class_ref 128432 // enumerate_path
+      end
+
+      operation 214576 "enumerate_path_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 214704 "enumerate_path_access_methods"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218416 "enumerate_path_create_common_unix"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218544 "enumerate_path_create_common_dos"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218288 "enumerate_path_create_relative_unix"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218672 "enumerate_path_create_relative_dos"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218160 "enumerate_path_modify_method"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
   end
 
   deploymentview 128304 "unit-tests"
@@ -383,7 +525,7 @@ ${comment}
 ${includes}
 
 #define BOOST_TEST_DYN_LINK // only in one file
-#define BOOST_TEST_MODULE compound_document
+#define BOOST_TEST_MODULE butter2
 #include <boost/test/unit_test.hpp>
 
 ${namespace_start}
@@ -391,6 +533,27 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 131888 // compound_document_test
+      end
+    end
+
+    artifact 150064 "enumerate_path_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <boost/test/unit_test.hpp>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 165680 // enumerate_path_test
       end
     end
 
@@ -406,7 +569,6 @@ ${comment}
       cpp_src "${comment}
 ${includes}
 
-#define BOOST_TEST_MODULE location
 #include <boost/test/unit_test.hpp>
 
 ${namespace_start}
@@ -414,7 +576,6 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 145712 // location_test
-	class_ref 159152 // location_set_test
       end
     end
 

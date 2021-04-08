@@ -1,0 +1,25 @@
+format 224
+
+classcanvas 128048 class_ref 128432 // enumerate_path
+  classdiagramsettings member_max_width 0 end
+  xyz 47 9 2000
+end
+classcanvas 128176 class_ref 165680 // enumerate_path_test
+  classdiagramsettings member_max_width 0 end
+  xyz 290 235 2000
+end
+classcanvas 128432 class_ref 166064 // QDir
+  classdiagramsettings member_max_width 0 end
+  xyz 304 30 2000
+end
+relationcanvas 128304 relation_ref 160560 // <dependency>
+  from ref 128176 z 2001 to ref 128048
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128560 relation_ref 160688 // <generalisation>
+  from ref 128048 z 2001 to ref 128432
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

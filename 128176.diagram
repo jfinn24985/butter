@@ -12,7 +12,7 @@ classcanvas 129456 class_ref 8193 // UmlArtifact
   classdiagramsettings member_max_width 0 end
   xyz 665 29 2000
 end
-classcanvas 130864 class_ref 128432 // pathcmp
+classcanvas 130864 class_ref 128432 // enumerate_path
   classdiagramsettings member_max_width 0 end
   xyz 473 92 2000
 end

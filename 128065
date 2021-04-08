@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 10
+  revision 11
   modified_by 48 "finnerty"
   // class settings
   
@@ -63,6 +63,11 @@ format 224
     end
 
     classdiagram 134960 "location 2"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 141488 "enumerate_path"
       classdiagramsettings member_max_width 0 end
       size A4
     end
@@ -2750,7 +2755,7 @@ as child with the new path.
       end
     end
 
-    class 128432 "pathcmp"
+    class 128432 "enumerate_path"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -2763,30 +2768,19 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      comment "Minimal class to allow comparison of file paths as ordered lists of strings.
-
-The methods defined in this derived class allow some operations that do
-not reference the operating system.  This means that comparisons etc
-are for absolute paths without resolving symlinks."
-      class 131376 "path_type"
-	visibility protected stereotype "typedef" explicit_base_type "QDir"
-	cpp_decl "${comment}typedef ${type} ${name};
+      comment "Treat filesystem paths as first class objects.  This extends the
+Qt QDir class to allow paths to be manipulated.  Methods for
+path manipulation avoid operations that reference the real
+operating system filesystem.  This means that distinct paths
+are assumed to never refer to the same location, which is
+generally valid unless the paths involve symlinks.
 "
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-      end
-
-      classrelation 132784 // <generalisation>
-	relation 132784 ---|>
-	  a private
+      classrelation 161072 // <generalisation>
+	relation 160688 ---|>
+	  a public
 	    cpp default "${type}"
-	    classrelation_ref 132784 // <generalisation>
-	  b parent class_ref 131376 // path_type
+	    classrelation_ref 161072 // <generalisation>
+	  b parent class_ref 166064 // QDir
       end
 
       attribute 140848 "default_separator_"
@@ -2821,11 +2815,26 @@ are for absolute paths without resolving symlinks."
 "
       end
 
-      operation 151344 "pathcmp"
-	cpp_inline public explicit_return_type ""
+      extra_member 149296 "LIFETIME"
+	
+	cpp "
+// Lifetime methods
+
+" "
+// Lifetime methods
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 151344 "enumerate_path"
+	public explicit_return_type ""
 	nparams 0
-	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract} : QDir ()
-    {};"
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract}: QDir() {}"
 	
 	
 	
@@ -2833,48 +2842,58 @@ are for absolute paths without resolving symlinks."
 	comment "Default ctor"
       end
 
-      operation 151472 "pathcmp"
-	cpp_inline public explicit_return_type ""
+      operation 151472 "enumerate_path"
+	public explicit_return_type ""
 	nparams 1
 	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${abstract} : QDir (normalise (a_path))
-    {};"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${abstract}: QDir(normalise(a_path)) {}"
 	
 	
 	
 	
-	comment "Construct from string"
+	comment "Construct from string (automatically normalizing the path)"
       end
 
-      operation 151600 "pathcmp"
-	cpp_inline public explicit_return_type ""
+      operation 151600 "enumerate_path"
+	public explicit_return_type ""
 	nparams 1
 	  param in name "source" explicit_type "QDir"
-	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract} : QDir( normalise( source.path() ) )
-    {};"
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract}: QDir(normalise(source.path())) {}"
 	
 	
 	
 	
-	comment "Construct from base class"
+	comment "Construct from base class (automatically normalizing path)"
       end
 
-      operation 151728 "~pathcmp"
-	cpp_inline public explicit_return_type ""
+      operation 151728 "~enumerate_path"
+	cpp_virtual public explicit_return_type ""
 	nparams 0
-	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${abstract} {};"
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${abstract} {}"
 	
 	
 	
 	
       end
 
-      operation 151856 "pathcmp"
-	cpp_inline public explicit_return_type ""
+      operation 151856 "enumerate_path"
+	stereotype "copy"
+	public explicit_return_type ""
 	nparams 1
-	  param in name "source" type class_ref 128432 // pathcmp
-	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract} : QDir (source)
-    {};"
+	  param in name "source" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract}: QDir(source) {}"
+	
+	
+	
+	
+      end
+
+      operation 214960 "enumerate_path"
+	stereotype "move"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${abstract}: QDir(std::move(source)) {}"
 	
 	
 	
@@ -2882,26 +2901,58 @@ are for absolute paths without resolving symlinks."
       end
 
       operation 151984 "operator ="
-	cpp_inline public return_type class_ref 128432 // pathcmp
+	public return_type class_ref 128432 // enumerate_path
 	nparams 1
-	  param in name "source" type class_ref 128432 // pathcmp
+	  param in name "source" type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
-      this->setPath( source.path() );
-      return *this;
-    };"
+   this->setPath(source.path());
+   return *this;
+}"
 	
 	
 	
 	
       end
 
+      operation 217904 "swap"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "other" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 149424 "ACCESS"
+	
+	cpp "
+// Access methods
+
+" "
+// Access methods
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
       operation 152112 "depth"
-	const cpp_inline public explicit_return_type "uint"
+	const public explicit_return_type "uint"
 	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
-      const QString path_ (path ());
-      return (unsigned int)(path_.count(default_separator_[0]) + (path_.at(path_.length() - 1) == default_separator_[0] ? 0 : 1));
-    };"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
 	
 	
 	
@@ -2912,9 +2963,9 @@ are for absolute paths without resolving symlinks."
       operation 152240 "equality"
 	preserve_cpp_body_indent const public explicit_return_type "bool"
 	nparams 1
-	  param in name "a_rhs" type class_ref 128432 // pathcmp
+	  param in name "a_rhs" type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -2928,9 +2979,9 @@ are for absolute paths without resolving symlinks."
       operation 152368 "has_subpath"
 	preserve_cpp_body_indent const public explicit_return_type "bool"
 	nparams 1
-	  param in name "a_rhs" type class_ref 128432 // pathcmp
+	  param in name "a_rhs" type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -2949,7 +3000,7 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	nparams 1
 	  param in name "a_count" explicit_type "uint"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -2960,10 +3011,10 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
       end
 
       operation 152624 "operator =="
-	friend cpp_inline public explicit_return_type "bool"
+	friend public explicit_return_type "bool"
 	nparams 2
-	  param in name "a_lhs" type class_ref 128432 // pathcmp
-	  param in name "a_rhs" type class_ref 128432 // pathcmp
+	  param in name "a_lhs" type class_ref 128432 // enumerate_path
+	  param in name "a_rhs" type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract} {
   return a_lhs.equality (a_rhs);
 };"
@@ -2973,7 +3024,7 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	
       end
 
-      extra_member 128048 "using"
+      extra_member 128048 "using QDir::path"
 	
 	cpp "  using QDir::path;" ""
 	java ""
@@ -2983,7 +3034,7 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	mysql ""
       end
 
-      extra_member 128176 "using"
+      extra_member 128176 "using QDir::exists"
 	
 	cpp "  using QDir::exists;" ""
 	java ""
@@ -2993,7 +3044,7 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	mysql ""
       end
 
-      extra_member 128304 "using"
+      extra_member 128304 "using QDir::isRelative"
 	
 	cpp "  using QDir::isRelative;" ""
 	java ""
@@ -3006,9 +3057,9 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
       operation 152752 "create_common"
 	preserve_cpp_body_indent const public explicit_return_type "unistr"
 	nparams 1
-	  param in name "a_other" type class_ref 128432 // pathcmp
+	  param in name "a_other" type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -3017,15 +3068,15 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	
 	comment "Generate a path that has the greatest shared path between this and a_other.
 
-Will returnempty string when paths are on different drives."
+Will return empty string when paths are on different drives."
       end
 
       operation 152880 "create_relative"
 	preserve_cpp_body_indent const public explicit_return_type "unistr"
 	nparams 1
-	  param in name "a_target" type class_ref 128432 // pathcmp
+	  param in name "a_target" type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -3037,27 +3088,29 @@ Will returnempty string when paths are on different drives."
 canonical (path_ + relative (a_target)) <==> a_target"
       end
 
-      operation 153008 "mkpath"
-	preserve_cpp_body_indent const public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
+      extra_member 149552 "MODIFY"
+	
+	cpp "
+// Modification methods
+
+" "
+// Modification methods
+
 "
-	
-	
-	
-	
-	comment "Create this and all parent directories for the current path."
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
       end
 
       operation 153136 "normalise"
-	class_operation cpp_inline private explicit_return_type "unistr"
+	class_operation private explicit_return_type "unistr"
 	nparams 1
 	  param in name "a_path" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
-      return -1 == a_path.find (other_separator_) ? a_path : normalise_(a_path);
-    };"
+   return -1 == a_path.find (other_separator_) ? a_path : normalise_(a_path);
+}"
 	
 	
 	
@@ -3070,7 +3123,7 @@ canonical (path_ + relative (a_target)) <==> a_target"
 	nparams 1
 	  param in name "a_path" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -3081,12 +3134,12 @@ canonical (path_ + relative (a_target)) <==> a_target"
       end
 
       operation 153392 "operator /"
-	const cpp_inline public return_type class_ref 128432 // pathcmp
+	const public return_type class_ref 128432 // enumerate_path
 	nparams 1
-	  param in name "rhs" type class_ref 128432 // pathcmp
+	  param in name "rhs" type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} {
-      return pathcmp(path () + default_separator_ + rhs.path ());
-    };"
+   return ${type}(path () + default_separator_ + rhs.path ());
+}"
 	
 	
 	
@@ -3095,12 +3148,12 @@ canonical (path_ + relative (a_target)) <==> a_target"
       end
 
       operation 153520 "operator /"
-	const cpp_inline public return_type class_ref 128432 // pathcmp
+	const public return_type class_ref 128432 // enumerate_path
 	nparams 1
 	  param in name "rhs" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
-      return pathcmp(path () + default_separator_ + normalise (rhs));
-    };"
+   return ${type}(path () + default_separator_ + normalise (rhs));
+}"
 	
 	
 	
@@ -3109,7 +3162,7 @@ canonical (path_ + relative (a_target)) <==> a_target"
       end
 
       operation 153648 "path_localised"
-	const cpp_inline public explicit_return_type "unistr"
+	const public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
       return QDir::convertSeparators (path ());
@@ -3127,7 +3180,7 @@ writing paths for external visibility."
 	nparams 1
 	  param in name "a_trans" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -3139,19 +3192,50 @@ by some arbitrary string \"a_trans\"."
       end
 
       operation 153904 "setPath"
-	cpp_inline public explicit_return_type "void"
+	public explicit_return_type "void"
 	nparams 1
 	  param in name "a_path" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} {
-      QDir::setPath (normalise (a_path));
-    };"
+   QDir::setPath (normalise (a_path));
+}"
 	
 	
 	
 	
-	comment "Change to a new internal path."
+	comment "Change to a new internal path (automatically normalize)"
+      end
+
+      extra_member 149680 "MODIFY FILESYSTEM"
+	
+	cpp "
+// Modify filesystem methods
+
+" "
+// Modify filesystem methods
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 153008 "mkpath"
+	preserve_cpp_body_indent const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Create this and all parent directories for the current path."
       end
     end
+
   end
 
   deploymentview 128065 "butter"
@@ -3260,6 +3344,29 @@ ${namespace_end}"
       associated_elems
 	class_ref 128560 // location
 	class_ref 138416 // location_set
+      end
+    end
+
+    artifact 129840 "utility"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 128432 // enumerate_path
       end
     end
   end

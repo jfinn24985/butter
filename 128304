@@ -1,6 +1,6 @@
 format 224
 "External" // External
-  revision 1
+  revision 2
   modified_by 48 "finnerty"
   // class settings
   
@@ -31,4 +31,6 @@ format 224
    end
   
   package_ref 128432 // Boost
+
+  package_ref 134960 // Qt
 end
