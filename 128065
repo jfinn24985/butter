@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 11
+  revision 12
   modified_by 48 "finnerty"
   // class settings
   
@@ -2768,13 +2768,28 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      comment "Treat filesystem paths as first class objects.  This extends the
-Qt QDir class to allow paths to be manipulated.  Methods for
-path manipulation avoid operations that reference the real
-operating system filesystem.  This means that distinct paths
-are assumed to never refer to the same location, which is
-generally valid unless the paths involve symlinks.
+      comment "Treat filesystem paths as a list of filesystem folder names.
+This extends the Qt QDir class to allow paths to be manipulated.
+Methods for path manipulation avoid operations that reference
+the real operating system filesystem.  This means that distinct
+paths are assumed to never refer to the same location, which
+is generally valid unless the paths involve symlinks.
 "
+      extra_member 156336 "op<<(os, QString)"
+	
+	cpp "" "std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
       classrelation 161072 // <generalisation>
 	relation 160688 ---|>
 	  a public
@@ -2945,6 +2960,21 @@ generally valid unless the paths involve symlinks.
 	mysql ""
       end
 
+      operation 225456 "is_dos_absolute"
+	const private explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Test if the path starts with a drive letter as in \"?:\""
+      end
+
       operation 152112 "depth"
 	const public explicit_return_type "uint"
 	nparams 0
@@ -3104,22 +3134,8 @@ canonical (path_ + relative (a_target)) <==> a_target"
 	mysql ""
       end
 
-      operation 153136 "normalise"
-	class_operation private explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
-   return -1 == a_path.find (other_separator_) ? a_path : normalise_(a_path);
-}"
-	
-	
-	
-	
-	comment "Convert string to form with all separators as \"/\" (inline part)"
-      end
-
-      operation 153264 "normalise_"
-	class_operation preserve_cpp_body_indent private explicit_return_type "unistr"
+      operation 153264 "normalise"
+	class_operation preserve_cpp_body_indent public explicit_return_type "unistr"
 	nparams 1
 	  param in name "a_path" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
@@ -3235,7 +3251,6 @@ by some arbitrary string \"a_trans\"."
 	comment "Create this and all parent directories for the current path."
       end
     end
-
   end
 
   deploymentview 128065 "butter"
@@ -3362,6 +3377,10 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+
+#include <config.h>
+#include <iostream>
+
 ${namespace_start}
 ${members}
 ${namespace_end}"

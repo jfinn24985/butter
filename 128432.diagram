@@ -1,16 +1,16 @@
 format 224
 
 artifactcanvas 128048 artifact_ref 130480 // butter.lib
-  xyz 175 48 2000
+  xyz 167.3 45.9 2000
 end
 artifactcanvas 128432 artifact_ref 128816 // compound_document
-  xyz 104 240 2000
+  xyz 97.2 237.1 2000
 end
 artifactcanvas 128688 artifact_ref 128432 // butter_constants
-  xyz 519 225 2000
+  xyz 512.5 222.6 2000
 end
 artifactcanvas 128944 artifact_ref 129456 // location
-  xyz 280 242 2000
+  xyz 273.6 239.3 2000
 end
 containcanvas 128560
   from ref 128048 z 2001 to ref 128432
