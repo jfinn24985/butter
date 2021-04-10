@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 12
+  revision 13
   modified_by 48 "finnerty"
   // class settings
   
@@ -2006,6 +2006,27 @@ QDir::exists(location_base_path) or QDir::mkdir(location_base_path)."
 
       operation 148528 "location"
 	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 1
+	  param in name "path" explicit_type "unistr"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${abstract};"
+	cpp_def "// -
+
+${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}
+: children_()
+, parent_(nullptr)
+, path_(${p0})
+, state_(nullptr)
+{}
+"
+	
+	
+	
+	
+	comment "Ctor for location tree root objects"
+      end
+
+      operation 232112 "location"
+	preserve_cpp_body_indent public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract};"
 	cpp_def "// -
@@ -2013,7 +2034,7 @@ QDir::exists(location_base_path) or QDir::mkdir(location_base_path)."
 ${inline}${typeprefix}${class}::${name}${(}${)}
 : children_()
 , parent_(nullptr)
-, path_('.')
+, path_(\".\")
 , state_(nullptr)
 {}
 "
@@ -2225,7 +2246,7 @@ ${inlines}
       
       comment "Container for the set of locations that will be used in defining the build system."
       attribute 154032 "offset_path_"
-	private explicit_type "unistr"
+	private type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -2648,7 +2669,7 @@ path is assumed to be relative to the bouml project_package.cppSrcDir"
 	const public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
-   return offset_path_;
+   return offset_path_.path();
 }
 "
 	
@@ -2752,6 +2773,22 @@ match or no match to the new path (eg new path is a/b/c and
 no existing children have fullpaths a/b/c/...). Add a location
 as child with the new path.
 "
+      end
+
+      operation 231984 "root"
+	const constvalue public return_type class_ref 128560 // location
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return root_.get();
+}
+"
+	
+	
+	
+	
+	comment "Return a pointer to the root location, may be nul"
       end
     end
 

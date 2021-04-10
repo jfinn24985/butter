@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 9
+  revision 10
   modified_by 48 "finnerty"
   // class settings
   
@@ -608,6 +608,7 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 145712 // location_test
+	class_ref 159152 // location_set_test
       end
     end
 

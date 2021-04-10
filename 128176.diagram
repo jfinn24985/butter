@@ -18,10 +18,10 @@ classcanvas 130864 class_ref 128432 // enumerate_path
 end
 relationcanvas 128176 relation_ref 132144 // <composition>
   decenter_begin 197
-  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 168 118 3006 to point 157.9 131.3
-  line 128304 z 3006 to point 157.9 267.9
+  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 168 120 3006 to point 157 131
+  line 128304 z 3006 to point 157 267
   line 128432 z 3006 to ref 128048
-  role_a_pos 187 187 3000 role_b_pos 196 66 3000
-  multiplicity_a_pos 236 223 3000 multiplicity_b_pos 234 102 3000
+  role_a_pos 187 195 3000 role_b_pos 196 71 3000
+  multiplicity_a_pos 236 231 3000 multiplicity_b_pos 234 107 3000
 end
 end

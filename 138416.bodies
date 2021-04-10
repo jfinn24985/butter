@@ -4,8 +4,8 @@ return (root_ ? location_set_iterator(root_.get(), true) : location_set_iterator
 !!!183600.cpp!!!	end() : location_set::location_set_iterator
 return location_set_iterator();
 !!!183856.cpp!!!	find(in path : unistr) : location_set::location_set_iterator
-QString real_{ offset_path() + '/' + path };
-for(auto it_{ begin() }; it_ != end(); ++it_)
+QString real_{ (offset_path_ / path).path() };
+for(auto it_ = begin(); it_ != end(); ++it_)
 {
   if(it_->full_path() == real_)
   {
@@ -41,43 +41,43 @@ return v;
 BUTTER_ALWAYS(DEBUG, "Programming error: attempt to get debug info in release build");
 if (DEBUG)
 {
-  location const * top_ = nullptr;
-  int i_ = 0;
-  for(location * loc_ : topdown())
+  if(! root_)
   {
-    if (loc_->parent() == top_ && top_ != nullptr)
+    a_os << "EMPTY location set.\n";
+    return;
+  }
+  QVector< const location * > stack_;
+  stack_.push_back(root_.get());
+  while(! stack_.isEmpty())
+  {
+    location const * top_ = stack_.front();
+    stack_.pop_front();
+    a_os << "<<BEGIN location [" << top_->full_path() << "]\n";
+    for(location const * loc_ : top_->children())
     {
-      a_os << "<<END location [" << top_->full_path () << "]\n";
-      i_ = 0;
+      a_os << "                |- [" << loc_->path() << "]\n";
+      if(! loc_->children().isEmpty())
+      {
+        stack_.push_back(loc_);
+      }
     }
-    a_os << "[" << i_ << "] = " << loc_->path() << "\n";
-    ++i_;
-    if (loc_->parent() == top_)
-    {
-      top_ = loc_;
-      a_os << "<<BEGIN location [" << top_->full_path() << "]\n";
-    }
-    // if (loc_->packages_.count () > 0)
-    // {
-    //   a_os << "Packages:\n";
-    //   for (unsigned int i_(0); i_ < packages_.count (); ++i_)
-    //   {
-    //     a_os << "[" << i_ << "] = " << packages_.at (i_)->name () << "\n";
-    //   }
-    // }
+    a_os << "<<  END location [" << top_->full_path() << "]\n";
   }
 }
 
 !!!150064.cpp!!!	insert(in a_path : unistr) : location_set::location_set_iterator
+QTextOStream l(stdout);
 if(! root_)
 {
+  l << "No root, adding path [" << a_path << "]\n";
   // Empty root so this is the current "root" location
-  offset_path_ = a_path;
-  root_.reset(new location());
+  root_.reset(new location(a_path));
+  l << "         root.path   [" << root_->path() << "]\n";
+  l << "         offset_path [" << offset_path_.path() << "]\n";
   return location_set_iterator(root_.get(), false);
 }
-QDir const search_path_{ this->offset_path_ + '/' + a_path };
-BUTTER_REQUIRE(end() == find(a_path), "This location is already present in the set" );
+enumerate_path search_path_{ this->offset_path_ / a_path };
+//BUTTER_REQUIRE(end() == find(a_path), "This location is already present in the set" );
 //
 // [Programming notes] There are three possible insertion options.
 //
@@ -92,6 +92,8 @@ BUTTER_REQUIRE(end() == find(a_path), "This location is already present in the s
 // existing location has fullpath a/b and no children with
 // fullpath a/b/c).
 //
+// B0) Have no sub-locations
+//
 // B1) The existing location has a child that is a subdirectory
 // of the new path (eg new path is a/b/c, existing location has
 // fullpath a/b and children exist with fullpaths a/b/c/...). A new
@@ -103,71 +105,79 @@ BUTTER_REQUIRE(end() == find(a_path), "This location is already present in the s
 // no existing children have fullpaths a/b/c/...). Add a location
 // as child with the new path.
 //
-QDir top_path_{ QString{ this->offset_path_ + '/' + root_->path_ } };
-if(search_path_.path().startsWith(top_path_.path()))
+enumerate_path top_path_{ this->offset_path_ / root_->path_ };
+l << "Have root, adding path [" << search_path_.path() << "]\n";
+l << "               to path [" << top_path_.path() << "]\n";
+l << "           common path [" << top_path_.create_common(search_path_) << "]\n";
+l << "         relative path [" << top_path_.create_relative(search_path_) << "]\n";
+if(".." != top_path_.create_relative(search_path_))
 {
+  l << " - have common root path\n";
   // case B
-  QString p_{ search_path_.path().mid(top_path_.path().size()) };
-  //  ^ used size to also remove last separator
+  if(0 == root_->children().size())
+  {
+    // case B0) No current children
+    std::unique_ptr< location > newloc_{ new location(top_path_.create_relative(search_path_), *root_) };
+    root_->children_.push_back(newloc_.release());
+    l << "No children, adding path [" << top_path_.create_relative(search_path_) << "]\n";
+    l << "         new.path      [" << root_->children_.back()->path() << "]\n";
+    l << "         new.full_path [" << root_->children_.back()->full_path() << "]\n";
+    l << "         offset_path   [" << offset_path_.path() << "]\n";
+    return location_set_iterator(root_->children_.back(), false);
+  }
+  // Search for closest match (case B2 (and B1))
   location * loc_ = root_.get();
-  QStringList parts_;
-  if (QDir::separator() == '/')
+  search_path_.setPath(top_path_.create_relative(search_path_));
+  location * tmp_;
+  do
   {
-    parts_ = p_.split('/');
-  }
-  else
-  {
-    QChar regex[] = { '[', '/', QDir::separator(), ']', '0' };
-    QRegExp re{ QString(regex) };
-    parts_ = p_.split(re);
-  }
-  QString np_;
-  for(QString s_ : parts_)
-  {
-    np_ = (np_.isEmpty() ? s_ : np_ + '/' + s_);
+    tmp_ = loc_;
     for(location * ll_ : loc_->children_)
     {
-      if(ll_->path() == np_)
+      enumerate_path sub_(ll_->path());
+      if(sub_.path() == sub_.create_common(search_path_))
       {
-        // Need to descend into location
+        // Partial match, descend into location
         loc_ = ll_;
-        np_.clear();
+        search_path_.setPath(sub_.create_relative(search_path_));
         break;
       }
     }
   }
-  // loc_ now closest location, check for children that should be
-  // moved to children of the new location
-  std::unique_ptr< location > newloc_{ new location(np_, *loc_) };
+  while(tmp_ == loc_); // Found closest match
+  std::unique_ptr< location > newloc_{ new location(search_path_.path(), *loc_) };
   loc_->children_.push_back( newloc_.release() );
-  // (np should contain the remaining path)
-  for(int i_ = 0; i_ + 1 < loc_->children_.size(); ++i_)
+  // Move location pointer to new location
+  loc_ = loc_->children_.last();
+
+  // POSSIBLY MOVE CHILDREN (case B1)
+  //
+  // loc_ is now new location, check if any children of parent should be
+  // moved to the new location.
+  // (search_path_ should contain the remaining path)
+  QVector< int > tomove_;
+  for(int i_ = 0; i_ + 1 < loc_->parent_->children_.size(); ++i_)
   {
-    if(loc_->children_[i_]->path().startsWith(np_))
+    enumerate_path sub_(loc_->parent_->children_[i_]->path());
+    if(search_path_ == search_path_.create_common(sub_))
     {
-      // Need to transfer into new location
-      newloc_->children_.push_back(loc_->children_[i_]);
-      loc_->children_.remove(i_);
-      --i_;
-      newloc_->children_.last()->path_ = newloc_->children_.last()->path_.mid(np_.size());
+      tomove_.push_back(i_);
     }
   }
-//butter::pathcmp const diff_path_( parent_path_.create_relative( a_path ) );
-//butter::location * cursor_ = this;
-//for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
-//{
-//  std::unique_ptr< location > tmp_( new location(diff_path_.leaf_at(i_), *cursor_ ) );
-//  if( cursor_->children_.count() == cursor_->children_.size() )
-//  {
-//    cursor_->children_.resize( cursor_->children_.size() + 1 );
-//  }
-//  cursor_->children_.insert( cursor_->children_.count(), tmp_.release() );
-//  cursor_ = cursor_->children_.at( cursor_->children_.count() - 1 );
-//}
-  return location_set_iterator(loc_->children_.back(), false);
+  while(! tomove_.isEmpty())
+  {
+    // Need to transfer into new location
+    loc_->children_.push_back(loc_->parent_->children_[tomove_.last()]);
+    loc_->parent_->children_.remove(tomove_.last());
+    tomove_.pop_back();
+    loc_->children_.last()->path_ = search_path_.create_relative(loc_->children_.last()->path_);
+  }
+  return location_set_iterator(loc_, false);
 }
 else
 {
   // case A
+  // Find common base, update offset, create new root, put current root into new
+  // location. If new path doesn't match new root, also add as child
   return location_set_iterator();
 }

@@ -2,17 +2,26 @@ class location_set_test
 !!!207536.cpp!!!	location_set_constructor()
 butter::location_set loc;
 BOOST_CHECK(loc.begin() == loc.end());
-BOOST_CHECK("" == loc.offset_path());
+BOOST_CHECK("." == loc.offset_path());
 BOOST_CHECK(loc.topdown().empty());
 BOOST_CHECK(loc.find("path") == loc.end());
+BOOST_CHECK(nullptr == loc.root());
+
+QTextOStream os(stdout);
+loc.serialize(os);
 
 !!!207920.cpp!!!	location_set_insert_method()
 butter::location_set loc;
 loc.insert("path");
+BOOST_CHECK(nullptr != loc.root());
 BOOST_CHECK(loc.begin() != loc.end());
 BOOST_CHECK("path" == loc.offset_path());
 BOOST_CHECK(! loc.topdown().empty());
+BOOST_CHECK(loc.begin()->path() == ".");
 //BOOST_CHECK(loc.find("path") != loc.end());
+
+QTextOStream os(stdout);
+loc.serialize(os);
 
 !!!208048.cpp!!!	location_set_insert_multiple()
 butter::location_set loc;
@@ -25,6 +34,9 @@ BOOST_CHECK("path1" == loc.offset_path());
 BOOST_CHECK_EQUAL(4, loc.topdown().size());
 
 //BOOST_CHECK(loc.find("path") != loc.end());
+
+QTextOStream os(stdout);
+loc.serialize(os);
 
 !!!207792.cpp!!!	location_set_value_method()
 butter::location loc;
