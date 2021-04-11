@@ -98,8 +98,9 @@ if(! root_)
   return root_.get();
 }
 location * cache_ = root_.get();
-enumerate_path search_path_{ a_path };
-enumerate_path cache_path_{ cache_->path() };
+const enumerate_path search_path_{ src_dir_ / a_path };
+l << "## inserting path : " << search_path_.path() <<  ".\n";
+enumerate_path cache_path_{ src_dir_ / cache_->path() };
 // in "if" below "else" clause would mean current cache_ value fits.
 if(! cache_path_.equality( search_path_ ) )
 {
@@ -120,12 +121,9 @@ if(! cache_path_.equality( search_path_ ) )
     {
       std::unique_ptr< location > tmp_( new location(newbase_.leaf_at(i_), *cache_ ) );
       l << "### add location at : "<< newbase_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
-      for(location * tmp : cache_->children())
-      {
-        l << "#### child of : "<<  cache_->path() << " ->  " << tmp->path() <<  "\n";
-      }
       cache_ = tmp_.release();
     }
+    l << "### add location at : "<< newbase_.leaf_at(newbase_.depth() - 1) << " as child of " << cache_->path() <<  "\n";
     root_->path_ = newbase_.leaf_at(newbase_.depth() - 1);
     cache_->children_.push_back(root_.release());
     root_.reset(super_.release());
@@ -134,7 +132,7 @@ if(! cache_path_.equality( search_path_ ) )
     cache_path_ = root_->full_path();
     //if ( DEBUG )
     //{
-    l << "## Found common parent [" << root_->full_path() << "]\n";
+    l << "## Found common parent [" << cache_path_.path() << "]\n";
     //}
     if ( ! cache_path_.equality( search_path_ ) )
     {
@@ -142,7 +140,8 @@ if(! cache_path_.equality( search_path_ ) )
       //{
       l << "## Package was below new base.\n";
       //}
-      enumerate_path const diff_path_( cache_path_.create_relative( search_path_ ) );
+      enumerate_path const diff_path_( (src_dir_ / cache_path_).create_relative( search_path_ ) );
+      l << "## path is now : " << diff_path_.path() << ".\n";
       for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
       {
         l << "### add location at : "<< diff_path_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";

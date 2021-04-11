@@ -100,10 +100,10 @@ loc.value(&dpi);
 BOOST_CHECK_EQUAL(314, *reinterpret_cast<const int *>(loc.value()));
 !!!245936.cpp!!!	location_set_insert_sibling_root()
 butter::location_set loc("src");
-loc.insert("../butter/path1");
-loc.insert("../butter1/path2");
-loc.insert("../butter2/path3");
-loc.insert("../butter3/path1/path2/path4");
+loc.insert("ax/path1/path2");
+loc.insert("ax/path2");
+loc.insert("../cat/path3");
+loc.insert("dog/path1/path2/path4");
 
 BOOST_CHECK(".." == loc.base_path());
 BOOST_CHECK_EQUAL(4, loc.topdown().size());
