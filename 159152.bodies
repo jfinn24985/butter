@@ -2,9 +2,9 @@ class location_set_test
 !!!207536.cpp!!!	location_set_constructor()
 butter::location_set loc;
 BOOST_CHECK(loc.begin() == loc.end());
-BOOST_CHECK("." == loc.offset_path());
+BOOST_CHECK(loc.offset_path().isEmpty());
 BOOST_CHECK(loc.topdown().empty());
-BOOST_CHECK(loc.find("path") == loc.end());
+//BOOST_CHECK(loc.find("path") == loc.end());
 BOOST_CHECK(nullptr == loc.root());
 
 QTextOStream os(stdout);
@@ -17,7 +17,7 @@ BOOST_CHECK(nullptr != loc.root());
 BOOST_CHECK(loc.begin() != loc.end());
 BOOST_CHECK("path" == loc.offset_path());
 BOOST_CHECK(! loc.topdown().empty());
-BOOST_CHECK(loc.begin()->path() == ".");
+BOOST_CHECK(loc.begin()->path() == "path");
 //BOOST_CHECK(loc.find("path") != loc.end());
 
 QTextOStream os(stdout);

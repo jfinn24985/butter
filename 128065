@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 13
+  revision 15
   modified_by 48 "finnerty"
   // class settings
   
@@ -2245,20 +2245,6 @@ ${inlines}
       mysql_decl ""
       
       comment "Container for the set of locations that will be used in defining the build system."
-      attribute 154032 "offset_path_"
-	private type class_ref 128432 // enumerate_path
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "This defines the offset between the base_path used in the bouml project
-and the locations contained in the set.  "
-      end
-
       classrelation 140464 // root_ (<directional composition>)
 	relation 140208 *-->
 	  stereotype "unique_ptr"
@@ -2547,8 +2533,7 @@ ${inlines}
 	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw}
-: offset_path_()
-, root_()
+: root_()
 {}
 "
 	
@@ -2648,7 +2633,7 @@ ${inlines}
       end
 
       operation 183856 "find"
-	public return_type class_ref 138672 // location_set_iterator
+	private return_type class_ref 138672 // location_set_iterator
 	nparams 1
 	  param in name "path" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -2665,11 +2650,33 @@ ${inlines}
 path is assumed to be relative to the bouml project_package.cppSrcDir"
       end
 
+      operation 238640 "find_closest"
+	const public return_type class_ref 128560 // location
+	nparams 1
+	  param in name "a_path" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Attempt to find the closest location to a_path.
+
+\\pre root.path.fullpath.has_subpath(a_path)
+
+\\result - return nul if location_set is empty
+           - result.path.fullpath.has_subpath(a_path)
+"
+      end
+
       operation 185776 "offset_path"
 	const public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract} {
-   return offset_path_.path();
+   return (root_ ? root_->path() : QString());
 }
 "
 	
@@ -2742,36 +2749,13 @@ a_os as it goes.
 	
 	
 	
-	comment "Create a new location object and return an iterator to it.
+	comment "Find or create a new location object that matches the given
+path.  If new locations are created, one location is created
+for each level of the path that is a sub-path of offset_path.
 
-\\pre find(a_path) = end
 
-The created object is owned by this object or one of its
-descendents.
-
-[Programming notes] There are three possible insertion options.
-
-A) a_path is not a subdirectory of the current root location:
-A new root location is created and the current root's path is
-altered before adding as a child.  A new location is added to
-the new root with this path. The offset_path is adjusted for
-the new root location.
-
-B) A subdirectory of any existing location.  With the existing
-location being the closest match (eg new path is a/b/c/d,
-existing location has fullpath a/b and no children with
-fullpath a/b/c).
-
-B1) The existing location has a child that is a subdirectory
-of the new path (eg new path is a/b/c, existing location has
-fullpath a/b and children exist with fullpaths a/b/c/...). A new
-location is added with the new path and the child (or children)
-moved to the new location with altered paths.
-
-B2) The existing location has a child with only a partial
-match or no match to the new path (eg new path is a/b/c and
-no existing children have fullpaths a/b/c/...). Add a location
-as child with the new path.
+\\post new.offset_path.equality(old.offset_path) or new.offset_path.has_subpath(old.offset_path)
+\\post result.path = search_path.leaf_at(search_path.depth - 1)
 "
       end
 

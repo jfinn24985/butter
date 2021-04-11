@@ -53,11 +53,11 @@ return false;
 
 !!!152368.cpp!!!	has_subpath(in a_rhs : enumerate_path) : bool
 // simple test that a subdirs path string must have longer pathname
-const QString lhs_ = absPath ();
-const QString rhs_ = a_rhs.absPath ();
-bool Result (lhs_.length () < rhs_.length ());
+const QString lhs_ = absolutePath();
+const QString rhs_ = a_rhs.absolutePath ();
+bool Result(lhs_.length () < rhs_.length ());
 // Test if rhs_ begins with lhs_
-if (Result)
+if( Result )
 {
   Result = rhs_.startsWith (lhs_);
 }
