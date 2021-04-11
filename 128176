@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 11
+  revision 12
   modified_by 48 "finnerty"
   // class settings
   
@@ -343,7 +343,67 @@ ${body}
 	
       end
 
+      operation 245168 "location_set_insert_below_root"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 245552 "location_set_insert_src_dir"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 245680 "location_set_insert_negative_dir"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
       operation 207792 "location_set_value_method"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 245936 "location_set_insert_sibling_root"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -529,6 +589,10 @@ ${body}
 	
 	
       end
+    end
+
+    activity 128048 "location_set_insert_sibling_root"
+      specification operation_ref 245680 // location_set_insert_negative_dir
     end
   end
 

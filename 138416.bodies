@@ -1,18 +1,8 @@
 class location_set
-!!!183472.cpp!!!	begin() : location_set::location_set_iterator
-return (root_ ? location_set_iterator(root_.get(), true) : location_set_iterator());
-!!!183600.cpp!!!	end() : location_set::location_set_iterator
-return location_set_iterator();
-!!!183856.cpp!!!	find(in path : unistr) : location_set::location_set_iterator
-QString real_{ (enumerate_path(offset_path()) / path).path() };
-for(auto it_ = begin(); it_ != end(); ++it_)
-{
-  if(it_->full_path() == real_)
-  {
-    return it_;
-  }
-}
-return location_set_iterator();
+!!!185776.cpp!!!	base_path() : unistr
+return (root_  
+  ? (src_dir_ / root_->path()).path()
+  : src_dir_.path());
 !!!238640.cpp!!!	find_closest(in a_path : enumerate_path) : location
 if( ! root_ ) return nullptr;
 butter::enumerate_path const parent_path_{ root_->path() };
@@ -92,19 +82,24 @@ if (DEBUG)
   }
 }
 
-!!!150064.cpp!!!	insert(in a_path : unistr) : location_set::location_set_iterator
+!!!150064.cpp!!!	insert(in a_path : unistr) : location
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+#if DEBUG
 QTextOStream l(stdout);
+#endif
 if(! root_)
 {
   l << "No root, adding path [" << a_path << "]\n";
   // Empty root so this is the current "root" location
   root_.reset(new location(a_path));
   l << "         root.path   [" << root_->path() << "]\n";
-  return location_set_iterator(root_.get(), false);
+  return root_.get();
 }
 location * cache_ = root_.get();
 enumerate_path search_path_{ a_path };
-enumerate_path cache_path_{ cache_->full_path() };
+enumerate_path cache_path_{ cache_->path() };
 // in "if" below "else" clause would mean current cache_ value fits.
 if(! cache_path_.equality( search_path_ ) )
 {
@@ -112,12 +107,27 @@ if(! cache_path_.equality( search_path_ ) )
   {
     //if ( DEBUG )
     //{
-    l << "## Package below base dir. Reparenting base (TODO).\n";
+    l << "## Package below base dir. Reparenting base (TODO: current impl introduces jump paths).\n";
     //}
     // Reparent
-    std::unique_ptr< location > super_{ new location(cache_path_.create_common( search_path_ )) };
+    enumerate_path newbase_{ cache_path_.create_common( search_path_ ) };
+    std::unique_ptr< location > super_{ new location(src_dir_.create_relative(newbase_)) };
+    newbase_ = newbase_.create_relative(cache_path_);
     l << "### move old root location at : "<< root_->path() << " as child of new root " << super_->path() <<  "\n";
-    super_->children_.push_back(root_.release());
+    l << "### with subpath : "<< newbase_.path() << "\n";
+    cache_ = super_.get();
+    for( unsigned int i_ = 0; i_ < newbase_.depth() - 1; ++i_ )
+    {
+      std::unique_ptr< location > tmp_( new location(newbase_.leaf_at(i_), *cache_ ) );
+      l << "### add location at : "<< newbase_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
+      for(location * tmp : cache_->children())
+      {
+        l << "#### child of : "<<  cache_->path() << " ->  " << tmp->path() <<  "\n";
+      }
+      cache_ = tmp_.release();
+    }
+    root_->path_ = newbase_.leaf_at(newbase_.depth() - 1);
+    cache_->children_.push_back(root_.release());
     root_.reset(super_.release());
     cache_ = root_.get();
     // Result is closest parent. Build descendent
@@ -126,14 +136,7 @@ if(! cache_path_.equality( search_path_ ) )
     //{
     l << "## Found common parent [" << root_->full_path() << "]\n";
     //}
-    if ( cache_path_.equality( search_path_ ) )
-    {
-      //if ( DEBUG )
-      //{
-      l << "## New base matched package\n";
-      //}
-    }
-    else
+    if ( ! cache_path_.equality( search_path_ ) )
     {
       //if ( DEBUG )
       //{
@@ -142,8 +145,8 @@ if(! cache_path_.equality( search_path_ ) )
       enumerate_path const diff_path_( cache_path_.create_relative( search_path_ ) );
       for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
       {
-        std::unique_ptr< location > tmp_( new location(diff_path_.leaf_at(i_), *cache_ ) );
         l << "### add location at : "<< diff_path_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
+        std::unique_ptr< location > tmp_( new location(diff_path_.leaf_at(i_), *cache_ ) );
         for(location * tmp : cache_->children())
         {
           l << "#### child of : "<<  cache_->path() << " ->  " << tmp->path() <<  "\n";
@@ -184,180 +187,31 @@ if(! cache_path_.equality( search_path_ ) )
     }
   }
 }
-return location_set_iterator(cache_, false);
+return cache_;
 
-//XX //BUTTER_REQUIRE(end() == find(a_path), "This location is already present in the set" );
-//XX //
-//XX // [Programming notes] There are three possible insertion options.
-//XX //
-//XX // A) a_path is not a subdirectory of the current root location:
-//XX // A new root location is created and the current root's path is
-//XX // altered before adding as a child.  A new location is added to
-//XX // the new root with this path. The offset_path is adjusted for
-//XX // the new root location.
-//XX //
-//XX // B) A subdirectory of any existing location.  With the existing
-//XX // location being the closest match (eg new path is a/b/c/d,
-//XX // existing location has fullpath a/b and no children with
-//XX // fullpath a/b/c).
-//XX //
-//XX // B0) Have no sub-locations
-//XX //
-//XX // B1) The existing location has a child that is a subdirectory
-//XX // of the new path (eg new path is a/b/c, existing location has
-//XX // fullpath a/b and children exist with fullpaths a/b/c/...). A new
-//XX // location is added with the new path and the child (or children)
-//XX // moved to the new location with altered paths.
-//XX //
-//XX // B2) The existing location has a child with only a partial
-//XX // match or no match to the new path (eg new path is a/b/c and
-//XX // no existing children have fullpaths a/b/c/...). Add a location
-//XX // as child with the new path.
-//XX //
-//XX enumerate_path top_path_{ this->offset_path() / root_->path_ };
-//XX l << "Have root, adding path [" << search_path_.path() << "]\n";
-//XX l << "               to path [" << top_path_.path() << "]\n";
-//XX l << "           common path [" << top_path_.create_common(search_path_) << "]\n";
-//XX l << "         relative path [" << top_path_.create_relative(search_path_) << "]\n";
-//XX // options:
-//XX //
-//XX //    root/loc  search
-//XX //  1   a         a/b...   new child of old
-//XX //  2   a         ../b     new sibling of old
-//XX //  3   a         ../...   new parent of old
-//XX //
-//XX //  If 1, have recursive search
-//XX //  If 2, add to parent, create parent if needed
-//XX //  If 3, make new and add current node as child
-//XX QVector< location * > stack_;
-//XX stack_.push_back(root_.get());
-//XX while(! stack_.isEmpty())
-//XX {
-//XX   location * loc_ = stack_.front();
-//XX   location * start = loc_;
-//XX   stack_.pop_front();
-//XX   enumerate_path base_path_{ this->offset_path_ / loc_.full_path() };
-//XX   enumerate_path consumed_;
-//XX   unsigned int idx = 0;
-//XX   while(base_path_.leaf_at(idx) == search_path_.leaf_at(idx))
-//XX   {
-//XX     if("." == consumed_.path())
-//XX     {
-//XX       consumed_.setPath(search_path_.leaf_at(idx));
-//XX     }
-//XX     else
-//XX     {
-//XX       consumed_ = consumed_ / search_path_.leaf_at(idx);
-//XX     }
-//XX     ++idx;
-//XX   }
-//XX   if("." != consumed_.path())
-//XX   {
-//XX     // some part matched
-//XX     if(consumed_ == base_path_)
-//XX     {
-//XX       // new loc child of this loc
-//XX       for(location * kid : loc_->children_)
-//XX       {
-//XX         stack_.push_back(kid);
-//XX       }
-//XX
-//XX     }
-//XX   std::unique_ptr< location > newloc_{ new location(search_path_.path(), *loc_) };
-//XX   loc_->children_.push_back( newloc_.release() );
-//XX   // Move location pointer to new location
-//XX   loc_ = loc_->children_.last();
-//XX
-//XX   }
-//XX     if(! loc_->parent_)
-//XX     {
-//XX       std::unique_ptr<location> newloc{ new location(search_path_.path()) }
-//XX       offset_path_.setPath(search_path_.create_relative("."));
-//XX       newloc_->children_.push_back(root_.release());
-//XX       newloc_->children_.back()->path_ = search_path_.create_relative(newloc_->children_.back()->path_);
-//XX       root_.reset(newloc_.release());
-//XX       return location_set_iterator(root_.get(), false);
-//XX     }
-//XX   }
-//XX   else
-//XX   {
-//XX   for(location * c : loc_.children_)
-//XX   {
-//XX     stack_.push_back();
-//XX   }
-//XX
-//XX unsigned int pmin_{ std::min(base_path_.depth(), search_path_.depth()) };
-//XX for(unsigned int np_ = 0; np_ != search_path_.depth(); ++np_)
-//XX {
-//XX
-//XX if(".." != top_path_.create_relative(search_path_))
-//XX {
-//XX   l << " - have common root path\n";
-//XX   // case B
-//XX   if(0 == root_->children().size())
-//XX   {
-//XX     // case B0) No current children
-//XX     std::unique_ptr< location > newloc_{ new location(top_path_.create_relative(search_path_), *root_) };
-//XX     root_->children_.push_back(newloc_.release());
-//XX     l << "No children, adding path [" << top_path_.create_relative(search_path_) << "]\n";
-//XX     l << "         new.path      [" << root_->children_.back()->path() << "]\n";
-//XX     l << "         new.full_path [" << root_->children_.back()->full_path() << "]\n";
-//XX     l << "         offset_path   [" << offset_path_.path() << "]\n";
-//XX     return location_set_iterator(root_->children_.back(), false);
-//XX   }
-//XX   // Search for closest match (case B2 (and B1))
-//XX   location * loc_ = root_.get();
-//XX   search_path_.setPath(top_path_.create_relative(search_path_));
-//XX   location * tmp_;
-//XX   do
-//XX   {
-//XX     tmp_ = loc_;
-//XX     for(location * ll_ : loc_->children_)
-//XX     {
-//XX       enumerate_path sub_(ll_->path());
-//XX       if(sub_.path() == sub_.create_common(search_path_))
-//XX       {
-//XX         // Partial match, descend into location
-//XX         loc_ = ll_;
-//XX         search_path_.setPath(sub_.create_relative(search_path_));
-//XX         break;
-//XX       }
-//XX     }
-//XX   }
-//XX   while(tmp_ == loc_); // Found closest match
-//XX   std::unique_ptr< location > newloc_{ new location(search_path_.path(), *loc_) };
-//XX   loc_->children_.push_back( newloc_.release() );
-//XX   // Move location pointer to new location
-//XX   loc_ = loc_->children_.last();
-//XX
-//XX   // POSSIBLY MOVE CHILDREN (case B1)
-//XX   //
-//XX   // loc_ is now new location, check if any children of parent should be
-//XX   // moved to the new location.
-//XX   // (search_path_ should contain the remaining path)
-//XX   QVector< int > tomove_;
-//XX   for(int i_ = 0; i_ + 1 < loc_->parent_->children_.size(); ++i_)
-//XX   {
-//XX     enumerate_path sub_(loc_->parent_->children_[i_]->path());
-//XX     if(search_path_ == search_path_.create_common(sub_))
-//XX     {
-//XX       tomove_.push_back(i_);
-//XX     }
-//XX   }
-//XX   while(! tomove_.isEmpty())
-//XX   {
-//XX     // Need to transfer into new location
-//XX     loc_->children_.push_back(loc_->parent_->children_[tomove_.last()]);
-//XX     loc_->parent_->children_.remove(tomove_.last());
-//XX     tomove_.pop_back();
-//XX     loc_->children_.last()->path_ = search_path_.create_relative(loc_->children_.last()->path_);
-//XX   }
-//XX   return location_set_iterator(loc_, false);
-//XX }
-//XX else
-//XX {
-//XX   // case A
-//XX   // Find common base, update offset, create new root, put current root into new
-//XX   // location. If new path doesn't match new root, also add as child
-//XX   return location_set_iterator();
-//XX }
+// [Programming notes] There are several possible insertion options.
+//
+// A) a_path is not a subdirectory of the current root location:
+// A new root location is created and the current root's path is
+// altered before adding as a child.  A new location is added to
+// the new root with this path. The offset_path is adjusted for
+// the new root location.
+//
+// B) A subdirectory of any existing location.  With the existing
+// location being the closest match (eg new path is a/b/c/d,
+// existing location has fullpath a/b and no children with
+// fullpath a/b/c).
+//
+// B0) Have no sub-locations
+//
+// B1) The existing location has a child that is a subdirectory
+// of the new path (eg new path is a/b/c, existing location has
+// fullpath a/b and children exist with fullpaths a/b/c/...). A new
+// location is added with the new path and the child (or children)
+// moved to the new location with altered paths.
+//
+// B2) The existing location has a child with only a partial
+// match or no match to the new path (eg new path is a/b/c and
+// no existing children have fullpaths a/b/c/...). Add a location
+// as child with the new path.
+//
