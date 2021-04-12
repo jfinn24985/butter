@@ -5,15 +5,13 @@ for(location * c : children_) delete c;
 !!!148656.cpp!!!	location(in a_path : unistr, inout a_parent : location)
 a_parent.children_.push_back(this);
 !!!149424.cpp!!!	full_path() : unistr
-QString result(this->path_);
+enumerate_path result(this->path_);
 // Process locations from here to root
 for (const butter::location * tmp_ = this->parent_;
 	tmp_;
 	tmp_ = tmp_->parent_)
 {
-  QString s_{ tmp_->path_ };
-  s_.append('/');
-  s_.append(result);
-  result.swap(s_);
+  enumerate_path lhs_( tmp_->path_ );
+  result = lhs_ / result;
 }
-return result;
+return QDir::cleanPath(result.path());

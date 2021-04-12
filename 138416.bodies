@@ -1,13 +1,17 @@
 class location_set
 !!!185776.cpp!!!	base_path() : unistr
 return (root_  
-  ? (src_dir_ / root_->path()).path()
+  ? root_->path()
   : src_dir_.path());
 !!!238640.cpp!!!	find_closest(in a_path : enumerate_path) : location
 if( ! root_ ) return nullptr;
+return find_closest_( src_dir_ / a_path );
+!!!252464.cpp!!!	find_closest_(in a_path : enumerate_path) : location
+BUTTER_ALWAYS( root_.get() != nullptr, "Should never call private find_closest_ with nul root" );
 butter::enumerate_path const parent_path_{ root_->path() };
-BUTTER_REQUIRE(parent_path_.has_subpath( a_path ), "This location is not a parent of the given path");
-butter::enumerate_path const diff_path_( parent_path_.create_relative( a_path ));
+butter::enumerate_path const search_path_{ a_path }; // path already adjusted for src_dir
+BUTTER_REQUIRE(parent_path_.has_subpath( search_path_ ), "This location is not a parent of the given path");
+butter::enumerate_path const diff_path_( parent_path_.create_relative( search_path_ ));
 location * cursor_ = root_.get();
 for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
 {
@@ -86,69 +90,85 @@ if (DEBUG)
 #ifndef DEBUG
 #define DEBUG 0
 #endif
-#if DEBUG
+const bool debug_(false);
 QTextOStream l(stdout);
-#endif
+if(debug_) {
+  l << "###### Entering insert [" << a_path << "]\n";
+}
+
+const enumerate_path search_path_{ src_dir_ / a_path };
 if(! root_)
 {
-  l << "No root, adding path [" << a_path << "]\n";
   // Empty root so this is the current "root" location
-  root_.reset(new location(a_path));
-  l << "         root.path   [" << root_->path() << "]\n";
+  root_.reset(new location(search_path_.path()));
+  if(debug_) {
+    l << "# No root, adding path [" << search_path_.path() << "]\n";
+  }
   return root_.get();
 }
 location * cache_ = root_.get();
-const enumerate_path search_path_{ src_dir_ / a_path };
-l << "## inserting path : " << search_path_.path() <<  ".\n";
-enumerate_path cache_path_{ src_dir_ / cache_->path() };
+if(debug_) {
+  l << "# inserting path : " << search_path_.path() <<  ".\n";
+}
+enumerate_path cache_path_{ root_->path() };
 // in "if" below "else" clause would mean current cache_ value fits.
-if(! cache_path_.equality( search_path_ ) )
+if( ! cache_path_.equality(search_path_) )
 {
-  if ( ! cache_path_.has_subpath( search_path_ ) )
+  if ( ! cache_path_.has_subpath(search_path_) )
   {
-    //if ( DEBUG )
-    //{
-    l << "## Package below base dir. Reparenting base (TODO: current impl introduces jump paths).\n";
-    //}
+    if(debug_) {
+      l << "## Package below base dir. Reparenting base (TODO).\n";
+    }
     // Reparent
-    enumerate_path newbase_{ cache_path_.create_common( search_path_ ) };
-    std::unique_ptr< location > super_{ new location(src_dir_.create_relative(newbase_)) };
-    newbase_ = newbase_.create_relative(cache_path_);
-    l << "### move old root location at : "<< root_->path() << " as child of new root " << super_->path() <<  "\n";
-    l << "### with subpath : "<< newbase_.path() << "\n";
+    enumerate_path newbase_{ src_dir_ / src_dir_.create_relative( cache_path_.create_common( search_path_ )) };
+    std::unique_ptr< location > super_{ new location(newbase_.path()) };
+    // Move the old root element into the new root element
+    cache_path_ = newbase_.create_relative(cache_path_);
+    if(debug_) {
+      l << "### move old root location at : "<< root_->path() << " to child of new root " << super_->path() <<  "\n";
+      l << "### with new subpath : "<< cache_path_.path() << "\n";
+    }
     cache_ = super_.get();
-    for( unsigned int i_ = 0; i_ < newbase_.depth() - 1; ++i_ )
+    for( unsigned int i_ = 0; i_ < cache_path_.depth() - 1; ++i_ )
     {
-      std::unique_ptr< location > tmp_( new location(newbase_.leaf_at(i_), *cache_ ) );
-      l << "### add location at : "<< newbase_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
+      std::unique_ptr< location > tmp_( new location(cache_path_.leaf_at(i_), *cache_ ) );
+      if(debug_) {
+        l << "### add location at : "<< cache_path_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
+      }
       cache_ = tmp_.release();
     }
-    l << "### add location at : "<< newbase_.leaf_at(newbase_.depth() - 1) << " as child of " << cache_->path() <<  "\n";
-    root_->path_ = newbase_.leaf_at(newbase_.depth() - 1);
+    if(debug_) {
+       l << "### moving old root : " << cache_path_.leaf_at(cache_path_.depth() - 1) << " as child of " << cache_->path() <<  "\n";
+    }
+    // change old roots path
+    root_->path_ = cache_path_.leaf_at(cache_path_.depth() - 1);
+    root_->parent_ = cache_;
     cache_->children_.push_back(root_.release());
+    // Set the new root location
     root_.reset(super_.release());
+    // New root is closest parent. Build descendent
     cache_ = root_.get();
-    // Result is closest parent. Build descendent
-    cache_path_ = root_->full_path();
-    //if ( DEBUG )
-    //{
-    l << "## Found common parent [" << cache_path_.path() << "]\n";
-    //}
+    cache_path_ = root_->path();
+    if ( debug_ ) {
+      l << "## New common parent [" << cache_path_.path() << "]\n";
+    }
     if ( ! cache_path_.equality( search_path_ ) )
     {
-      //if ( DEBUG )
-      //{
-      l << "## Package was below new base.\n";
-      //}
-      enumerate_path const diff_path_( (src_dir_ / cache_path_).create_relative( search_path_ ) );
-      l << "## path is now : " << diff_path_.path() << ".\n";
+      enumerate_path const diff_path_( cache_path_.create_relative( search_path_ ) );
+      if(debug_) {
+        l << "## path is now : " << diff_path_.path() << ".\n";
+      }
       for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
       {
-        l << "### add location at : "<< diff_path_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
+        if(debug_) {
+          l << "### add location at : "<< diff_path_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
+        }
         std::unique_ptr< location > tmp_( new location(diff_path_.leaf_at(i_), *cache_ ) );
-        for(location * tmp : cache_->children())
-        {
-          l << "#### child of : "<<  cache_->path() << " ->  " << tmp->path() <<  "\n";
+        if(debug_) {
+          for(location * tmp : cache_->children())
+          {
+            l << "#### child of : "<<  cache_->path() << " ->  " << tmp->path() <<  "\n";
+          }
         }
         cache_ = tmp_.release();
       }
@@ -156,35 +176,44 @@ if(! cache_path_.equality( search_path_ ) )
   }
   else
   {
-    //if ( DEBUG )
-    //{
-    l << "## Package somewhere below cache, finding it\n";
-    l << "### main path: "<< cache_path_.path() << "\n";
-    l << "### search path: "<< search_path_.path() << "\n";
-    //}
-    cache_ = find_closest( search_path_ );
+    if ( debug_ )
+    {
+      l << "## Package somewhere below root, finding it\n";
+      l << "### main path: "<< cache_path_.path() << "\n";
+      l << "### search path: "<< search_path_.path() << "\n";
+    }
+    cache_ = find_closest_( search_path_ );
     cache_path_ = cache_->full_path();
-    l << "## found location\n";
-    l << "### main path: "<< cache_path_.path() << "\n";
-    l << "### search path: "<< search_path_.path() << "\n";
+    if(debug_) {
+      l << "## found location\n";
+      l << "### main path: "<< cache_path_.path() << "\n";
+      l << "### search path: "<< search_path_.path() << "\n";
+    }
     if( ! cache_path_.equality( search_path_ ) )
     {
       enumerate_path const diff_path_( cache_path_.create_relative( search_path_ ) );
-      l << "### main path: "<< cache_path_.path() << "\n";
-      l << "### search path: "<< search_path_.path() << "\n";
-      l << "### diff path: "<< diff_path_.path() << "\n";
+      if( debug_ ) {
+        l << "### diff path: "<< diff_path_.path() << "\n";
+      }
       for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
       {
-        l << "### add location at : "<< diff_path_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
+        if( debug_ ) {
+          l << "### add location at : "<< diff_path_.leaf_at(i_) << " as child of " << cache_->path() <<  "\n";
+        }
         std::unique_ptr< location > tmp_( new location(diff_path_.leaf_at(i_), *cache_ ) );
-        for(location * tmp : cache_->children())
-        {
-          l << "#### child of : "<<  cache_->path() << " ->  " << tmp->path() <<  "\n";
+        if( debug_ ) {
+          for(location * tmp : cache_->children())
+          {
+            l << "#### child of : "<<  cache_->path() << " ->  " << tmp->path() <<  "\n";
+          }
         }
         cache_ = tmp_.release();
       }
     }
   }
+}
+if(debug_) {
+  l << "###### Exiting insert [" << a_path << "]\n";
 }
 return cache_;
 

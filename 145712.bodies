@@ -21,7 +21,7 @@ BOOST_CHECK(nullptr == root->parent());
 
 BOOST_CHECK_EQUAL(0, loc->children().size());
 BOOST_CHECK("subpath" == loc->path());
-BOOST_CHECK("./subpath" == loc->full_path());
+BOOST_CHECK("subpath" == loc->full_path());
 BOOST_CHECK(nullptr == loc->value());
 BOOST_CHECK(root.get() == loc->parent());
 

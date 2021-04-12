@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 18
+  revision 19
   modified_by 48 "finnerty"
   // class settings
   
@@ -2244,7 +2244,22 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      comment "Container for the set of locations that will be used in defining the build system."
+      comment "Container for the set of locations that will be used in defining the build system.
+
+
+Programming notes: Paths and locations
+
+* All paths as arguments to methods are directly from bouml
+
+* Relative paths from the bouml project are relative to CppSrcDir.
+
+* Each subdirectory (with content) in the source tree has a corresponding location object.
+
+* The root location may be above the directory pointed to by CppSrcDir, so always incorporates the CppSrcDir in its path.
+
+    * NB. If the root directory does not incorporate the CppSrcDir then path manipulation gets polluted with local paths
+
+"
       attribute 160048 "src_dir_"
 	private type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -2256,14 +2271,23 @@ ${inlines}
 	mysql_decl ""
 	MysqlColumn
 	comment "CPP source directory defined in the project.  All paths
-non-absolute paths will be relative to this location."
+non-absolute paths will be relative to this location.
+
+* All paths as arguments to methods are directly from bouml
+
+* Relative paths from the bouml project are relative to CppSrcDir.
+"
       end
 
       classrelation 140464 // root_ (<directional composition>)
 	relation 140208 *-->
 	  stereotype "unique_ptr"
 	  a role_name "root_" multiplicity "0..1" private
-	    comment "The root of the location set"
+	    comment "The root of the location set
+
+* The root location may be above the directory pointed to by CppSrcDir, so always incorporates the CppSrcDir in its path.
+
+    * NB. If the root directory does not incorporate the CppSrcDir then path manipulation gets polluted with local paths"
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	    classrelation_ref 140464 // root_ (<directional composition>)
@@ -2294,6 +2318,7 @@ non-absolute paths will be relative to this location."
 	
 	
 	
+	comment "Default constructor (src_dir_ is set to '.')"
       end
 
       operation 245296 "location_set"
@@ -2311,6 +2336,7 @@ non-absolute paths will be relative to this location."
 	
 	
 	
+	comment "Default constructor, single argument is the CppSrcDir from bouml."
       end
 
       operation 207024 "~location_set"
@@ -2390,11 +2416,33 @@ non-absolute paths will be relative to this location."
 below this point. Note this may not be the same as the src_dir which
 is defined in the bouml project.
 
-For UmlArtifact_A in location_B -> UmlArtifact_A.package.cppSrcDir ~= rootpackage.cppSrcDir / offset_path / location_B.full_path"
+"
       end
 
       operation 238640 "find_closest"
 	const public return_type class_ref 128560 // location
+	nparams 1
+	  param in name "a_path" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Attempt to find the closest location to a_path.
+
+\\pre root.path.fullpath.has_subpath(a_path)
+
+\\result - return nul if location_set is empty
+           - result.path.fullpath.has_subpath(a_path)
+"
+      end
+
+      operation 252464 "find_closest_"
+	const private return_type class_ref 128560 // location
 	nparams 1
 	  param in name "a_path" type class_ref 128432 // enumerate_path
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
@@ -2505,6 +2553,9 @@ a_os as it goes.
 	comment "Find or create a new location object that matches the given
 path.  If new locations are created, one location is created
 for each level of the path that is a sub-path of offset_path.
+
+It is not an error to provide a path with an existing matching
+path.
 
 
 \\post new.offset_path.equality(old.offset_path) or new.offset_path.has_subpath(old.offset_path)
