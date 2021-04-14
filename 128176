@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 16
+  revision 17
   modified_by 48 "finnerty"
   // class settings
   
@@ -290,12 +290,12 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      classrelation 154160 // <dependency>
-	relation 153776 -_->
+      classrelation 167600 // <dependency>
+	relation 167216 -_->
 	  a public
 	    cpp default "#include in source"
-	    classrelation_ref 154160 // <dependency>
-	  b parent class_ref 128560 // location
+	    classrelation_ref 167600 // <dependency>
+	  b parent class_ref 138416 // location_set
       end
 
       operation 207536 "location_set_constructor"

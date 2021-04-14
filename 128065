@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 20
+  revision 21
   modified_by 48 "finnerty"
   // class settings
   
@@ -3067,6 +3067,109 @@ by some arbitrary string \"a_trans\"."
 	comment "Create this and all parent directories for the current path."
       end
     end
+
+    class 172592 "location_state"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl "${comment}${@}${visibility}${static}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl "${comment}${abstract}${custom}valuetype ${name}${inherit} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 167728 // packages_ (<directional aggregation>)
+	relation 167344 o-->
+	  stereotype "qvector"
+	  a role_name "packages_" multiplicity "*" private
+	    comment "Any packages with content at the current location's path"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 167728 // packages_ (<directional aggregation>)
+	  b parent class_ref 9217 // UmlPackage
+      end
+
+      operation 259248 "find_uml_document"
+	public return_type class_ref 8833 // UmlItem
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Find a document of the given name at the current location. This
+may return an empty list if no document is found
+
+\\pre not a_name.empty"
+      end
+
+      operation 259504 "compare_file_to_string"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Are the contents of the file a_path and a_str identical? If they are not then
+write a_str to a_path and return false. Throws an exception if it cannot open a file
+at a_path."
+      end
+
+      operation 259632 "write_documents"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Write all UML documents for this and descendent locations.
+
+* This calls write_uml_documents on a_base and all a_base's descendent
+locations."
+      end
+
+      operation 259760 "write_uml_documents"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Scan the list of packages at this location and write any UmlArtifact:documents 
+to the file-system."
+      end
+    end
+
   end
 
   deploymentview 128065 "butter"

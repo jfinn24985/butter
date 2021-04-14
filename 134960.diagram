@@ -6,20 +6,24 @@ classcanvas 128048 class_ref 138416 // location_set
 end
 classcanvas 128944 class_ref 128560 // location
   classdiagramsettings member_max_width 0 end
-  xyz 473.6 78.1 3005
+  xyz 473.6 78.3 3005
 end
 classcanvas 131120 class_ref 145712 // location_test
   classdiagramsettings member_max_width 0 end
-  xyz 579.4 375.7 2000
+  xyz 579 375 2000
+end
+classcanvas 131504 class_ref 159152 // location_set_test
+  classdiagramsettings member_max_width 0 end
+  xyz -4.5 297.3 3011
 end
 relationcanvas 129072 relation_ref 132144 // <composition>
   decenter_end 788
-  from ref 128944 z 3006 stereotype "<<qvector>>" xyz 569 247 3006 to point 661.7 241.7
-  line 129456 z 3006 to point 661.7 31.7
+  from ref 128944 z 3006 stereotype "<<qvector>>" xyz 569 247 3006 to point 660.7 240.7
+  line 129456 z 3006 to point 660.7 30.7
   line 129200 z 3006 to point 535.3 35.3
   line 129328 z 3006 to ref 128944
-  role_a_pos 543 51 3000 role_b_pos 557 228 3000
-  multiplicity_a_pos 518 51 3000 multiplicity_b_pos 557 264 3000
+  role_a_pos 545 58 3000 role_b_pos 561 227 3000
+  multiplicity_a_pos 516 58 3000 multiplicity_b_pos 560 263 3000
 end
 relationcanvas 129584 relation_ref 140208 // <directional composition>
   decenter_begin 530
@@ -40,6 +44,13 @@ relationcanvas 131248 relation_ref 147248 // <dependency>
   decenter_end 686
   from ref 131120 z 3006 to point 664.4 304.4
   line 131376 z 3006 to ref 128944
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131760 relation_ref 167216 // <dependency>
+  decenter_begin 474
+  from ref 131504 z 3012 to point 101 254
+  line 131888 z 3012 to ref 128048
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
