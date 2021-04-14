@@ -16,6 +16,18 @@ return false;
 !!!152112.cpp!!!	depth() : uint
 const QString path_(path());
 return (unsigned int)(path_.count(default_separator_[0]) + ((path_.lastIndexOf(default_separator_[0]) + 1 == path_.size()) ? 0 : 1));
+!!!152368.cpp!!!	has_subpath(in a_rhs : enumerate_path) : bool
+// simple test that a subdirs path string must have longer pathname
+const QString lhs_ = absolutePath();
+const QString rhs_ = a_rhs.absolutePath ();
+bool Result(lhs_.length () < rhs_.length ());
+// Test if rhs_ begins with lhs_
+if( Result )
+{
+  Result = rhs_.startsWith (lhs_);
+}
+return Result;
+
 !!!152240.cpp!!!	equality(in a_rhs : enumerate_path) : bool
 const QString lhs_ = absPath ();
 const QString rhs_ = a_rhs.absPath ();
@@ -51,18 +63,6 @@ default:
 }
 return false;
 
-!!!152368.cpp!!!	has_subpath(in a_rhs : enumerate_path) : bool
-// simple test that a subdirs path string must have longer pathname
-const QString lhs_ = absolutePath();
-const QString rhs_ = a_rhs.absolutePath ();
-bool Result(lhs_.length () < rhs_.length ());
-// Test if rhs_ begins with lhs_
-if( Result )
-{
-  Result = rhs_.startsWith (lhs_);
-}
-return Result;
-
 !!!152496.cpp!!!	leaf_at(in a_count : uint) : unistr
 int s_ = 0, e_ = 0; // start, end counter
 QString path_(path());
@@ -87,7 +87,7 @@ while (true)
 !!!152752.cpp!!!	create_common(in a_other : enumerate_path) : unistr
 if(this->is_dos_absolute() and a_other.is_dos_absolute() and this->leaf_at(0) != a_other.leaf_at(0))
 {
-  return QString();
+  throw std::input_error( ("Path \""+path()+"\" and \""+a_other.path()+"\" have no common parent.").toStdString() );
 }
 const enumerate_path lhs_{ this->is_dos_absolute() ? this->path() : (this->isRelative() ? this->absolutePath() : this->path()) };
 const enumerate_path rhs_{ a_other.is_dos_absolute() ? a_other.path() : (a_other.isRelative() ? a_other.absolutePath() : a_other.path()) };

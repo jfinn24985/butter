@@ -259,10 +259,7 @@ BOOST_CHECK_EQUAL( p2.create_common( p1 ), "C:/home/is/where" );
 
 BOOST_CHECK_EQUAL( p1.create_common( p1 ), "C:/home/is/where/heart/is" );
 
-
-QString common23 = p2.create_common( p3 );
-BOOST_CHECK_EQUAL( common23, "" );
-// BOOST_CHECK_EQUAL( common23, p3.create_common( p2 ) );
+BOOST_CHECK_THROW( p2.create_common( p3 ), std::domain_error );
 !!!218288.cpp!!!	enumerate_path_create_relative_unix()
 // UNIX style paths
 QString a1("/home/is/where/heart/is");
@@ -291,8 +288,8 @@ BOOST_CHECK_EQUAL( p3.create_relative( p2 ), "../hwere/heart/is" );
 BOOST_CHECK_EQUAL( p2.create_relative( p3 ), "../../../where" );
 BOOST_CHECK_EQUAL( p3.create_relative( p1 ), "heart/is" );
 BOOST_CHECK_EQUAL( p1.create_relative( p3 ), "../.." );
-BOOST_CHECK_EQUAL( p1.create_relative( p4 ), "../../../../../../D:/home/is/where/heart/is" );
-BOOST_CHECK_EQUAL( p4.create_relative( p1 ), "../../../../../../C:/home/is/where/heart/is" );
+BOOST_CHECK_THROW( p1.create_relative( p4 ), std::domain_error );
+BOOST_CHECK_THROW( p4.create_relative( p1 ), std::domain_error );
 !!!218160.cpp!!!	enumerate_path_modify_method()
 {
   QDir qp( "../ace" );

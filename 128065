@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 19
+  revision 20
   modified_by 48 "finnerty"
   // class settings
   
@@ -2905,9 +2905,16 @@ NOTE: a is_subpath implies that this == create_common(a_rhs).
 	
 	
 	
-	comment "Generate a path that has the greatest shared path between this and a_other.
+	comment "Generate a path that has the greatest shared path between this
+and a_other.
 
-Will return empty string when paths are on different drives."
+Will raise and exception when paths are on different drives.
+
+**NOTE: This class is not intended as a general solution.
+In the butter program having two paths that have no common root
+is an exception as we can not create a build system without
+the common root.  This is why this method throws an exception**
+"
       end
 
       operation 152880 "create_relative"
