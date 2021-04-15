@@ -1,6 +1,6 @@
 format 224
 "finnerty" // finnerty
-  revision 6
+  revision 7
   modified_by 48 "finnerty"
   // class settings
   
@@ -4040,58 +4040,6 @@ ${inlines}
       mysql_decl ""
       
       comment "Central point for handling logging and debugging messages."
-      class 131632 "log_levels"
-	visibility package stereotype "enum"
-	cpp_decl "${comment}enum ${name} {
-${items}
-};
-"
-	java_decl ""
-	php_decl ""
-	python_2_2 python_decl ""
-	idl_decl ""
-	explicit_switch_type ""
-	mysql_decl ""
-	
-	attribute 141104 "warn"
-	  public type class_ref 131632 // log_levels
-	  init_value " 0"
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 141232 "info"
-	  public type class_ref 131632 // log_levels
-	  init_value " 1"
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-
-	attribute 141360 "debug"
-	  public type class_ref 131632 // log_levels
-	  init_value " 2//include debugging messages
-
-    "
-	  cpp_decl "  ${name}${value},${comment}"
-	  java_decl ""
-	  php_decl ""
-	  python_decl ""
-	  idl_decl ""
-	  mysql_decl ""
-	  MysqlColumn
-	end
-      end
-
       classrelation 132912 // com (<directional composition>)
 	relation 132912 *-->
 	  a role_name "com" class_relation public

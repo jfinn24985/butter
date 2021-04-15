@@ -10,11 +10,11 @@ classcanvas 130992 class_ref 138416 // location_set
 end
 classcanvas 131888 class_ref 172592 // location_state
   classdiagramsettings member_max_width 0 end
-  xyz 468 119 2000
+  xyz 461 175 2000
 end
 classcanvas 132016 class_ref 9217 // UmlPackage
   classdiagramsettings member_max_width 0 end
-  xyz 684 157 2005
+  xyz 682 162 2005
 end
 classcanvas 132400 class_ref 8833 // UmlItem
   classdiagramsettings member_max_width 0 end
@@ -22,7 +22,7 @@ classcanvas 132400 class_ref 8833 // UmlItem
 end
 classcanvas 132528 class_ref 8193 // UmlArtifact
   classdiagramsettings member_max_width 0 end
-  xyz 598 29 2000
+  xyz 580 15 2000
 end
 classcanvas 132656 class_ref 8449 // UmlDeploymentView
   classdiagramsettings member_max_width 0 end
@@ -30,7 +30,7 @@ classcanvas 132656 class_ref 8449 // UmlDeploymentView
 end
 relationcanvas 128176 relation_ref 132144 // <composition>
   decenter_begin 197
-  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 281 191.5 3006 to point 278 188
+  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 281 191 3006 to point 278 188
   line 128304 z 3006 to point 277 294
   line 128432 z 3006 to ref 128048
   role_a_pos 294 270 3000 role_b_pos 303 160 3000
@@ -39,23 +39,21 @@ end
 relationcanvas 131120 relation_ref 140208 // <directional composition>
   decenter_begin 121
   decenter_end 49
-  from ref 130992 z 3013 stereotype "<<unique_ptr>>" xyz 229 110.5 3013 to ref 128048
+  from ref 130992 z 3013 stereotype "<<unique_ptr>>" xyz 229 110 3013 to ref 128048
   role_a_pos 317 108 3000 no_role_b
   multiplicity_a_pos 324 144 3000 no_multiplicity_b
 end
 relationcanvas 131248 relation_ref 140592 // <dependency>
   decenter_begin 480
   decenter_end 46
-  from ref 128048 z 3013 stereotype "<<friend>>" xyz 361.5 87.5 3013 to point 393 60
+  from ref 128048 z 3013 stereotype "<<friend>>" xyz 361 87 3013 to point 393 60
   line 131504 z 3013 to ref 130992
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 132784 relation_ref 167344 // <directional aggregation>
-  from ref 131888 z 2006 stereotype "<<qvector>>" xyz 613.5 183.5 3000 to ref 132016
-  role_a_pos 610 159 3000 no_role_b
-  multiplicity_a_pos 668 195 3000 no_multiplicity_b
+  from ref 131888 z 2006 stereotype "<<qvector>>" xyz 595.5 157.5 3000 to ref 132016
+  role_a_pos 608 177 3000 no_role_b
+  multiplicity_a_pos 666 213 3000 no_multiplicity_b
 end
-line 132272 -_-_
-  from ref 131888 z 2006 to ref 132016
 end

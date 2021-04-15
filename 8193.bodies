@@ -1,0 +1,47 @@
+class UmlArtifact
+!!!259760.cpp!!!	write_out(in full_path : enumerate_path, inout log : base_log) : void
+if (butter_constants::document_stereotype == this->stereotype().data())
+{
+  // Only write non-empty docs.
+  if (! this->description().isEmpty())
+  {
+    QByteArray document_prop_value_;
+    this->propertyValue(constants::butter_output_name(), document_prop_value_);
+    if (document_prop_value_.isEmpty() || (document_prop_value_ != constants::nowrite()))
+    {
+      QString document_filepath_{ (full_path / this->name()).path() };
+      if (! document_prop_value_.isEmpty())
+      {
+        document_filepath_ += "." + document_prop_value_;
+      }
+      bool result{ false };
+      if(QFile::exists(document_filepath_.path()))
+      {
+        QFile iofile(a_path);
+        if (! iofile.open(IO_ReadOnly))
+        {
+          QString msg("<b>Fatal Error:</b> Unable to open file for reading: " + document_filepath_.path());
+          throw std::runtime_error(msg.toStdString());
+        }
+        QByteArray contents_{ iofile.readAll() };
+        result = (contents_.size() == this->description().size()
+                  && 0 == strncmp(contents_.constData(), this->description().constData(), contents_.size()));
+      }
+      if (! result)
+      {
+        log.trace(log.warn, "<p>Writing changed document : " + document_filepath_.path() + "</p>");
+        QFile iofile(a_path);
+        if (! iofile.open(IO_ReadOnly))
+        {
+          QString msg("<b>Fatal Error:</b> Unable to open file for writing: " + document_filepath_.path());
+          throw std::runtime_error(msg.toStdString());
+        }
+        iofile.writeBlock(this->description(), this->description.size());
+      }
+      else
+      {
+        log.trace(log.info, "<p>Skipping unchanged document : " + document_filepath_.path() + "</p>");
+      }
+    }
+  }
+}

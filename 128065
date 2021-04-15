@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 21
+  revision 22
   modified_by 48 "finnerty"
   // class settings
   
@@ -68,6 +68,11 @@ format 224
     end
 
     classdiagram 141488 "enumerate_path"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 148016 "logging"
       classdiagramsettings member_max_width 0 end
       size A4
     end
@@ -477,7 +482,7 @@ format 224
       end
     end
 
-    class 129328 "butter_constants"
+    class 129328 "constants"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -502,7 +507,7 @@ ${inlines}
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
-	comment "Then label of the install target binary directory.
+	comment "The label of the install target binary directory.
 "
       end
 
@@ -709,7 +714,7 @@ parent objects if not overriden.
 	comment "User property name
 * Indicates that a library artifact should be built as another target type. 
 For jam based builds this is used directly as the target-type name, for make
-based builds the buidl rule will replace \"$(CCC)\" with \"$(VALUE)\" (in 
+based builds the build rule will replace \"$(CCC)\" with \"$(VALUE)\" (in 
 uppercase)
 * For document artifacts if the property value is 'nowrite' then the document is not written
 to the filesystem.
@@ -1125,6 +1130,42 @@ library targets will be static.
 	MysqlColumn
 	comment "Build file section label for a target section.
 "
+      end
+
+      operation 266416 "butter_output_label"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return \"butter output\"; }
+"
+	
+	
+	
+	
+	comment "User property name for UMLArtifacts
+
+* For artifacts with stereotype \"document\" if the property value is 
+'nowrite' then the document is not written to the filesystem.  Any
+other value will be used as a filename extension when construting
+the artifact's path."
+      end
+
+      operation 266544 "nowrite_value"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return \"nowrite\"; }
+"
+	
+	
+	
+	
+	comment "Value of \"butter_output\" property that indicates an artifact
+should not be considered for writing to the file system."
       end
     end
 
@@ -3100,41 +3141,6 @@ ${members}};
 	  b parent class_ref 9217 // UmlPackage
       end
 
-      operation 259248 "find_uml_document"
-	public return_type class_ref 8833 // UmlItem
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Find a document of the given name at the current location. This
-may return an empty list if no document is found
-
-\\pre not a_name.empty"
-      end
-
-      operation 259504 "compare_file_to_string"
-	public explicit_return_type "bool"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Are the contents of the file a_path and a_str identical? If they are not then
-write a_str to a_path and return false. Throws an exception if it cannot open a file
-at a_path."
-      end
-
       operation 259632 "write_documents"
 	public explicit_return_type "void"
 	nparams 0
@@ -3152,24 +3158,86 @@ at a_path."
 * This calls write_uml_documents on a_base and all a_base's descendent
 locations."
       end
-
-      operation 259760 "write_uml_documents"
-	public explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Scan the list of packages at this location and write any UmlArtifact:documents 
-to the file-system."
-      end
     end
 
+    class 179120 "base_log"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 131632 "log_levels"
+	visibility package stereotype "enum"
+	cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 141104 "warn"
+	  public type class_ref 131632 // log_levels
+	  init_value " 0"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 141232 "info"
+	  public type class_ref 131632 // log_levels
+	  init_value " 1"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 141360 "debug"
+	  public type class_ref 131632 // log_levels
+	  init_value " 2//include debugging messages
+
+    "
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+      end
+
+      operation 266288 "trace"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "level" type class_ref 131632 // log_levels
+	  param in name "msg" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+    end
   end
 
   deploymentview 128065 "butter"
@@ -3221,7 +3289,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 129328 // butter_constants
+	class_ref 129328 // constants
       end
     end
 
