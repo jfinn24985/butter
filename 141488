@@ -1,0 +1,1062 @@
+format 224
+"Build system templates" // API USER::butter::Build system templates
+  revision 7
+  modified_by 48 "finnerty"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  classview 141232 "Templates"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    classdiagram 154544 "Build system"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    objectdiagram 154672 "Build system"
+      objectdiagramsettings end
+      size A4
+    end
+
+    class 185648 "buildfile_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "GLOBAL_TOP := base_directory
+
+include {GLOBAL_TOP}/{local.mk}
+
+include {GLOBAL_TOP}/{system.mk}
+
+all : CLEAN_PROGS
+
+subprojectA
+
+subprojectB
+
+projectA
+
+projectB
+
+psuedo_targets
+"
+      classrelation 174640 // projects (<directional aggregation>)
+	relation 174256 o-->
+	  stereotype "list"
+	  a role_name "projects" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 174640 // projects (<directional aggregation>)
+	  b parent class_ref 186032 // project_template
+      end
+
+      classrelation 174768 // subdirectories (<directional aggregation>)
+	relation 174384 o-->
+	  stereotype "list"
+	  a role_name "subdirectories" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 174768 // subdirectories (<directional aggregation>)
+	  b parent class_ref 185648 // buildfile_template
+      end
+
+      classrelation 174896 // psuedos (<directional aggregation>)
+	relation 174512 o-->
+	  stereotype "list"
+	  a role_name "psuedos" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 174896 // psuedos (<directional aggregation>)
+	  b parent class_ref 192816 // psuedo_targets
+      end
+
+      classrelation 175024 // local (<directional aggregation>)
+	relation 174640 o-->
+	  a role_name "local" multiplicity "*" private
+	    comment "non-butter/user defined assistance files"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 175024 // local (<directional aggregation>)
+	  b parent class_ref 185648 // buildfile_template
+      end
+
+      classrelation 175152 // system (<directional aggregation>)
+	relation 174768 o-->
+	  a role_name "system" multiplicity "*" private
+	    comment "default template files included by butter to support the generated build system."
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 175152 // system (<directional aggregation>)
+	  b parent class_ref 185648 // buildfile_template
+      end
+
+      classrelation 181680 // externals (<directional aggregation>)
+	relation 181296 o-->
+	  stereotype "list"
+	  a role_name "externals" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 181680 // externals (<directional aggregation>)
+	  b parent class_ref 186160 // external_project_template
+      end
+    end
+
+    class 192816 "psuedo_targets"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "
+clean :
+	RM PROGS
+
+distclean : clean
+	RM OBJS
+
+install :	PROGS"
+    end
+
+    class 186032 "project_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "Template can contain:
+
+properties:
+	...
+
+targets:
+	...
+"
+      classrelation 174256 // settings (<directional aggregation>)
+	relation 173872 o-->
+	  stereotype "list"
+	  a role_name "settings" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 174256 // settings (<directional aggregation>)
+	  b parent class_ref 185904 // property_template
+      end
+
+      classrelation 174512 // targets (<directional aggregation>)
+	relation 174128 o-->
+	  stereotype "list"
+	  a role_name "targets" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 174512 // targets (<directional aggregation>)
+	  b parent class_ref 186288 // target_object_template
+      end
+    end
+
+    class 185904 "property_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "
+
+property:
+	BINDIR = ...
+	CFLAGS += ...
+	INCLUDE += ..."
+    end
+
+    class 199344 "target_binary_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "
+
+targets:
+	INCLUDE = ??
+	DEFINES = ??
+	OPTIM = ??
+	SRC = *..${SUFSRC}
+	SRCOBJ = *.${SUFOBJ} *.${SUFLIB}
+	COMP = ??
+	COMPFLAGS on name.${SUFEXE} : ??
+	LINKFLAGS on name.${SUFEXE} : ??
+	EXE : name.${SUFEXE}
+	CLEAN_PROGS += name.{SUFEXE}
+	CLEAN_OBJS += {SRC:.${SUFSRC}=.${SUFOBJ}}
+	INSTALL :: ${BINDIR:default} name.{SUFEXE} ${MODEEXE}
+"
+    end
+
+    class 199472 "target_static_library_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "
+
+targets:
+	INCLUDE = ??
+	DEFINES = ??
+	OPTIM = ??
+	SRC = *..${SUFSRC}
+	SRCOBJ = *.${SUFOBJ}
+	COMP = ??
+	COMPFLAGS on name.${SUFLIB} : ??
+	LIB : name.${SUFLIB}
+	CLEAN_PROGS += name.${SUFLIB}
+	CLEAN_OBJS += {SRC:.${SUFSRC}=.${SUFOBJ}} *.${SUFOBJ}"
+    end
+
+    class 199600 "target_dynamic_library_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "
+
+targets:
+	INCLUDE = ??
+	DEFINES = ??
+	OPTIM = ??
+	SRC = *..${SUFSRC}
+	SRCOBJ = *.${SUFOBJ} *.${SUFLIB}
+	COMP = ??
+	COMPFLAGS on name.${SUFDLL} : ??
+	LINKFLAGS on name.${SUFDLL} : ??
+	EXE : name.${SUFDLL}
+	CLEAN_PROGS += name.{SUFDLL}
+	CLEAN_OBJS += {SRC:.${SUFSRC}=.${SUFOBJ}} *.${SUFOBJ}
+	INSTALL :: ${LIBDIR:default} name.{SUFEXE} ${MODEDLL}
+"
+    end
+
+    class 186288 "target_object_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "
+
+targets:
+	INCLUDE = ??
+	DEFINES = ??
+	OPTIM = ??
+	SRC = *..${SUFSRC}
+	COMP = ??
+	COMPFLAGS on name.${SUFOBJ} : ??
+	LINKFLAGS on name.${SUFOBJ} : ??
+	OBJ : name.${SUFOBJ}
+	CLEAN_OBJS += name.${SUFOBJ}
+"
+    end
+
+    class 199728 "target_other_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "
+
+targets:
+	INCLUDE = ??
+	DEFINES = ??
+	OPTIM = ??
+	SRC = *..${SUFSRC}
+	COMP on name.${OTHER} : ??
+	COMPFLAGS on name.${OTHER} : ??
+	OTHER : name.${OTHER}
+	CLEAN_PROGS += name.{OTHER}
+	INSTALL :: [NOMINATE] name.{SUFEXE} [MODE:NOMINATE]
+"
+    end
+
+    class 186160 "external_project_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "
+project:
+	{PROJECT}_INCLUDE = ??
+	{PROJECT}_DEFINES = ??
+	{PROJECT}_OPTIM = ??
+	{PROJECT}_LIBDIR = dir [dir]
+	{PROJECT}_LIB = lib [lib]"
+    end
+
+    classinstance 128176 "global_properties"
+      type class_ref 185904 // property_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 128304 "local_tmpl"
+      type class_ref 185648 // buildfile_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 128432 "a_project"
+      type class_ref 186032 // project_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 128560 "project_settings"
+      type class_ref 185904 // property_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 128688 "external_settings"
+      type class_ref 186160 // external_project_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 128816 "object_targets"
+      type class_ref 186288 // target_object_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 128944 "binary_targets"
+      type class_ref 186288 // target_object_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 129072 "library_targets"
+      type class_ref 186288 // target_object_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 135600 "subprojects"
+      type class_ref 186032 // project_template
+      attributes
+        end
+      relations
+        end
+    end
+
+    classinstance 135728 "system"
+      type class_ref 185648 // buildfile_template
+      attributes
+        end
+      relations
+        end
+    end
+  end
+
+  deploymentview 134832 "Templates"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    artifact 156592 "templates"
+      associated_artifacts
+      end
+      comment "# Templates for generating sections of a buildfile
+
+
+## Elements of a build system
+
+* Local settings template
+** Use for compiler/project settings not handled by butter
+
+* Global definitions (base UmlPackage)
+** Build directory
+** Install directory(s)
+
+* Subdir definitions (single or multiple UmlPackages)
+
+* External definitions
+** Project (UmlPackage)
+** Libraries (UmlArtifact)
+
+* Targets
+** All : All binaries
+** Object files : (Only needed when source has local properties)
+** Binaries : From sources and objects
+** Clean : Remove all objects
+** DistClean : Clean and all binaries (depends on style)
+** Install : Install all binaries
+** Dependencies : When not automatic
+
+## Build system process
+
+### Top level
+
+* Read local settings
+* Import external settings
+* Do global settings
+* Do global external projects
+* Do all sub projects (* Order may depend on style *)
+* Do immediate project (* Order may depend on style *)
+
+### Sub levels
+
+* Do all sub projects (* Order may depend on style *)
+* Do immediate project (* Order may depend on style *)
+
+### Project
+
+* Do project settings
+* Do project targets
+
+### JAM
+
+%rulename% %field1% : %field2 : %field3 : ... : %fieldN ;
+
+#### Directory tree descent
+
+SubInclude VAR d1 ... dn ;
+
+#### Builtins
+
+DEPENDS %target1 : %target2 ;
+INCLUDES  %target1 : %target2 ;
+
+##### Sub directory local settings
+
+SubDirC++Flags %flags ;
+SubDirCcFlags %flags ;
+SubDirHdrs d1 ... dn ;
+
+#### Variables
+
+%var [+]= %elements ;
+%var ON %targets [+?]= %elements ;
+%var default = %elements ;
+
+##### Predefined variables (may be overridden)
+
+ALL_LOCATE_TARGET # Where to build targets
+
+###### Define compiler name
+
+CC
+C++
+FORTRAN
+LINK
+
+######  Define standard compilation flags
+
+CCFLAGS
+C++FLAGS
+OPTIM
+DEFINES
+FORTRANFLAGS
+LINKFLAGS
+
+###### Include locations
+
+HDRS
+
+###### link libraries
+
+LINKLIBS
+
+###### Directory path (use RO)
+
+TOP
+SUBDIR
+
+###### image filename extensions (use RO)
+
+SUFEXE
+SUFLIB
+SUFOBJ
+
+#### Build Rules
+
+Main %image : %sources ;
+MainFromObjects %image : %objects ;
+Library %image : %sources ;
+LibraryFromObjects %image : %objects ;
+LinkLibraries %image : %libs ;
+ObjectC++Flags %source : %flags ;
+ObjectCcFlags %source : %flags ;
+ObjectDefines %object : %preproc_defines ;
+ObjectHdrs %source : %dirs ;
+Objects %sources ;
+
+##### Partial compilation
+
+Objects %object : %source ;
+Link %image : %objects ;
+
+##### Install rules
+
+Install[Bin|Lib|Man|Shell] %dir : %sources ;
+
+### Boost jam target
+
+%TARGET_TYPE% %TARGET% : 
+  %%SOURCE%%  
+  %%LOCAL_TARGETS%% 
+  %%PROJECT_TARGETS
+  : [static=%STATIC_LABEL%
+  ;
+
+Boost external libs
+
+project %PROJECT_LABEL& ;
+
+alias %LIB_LABEL% : : : : <linkflags>\"-l%LIB_LABEL%\" ;
+"
+    end
+
+    artifact 163120 "makefile_templates"
+      associated_artifacts
+      end
+      comment "= Makefile Templates
+
+== section wrappers
+
+@START@:@label@
+
+@END@:@label@
+
+== label=version
+
+@COMMENT@Butter version @butter_version@
+
+== label=date
+
+@COMMENT@ @iso_date@
+
+== label=preamble
+
+@IF_ROOT_MAKEFILE@
+export ROOTDIR:=@location_root@
+@ENDIF_ROOT_MAKEFILE@
+include $(ROOTDIR)/system.mk
+
+@IF_ROOT_MAKEFILE@
+export SYSINCLUDE:= -I@project_includes@
+export SYSFLAGS:= @project_flags@
+export SYS...:= ...
+@ELSE_ROOT_MAKEFILE@
+export SYSINCLUDE:= $(SYSINCLUDE) -I@project_includes@
+export SYSFLAGS:= $(SYSFLAGS) @project_flags@
+export SYSLDFLAGS:= $(SYSLDFLAGS) ...
+@ENDIF_ROOT_MAKEFILE@
+
+== label=subpackage @package_dir@
+
+DIRS:= $(DIRS) @package_dir@
+
+== label=target @target_name@ {executable target}
+
+@TARGET_NAME@SRC:=@target_src@
+@TARGET_NAME@INCLUDE:= $(SYSINCLUDE) @target_include@
+@TARGET_NAME@FLAGS:= $(SYSFLAGS) @target_flags@
+@TARGET_NAME@LDFLAGS:= $(SYSLDFLAGS) @target_ldflags@
+@TARGET_NAME@DINC := $(filter %.$(SUFDEP), $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(@TARGET_NAME@SRC:.$(SUFCSRC)=.$(SUFDEP)))
+include $(@TARGET_NAME@DINC)
+
+@TARGET_NAME@OBJ := $(@TARGET_NAME@OBJ) $(filter %.o, $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFOBJ)))
+CLEAN_TEMP := $(CLEAN_TEMP) $(@TARGET_NAME@OBJ)
+
+@target_name@$(SUFEXE) :: CFLAGS:=... $(patsubst %,-I%,$(@TARGET_NAME@INCLUDE)) $(VARIANTFLAGS) ...
+@target_name@$(SUFEXE) :: C++FLAGS:=... $(@TARGET_NAME@INCLUDE) ...
+@target_name@$(SUFEXE) :: $(@TARGET_NAME@OBJ) @target_object@ @target_local_libs@ | $(@TARGET_NAME@DINC) 
+#?	$(C++) $(C++FLAGS) -o @target_name@$(SUFEXE) $(@TARGET_NAME@OBJ) $(@TARGET_NAME@LDFLAGS) $(LDFLAGS)
+
+all :: @target_name@$(SUFEXE)
+
+CLEAN_TARGETS := $(CLEAN_TARGETS) @target_name@$(SUFEXE)
+
+install:: @target_name@$(SUFEXE)
+	$(INSTALL) -d @target_install_location@
+	$(INSTALL) @target_install_mode@ @target_name@$(SUFEXE) @target_install_location@/@target_name@$(SUFEXE)
+
+== label=target @target_name@ {shared library target}
+
+@TARGET_NAME@SRC:=@target_src@
+@TARGET_NAME@INCLUDE:= $(SYSINCLUDE) @target_include@
+@TARGET_NAME@FLAGS:= $(SYSFLAGS) @target_flags@
+@TARGET_NAME@LDFLAGS:= $(SYSLDFLAGS) @target_ldflags@
+@TARGET_NAME@DINC := $(filter %.$(SUFDEP), $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(@TARGET_NAME@SRC:.$(SUFCSRC)=.$(SUFDEP)))
+include $(@TARGET_NAME@DINC)
+
+@TARGET_NAME@OBJ := $(@TARGET_NAME@OBJ) $(filter %.o, $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFOBJ)))
+CLEAN_TEMP := $(CLEAN_TEMP) $(@TARGET_NAME@OBJ)
+
+@target_name@$(SUFSHR) :: CFLAGS:=... $(patsubst %,-I%,$(@TARGET_NAME@INCLUDE)) $(VARIANTFLAGS) ...
+@target_name@$(SUFSHR) :: C++FLAGS:=... $(@TARGET_NAME@INCLUDE) ...
+@target_name@$(SUFSHR) :: $(@TARGET_NAME@OBJ) @target_object@ @target_local_libs@ | $(@TARGET_NAME@DINC) 
+#?	$(C++) $(C++FLAGS) -o @target_name@$(SUFSHR) $(@TARGET_NAME@OBJ) $(@TARGET_NAME@LDFLAGS) $(LDFLAGS)
+
+all :: @target_name@$(SUFSHR)
+
+CLEAN_TARGETS := $(CLEAN_TARGETS) @target_name@$(SUFSHR)
+
+install:: @target_name@$(SUFSHR)
+	$(INSTALL) -d @target_install_location@
+	$(INSTALL) @target_install_mode@ @target_name@$(SUFSHR) @target_install_location@/@target_name@$(SUFSHR)
+
+== label=target @target_name@ {static library target}
+
+@TARGET_NAME@SRC:=@target_src@
+@TARGET_NAME@INCLUDE:= $(patsubst %,-I%,$(SYSINCLUDE) @target_include@)
+@TARGET_NAME@FLAGS:= $(SYSFLAGS) @target_flags@
+@TARGET_NAME@LDFLAGS:= $(SYSLDFLAGS) @target_ldflags@
+@TARGET_NAME@DINC := $(filter %.$(SUFDEP), $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(@TARGET_NAME@SRC:.$(SUFCSRC)=.$(SUFDEP)))
+include $(@TARGET_NAME@DINC)
+
+@TARGET_NAME@OBJ := $(@TARGET_NAME@OBJ) $(filter %.o, $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFOBJ)))
+CLEAN_TEMP := $(CLEAN_TEMP) $(@TARGET_NAME@OBJ)
+
+@target_name@$(SUFLIB) :: CFLAGS:=... $(@TARGET_NAME@INCLUDE) $(VARIANTFLAGS) ...
+@target_name@$(SUFLIB) :: C++FLAGS:=... $(@TARGET_NAME@INCLUDE) ...
+@target_name@$(SUFLIB) :: $(@TARGET_NAME@OBJ) @target_object@ | $(@TARGET_NAME@DINC) 
+#?	$(C++) $(C++FLAGS) -o @target_name@$(SUFLIB) $(@TARGET_NAME@OBJ) $(@TARGET_NAME@LDFLAGS) $(LDFLAGS)
+
+all :: @target_name@$(SUFLIB)
+
+CLEAN_TARGETS := $(CLEAN_TARGETS) @target_name@$(SUFLIB)
+
+== label=target @target_name@ {object}
+
+@TARGET_NAME@SRC:=@target_src@
+@TARGET_NAME@INCLUDE:= $(SYSINCLUDE) @target_include@
+@TARGET_NAME@FLAGS:= $(SYSFLAGS) @target_flags@
+@TARGET_NAME@LDFLAGS:= $(SYSLDFLAGS) @target_ldflags@
+@TARGET_NAME@DINC := $(filter %.$(SUFDEP), $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(@TARGET_NAME@SRC:.$(SUFCSRC)=.$(SUFDEP)))
+include $(@TARGET_NAME@DINC)
+
+CLEAN_TEMP := $(CLEAN_TEMP) @target_name@$(SUFOBJ)
+
+@target_name@$(SUFOBJ) :: CFLAGS:=... $(patsubst %,-I%,$(@TARGET_NAME@INCLUDE)) $(VARIANTFLAGS) ...
+@target_name@$(SUFOBJ) :: C++FLAGS:=... $(@TARGET_NAME@INCLUDE) ...
+@target_name@$(SUFOBJ) :: $(@TARGET_NAME@SRC) | $(@TARGET_NAME@DINC) 
+#?	$(C++) $(C++FLAGS) -o @target_name@$(SUFOBJ) $(@TARGET_NAME@OBJ) $(@TARGET_NAME@LDFLAGS) $(LDFLAGS)
+
+all :: @target_name@$(SUFOBJ)
+
+
+
+== [base makefile]
+
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Sep 26 21:46:48 2009
+##END:date
+##START:preamble
+export ROOTDIR:=@location_root@
+include @path@/system.mk
+
+export SYSINCLUDE:= -I@project_includes@
+export SYSFLAGS:= @project_flags@
+export SYS...:= ...
+##END:preamble
+##START:package @package_name@
+DIRS:= $(DIRS) @package_dir@
+##END:package @package_name@
+
+==
+
+== [subdir makefile]
+
+##START:version
+#Butter project version 1.2
+##END:version
+##START:date
+#Sat Sep 26 21:46:48 2009
+##END:date
+##START:preamble
+include @path@/system.mk
+
+export SYSINCLUDE:= $(SYSINCLUDE) -I@project_includes@
+export SYSFLAGS:= $(SYSFLAGS) @project_flags@
+export SYSLDFLAGS:= $(SYSLDFLAGS) ...
+##END:preamble
+##START:target @target_name@
+@TARGET_NAME@SRC:= @target_src@
+@TARGET_NAME@INCLUDE:= $(SYSINCLUDE) @target_include@
+@TARGET_NAME@FLAGS:= $(SYSFLAGS) $(VARIANTFLAGS) @target_flags@
+@TARGET_NAME@LDFLAGS:= $(SYSLDFLAGS) $(VARIANTFLAGS) @target_ldflags@
+@TARGET_NAME@DINC := $(filter %.d, $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.d, $(@TARGET_NAME@SRC:.$(SUFCSRC)=.$(SUFDEP)))
+include $(@TARGET_NAME@DINC)
+
+@TARGET_NAME@OBJ := $(@TARGET_NAME@OBJ) @target_object@
+...
+
+@TARGET_NAME@OBJ := $(@TARGET_NAME@OBJ) $(filter %.o, $(@TARGET_NAME@SRC:.$(SUFC++SRC)=.$(SUFOBJ)))
+CLEAN_TEMP := $(CLEAN_TEMP) $(@TARGET_NAME@OBJ)
+
+@target_name@$(SUFEXE) :: CFLAGS:=...
+@target_name@$(SUFEXE) :: C++FLAGS:=...
+@target_name@$(SUFEXE) :: $(@TARGET_NAME@OBJ) $(@TARGET_NAME@DINC) @target_local_libs@ 
+	$(C++) $(C++FLAGS) -o @target_name@$(SUFEXE) $(@TARGET_NAME@OBJ) $(@TARGET_NAME@LDFLAGS) $(LDFLAGS)
+
+all :: @target_name@$(SUFEXE)
+
+CLEAN_TARGETS := $(CLEAN_TARGETS) @target_name@$(SUFEXE)
+
+install:: @target_name@$(SUFEXE)
+	$(INSTALL) -d @target_install_location@
+	$(INSTALL) @target_install_mode@ @target_name@$(SUFEXE) @target_install_location@/@target_name@$(SUFEXE)
+##END:target branch_test
+
+
+##END:target @target_name@
+
+==
+
+
+
+## local.mk.tmpl
+
+OS ?= LINUX
+COMP ?= GNU
+VARIANT ?= DEBUG
+# for installation targets
+# VERSIONDIR:=\"@BASE_PROJECT@-@VERSION@\"
+# PREFIX?=$(ROOTDIR)/installdir
+
+## system.mk
+#
+# System Makefile
+#
+##################################
+# Defaults for current environment
+##################################
+
+-include $(ROOTDIR)/local.mk
+OS ?= LINUX
+VARIANT ?= DEBUG
+
+SHELL=/bin/sh
+.SUFFIXES:
+.SUFFIXES:
+
+############################
+## Default install locations
+############################
+
+PREFIX?=$(ROOTDIR)/installdir
+EXEC_PREFIX=$(PREFIX)
+BINDIR=$(EXEC_PREFIX)/bin
+SBINDIR=$(EXEC_PREFIX)/sbin
+LIBEXECDIR=$(EXEC_PREFIX)/libexec
+LIBDIR=$(EXEC_PREFIX)/lib
+DATAROOTDIR=$(PREFIX)/share
+DATADIR=$(PREFIX)/share
+SYSCONFDIR=$(PREFIX)/etc
+SHAREDSTATEDIR=$(PREFIX)/com
+LOCALSTATEDIR=$(PREFIX)/var
+INCLUDEDIR=$(PREFIX)/include
+LOCALEDIR=$(DATAROOTDIR)/locale
+DOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)
+INFODIR=$(DATAROOTDIR)/info
+MANDIR=$(DATAROOTDIR)/man
+HTMLDIR=$(DOCDIR)
+DVIDIR=$(DOCDIR)
+PDFDIR=$(DOCDIR)
+PSDIR=$(DOCDIR)
+MAN1DIR=$(MANDIR)/man1
+MAN2DIR=$(MANDIR)/man2
+MAN3DIR=$(MANDIR)/man3
+MAN4DIR=$(MANDIR)/man4
+MAN5DIR=$(MANDIR)/man5
+MAN6DIR=$(MANDIR)/man6
+MAN7DIR=$(MANDIR)/man7
+MAN8DIR=$(MANDIR)/man8
+MANNDIR=$(MANDIR)/mann
+
+# Flags for the install targets.
+INSTALL:=install
+BINIFLAGS:=-m 755
+FILEIFLAGS:=-m 644
+LIBIFLAGS:=-m 644 
+MANIFLAGS:=-m 644
+
+####################
+## OS SPECIFIC STUFF
+####################
+
+SUFCSRC:=.c
+SUFC++SRC:=.cpp
+SUFFORTRANSRC:=.f95
+SUFDEPENDS:=.dep
+
+# Assume unix-like 
+SUFOBJ:=.o
+SUFEXE:=
+SUFLIB:=.a
+SUFSHR:=.so.0
+ifeq ($(OS),WIN32)
+SUFEXE:=.exe
+SUFLIB:=.lib
+SUFSHR:=.dll
+endif
+
+######################
+##  Combine flags sets
+######################
+
+ifeq ($(VARIANT),DEBUG)
+VARIANTFLAGS=$(STDDEBUGFLAGS)
+else
+VARIANTFLAGS=$(STDOPTFLAGS)
+endif
+
+CFLAGS=$(VARIANTFLAGS) $(STDCFLAGS)
+CXXFLAGS=$(VARIANTFLAGS) $(STDCXXFLAGS)
+CPPFLAGS=$(DEFINES)
+FFLAGS=$(VARIANTFLAGS) $(STDFFLAGS)
+LDFLAGS=$(VARIANTFLAGS) $(STDLDFLAGS)
+LIBFLAGS:=$(STDLIBFLAGS)
+SHRXFLAGS:=$(STDSHRXFLAGS)
+
+###################################
+## Dependency and other Build rules
+###################################
+
+%.$(SUFDEPENDS): %.$(SUFCSRC)
+	set -e; $(CC) -MM $(CCFLAGS) $< \\
+	| sed 's/\\($*\\)\\.o[ :]*/\\1.o $@ : /g' > $@; \\
+	[ -s $@ ] || rm -f $@
+
+%.$(SUFDEPENDS): %.$(SUFC++SRC)
+	set -e; $(C++) -MM $(C++FLAGS) $< \\
+	| sed 's/\\($*\\)\\.o[ :]*/\\1.o $@ : /g' > $@; \\
+	[ -s $@ ] || rm -f $@
+
+%.$(SUFOBJ): %.$(SUFCSRC)
+	$(CC) $(CFLAGS) -o $@ $<
+
+%.$(SUFOBJ): %.$(SUFC++SRC)
+	$(C++) $(C++FLAGS) -o $@ $<
+
+%.$(SUFOBJ): %.$(SUFFORTRANSRC)
+	$(FORTRAN) $(FORTRANFLAGS) -o $@ $<
+
+#############################################
+##  Define standard directory descent targets
+##  (required for proper functioning)
+#############################################
+
+all:: dopart
+
+install:: doinstall
+
+doit:
+	for WORKDIR in $(DIRS); do \\
+	echo Working on $$WORKDIR; \\
+	pushd $$WORKDIR;\\
+	OS=$(OS) ROOTDIR=\"$(ROOTDIR)\" SYS...=\"$(SYS...)\" VARIANT=\"$(VARIANT)\"  make $(WHAT); \\
+	popd;\\
+	done
+
+dopart:
+	WHAT=\"all\" make doit
+
+doinstall:
+	WHAT=\"install\" make doit
+
+distclean: clean
+	rm -f $(CLEAN_TARGETS)
+	WHAT=\"distclean\" make doit
+
+clean: 
+	rm -f $(CLEAN_TEMP)
+	WHAT=\"clean\" make doit
+
+@@ gnu.mk @@
+
+###############################################
+##  Definitions for GNU g++ compiler for unices
+###############################################
+
+## For linux
+# C definitions
+CC:=gcc
+STDCFLAGS:=-Wall -std=c99
+# C++ definitions
+C++:=g++
+STDC++FLAGS:=-Wall -std=c++98
+# Fortran definitions
+FORTRAN:=gfortran
+STDFORTRANFLAGS:=-Wall -std=f03
+STDFORTRANLIBS:=-lgfortran
+# Variant definitions
+STDOPTFLAGS:=-O2 -march=native
+STDDEBUGFLAGS:=-O0 -Wall -DDEBUG=1 -Weffc++
+# Linker definitions
+# Default to C++ linking
+LD:=g++ 
+STDLDFLAGS:=
+# Shared library definitions
+STDSHRFLAGS:=-fPIC
+STDSHRLIBS:=-rdynamic -ldl
+STDSHRXFLAGS:=-shared -Wl,-soname,
+# OpenMP flag
+STDOPENMPFLAGS:=-fopenmp
+STDOPENMPLIBS:=-fopenmp
+
+@@ xml_expat.mk @@
+
+######################################################
+##  Example library setup definition for XML libraries
+######################################################
+
+XML_FLAGS:=-DEXPAT
+XML_LIBS:=-lexpat
+
+@@ xml_libxml2.mk @@
+
+######################################################
+##  Example library setup definition for XML libraries
+######################################################
+
+XML_FLAGS:=-DXML2 `xml2-config --cflags`
+XML_LIBS:=`xml2-config --libs`
+
+"
+    end
+  end
+end

@@ -52,7 +52,7 @@ relationcanvas 131248 relation_ref 140592 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 132784 relation_ref 167344 // <directional aggregation>
-  from ref 131888 z 2006 stereotype "<<qvector>>" xyz 595.5 157.5 3000 to ref 132016
+  from ref 131888 z 2006 stereotype "<<qvector>>" xyz 595 157 3000 to ref 132016
   role_a_pos 608 177 3000 no_role_b
   multiplicity_a_pos 666 213 3000 no_multiplicity_b
 end
