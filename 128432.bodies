@@ -87,7 +87,7 @@ while (true)
 !!!152752.cpp!!!	create_common(in a_other : enumerate_path) : unistr
 if(this->is_dos_absolute() and a_other.is_dos_absolute() and this->leaf_at(0) != a_other.leaf_at(0))
 {
-  throw std::input_error( ("Path \""+path()+"\" and \""+a_other.path()+"\" have no common parent.").toStdString() );
+  throw std::domain_error( ("Path \""+path()+"\" and \""+a_other.path()+"\" have no common parent.").toStdString() );
 }
 const enumerate_path lhs_{ this->is_dos_absolute() ? this->path() : (this->isRelative() ? this->absolutePath() : this->path()) };
 const enumerate_path rhs_{ a_other.is_dos_absolute() ? a_other.path() : (a_other.isRelative() ? a_other.absolutePath() : a_other.path()) };

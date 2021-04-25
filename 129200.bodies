@@ -13,7 +13,7 @@ if( nullptr != this->doc_.get() )
   if( 0 != orig_desc_.compare( desc_ ) )
   {
     // Document changed, update version and date
-    this->doc_->set_version_value( this->style_.comment_text( butter_constants::BUTTER_VERSION ) );
+    this->doc_->set_version_value( this->style_.comment_text( constants::BUTTER_VERSION ) );
     this->doc_->set_date_value( this->style_.comment_text( QString( QDateTime::currentDateTime().toString() ) ) );
     QString desc2_;
     {

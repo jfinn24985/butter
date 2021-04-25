@@ -1,0 +1,20 @@
+class UmlPackage
+!!!259248.cpp!!!	find_uml_document(in name : unistr, out result : QVector< UmlItem* >) : void
+BUTTER_REQUIRE(! name.isEmpty (), "Cannot look for a document without a name");  
+// Only check our deployment views.
+for( UmlItem * deploy_cursor_ : this->children() )
+{
+  if( aDeploymentView == deploy_cursor_->kind() )
+  {
+    for( UmlItem * artifact_cursor_ : deploy_cursor_->children() )
+    {
+      if (anArtifact == artifact_cursor_->kind()
+          && name == artifact_cursor_->name().data()
+          && constants::document_stereotype == artifact_cursor_->stereotype().data())
+      {
+        result.push_back( artifact_cursor_ );
+      }
+    }
+  }
+}
+

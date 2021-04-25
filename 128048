@@ -1,6 +1,6 @@
 format 224
 "finnerty" // finnerty
-  revision 8
+  revision 9
   modified_by 48 "finnerty"
   // class settings
   
@@ -4564,7 +4564,7 @@ int main( int argc, char ** argv )
   {
     try
     {
-      UmlCom::trace( \"<b><i>jamfile/makefile</i> generator</b> \" + butter::butter_constants::BUTTER_VERSION + \"<br>\" );
+      UmlCom::trace( \"<b><i>jamfile/makefile</i> generator</b> \" + butter::constants::BUTTER_VERSION + \"<br>\" );
       if ( DEBUG and 0 == interaction )
       {
         QString msg_;
@@ -4580,7 +4580,7 @@ int main( int argc, char ** argv )
         mos_ << \"Hit Ok to continue. If you want to debug this application attach to butter process now.\";
 #endif
 #endif
-        QMessageBox msg_box_( butter::butter_constants::BUTTER_VERSION, msg_, QMessageBox::Warning, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton );
+        QMessageBox msg_box_( butter::constants::BUTTER_VERSION, msg_, QMessageBox::Warning, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton );
         msg_box_.exec();
       }
       BUTTER_CHECK( NULL != UmlPackage::getProject (), \"Error: no project defined!<br>\" );

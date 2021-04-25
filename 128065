@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 22
+  revision 24
   modified_by 48 "finnerty"
   // class settings
   
@@ -1167,6 +1167,50 @@ the artifact's path."
 	comment "Value of \"butter_output\" property that indicates an artifact
 should not be considered for writing to the file system."
       end
+
+      operation 280496 "comment_text"
+	class_operation preserve_cpp_body_indent const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_text" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Transcribe the given text into a comment in the current
+build system.  In general this prepends comment indicators
+to each line of a_text and adds a terminal newline if
+a_text does not end in a newline."
+      end
+
+      attribute 173232 "begin_comment"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "{ \"#\" }"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 173360 "end_comment"
+	class_attribute const_attribute private explicit_type "unistr"
+	init_value "{}"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
     end
 
     class 129840 "compound_document"
@@ -1372,6 +1416,47 @@ ${inlines}
 	  
 	  
 	end
+
+	operation 273968 "isEmpty"
+	  const public explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->user.isEmpty() && this->value.isEmpty(); }
+"
+	  
+	  
+	  
+	  
+	  comment "Is there no user or value string set."
+	end
+      end
+
+      attribute 166704 "end_phrase_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Text that ends a delineated section"
+      end
+
+      attribute 166576 "start_phrase_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Text that starts a delineated section"
       end
 
       classrelation 129712 // close_ (<directional composition>)
@@ -1461,12 +1546,13 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	nparams 0
 	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract};"
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)} 
-: close_( butter::butter_constants::close_label, {}, {} )
-, date_( butter::butter_constants::date_label, {}, {} )
+: end_phrase_(), start_phrase_()
+, close_( butter::constants::close_label, {}, {} )
+, date_( butter::constants::date_label, {}, {} )
 , postscript_()
-, preamble_( butter::butter_constants::preamble_label, {}, {} )
+, preamble_( butter::constants::preamble_label, {}, {} )
 , targets_()
-, version_( butter::butter_constants::version_label, {}, {} )
+, version_( butter::constants::version_label, {}, {} )
 {}
 "
 	
@@ -1491,7 +1577,9 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	cpp_inline public explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 129840 // compound_document
-	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract} : close_( source.close_ )
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract}
+    : end_phrase_( source.end_phrase_ ), start_phrase_( source.start_phrase_ )
+    , close_( source.close_ )
     , date_( source.date_ )
     , postscript_( source.postscript_ )
     , preamble_( source.preamble_ )
@@ -1509,7 +1597,10 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	public explicit_return_type ""
 	nparams 1
 	  param inout name "source" type class_ref 129840 // compound_document
-	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${abstract} : close_( std::move( source.close_ ) )
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${abstract}
+    : end_phrase_( std::move( source.end_phrase_ ) )
+    , start_phrase_( std::move( source.start_phrase_ ) )
+    , close_( std::move( source.close_ ) )
     , date_( std::move( source.date_ ) )
     , postscript_( std::move( source.postscript_ ) )
     , preamble_( std::move( source.preamble_ ) )
@@ -1527,6 +1618,8 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	nparams 1
 	  param inout name "source" type class_ref 129840 // compound_document
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} noexcept {
+      std::swap( end_phrase_, source.end_phrase_ );
+      std::swap( start_phrase_, source.start_phrase_ );
       std::swap( close_, source.close_ );
       std::swap( date_, source.date_ );
       std::swap( postscript_, source.postscript_ );
@@ -1658,6 +1751,21 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	
       end
 
+      operation 273584 "end_phrase"
+	stereotype "const"
+	const constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->${name}_; }
+"
+	
+	
+	
+	
+      end
+
       operation 139056 "postscript"
 	stereotype "const"
 	const constvalue public explicit_return_type "unistr"
@@ -1707,6 +1815,21 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
       return this->targets_.size();
     };"
+	
+	
+	
+	
+      end
+
+      operation 273456 "start_phrase"
+	stereotype "const"
+	const constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->${name}_; }
+"
 	
 	
 	
@@ -1780,6 +1903,21 @@ If not has_target( a_label ) inserts and returns a new empty element"
 	comment "Get the date element."
       end
 
+      operation 273712 "end_phrase"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "val" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->${name}_ = ${p0}; }
+"
+	
+	
+	
+	
+      end
+
       operation 155952 "postscript"
 	public explicit_return_type "unistr"
 	nparams 0
@@ -1804,6 +1942,21 @@ If not has_target( a_label ) inserts and returns a new empty element"
 	
 	
 	comment "Get the preamble element."
+      end
+
+      operation 273840 "start_phrase"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "val" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->${name}_ = ${p0}; }
+"
+	
+	
+	
+	
       end
 
       operation 156208 "version"
@@ -1849,17 +2002,19 @@ Merge process:
   the element in this object.
 
 * Append any elements in the other object that are not in this
-  object."
+  object.
+
+\\pre ! start_phrase.empty && ! end_phrase.empty
+	&& start_phrase == other.start_phrase
+	&& end_phrase == other.end_phrase"
       end
 
       operation 141616 "parse"
 	preserve_cpp_body_indent public explicit_return_type "void"
-	nparams 3
+	nparams 1
 	  param inout name "a_is" explicit_type "QTextIStream"
-	  param in name "start_phrase" explicit_type "unistr"
-	  param in name "end_phrase" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${staticnl}{
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${staticnl}{
   ${body}}
 "
 	
@@ -1874,6 +2029,8 @@ content of the target section is left blank.
 
 The method uses the start_phrase and end_phrase as regular expressions for
 finding the beginning and ending of autogenerated and user sections.
+
+\\pre ! start_phrase.empty && ! end_phrase.empty
 "
       end
 
@@ -1895,13 +2052,11 @@ date elements unchanged."
 
       operation 141872 "write"
 	preserve_cpp_body_indent const public explicit_return_type "void"
-	nparams 3
+	nparams 1
 	  param inout name "a_os" explicit_type "QTextOStream"
-	  param in name "start_phrase" explicit_type "unistr"
-	  param in name "end_phrase" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -1912,6 +2067,8 @@ date elements unchanged."
 
 The start and end phrase arguments provide bracket lines for each subsection
 of the input text.  These phrases are also used when parsing the text.
+
+\\pre ! start_phrase.empty && ! end_phrase.empty
 "
       end
     end
@@ -3158,6 +3315,25 @@ ${members}};
 * This calls write_uml_documents on a_base and all a_base's descendent
 locations."
       end
+
+      operation 280624 "find_uml_document"
+	public return_type class_ref 8833 // UmlItem
+	nparams 1
+	  param in name "name" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}QVector< ${type} * > ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}QVector< ${type} * > ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Find UmlArtifact objects of the given name at the current location. This
+may return an empty list if none are found
+
+\\pre not name.empty"
+      end
     end
 
     class 179120 "base_log"
@@ -3253,7 +3429,7 @@ ${items}
     artifact 130480 "butter.lib"
       stereotype "executable"
       associated_artifacts
-	artifact_ref 128432 // butter_constants
+	artifact_ref 128432 // constants
 	artifact_ref 128816 // compound_document
 	artifact_ref 129456 // location
       end
@@ -3270,7 +3446,7 @@ ${items}
       key "genpro footer" value "QT += qt3support"
     end
 
-    artifact 128432 "butter_constants"
+    artifact 128432 "constants"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -3310,7 +3486,7 @@ ${namespace_end}
 ${includes}
 // manual includes
 #include \"config.h\"
-#include \"butter_constants.h\"
+#include \"constants.h\"
 // end
 ${namespace_start}
 ${members}

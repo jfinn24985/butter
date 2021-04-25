@@ -63,7 +63,7 @@ else
   }
 }
 !!!128560.cpp!!!	section(in a_section : unistr, in a_desc : unistr) : unistr
-static const QString marker_start_ ("${" + butter_constants::section_prefix);
+static const QString marker_start_ ("${" + constants::section_prefix);
 const QString marker_phrase_ (marker_start_ + a_section + "}");
 QString Result;
 int l_start (a_desc.find (marker_phrase_));

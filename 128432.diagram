@@ -6,7 +6,7 @@ end
 artifactcanvas 128432 artifact_ref 128816 // compound_document
   xyz 97.2 237.1 2000
 end
-artifactcanvas 128688 artifact_ref 128432 // butter_constants
+artifactcanvas 128688 artifact_ref 128432 // constants
   xyz 512.5 222.6 2000
 end
 artifactcanvas 128944 artifact_ref 129456 // location

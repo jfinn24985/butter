@@ -30,6 +30,10 @@ for( auto & elem : this->targets_ )
 this->targets_.push_back( { a_label, {}, {} } );
 return this->targets_.back();
 !!!141488.cpp!!!	merge(in a_other : compound_document) : void
+BUTTER_REQUIRE( ! this->start_phrase_.isEmpty(), "Can not merge document without phrases set." );
+BUTTER_REQUIRE( ! this->end_phrase_.isEmpty(), "Can not merge document without phrases set." );
+BUTTER_REQUIRE( this->end_phrase_ == a_other.end_phrase_, "Can not merge document with different phrases set." );
+BUTTER_REQUIRE( this->end_phrase_ == a_other.end_phrase_, "Can not merge document with different phrases set." );
 auto do_merge = []( document_element & targ_, const document_element & src_ )
 {
   if ( ! src_.user.isEmpty() )
@@ -67,8 +71,12 @@ if( ! a_other.postscript_.isEmpty() )
   this->postscript_.append( a_other.postscript_ );
 }
 
-!!!141616.cpp!!!	parse(inout a_is : QTextIStream, in start_phrase : unistr, in end_phrase : unistr) : void
+!!!141616.cpp!!!	parse(inout a_is : QTextIStream) : void
+BUTTER_REQUIRE( ! this->start_phrase_.isEmpty(), "Can not parse document without phrases set." );
+BUTTER_REQUIRE( ! this->end_phrase_.isEmpty(), "Can not parse document without phrases set." );
 QString capture_;
+const QString start_phrase{ this->start_phrase_ };
+const QString end_phrase{ this->end_phrase_ };
 int state_ = 0; // 0 = unlabelled, 1 = labelled
 document_element * cache_ = NULL;
 compound_document tmp;
@@ -82,25 +90,25 @@ for ( QString line_ = a_is.readLine();
   {
     if ( line_.startsWith( start_phrase ) )
     {
-      if ( line_.contains( QString( butter::butter_constants::version_label ) ) )
+      if ( line_.contains( QString( butter::constants::version_label ) ) )
       {
         cache_ = &tmp.version_;
       }
-      else if ( line_.contains( QString( butter::butter_constants::date_label ) ) )
+      else if ( line_.contains( QString( butter::constants::date_label ) ) )
       {
         cache_ = &tmp.date_;
       }
-      else if ( line_.contains( QString( butter::butter_constants::preamble_label ) ) )
+      else if ( line_.contains( QString( butter::constants::preamble_label ) ) )
       {
         cache_ = &tmp.preamble_;
       }
-      else if ( line_.contains( QString( butter::butter_constants::close_label ) ) )
+      else if ( line_.contains( QString( butter::constants::close_label ) ) )
       {
         cache_ = &tmp.close_;
       }
-      else if ( line_.contains( QString( butter::butter_constants::target_label ) ) )
+      else if ( line_.contains( QString( butter::constants::target_label ) ) )
       {
-        const QString label_ = line_.mid( line_.find( QString( butter::butter_constants::target_label ) ) + butter::butter_constants::target_label.length() ).simplifyWhiteSpace();
+        const QString label_ = line_.mid( line_.find( QString( butter::constants::target_label ) ) + butter::constants::target_label.length() ).simplifyWhiteSpace();
         cache_ = &tmp[ label_ ];
       }
       else
@@ -184,7 +192,11 @@ if( ! this->close_.value.isEmpty() )
 {
   this->close_.value.truncate( 0 );
 }
-!!!141872.cpp!!!	write(inout a_os : QTextOStream, in start_phrase : unistr, in end_phrase : unistr) : void
+!!!141872.cpp!!!	write(inout a_os : QTextOStream) : void
+BUTTER_REQUIRE( ! this->start_phrase_.isEmpty(), "Can not write document without phrases set." );
+BUTTER_REQUIRE( ! this->end_phrase_.isEmpty(), "Can not write document without phrases set." );
+const QString start_phrase{ this->start_phrase_ };
+const QString end_phrase{ this->end_phrase_ };
 auto do_write = [&start_phrase, &end_phrase]( QTextStream & a_os_, const document_element & a_cache_)
 {
   if ( ! a_cache_.user.isEmpty () )
@@ -205,7 +217,7 @@ do_write( a_os, this->preamble_ );
 for ( auto const& elem : this->targets_ )
 {
   document_element tmp{ elem };
-  tmp.label = butter::butter_constants::target_label + " " + tmp.label;
+  tmp.label = butter::constants::target_label + " " + tmp.label;
   do_write( a_os, tmp );
 }
 do_write( a_os, this->close_ );
