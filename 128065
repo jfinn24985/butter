@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 24
+  revision 25
   modified_by 48 "finnerty"
   // class settings
   
@@ -3552,4 +3552,6 @@ ${namespace_end}"
       end
     end
   end
+
+  package_ref 141488 // Build system templates
 end

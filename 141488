@@ -1,6 +1,6 @@
 format 224
 "Build system templates" // API USER::butter::Build system templates
-  revision 7
+  revision 8
   modified_by 48 "finnerty"
   // class settings
   
@@ -196,16 +196,6 @@ properties:
 targets:
 	...
 "
-      classrelation 174256 // settings (<directional aggregation>)
-	relation 173872 o-->
-	  stereotype "list"
-	  a role_name "settings" multiplicity "*" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
-"
-	    classrelation_ref 174256 // settings (<directional aggregation>)
-	  b parent class_ref 185904 // property_template
-      end
-
       classrelation 174512 // targets (<directional aggregation>)
 	relation 174128 o-->
 	  stereotype "list"
@@ -1055,6 +1045,61 @@ XML_LIBS:=-lexpat
 
 XML_FLAGS:=-DXML2 `xml2-config --cflags`
 XML_LIBS:=`xml2-config --libs`
+
+"
+    end
+
+    artifact 169648 "property map"
+      associated_artifacts
+      end
+      comment "# Template driven searching
+
+* Parse template
+  * On finding a replacement text
+    * Request from dictionary
+    * If not in dictionary, query system
+
+include -> merge list (optionally remove duplicates)
+defines/flags -> last precendence (no action)
+
+all targets have { variant standard, package, project } 
+
+object
+  source (self)
+  variant flags
+  standard include/defines/flags
+  project include/defines/flags
+  package include/defines/flags
+  executable include/defines/flags
+  excutable dependency include/defines/flags
+  self include/defines/flags
+  compiler
+
+static lib
+  sources
+  variant flags
+  standard include/defines/flags
+  project include/defines/flags
+  package include/defines/flags
+  self dependency include/defines/flags
+  self include/defines/flags
+  compiler
+  archiver
+  archiver flags
+
+binary (dll/exe)
+  sources
+  objects
+  variant flags
+  standard include/defines/flags/ldflags
+  project include/defines/flags/ldflags
+  package include/defines/flags/ldflags
+  self include/defines/flags/ldflags
+  self dependency include/defines/flags/ldflags
+  object ldflags
+  compiler
+  linker
+  linker flags
 
 "
     end
