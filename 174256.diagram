@@ -1,0 +1,31 @@
+format 224
+
+classcanvas 128048 class_ref 220080 // build_style
+  classdiagramsettings member_max_width 0 end
+  xyz 137 63 2000
+end
+classcanvas 128176 class_ref 206256 // text_template
+  classdiagramsettings member_max_width 0 end
+  xyz 477 106 2000
+end
+classcanvas 128432 class_ref 129840 // compound_document
+  classdiagramsettings member_max_width 0 end
+  xyz 655 15 2005
+end
+relationcanvas 128304 relation_ref 207792 // <directional composition>
+  decenter_begin 119
+  decenter_end 56
+  from ref 128048 z 2001 stereotype "<<map>>" xyz 364 121.5 3000 to ref 128176
+  role_a_pos 402 95 3000 no_role_b
+  multiplicity_a_pos 461 131 3000 no_multiplicity_b
+end
+relationcanvas 128560 relation_ref 207920 // <directional aggregation>
+  decenter_begin 85
+  decenter_end 16
+  from ref 128048 z 2006 to point 366 102
+  line 128816 z 2006 to point 368 26
+  line 128944 z 2006 to ref 128432
+  role_a_pos 593 1 3000 no_role_b
+  multiplicity_a_pos 622 37 3000 no_multiplicity_b
+end
+end

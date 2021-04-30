@@ -1,0 +1,114 @@
+class build_style
+!!!306096.cpp!!!	get_build_file_name() : unistr
+auto itr = this->style_properties_.find( { constants::build_file_xmlname() } );
+return (itr == this->style_properties_.end() ? QString() : itr.value);
+!!!305968.cpp!!!	get_root_buildfile_name() : unistr
+auto itr = this->style_properties_.find( { constants::build_file_xmlname() } );
+return (itr == this->style_properties_.end() ? QString() : itr.value);
+!!!314928.cpp!!!	end_phrase(in name : unistr) : unistr
+auto itr = this->templates_.find( constants::end_phrase_xmlname() );
+if( itr != this->templates_.end() )
+{
+  map_type p;
+  p[ "name" ] = name;
+  return itr.value.instantiate( p );
+}
+else
+{
+  return comment_text( "END:" + name );
+}
+!!!314800.cpp!!!	start_phrase() : unistr
+auto itr = this->templates_.find( constants::start_phrase_xmlname() );
+if( itr != this->templates_.end() )
+{
+  map_type p;
+  p[ "name" ] = name;
+  return itr.value.instantiate( p );
+}
+else
+{
+  return comment_text( " START:" + name );
+}
+!!!315056.cpp!!!	comment_text(in text : unistr) : unistr
+auto itr = this->templates_.find( "comment" );
+if( itr != this->templates_.end() )
+{
+  QString Result;
+  {
+    map_type p;
+    QTextOStream os_(&Result);
+    int s_ = 0; // start position
+    for( int e_ = text.find('\n', s_); e_ > 0; e_ = text.find('\n', s_), s_ = e_ + 1 )
+    { 
+      p[ "text" ] = text.mid(s_, e_ - s_);
+      os_ << itr.value.instantiate( p );
+      os_ << "\n";
+    }
+    if( text.at(a_text.length() - 1) != '\n' )
+    {
+      p[ "text" ] = text.mid(s_);
+      os_ << itr.value.instantiate( p );
+      os_ << "\n";
+    }
+  }
+  return Result;
+}
+else
+{
+  return constants::comment_text(text);
+}
+!!!314160.cpp!!!	add_close(in properties : build_style::map_type, in is_root : bool) : void
+BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+auto itr = this->templates_.find( constants::close_xmllabel() );
+if( itr != this->templates_.end() )
+{
+  map_type p{ this->properties_ };
+  p.unite( properties );
+  buildfile_->close().value = itr.value.instantiate( p );
+}
+!!!314416.cpp!!!	add_date(in properties : build_style::map_type) : void
+BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+auto itr = this->templates_.find( constants::close_xmllabel() );
+if( itr != this->templates_.end() )
+{
+  map_type p{ this->properties_ };
+  p[ "date" ] = QDateTime::currentDateTime().toString();
+  buildfile_->date().value = itr.value.instantiate( p );
+}
+!!!305200.cpp!!!	add_element(in label : unistr, in tmpl : unistr, in properties : build_style::map_type) : void
+BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+auto itr = this->templates_.find( tmpl );
+if( itr != this->templates_.end() )
+{
+  map_type p{ this->properties_ };
+  p.unite( properties );
+  (*buildfile_)[label].value = itr.value.instantiate( p );
+}
+!!!304688.cpp!!!	add_preamble(in properties : build_style::map_type, in is_root : bool) : void
+BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+auto itr = this->templates_.find( constants::preamble_xmllabel() );
+if( itr != this->templates_.end() )
+{
+  map_type p{ this->properties_ };
+  p.unite( properties );
+  buildfile_->preamble().value = itr.value.instantiate( p );
+}
+!!!314288.cpp!!!	add_version(in properties : build_style::map_type, in is_root : bool) : void
+BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+auto itr = this->templates_.find( constants::version_xmllabel() );
+if( itr != this->templates_.end() )
+{
+  map_type p{ this->properties_ };
+  p.unite( properties );
+  buildfile_->version().value = itr.value.instantiate( p );
+}
+!!!314544.cpp!!!	append_element(in label : unistr, in tmpl : unistr, in properties : build_style::map_type) : void
+BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+auto itr = this->templates_.find( tmpl );
+if( itr != this->templates_.end() )
+{
+  map_type p{ this->properties_ };
+  p.unite( properties );
+  (*buildfile_)[label].value += '\n';
+  (*buildfile_)[label].value += itr.value.instantiate( p );
+}

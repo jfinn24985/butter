@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 26
+  revision 28
   modified_by 48 "finnerty"
   // class settings
   
@@ -78,6 +78,11 @@ format 224
     end
 
     classdiagram 167728 "text templates"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 174256 "generate a build file"
       classdiagramsettings member_max_width 0 end
       size A4
     end
@@ -1266,6 +1271,48 @@ a_text does not end in a newline."
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   return ${type}(\"option\"); }
+"
+	
+	
+	
+	
+      end
+
+      operation 313776 "build_file_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return QString(\"build-file\"); }
+"
+	
+	
+	
+	
+      end
+
+      operation 313904 "root_file_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return QString(\"root-file\"); }
+"
+	
+	
+	
+	
+      end
+
+      operation 314032 "binary_target_xmllabel"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return QString(\"binary-target\"); }
 "
 	
 	
@@ -3835,6 +3882,500 @@ ${members}};
 	
 	
       end
+    end
+
+    class 220080 "build_style"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 220208 "map_type"
+	visibility package stereotype "typedef" explicit_base_type "unistr"
+	cpp_decl "${comment}typedef QMap< ${type}, ${type} > ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      classrelation 208176 // templates_ (<directional composition>)
+	relation 207792 *-->
+	  stereotype "map"
+	  a role_name "templates_" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${association}, ${type}> ${name}${value};
+"
+	    classrelation_ref 208176 // templates_ (<directional composition>)
+	  b parent class_ref 206256 // text_template
+	  association_explicit_type "unistr"
+      end
+
+      classrelation 208304 // buildfile_ (<directional aggregation>)
+	relation 207920 o-->
+	  a role_name "buildfile_" multiplicity "0..1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 208304 // buildfile_ (<directional aggregation>)
+	  b parent class_ref 129840 // compound_document
+      end
+
+      attribute 186928 "style_properties_"
+	private type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 187056 "special_files_"
+	private type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Map of filenames and content for special/auxilliary build files to create in the root location."
+      end
+
+      extra_member 169904 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 306608 "build_style"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 306736 "~build_style"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 306864 "build_style"
+	stereotype "copy"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 220080 // build_style
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 306992 "operator="
+	public return_type class_ref 220080 // build_style
+	nparams 1
+	  param in name "source" type class_ref 220080 // build_style
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 170288 "SERIALIZATION"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 304560 "read_style"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "style" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 170032 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 306096 "get_build_file_name"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Name of all non-root build files."
+      end
+
+      operation 305968 "get_root_buildfile_name"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Name of the root build file."
+      end
+
+      operation 305712 "get_special_files"
+	const public return_type class_ref 220208 // map_type
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type}& ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->special_files_; }
+"
+	
+	
+	
+	
+	comment "A map of filenames and content of any special build files to create in the root location"
+      end
+
+      operation 307248 "get_templates"
+	stereotype "map"
+	const public return_type class_ref 206256 // text_template
+	multiplicity "*"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}QMap< QString, ${type} > const& ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}QMap< QString, ${type} > const& ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->templates_; }
+"
+	
+	
+	
+	
+	comment "A map of filenames and content of any special build files to create in the root location"
+      end
+
+      operation 306480 "has_buildfile"
+	const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return nullptr != this->buildfile_; }
+"
+	
+	
+	
+	
+	comment "Check if there is a document for output"
+      end
+
+      operation 314928 "end_phrase"
+	public explicit_return_type "unistr"
+	nparams 1
+	  param in name "name" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Marker text indicating end of a compound document section with the given name
+
+This uses a template labelled \"end-phrase\". If
+no template exists, then the fall-back is to use 
+comment_text( \" END:\" + name )"
+      end
+
+      operation 314800 "start_phrase"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Marker text indicating beginning of a compound document section with the  given name
+
+This uses a template labelled \"start-phrase\". If
+no template exists, then the fall-back is to use 
+comment_text( \" START:\" + name )"
+      end
+
+      operation 315056 "comment_text"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "text" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Generate a comment suitable for putting in the buildfile.
+
+This uses a template labelled \"comment\", splitting text into
+separate lines and feeding the template a line at a time. If
+no template exists, then the fall-back is to use 
+constants::comment_text
+
+\\param text : text to comment
+"
+      end
+
+      extra_member 170416 "MODIFY_DOCUMENT"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 314160 "add_close"
+	const public explicit_return_type "void"
+	nparams 2
+	  param in name "properties" type class_ref 220208 // map_type
+	  param in name "is_root" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Adds/Checks the close section"
+      end
+
+      operation 314416 "add_date"
+	const public explicit_return_type "void"
+	nparams 1
+	  param in name "properties" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Adds/Checks the date section"
+      end
+
+      operation 305200 "add_element"
+	const public explicit_return_type "void"
+	nparams 3
+	  param in name "label" explicit_type "unistr"
+	  param in name "tmpl" explicit_type "unistr"
+	  param in name "properties" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Add a section with the given label to the buildfile, using the named
+template and given properties.  Does nothing if the given template
+does not exist.
+
+\\param properties : map of replacement properties for the template
+\\param label : label for the section in the compound document
+\\param tmpl : the name of the template to use
+\\pre has_buildfile
+
+Standard templates are:
+* 
+"
+      end
+
+      operation 304688 "add_preamble"
+	const public explicit_return_type "void"
+	nparams 2
+	  param in name "properties" type class_ref 220208 // map_type
+	  param in name "is_root" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Adds/Checks the preamble section"
+      end
+
+      operation 314288 "add_version"
+	const public explicit_return_type "void"
+	nparams 2
+	  param in name "properties" type class_ref 220208 // map_type
+	  param in name "is_root" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Adds/Checks the version section"
+      end
+
+      operation 314544 "append_element"
+	const public explicit_return_type "void"
+	nparams 3
+	  param in name "label" explicit_type "unistr"
+	  param in name "tmpl" explicit_type "unistr"
+	  param in name "properties" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, const ${t2} & ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}, const ${t2} & ${p2}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Append content to a section with the given label to the buildfile, using the named
+template and given properties.  Does nothing if the given template
+does not exist.
+
+\\param properties : map of replacement properties for the template
+\\param label : label for the section in the compound document
+\\param tmpl : the name of the template to use
+\\pre has_buildfile
+
+Standard templates are:
+* 
+"
+      end
+
+      extra_member 170160 "MODIFY"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 305072 "reset"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  this->buildfile_ = nullptr; }
+"
+	
+	
+	
+	
+	comment "Remove reference to compound document and reset internal state."
+      end
+
+      operation 304944 "set_buildfile"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "doc" type class_ref 129840 // compound_document
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->buildfile_ = &doc; }
+"
+	
+	
+	
+	
+	comment "Change the document to work on."
+      end
+
     end
   end
 

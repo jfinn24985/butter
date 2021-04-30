@@ -14,7 +14,7 @@ classcanvas 128432 class_ref 206384 // template_entry
 end
 classcanvas 129072 class_ref 213552 // text_template_test
   classdiagramsettings member_max_width 0 end
-  xyz 457 157 2000
+  xyz 423 118 2000
 end
 line 128304 ---+ decenter_begin 108
   from ref 128176 z 2007 to ref 128048
@@ -24,7 +24,7 @@ relationcanvas 128688 relation_ref 194608 // <directional composition>
   decenter_begin 117
   from ref 128048 z 3006 to point 216 59
   line 128816 z 3006 to point 217 236
-  line 128944 z 3006 stereotype "<<qvector>>" xyz 123.5 238.5 3006 to ref 128432
+  line 128944 z 3006 stereotype "<<qvector>>" xyz 123 238 3006 to ref 128432
   role_a_pos 113 213 3000 no_role_b
   multiplicity_a_pos 113 249 3000 no_multiplicity_b
 end

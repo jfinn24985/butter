@@ -1,6 +1,6 @@
 format 224
 "Build system templates" // API USER::butter::Build system templates
-  revision 10
+  revision 11
   modified_by 48 "finnerty"
   // class settings
   
@@ -1147,7 +1147,7 @@ binary (dll/exe)
       associated_artifacts
       end
       comment "<style label=\"gmake\">
- <base-file label=\"system.mk\">## system.mk
+ <file label=\"system.mk\">## system.mk
 #
 # System Makefile
 #
@@ -1295,8 +1295,8 @@ distclean: clean
 clean: 
 	rm -f $(CLEAN_TEMP)
 	WHAT=\"clean\" make doit
-</base-file>
- <base-file label=\"local.mk\">## local.mk.tmpl
+</file>
+ <file label=\"local.mk\">## local.mk.tmpl
 
 OS ?= LINUX
 COMP ?= GNU
@@ -1313,6 +1313,13 @@ VARIANT ?= DEBUG
  <!-- default for install flags -->
  <property label=\"target_install_location\">$(BINDIR)</property>
  <property label=\"target_install_mode\">$(BINIFLAGS)</property>
+
+  <!-- how to make comments -->
+ <template label=\"comment\">## <replace label=\"text\"/></template>
+ <template label=\"start-phrase\">## START:<replace label=\"name\"/>
+</template>
+ <template label=\"end-phrase\">## END:<replace label=\"name\"/>
+</template>
 
 
  <!-- template for start of root makefile -->
