@@ -12,6 +12,9 @@ end
 artifactcanvas 129072 artifact_ref 143536 // location_test
   xyz 374 54 2000
 end
+artifactcanvas 129456 artifact_ref 182832 // text_template_test
+  xyz 57 160 2000
+end
 containcanvas 128560
   from ref 128176 z 2006 to ref 128048
 containcanvas 129200
@@ -19,4 +22,6 @@ containcanvas 129200
 simplerelationcanvas 129328 simplerelation_ref 128048
   from ref 128176 z 2001 to ref 128304
 end
+containcanvas 129584
+  from ref 128176 z 2001 to ref 129456
 end

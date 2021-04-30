@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 18
+  revision 19
   modified_by 48 "finnerty"
   // class settings
   
@@ -464,7 +464,7 @@ ${inlines}
       
       extra_member 149808 "op<<(os, QString)"
 	
-	cpp "" "std::ostream & operator<<(std::ostream & os, const QString &s)
+	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
 {
   os << s.toStdString();
   return os;
@@ -621,6 +621,238 @@ ${body}
       end
     end
 
+    class 213552 "text_template_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 201648 // <dependency>
+	relation 201264 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 201648 // <dependency>
+	  b parent class_ref 206256 // text_template
+      end
+
+      extra_member 163248 "op<<(os, QString)"
+	
+	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 294960 "text_template_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 295088 "text_template_push_back"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296240 "text_template_instantiate_textonly"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296368 "text_template_instantiate_replace_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296496 "text_template_instantiate_replace_match"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296624 "text_template_instantiate_phrase_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296752 "text_template_instantiate_phrase_match"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296880 "text_template_instantiate_nest_phrase_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297008 "text_template_instantiate_nest_phrase_innermatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297136 "text_template_instantiate_nest_phrase_outermatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297264 "text_template_instantiate_nest_phrase_allmatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297392 "text_template_instantiate_bad_nest_phrase"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 298032 "text_template_read_basic"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
     activity 128048 "location_set_insert_sibling_root"
       specification operation_ref 245680 // location_set_insert_negative_dir
     end
@@ -706,11 +938,34 @@ ${namespace_end}"
       end
     end
 
+    artifact 182832 "text_template_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <boost/test/unit_test.hpp>
+#include <QXmlStreamReader>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 213552 // text_template_test
+      end
+    end
+
     artifact 137008 "unittest"
       stereotype "executable"
       associated_artifacts
 	artifact_ref 130352 // compound_document_test
 	artifact_ref 143536 // location_test
+	artifact_ref 182832 // text_template_test
       end
       ncouples 10
       key "genpro pro" value "/home/finnerty/tmp/butter2/butter/test/unittest.pro"

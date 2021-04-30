@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 25
+  revision 26
   modified_by 48 "finnerty"
   // class settings
   
@@ -73,6 +73,11 @@ format 224
     end
 
     classdiagram 148016 "logging"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 167728 "text templates"
       classdiagramsettings member_max_width 0 end
       size A4
     end
@@ -1169,11 +1174,11 @@ should not be considered for writing to the file system."
       end
 
       operation 280496 "comment_text"
-	class_operation preserve_cpp_body_indent const public explicit_return_type "unistr"
+	class_operation preserve_cpp_body_indent public explicit_return_type "unistr"
 	nparams 1
 	  param in name "a_text" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -1210,6 +1215,62 @@ a_text does not end in a newline."
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
+      end
+
+      operation 297520 "text_template_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return ${type}(\"template\"); }
+"
+	
+	
+	
+	
+      end
+
+      operation 297648 "label_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return ${type}(\"label\"); }
+"
+	
+	
+	
+	
+      end
+
+      operation 297776 "replacement_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return ${type}(\"replace\"); }
+"
+	
+	
+	
+	
+      end
+
+      operation 297904 "optional_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return ${type}(\"option\"); }
+"
+	
+	
+	
+	
       end
     end
 
@@ -3414,6 +3475,367 @@ ${items}
 	
       end
     end
+
+    class 206256 "text_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 206896 "map_type"
+	visibility package stereotype "typedef" explicit_base_type "unistr"
+	cpp_decl "${comment}typedef QMap< ${type}, ${type} > ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      class 206768 "entry_type"
+	visibility package stereotype "enum"
+	cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+	java_decl "${comment}${@}${visibility}${static}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl "${comment}${visibility}final class ${name} {
+${items}}
+"
+	python_2_2 python_decl "class ${name}:
+${docstring}${members}
+"
+	idl_decl "${comment}enum ${name} {
+${items}};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 179888 "TEXT"
+	  public type class_ref 206768 // entry_type
+	  init_value "0"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Plain text inserted as-is when instantiated"
+	end
+
+	attribute 180016 "REPLACEMENT"
+	  public type class_ref 206768 // entry_type
+	  init_value "1"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "A label to search for in a property dictionary."
+	end
+
+	attribute 180400 "PHRASE"
+	  public type class_ref 206768 // entry_type
+	  init_value "2"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Indicate the beginning/end of an optional section. (Any text is used to match the corresponding end.)
+
+A phrase is omitted if none of the replacement texts inside the phrase have a match."
+	end
+      end
+
+      class 206384 "template_entry"
+	visibility protected stereotype "struct"
+	cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}struct ${name} {
+${members}};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 180144 "type_"
+	  public type class_ref 206768 // entry_type
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "The type of entry"
+	end
+
+	attribute 180272 "content_"
+	  public explicit_type "unistr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Any textual/label content"
+	end
+      end
+
+      class 213424 "const_iterator"
+	visibility package stereotype "typedef" base_type class_ref 206384 // template_entry
+	cpp_decl "${comment}typedef QVector< ${type} >::${name} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      classrelation 194992 // sequence_ (<directional composition>)
+	relation 194608 *-->
+	  stereotype "qvector"
+	  a role_name "sequence_" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 194992 // sequence_ (<directional composition>)
+	  b parent class_ref 206384 // template_entry
+      end
+
+      extra_member 162864 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 293808 "text_template"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw}
+: sequence_() {}
+"
+	
+	
+	
+	
+      end
+
+      operation 293936 "~text_template"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
+"
+	
+	
+	
+	
+      end
+
+      operation 294064 "text_template"
+	stereotype "copy"
+	cpp_deleted private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 206256 // text_template
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} = delete;
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 294192 "operator="
+	private return_type class_ref 206256 // text_template
+	nparams 1
+	  param in name "source" type class_ref 206256 // text_template
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} = delete;
+"
+	
+	
+	
+	
+      end
+
+      extra_member 162992 "SERIALIZATION"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 287152 "read"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "xml" explicit_type "QXmlStreamReader"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Deserialize template from XML document."
+      end
+
+      extra_member 163120 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 294448 "begin"
+	const public return_type class_ref 213424 // const_iterator
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->sequence_.${name}();
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 294832 "empty"
+	const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->sequence_.${name}();
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 294576 "end"
+	const public return_type class_ref 213424 // const_iterator
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->sequence_.${name}();
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 287280 "instantiate"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "properties" type class_ref 206896 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Instantiate the template from the data in the given dictionary."
+      end
+
+      operation 294704 "size"
+	const public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->sequence_.${name}();
+}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 163376 "MODIFY"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 296112 "push_back"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "v" type class_ref 206384 // template_entry
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->sequence_.${name}(v);
+}
+"
+	
+	
+	
+	
+      end
+    end
   end
 
   deploymentview 128065 "butter"
@@ -3446,6 +3868,47 @@ ${items}
       key "genpro footer" value "QT += qt3support"
     end
 
+    artifact 130096 "config"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_CONFIG_H
+#define @{PROJECT}_CONFIG_H 1
+#include <string>
+#include <stdexcept>
+
+#ifdef NO_DBC
+#define NO_DBC 1
+#else
+#define NO_DBC 0
+#endif
+
+inline void @{PROJECT}_ALWAYS(bool X, std::string Y)
+{
+   if (! X) throw std::runtime_error(Y);
+}
+
+inline void @{PROJECT}_REQUIRE(bool X, std::string Y)
+{
+   @{PROJECT}_ALWAYS(X,Y);
+}
+
+inline void @{PROJECT}_CHECK(bool X, std::string Y)
+{
+   if (! NO_DBC) @{PROJECT}_ALWAYS(X,Y);
+}
+
+inline void @{PROJECT}_ENSURE(bool X, std::string Y)
+{
+   if (! NO_DBC) @{PROJECT}_ALWAYS(X,Y);
+}
+
+#undef NO_DBC
+
+#endif
+"
+      associated_elems
+      end
+    end
+
     artifact 128432 "constants"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -3461,6 +3924,7 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+#include <qtextstream.h>
 ${namespace_start}
 ${members}
 ${namespace_end}"
@@ -3549,6 +4013,36 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 128432 // enumerate_path
+      end
+    end
+
+    artifact 182704 "text_template"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+#include <qmap.h>
+${declarations}
+class QXmlStreamReader;
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"config.h\"
+#include \"constants.h\"
+#include <qvector.h>
+#include <qtextstream.h>
+#include <QXmlStreamReader>
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 206256 // text_template
       end
     end
   end

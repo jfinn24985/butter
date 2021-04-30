@@ -1,0 +1,19 @@
+format 224
+
+classcanvas 128048 class_ref 206256 // text_template
+  classdiagramsettings member_max_width 0 end
+  xyz 384 59 2000
+end
+classcanvas 128176 class_ref 206384 // template_entry
+  classdiagramsettings member_max_width 0 end
+  xyz 74 95 2000
+end
+line 128816 ---+
+  from ref 128176 z 2001 to ref 128048
+relationcanvas 128944 relation_ref 194608 // <directional composition>
+  from ref 128048 z 2001 stereotype "<<qvector>>" xyz 322 200 3000 to point 333 199
+  line 129072 z 2001 to ref 128176
+  role_a_pos 186 136 3000 no_role_b
+  multiplicity_a_pos 186 172 3000 no_multiplicity_b
+end
+end

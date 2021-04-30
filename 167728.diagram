@@ -1,0 +1,37 @@
+format 224
+
+classcanvas 128048 class_ref 206256 // text_template
+  classdiagramsettings member_max_width 0 end
+  xyz 265 28 2000
+end
+classcanvas 128176 class_ref 206768 // entry_type
+  classdiagramsettings member_max_width 0 end
+  xyz 11 19 2006
+end
+classcanvas 128432 class_ref 206384 // template_entry
+  classdiagramsettings member_max_width 0 end
+  xyz 1 187 3005
+end
+classcanvas 129072 class_ref 213552 // text_template_test
+  classdiagramsettings member_max_width 0 end
+  xyz 457 157 2000
+end
+line 128304 ---+ decenter_begin 108
+  from ref 128176 z 2007 to ref 128048
+line 128560 ---+ decenter_begin 84 decenter_end 419
+  from ref 128432 z 3006 to ref 128048
+relationcanvas 128688 relation_ref 194608 // <directional composition>
+  decenter_begin 117
+  from ref 128048 z 3006 to point 216 59
+  line 128816 z 3006 to point 217 236
+  line 128944 z 3006 stereotype "<<qvector>>" xyz 123.5 238.5 3006 to ref 128432
+  role_a_pos 113 213 3000 no_role_b
+  multiplicity_a_pos 113 249 3000 no_multiplicity_b
+end
+relationcanvas 129200 relation_ref 201264 // <dependency>
+  decenter_begin 144
+  from ref 129072 z 2001 to ref 128048
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end
