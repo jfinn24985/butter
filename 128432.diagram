@@ -7,10 +7,22 @@ artifactcanvas 128432 artifact_ref 128816 // compound_document
   xyz 97.2 237.1 2000
 end
 artifactcanvas 128688 artifact_ref 128432 // constants
-  xyz 512.5 222.6 2000
+  xyz 455.5 254.6 2000
 end
 artifactcanvas 128944 artifact_ref 129456 // location
   xyz 273.6 239.3 2000
+end
+artifactcanvas 129200 artifact_ref 130096 // config
+  xyz 525 53 2000
+end
+artifactcanvas 129456 artifact_ref 129840 // utility
+  xyz 510 163 2006
+end
+artifactcanvas 129712 artifact_ref 182704 // text_template
+  xyz 93 351 2000
+end
+artifactcanvas 129840 artifact_ref 189488 // build_style
+  xyz 277 345 2000
 end
 containcanvas 128560
   from ref 128048 z 2001 to ref 128432
@@ -18,4 +30,13 @@ containcanvas 128816
   from ref 128048 z 2001 to ref 128688
 containcanvas 129072
   from ref 128048 z 2001 to ref 128944
+simplerelationcanvas 129328 simplerelation_ref 134576
+  from ref 128048 z 2001 to ref 129200
+end
+containcanvas 129584
+  from ref 128048 z 2007 to ref 129456
+containcanvas 129968
+  from ref 128048 z 2001 to ref 129712
+containcanvas 130096
+  from ref 128048 z 2001 to ref 129840
 end

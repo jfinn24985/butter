@@ -1,22 +1,33 @@
-class text_template_test
-!!!294960.cpp!!!	text_template_constructor()
+class build_style_test
+!!!322096.cpp!!!	build_style_constructor()
 // Static Lifetime method tests
-BOOST_CHECK( std::is_default_constructible< butter::text_template >::type{} );
-BOOST_CHECK( std::is_copy_constructible< butter::text_template >::type{} );
-BOOST_CHECK( std::is_move_constructible< butter::text_template >::type{} );
-BOOST_CHECK( (std::is_assignable< butter::text_template, butter::text_template >::type{}) );
-BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
+BOOST_CHECK( std::is_default_constructible< butter::build_style >::type{} );
+BOOST_CHECK( ! std::is_copy_constructible< butter::build_style >::type{} );
+BOOST_CHECK( ! std::is_move_constructible< butter::build_style >::type{} );
+BOOST_CHECK( ! (std::is_assignable< butter::build_style, butter::build_style >::type{}) );
+BOOST_CHECK( ! std::has_virtual_destructor< butter::build_style >::type{});
 
 // test constructor
 {
-  butter::text_template tmpl{};
-  BOOST_CHECK_EQUAL(0, tmpl.size());
-  BOOST_CHECK(tmpl.begin() == tmpl.end());
-  BOOST_CHECK(tmpl.empty());
-  QString t = tmpl.instantiate( {} );
-  BOOST_CHECK(t.isEmpty());
+  butter::build_style tmpl{};
+  BOOST_CHECK(tmpl.get_build_file_name().isEmpty());
+  BOOST_CHECK(tmpl.get_root_file_name().isEmpty());
+  BOOST_CHECK(tmpl.get_special_files().empty());
+  BOOST_CHECK(tmpl.get_templates().empty());
+  BOOST_CHECK(tmpl.get_properties().empty());
 }
-!!!295088.cpp!!!	text_template_push_back()
+!!!323632.cpp!!!	build_style_read_basic()
+{
+  butter::build_style var;
+  QByteArray xmldoc{ "<style label='gmake'>\n<file label='system.mk'>## system.mk\n#\n# System Makefile\n#\n</file>\n<file label='local.mk'>## local.mk.tmpl\n\nOS ?= LINUX\nCOMP ?= GNU\nVARIANT ?= DEBUG\n</file>\n<!-- name of the top-most generated buildfile -->\n<property label='root-file'>makefile</property>\n\n<!-- name of build file in any sub-directories -->\n<property label='build-file'>makefile</property>\n<!-- default for install flags -->\n<property label='target_install_location'>$(BINDIR)</property>\n<property label='target_install_mode'>$(BINIFLAGS)</property>\n\n<!-- how to make comments -->\n<template label='comment'>## <replace label='text'/></template>\n<template label='start-phrase'>## START:<replace label='name'/>\n</template>\n<template label='end-phrase'>## END:<replace label='name'/>\n</template>\n\n\n<!-- template for start of root makefile -->\n<template label='root-preamble'><option label='rootdir'>export ROOTDIR:=<replace label='location_root'/></option>\ninclude $(ROOTDIR)/system.mk\n</template>\n\n<!-- template for start of subdirectory makefiles -->\n<template label='preamble'>\ninclude $(ROOTDIR)/system.mk\n</template>\n\n<!-- template for start of (internal) package -->\n<template label='package'>\n<option label='SYSINCLUDE'>export SYSINCLUDE:= <replace label='package_includes'/>\n</option><option label='SYSCFLAGS'>export SYSCFLAGS:= <replace label='package_cflags'/>\n</option><option label='SYSC++FLAGS'>export SYSC++FLAGS:= <replace label='package_c++flags'/>\n</option><option label='SYSFFLAGS'>export SYSFFLAGS:= <replace label='package_fflags'/>\n</option><option label='SYSLDFLAGS'>export SYSLDFLAGS:= <replace label='package_ldflags'/>\n</option></template>\n\n<!-- template for a target -->\n<template label='build-target'>\n<option label='SRC'><replace label='TARGET_NAME'/>SRC:=<replace label='target_src'/>\n</option><option label='INCLUDE'><replace label='TARGET_NAME'/>INCLUDE:= $(SYSINCLUDE) <replace label='target_include'/>\n</option><option label='CFLAGS'><replace label='TARGET_NAME'/>CFLAGS:= $(SYSCFLAGS) <replace label='target_cflags'/>\n</option><option label='C++FLAGS'><replace label='TARGET_NAME'/>C++FLAGS:= $(SYSC++FLAGS) <replace label='target_c++flags'/>\n</option><option label='LDFLAGS'><replace label='TARGET_NAME'/>LDFLAGS:= $(SYSLDFLAGS) <replace label='target_ldflags'/>\n</option><option label='DINC'><replace label='TARGET_NAME'/>DINC := $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFCSRC)=.$(SUFDEP)))\ninclude $(<replace label='TARGET_NAME'/>DINC)</option>\n\n<replace label='TARGET_NAME'/>OBJ := $(<replace label='TARGET_NAME'/>OBJ) $(filter %.o, $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFOBJ)))\nCLEAN_TEMP := $(CLEAN_TEMP) $(<replace label='TARGET_NAME'/>OBJ)\n\n<replace label='target_name'/>$(SUFEXE) :: CFLAGS:=... $(patsubst %,-I%,$(<replace label='TARGET_NAME'/>INCLUDE)) $(VARIANTFLAGS) ...\n<replace label='target_name'/>$(SUFEXE) :: C++FLAGS:=... $(<replace label='TARGET_NAME'/>INCLUDE) ...\n<replace label='target_name'/>$(SUFEXE) :: $(<replace label='TARGET_NAME'/>OBJ) <replace label='target_object'/> <replace label='target_local_libs'/> | $(<replace label='TARGET_NAME'/>DINC) \n#?	$(C++) $(C++FLAGS) -o <replace label='target_name'/>$(SUFEXE) $(<replace label='TARGET_NAME'/>OBJ) $(<replace label='TARGET_NAME'/>LDFLAGS) $(LDFLAGS)\n\nall :: <replace label='target_name'/>$(SUFEXE)\n\nCLEAN_TARGETS := $(CLEAN_TARGETS) <replace label='target_name'/>$(SUFEXE)\n</template>\n\n<template label='install-target'>\ninstall:: <replace label='target_name'/>$(SUFEXE)\n<option label='where'>	$(INSTALL) -d <replace label='target_install_location'/>\n</option><option label='install'>	$(INSTALL) <replace label='target_install_mode'/> $&lt; <replace label='target_install_location'/>/$&lt;\n</option>\n</template>\n<template label='sublocation'>\nDIRS:= $(DIRS) <replace label='location_dir'/></template>\n</style>" };
+  QXmlStreamReader x(xmldoc);
+  x.readNextStartElement();
+  var.read_style("gmake", x);
+  BOOST_CHECK_EQUAL(4, var.get_properties().size());
+  BOOST_CHECK_EQUAL(9, var.get_templates().size());
+  BOOST_CHECK_EQUAL(2, var.get_special_files().size());
+}
+!!!322224.cpp!!!	build_style_push_back()
 {
   butter::text_template var;
   var.push_back( { butter::text_template::TEXT, { "some text" } } );
@@ -26,7 +37,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   BOOST_CHECK_EQUAL( int(butter::text_template::TEXT), int(var.begin()->type_) );
   BOOST_CHECK_EQUAL( "some text", var.begin()->content_ );
 }
-!!!296240.cpp!!!	text_template_instantiate_textonly()
+!!!322352.cpp!!!	build_style_instantiate_textonly()
 {
   butter::text_template var;
   var.push_back( { butter::text_template::TEXT, { "some text" } } );
@@ -35,7 +46,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( {} ) };
   BOOST_CHECK_EQUAL( "some textsome more text", t );
 }
-!!!296368.cpp!!!	text_template_instantiate_replace_nomatch()
+!!!322480.cpp!!!	build_style_instantiate_replace_nomatch()
 {
   butter::text_template var;
   var.push_back( { butter::text_template::TEXT, { "some text" } } );
@@ -45,7 +56,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( {} ) };
   BOOST_CHECK_EQUAL( "some textsome more text", t );
 }
-!!!296496.cpp!!!	text_template_instantiate_replace_match()
+!!!322608.cpp!!!	build_style_instantiate_replace_match()
 {
   butter::text_template var;
   butter::text_template::map_type m;
@@ -57,7 +68,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( m ) };
   BOOST_CHECK_EQUAL( "some text\nvalue\nsome more text", t );
 }
-!!!296624.cpp!!!	text_template_instantiate_phrase_nomatch()
+!!!322736.cpp!!!	build_style_instantiate_phrase_nomatch()
 {
   butter::text_template var;
   var.push_back( { butter::text_template::TEXT, { "some text" } } );
@@ -69,7 +80,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( {} ) };
   BOOST_CHECK_EQUAL( "some text", t );
 }
-!!!296752.cpp!!!	text_template_instantiate_phrase_match()
+!!!322864.cpp!!!	build_style_instantiate_phrase_match()
 {
   butter::text_template var;
   butter::text_template::map_type m;
@@ -83,7 +94,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( m ) };
   BOOST_CHECK_EQUAL( "some text\nvalue\nsome more text", t );
 }
-!!!296880.cpp!!!	text_template_instantiate_nest_phrase_nomatch()
+!!!322992.cpp!!!	build_style_instantiate_nest_phrase_nomatch()
 {
   butter::text_template var;
   var.push_back( { butter::text_template::TEXT, { "some text" } } );
@@ -99,7 +110,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( {} ) };
   BOOST_CHECK_EQUAL( "some text", t );
 }
-!!!297008.cpp!!!	text_template_instantiate_nest_phrase_innermatch()
+!!!323120.cpp!!!	build_style_instantiate_nest_phrase_innermatch()
 {
   butter::text_template var;
   butter::text_template::map_type m;
@@ -117,7 +128,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( m ) };
   BOOST_CHECK_EQUAL( "some text", t );
 }
-!!!297136.cpp!!!	text_template_instantiate_nest_phrase_outermatch()
+!!!323248.cpp!!!	build_style_instantiate_nest_phrase_outermatch()
 {
   butter::text_template var;
   butter::text_template::map_type m;
@@ -135,7 +146,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( m ) };
   BOOST_CHECK_EQUAL( "some textsome other text\nvalue\n", t );
 }
-!!!297264.cpp!!!	text_template_instantiate_nest_phrase_allmatch()
+!!!323376.cpp!!!	build_style_instantiate_nest_phrase_allmatch()
 {
   butter::text_template var;
   butter::text_template::map_type m;
@@ -154,7 +165,7 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( m ) };
   BOOST_CHECK_EQUAL( "some textsome other text\nvalue\n\nvalue2\nsome more text", t );
 }
-!!!297392.cpp!!!	text_template_instantiate_bad_nest_phrase()
+!!!323504.cpp!!!	build_style_instantiate_bad_nest_phrase()
 {
   butter::text_template var;
   butter::text_template::map_type m;
@@ -174,61 +185,4 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   BOOST_CHECK_THROW( var.instantiate( m ), std::runtime_error );
   auto check_throw = [](std::runtime_error const& e){ return e.what() == std::string("Incorrectly nested optional sections."); };
   BOOST_CHECK_EXCEPTION( var.instantiate( m ), std::runtime_error, check_throw );
-}
-!!!298032.cpp!!!	text_template_read_basic()
-{
-  butter::text_template var;
-  QString xmldoc{ "<template>some text<replace label='key'/>some more text</template>" };
-  QXmlStreamReader x(xmldoc);
-  x.readNextStartElement();
-  var.read(x);
-  BOOST_CHECK_EQUAL(3, var.size());
-  QString t{ var.instantiate( {} ) };
-  BOOST_CHECK_EQUAL( "some textsome more text", t );
-}
-{
-  butter::text_template var;
-  QString xmldoc{ "<template>some text<option label='key1'><replace label='key2'/>some more text</option></template>" };
-  QXmlStreamReader x(xmldoc);
-  x.readNextStartElement();
-  var.read(x);
-  BOOST_CHECK_EQUAL(5, var.size());
-  auto itr = var.begin();
-  BOOST_CHECK_EQUAL( int(butter::text_template::TEXT), int(itr->type_) );
-  BOOST_CHECK_EQUAL( "some text", itr->content_ );
-  ++itr;
-  BOOST_CHECK_EQUAL( int(butter::text_template::PHRASE), int(itr->type_) );
-  BOOST_CHECK_EQUAL( "key1", itr->content_ );
-  ++itr;
-  BOOST_CHECK_EQUAL( int(butter::text_template::REPLACEMENT), int(itr->type_) );
-  BOOST_CHECK_EQUAL( "key2", itr->content_ );
-  ++itr;
-  BOOST_CHECK_EQUAL( int(butter::text_template::TEXT), int(itr->type_) );
-  BOOST_CHECK_EQUAL( "some more text", itr->content_ );
-  ++itr;
-  BOOST_CHECK_EQUAL( int(butter::text_template::PHRASE), int(itr->type_) );
-  BOOST_CHECK_EQUAL( "key1", itr->content_ );
-  ++itr;
-}
-{
-  butter::text_template var;
-  QString xmldoc{ "<template>some text<option label='key'><replace label='key'/>some more text</option></template>" };
-  QXmlStreamReader x(xmldoc);
-  x.readNextStartElement();
-  var.read(x);
-  BOOST_CHECK_EQUAL(5, var.size());
-  QString t{ var.instantiate( {} ) };
-  BOOST_CHECK_EQUAL( "some text", t );
-}
-{
-  butter::text_template var;
-  butter::text_template::map_type m;
-  m["key"] = "\nvalue\n";
-  QString xmldoc{ "<template>some text<option label='key'><replace label='key'/>some more text</option></template>" };
-  QXmlStreamReader x(xmldoc);
-  x.readNextStartElement();
-  var.read(x);
-  BOOST_CHECK_EQUAL(5, var.size());
-  QString t{ var.instantiate( m ) };
-  BOOST_CHECK_EQUAL( "some text\nvalue\nsome more text", t );
 }

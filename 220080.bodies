@@ -1,35 +1,182 @@
 class build_style
+!!!304560.cpp!!!	read_style(in style : unistr, inout xml : QXmlStreamReader) : void
+BUTTER_REQUIRE(xml.isStartElement() && (xml.name() == constants::style_xmlname()),
+               ("XML reader not at a "+constants::style_xmlname()+" element in call to text_template::read.").toStdString());
+if(! this->properties_.empty())
+{
+  this->properties_.clear();
+}
+if(! this->special_files_.empty())
+{
+  this->special_files_.clear();
+}
+if(! this->templates_.empty())
+{
+  this->templates_.clear();
+}
+{
+  QVector< QString > phrases;
+  bool found_style = false;
+  while (!xml.atEnd())
+  {
+    switch(xml.readNext())
+    {
+    case QXmlStreamReader::StartElement:
+    {
+      // name = style | file | property | template
+      if(xml.name() == constants::style_xmlname())
+      {
+        BUTTER_REQUIRE(xml.attributes().hasAttribute(constants::label_xmlname()),
+                       QString("Style XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
+        if(style != xml.attributes().value(constants::label_xmlname()) )
+        {
+          // skip to next style
+          bool in_style = true;
+          while (in_style && !xml.atEnd())
+          {
+            switch(xml.readNext())
+            {
+            case QXmlStreamReader::EndElement:
+            {
+              if(xml.name() == constants::style_xmlname())
+              {
+                in_style = false;
+              }
+            }
+            break;
+            default:
+              break;
+            }
+          }
+        }
+        else
+        {
+          found_style = true;
+        }
+      }
+      else if(xml.name() == constants::text_template_xmlname())
+      {
+        BUTTER_REQUIRE(xml.attributes().hasAttribute(constants::label_xmlname()),
+                       QString("Text template XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
+        this->templates_[ xml.attributes().value(constants::label_xmlname()).toString() ].read( xml );
+      }
+      else if(xml.name() == constants::file_xmlname())
+      {
+        BUTTER_REQUIRE(xml.attributes().hasAttribute(constants::label_xmlname()),
+                       QString("File XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
+        QString & content = this->special_files_[ xml.attributes().value(constants::label_xmlname()).toString() ];
+        bool in_file = true;
+        while(in_file && !xml.atEnd())
+        {
+          switch(xml.readNext())
+          {
+          case QXmlStreamReader::StartElement:
+          {
+            BUTTER_REQUIRE(false,
+                           QString("Start element not expected in property XML element at line %1").arg(xml.lineNumber()).toStdString());
+          }
+          break;
+          case QXmlStreamReader::EndElement:
+          {
+            BUTTER_REQUIRE(xml.name() == constants::file_xmlname(),
+                           QString("Mismatched end element at line %1").arg(xml.lineNumber()).toStdString());
+            in_file = false;
+          }
+          break;
+          case QXmlStreamReader::Characters:
+          {
+            content += xml.text();
+          }
+          break;
+          default:
+          break;
+          }
+        }
+      }
+      else if(xml.name() == constants::property_xmlname())
+      {
+        BUTTER_REQUIRE(xml.attributes().hasAttribute(constants::label_xmlname()),
+                       QString("Propoerty XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
+        QString & content = this->properties_[ xml.attributes().value(constants::label_xmlname()).toString() ];
+        bool in_property = true;
+        while(in_property && !xml.atEnd())
+        {
+          switch(xml.readNext())
+          {
+          case QXmlStreamReader::StartElement:
+          {
+            BUTTER_REQUIRE(false,
+                           QString("Start element not expected in property XML element at line %1").arg(xml.lineNumber()).toStdString());
+          }
+          break;
+          case QXmlStreamReader::EndElement:
+          {
+            BUTTER_REQUIRE(xml.name() == constants::property_xmlname(),
+                           QString("Mismatched end element at line %1").arg(xml.lineNumber()).toStdString());
+            in_property = false;
+          }
+          break;
+          case QXmlStreamReader::Characters:
+          {
+            content += xml.text();
+          }
+          break;
+          default:
+          break;
+          }
+        }
+      }
+      else
+      {
+        BUTTER_REQUIRE(false, QString("Unexpected XML start element "+xml.name().toString()+" at line %1").arg(xml.lineNumber()).toStdString() );
+      }
+    }
+    break;
+    case QXmlStreamReader::EndElement:
+    {
+      if(xml.name() == constants::style_xmlname())
+      {
+        return;
+      }
+      else
+      {
+        BUTTER_REQUIRE(false, QString("Unexpected XML end element "+xml.name().toString()+" at line %1").arg(xml.lineNumber()).toStdString() );
+      }
+    }
+    break;
+    case QXmlStreamReader::Characters:
+      // ignore text outside expected elements
+      break;
+    case QXmlStreamReader::Comment:
+      // Ignore
+      break;
+    case QXmlStreamReader::ProcessingInstruction:
+      // Ignore
+      break;
+    default:
+      // All others are errors!
+      throw std::runtime_error( QString("Unexpected XML element '%1' in stream at line %2").arg(xml.name().toString(), QString("%1").arg(xml.lineNumber())).toStdString() );
+      break;
+    }
+  }
+  BUTTER_REQUIRE( found_style,  QString("Unknown style '%1'.").arg(style).toStdString() );
+}
 !!!306096.cpp!!!	get_build_file_name() : unistr
-auto itr = this->style_properties_.find( { constants::build_file_xmlname() } );
-return (itr == this->style_properties_.end() ? QString() : itr.value);
-!!!305968.cpp!!!	get_root_buildfile_name() : unistr
-auto itr = this->style_properties_.find( { constants::build_file_xmlname() } );
-return (itr == this->style_properties_.end() ? QString() : itr.value);
-!!!314928.cpp!!!	end_phrase(in name : unistr) : unistr
-auto itr = this->templates_.find( constants::end_phrase_xmlname() );
+auto itr = this->properties_.find( { constants::build_file_xmlname() } );
+return (itr == this->properties_.end() ? QString() : itr.value());
+!!!305968.cpp!!!	get_root_file_name() : unistr
+auto itr = this->properties_.find( { constants::build_file_xmlname() } );
+return (itr == this->properties_.end() ? QString() : itr.value());
+!!!314160.cpp!!!	make_close(in properties : build_style::map_type) : unistr
+auto itr = this->templates_.find( constants::close_xmllabel() );
 if( itr != this->templates_.end() )
 {
-  map_type p;
-  p[ "name" ] = name;
-  return itr.value.instantiate( p );
+  map_type p{ this->properties_ };
+  p.unite( properties );
+  return itr.value().instantiate( p );
 }
-else
-{
-  return comment_text( "END:" + name );
-}
-!!!314800.cpp!!!	start_phrase() : unistr
-auto itr = this->templates_.find( constants::start_phrase_xmlname() );
-if( itr != this->templates_.end() )
-{
-  map_type p;
-  p[ "name" ] = name;
-  return itr.value.instantiate( p );
-}
-else
-{
-  return comment_text( " START:" + name );
-}
-!!!315056.cpp!!!	comment_text(in text : unistr) : unistr
+return QString();
+!!!315056.cpp!!!	make_comment_text(in text : unistr) : unistr
 auto itr = this->templates_.find( "comment" );
 if( itr != this->templates_.end() )
 {
@@ -41,13 +188,13 @@ if( itr != this->templates_.end() )
     for( int e_ = text.find('\n', s_); e_ > 0; e_ = text.find('\n', s_), s_ = e_ + 1 )
     { 
       p[ "text" ] = text.mid(s_, e_ - s_);
-      os_ << itr.value.instantiate( p );
+      os_ << itr.value().instantiate( p );
       os_ << "\n";
     }
-    if( text.at(a_text.length() - 1) != '\n' )
+    if( text.at(text.length() - 1) != '\n' )
     {
       p[ "text" ] = text.mid(s_);
-      os_ << itr.value.instantiate( p );
+      os_ << itr.value().instantiate( p );
       os_ << "\n";
     }
   }
@@ -57,58 +204,64 @@ else
 {
   return constants::comment_text(text);
 }
-!!!314160.cpp!!!	add_close(in properties : build_style::map_type, in is_root : bool) : void
-BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+!!!314416.cpp!!!	make_date(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( constants::close_xmllabel() );
 if( itr != this->templates_.end() )
 {
   map_type p{ this->properties_ };
   p.unite( properties );
-  buildfile_->close().value = itr.value.instantiate( p );
-}
-!!!314416.cpp!!!	add_date(in properties : build_style::map_type) : void
-BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
-auto itr = this->templates_.find( constants::close_xmllabel() );
-if( itr != this->templates_.end() )
-{
-  map_type p{ this->properties_ };
   p[ "date" ] = QDateTime::currentDateTime().toString();
-  buildfile_->date().value = itr.value.instantiate( p );
+  return itr.value().instantiate( p );
 }
-!!!305200.cpp!!!	add_element(in label : unistr, in tmpl : unistr, in properties : build_style::map_type) : void
-BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+return QString();
+!!!305200.cpp!!!	make_element(in tmpl : unistr, in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( tmpl );
 if( itr != this->templates_.end() )
 {
   map_type p{ this->properties_ };
   p.unite( properties );
-  (*buildfile_)[label].value = itr.value.instantiate( p );
+  return itr.value().instantiate( p );
 }
-!!!304688.cpp!!!	add_preamble(in properties : build_style::map_type, in is_root : bool) : void
-BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+return QString();
+!!!314928.cpp!!!	make_end_phrase(in name : unistr) : unistr
+auto itr = this->templates_.find( constants::end_phrase_xmlname() );
+if( itr != this->templates_.end() )
+{
+  map_type p;
+  p[ "name" ] = name;
+  return itr.value().instantiate( p );
+}
+else
+{
+  return make_comment_text( "END:" + name );
+}
+!!!304688.cpp!!!	make_preamble(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( constants::preamble_xmllabel() );
 if( itr != this->templates_.end() )
 {
   map_type p{ this->properties_ };
   p.unite( properties );
-  buildfile_->preamble().value = itr.value.instantiate( p );
+  return itr.value().instantiate( p );
 }
-!!!314288.cpp!!!	add_version(in properties : build_style::map_type, in is_root : bool) : void
-BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
+return QString();
+!!!314800.cpp!!!	make_start_phrase(in name : unistr) : unistr
+auto itr = this->templates_.find( constants::start_phrase_xmlname() );
+if( itr != this->templates_.end() )
+{
+  map_type p;
+  p[ "name" ] = name;
+  return itr.value().instantiate( p );
+}
+else
+{
+  return make_comment_text( " START:" + name );
+}
+!!!314288.cpp!!!	make_version(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( constants::version_xmllabel() );
 if( itr != this->templates_.end() )
 {
   map_type p{ this->properties_ };
   p.unite( properties );
-  buildfile_->version().value = itr.value.instantiate( p );
+  return itr.value().instantiate( p );
 }
-!!!314544.cpp!!!	append_element(in label : unistr, in tmpl : unistr, in properties : build_style::map_type) : void
-BUTTER_REQUIRE(has_buildfile(), "Cannot add to non-existant document.");
-auto itr = this->templates_.find( tmpl );
-if( itr != this->templates_.end() )
-{
-  map_type p{ this->properties_ };
-  p.unite( properties );
-  (*buildfile_)[label].value += '\n';
-  (*buildfile_)[label].value += itr.value.instantiate( p );
-}
+return QString();

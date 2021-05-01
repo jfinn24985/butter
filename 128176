@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 19
+  revision 20
   modified_by 48 "finnerty"
   // class settings
   
@@ -53,6 +53,246 @@ format 224
     activitydiagramsettings
      end
     associated_deployment_view deploymentview_ref 128304 // unit-tests
+    class 226736 "build_style_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 214960 // <dependency>
+	relation 214576 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 214960 // <dependency>
+	  b parent class_ref 220080 // build_style
+      end
+
+      classrelation 214832 // <dependency>
+	relation 214448 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 214832 // <dependency>
+	  b parent class_ref 206256 // text_template
+      end
+
+      extra_member 176944 "op<<(os, QString)"
+	
+	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 322096 "build_style_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 323632 "build_style_read_basic"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322224 "build_style_push_back"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322352 "build_style_instantiate_textonly"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322480 "build_style_instantiate_replace_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322608 "build_style_instantiate_replace_match"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322736 "build_style_instantiate_phrase_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322864 "build_style_instantiate_phrase_match"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322992 "build_style_instantiate_nest_phrase_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 323120 "build_style_instantiate_nest_phrase_innermatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 323248 "build_style_instantiate_nest_phrase_outermatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 323376 "build_style_instantiate_nest_phrase_allmatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 323504 "build_style_instantiate_bad_nest_phrase"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
     class 131888 "compound_document_test"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -195,6 +435,178 @@ ${body}
       end
 
       operation 170032 "compdoc_write"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 165680 "enumerate_path_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      extra_member 149808 "op<<(os, QString)"
+	
+	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      classrelation 160944 // <dependency>
+	relation 160560 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 160944 // <dependency>
+	  b parent class_ref 128432 // enumerate_path
+      end
+
+      operation 225200 "enumerate_path_normalise"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 214576 "enumerate_path_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 214704 "enumerate_path_access_methods_unix"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 225328 "enumerate_path_access_methods_dos"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218416 "enumerate_path_create_common_unix"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218544 "enumerate_path_create_common_dos"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218288 "enumerate_path_create_relative_unix"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218672 "enumerate_path_create_relative_dos"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218160 "enumerate_path_modify_method"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -434,178 +846,6 @@ ${body}
       end
 
       operation 252720 "location_set_find_closest"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-    end
-
-    class 165680 "enumerate_path_test"
-      visibility package 
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      mysql_decl ""
-      
-      extra_member 149808 "op<<(os, QString)"
-	
-	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
-{
-  os << s.toStdString();
-  return os;
-}
-"
-	java ""
-	php ""
-	python ""
-	idl ""
-	mysql ""
-      end
-
-      classrelation 160944 // <dependency>
-	relation 160560 -_->
-	  a public
-	    cpp default "#include in source"
-	    classrelation_ref 160944 // <dependency>
-	  b parent class_ref 128432 // enumerate_path
-      end
-
-      operation 225200 "enumerate_path_normalise"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 214576 "enumerate_path_constructor"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 214704 "enumerate_path_access_methods_unix"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 225328 "enumerate_path_access_methods_dos"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 218416 "enumerate_path_create_common_unix"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 218544 "enumerate_path_create_common_dos"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 218288 "enumerate_path_create_relative_unix"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 218672 "enumerate_path_create_relative_dos"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 218160 "enumerate_path_modify_method"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -938,6 +1178,28 @@ ${namespace_end}"
       end
     end
 
+    artifact 189616 "build_style_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <boost/test/unit_test.hpp>
+#include <QXmlStreamReader>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 226736 // build_style_test
+      end
+    end
+
     artifact 182832 "text_template_test"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -965,7 +1227,9 @@ ${namespace_end}"
       associated_artifacts
 	artifact_ref 130352 // compound_document_test
 	artifact_ref 143536 // location_test
+	artifact_ref 150064 // enumerate_path_test
 	artifact_ref 182832 // text_template_test
+	artifact_ref 189616 // build_style_test
       end
       ncouples 10
       key "genpro pro" value "/home/finnerty/tmp/butter2/butter/test/unittest.pro"

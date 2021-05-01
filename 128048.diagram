@@ -43,7 +43,7 @@ relationcanvas 128688 relation_ref 129968 // <directional composition>
 end
 relationcanvas 128816 relation_ref 130096 // <directional composition>
   from ref 128048 z 3006 stereotype "<<valuevector>>" xyz 373 356 3006 to ref 128176
-  role_a_pos 515 178 3000 no_role_b
+  role_a_pos 521 180 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128944 relation_ref 130224 // <directional composition>

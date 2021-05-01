@@ -75,7 +75,7 @@ if(! this->sequence_.empty())
       break;
     default:
       // All others are errors!
-      throw std::runtime_error( QString("Unexpected XML element in stream at line %1").arg(xml.lineNumber()).toStdString() );
+      throw std::runtime_error( QString("Unexpected XML element '%1' in stream at line %2").arg(xml.name().toString(), QString("%1").arg(xml.lineNumber())).toStdString() );
       break;
     }
   }
