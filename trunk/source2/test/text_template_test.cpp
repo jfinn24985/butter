@@ -1,0 +1,298 @@
+
+#include "text_template_test.h"
+#include "text_template.h"
+
+
+#include <boost/test/unit_test.hpp>
+#include <QXmlStreamReader>
+
+static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+BOOST_AUTO_TEST_CASE( text_template_constructor )
+{
+// Static Lifetime method tests
+BOOST_CHECK( std::is_default_constructible< butter::text_template >::type{} );
+BOOST_CHECK( std::is_copy_constructible< butter::text_template >::type{} );
+BOOST_CHECK( std::is_move_constructible< butter::text_template >::type{} );
+BOOST_CHECK( (std::is_assignable< butter::text_template, butter::text_template >::type{}) );
+BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
+
+// test constructor
+{
+  butter::text_template tmpl{};
+  BOOST_CHECK_EQUAL(0, tmpl.size());
+  BOOST_CHECK(tmpl.begin() == tmpl.end());
+  BOOST_CHECK(tmpl.empty());
+  QString t = tmpl.instantiate( {} );
+  BOOST_CHECK(t.isEmpty());
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_push_back )
+{
+{
+  butter::text_template var;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  BOOST_CHECK_EQUAL(1, var.size());
+  BOOST_CHECK( ! var.empty() );
+  BOOST_CHECK( var.begin() != var.end() );
+  BOOST_CHECK_EQUAL( int(butter::text_template::TEXT), int(var.begin()->type_) );
+  BOOST_CHECK_EQUAL( "some text", var.begin()->content_ );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_textonly )
+{
+{
+  butter::text_template var;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  BOOST_CHECK_EQUAL(2, var.size());
+  QString t{ var.instantiate( {} ) };
+  BOOST_CHECK_EQUAL( "some textsome more text", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_replace_nomatch )
+{
+{
+  butter::text_template var;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  BOOST_CHECK_EQUAL(3, var.size());
+  QString t{ var.instantiate( {} ) };
+  BOOST_CHECK_EQUAL( "some textsome more text", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_replace_match )
+{
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "\nvalue\n";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  BOOST_CHECK_EQUAL(3, var.size());
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some text\nvalue\nsome more text", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_phrase_nomatch )
+{
+{
+  butter::text_template var;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  BOOST_CHECK_EQUAL(5, var.size());
+  QString t{ var.instantiate( {} ) };
+  BOOST_CHECK_EQUAL( "some text", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_phrase_match )
+{
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "\nvalue\n";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  BOOST_CHECK_EQUAL(5, var.size());
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some text\nvalue\nsome more text", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_nest_phrase_nomatch )
+{
+{
+  butter::text_template var;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  BOOST_CHECK_EQUAL(9, var.size());
+  QString t{ var.instantiate( {} ) };
+  BOOST_CHECK_EQUAL( "some text", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_nest_phrase_innermatch )
+{
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key2"] = "\nvalue2\n";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  BOOST_CHECK_EQUAL(9, var.size());
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some text", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_nest_phrase_outermatch )
+{
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "\nvalue\n";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  BOOST_CHECK_EQUAL(9, var.size());
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some textsome other text\nvalue\n", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_nest_phrase_allmatch )
+{
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "\nvalue\n";
+  m["key2"] = "\nvalue2\n";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  BOOST_CHECK_EQUAL(9, var.size());
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some textsome other text\nvalue\n\nvalue2\nsome more text", t );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_instantiate_bad_nest_phrase )
+{
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "\nvalue\n";
+  m["key2"] = "\nvalue2\n";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key" } } );
+  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
+  BOOST_CHECK_EQUAL(9, var.size());
+  QString t;
+  BOOST_CHECK_THROW( var.instantiate( m ), std::runtime_error );
+  auto check_throw = [](std::runtime_error const& e){ return e.what() == std::string("Incorrectly nested optional sections."); };
+  BOOST_CHECK_EXCEPTION( var.instantiate( m ), std::runtime_error, check_throw );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( text_template_read_basic )
+{
+{
+  butter::text_template var;
+  QString xmldoc{ "<template>some text<replace label='key'/>some more text</template>" };
+  QXmlStreamReader x(xmldoc);
+  x.readNextStartElement();
+  var.read(x);
+  BOOST_CHECK_EQUAL(3, var.size());
+  QString t{ var.instantiate( {} ) };
+  BOOST_CHECK_EQUAL( "some textsome more text", t );
+}
+{
+  butter::text_template var;
+  QString xmldoc{ "<template>some text<option label='key1'><replace label='key2'/>some more text</option></template>" };
+  QXmlStreamReader x(xmldoc);
+  x.readNextStartElement();
+  var.read(x);
+  BOOST_CHECK_EQUAL(5, var.size());
+  auto itr = var.begin();
+  BOOST_CHECK_EQUAL( int(butter::text_template::TEXT), int(itr->type_) );
+  BOOST_CHECK_EQUAL( "some text", itr->content_ );
+  ++itr;
+  BOOST_CHECK_EQUAL( int(butter::text_template::PHRASE), int(itr->type_) );
+  BOOST_CHECK_EQUAL( "key1", itr->content_ );
+  ++itr;
+  BOOST_CHECK_EQUAL( int(butter::text_template::REPLACEMENT), int(itr->type_) );
+  BOOST_CHECK_EQUAL( "key2", itr->content_ );
+  ++itr;
+  BOOST_CHECK_EQUAL( int(butter::text_template::TEXT), int(itr->type_) );
+  BOOST_CHECK_EQUAL( "some more text", itr->content_ );
+  ++itr;
+  BOOST_CHECK_EQUAL( int(butter::text_template::PHRASE), int(itr->type_) );
+  BOOST_CHECK_EQUAL( "key1", itr->content_ );
+  ++itr;
+}
+{
+  butter::text_template var;
+  QString xmldoc{ "<template>some text<option label='key'><replace label='key'/>some more text</option></template>" };
+  QXmlStreamReader x(xmldoc);
+  x.readNextStartElement();
+  var.read(x);
+  BOOST_CHECK_EQUAL(5, var.size());
+  QString t{ var.instantiate( {} ) };
+  BOOST_CHECK_EQUAL( "some text", t );
+}
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "\nvalue\n";
+  QString xmldoc{ "<template>some text<option label='key'><replace label='key'/>some more text</option></template>" };
+  QXmlStreamReader x(xmldoc);
+  x.readNextStartElement();
+  var.read(x);
+  BOOST_CHECK_EQUAL(5, var.size());
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some text\nvalue\nsome more text", t );
+}
+
+}
+

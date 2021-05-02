@@ -1,0 +1,328 @@
+
+#include "UmlBasePackage.h"
+#include "UmlPackage.h"
+#include "UmlDiagram.h"
+
+#include "UmlCom.h"
+#include "PackageGlobalCmd.h"
+#include "MiscGlobalCmd.h"
+UmlPackage * UmlBasePackage::create(UmlPackage * parent, const char * name)
+{
+  return (UmlPackage *) parent->create_(aPackage, name);
+}
+
+anItemKind UmlBasePackage::kind() {
+  return aPackage;
+}
+
+UmlDiagram * UmlBasePackage::associatedDiagram() {
+  read_if_needed_();
+  
+  return _assoc_diagram;
+}
+
+bool UmlBasePackage::set_AssociatedDiagram(UmlDiagram * d) {
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
+  if (UmlCom::read_bool()) {
+    _assoc_diagram = d;
+    return TRUE;
+  }
+  else
+    return FALSE;
+}
+
+// Import a project in the current package
+// fn is the pathname of the .prj file of the project to import
+// or an empty string (the project will be set through a dialog)
+// Return the new UmlPackage containing the imported project, or
+// 0/null on error
+UmlPackage * UmlBasePackage::importProject(const QByteArray & fn) {
+    UmlCom::send_cmd(_identifier, importProjectCmd, fn);
+  
+    return (UmlPackage *) UmlBaseItem::read_();
+}
+
+#ifdef WITHCPP
+const QByteArray & UmlBasePackage::cppSrcDir() {
+  read_if_needed_();
+  
+  return _cpp_src_dir;
+}
+
+bool UmlBasePackage::set_CppSrcDir(const QByteArray & s) {
+  return set_it_(_cpp_src_dir, s, setCppSrcDirCmd);
+}
+
+const QByteArray & UmlBasePackage::cppHDir() {
+  read_if_needed_();
+  
+  return _cpp_h_dir;
+}
+
+bool UmlBasePackage::set_CppHDir(const QByteArray & s) {
+  return set_it_(_cpp_h_dir, s, setCppHDirCmd);
+}
+
+QByteArray UmlBasePackage::cppNamespace() {
+  read_if_needed_();
+  
+  return _cpp_namespace;
+}
+
+bool UmlBasePackage::set_CppNamespace(const QByteArray & s) {
+  return set_it_(_cpp_namespace, s, setCppNamespaceCmd);
+}
+
+UmlPackage * UmlBasePackage::findCppNamespace(const QByteArray & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findCppNamespaceCmd, _identifier, n);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
+}
+#endif
+
+#ifdef WITHJAVA
+const QByteArray & UmlBasePackage::javaDir() {
+  read_if_needed_();
+  
+  return _java_dir;
+}
+
+bool UmlBasePackage::set_JavaDir(const QByteArray & s) {
+  return set_it_(_java_dir, s, setJavaDirCmd);
+}
+
+QByteArray UmlBasePackage::javaPackage() {
+  read_if_needed_();
+  
+  return _java_package;
+}
+
+bool UmlBasePackage::set_JavaPackage(const QByteArray & s) {
+  return set_it_(_java_package, s, setJavaPackageCmd);
+}
+
+UmlPackage * UmlBasePackage::findJavaPackage(const QByteArray & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findJavaPackageCmd, _identifier, n);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
+}
+#endif
+
+#ifdef WITHPHP
+const QByteArray & UmlBasePackage::phpDir() {
+  read_if_needed_();
+  
+  return _php_dir;
+}
+
+bool UmlBasePackage::set_PhpDir(const QByteArray & s) {
+  return set_it_(_php_dir, s, setPhpDirCmd);
+}
+// return the namespace name associed to the package
+
+const QByteArray & UmlBasePackage::phpNamespace() {
+    read_if_needed_();
+  
+    return _php_namespace;
+}
+
+// the namespace name associed to the package.
+//
+// On error : return FALSE in C++, produce a RuntimeException in Java
+bool UmlBasePackage::set_PhpNamespace(const QByteArray & v) {
+    return set_it_(_php_namespace, v, setPhpNamespaceCmd);
+}
+
+// returns a sub package of the current one having the php namespace 'n'
+// (including the current one), else 0/null
+
+UmlPackage * UmlBasePackage::findPhpNamespace(const QByteArray & n) {
+    UmlCom::send_cmd(packageGlobalCmd, findPhpNamespaceCmd, _identifier, n);
+  
+    return (UmlPackage *) UmlBaseItem::read_();
+}
+#endif
+
+#ifdef WITHPYTHON
+const QByteArray & UmlBasePackage::pythonDir() {
+  read_if_needed_();
+  
+  return _python_dir;
+}
+
+bool UmlBasePackage::set_PythonDir(const QByteArray & s) {
+  return set_it_(_python_dir, s, setPythonDirCmd);
+}
+
+QByteArray UmlBasePackage::pythonPackage() {
+  read_if_needed_();
+  
+  return _python_package;
+}
+
+bool UmlBasePackage::set_PythonPackage(const QByteArray & s) {
+  return set_it_(_python_package, s, setPythonPackageCmd);
+}
+
+UmlPackage * UmlBasePackage::findPythonPackage(const QByteArray & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findPythonPackageCmd, _identifier, n);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
+}
+#endif
+
+#ifdef WITHIDL
+const QByteArray & UmlBasePackage::idlDir() {
+  read_if_needed_();
+  
+  return _idl_dir;
+}
+
+bool UmlBasePackage::set_IdlDir(const QByteArray & s) {
+  return set_it_(_idl_dir, s, setIdlDirCmd);
+}
+
+QByteArray UmlBasePackage::idlModule() {
+  read_if_needed_();
+  
+  return _idl_module;
+}
+
+bool UmlBasePackage::set_IdlModule(const QByteArray & s) {
+  return set_it_(_idl_module, s, setIdlModuleCmd);
+}
+
+UmlPackage * UmlBasePackage::findIdlModule(const QByteArray & n) const {
+  UmlCom::send_cmd(packageGlobalCmd, findIdlModuleCmd, _identifier, n);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
+}
+#endif
+
+#ifdef WITHMYSQL
+// returns the path where the MySql files are generated by the
+// Mysql generator.
+const QByteArray & UmlBasePackage::mysqlDir() {
+    read_if_needed_();
+  
+    return _mysql_dir;
+}
+
+// to set the path where the MySQL files are generated by the
+// Mysql generator, may be relative even the 'root' path is not
+// (already) an absolute path
+//
+// On error : return FALSE in C++, produce a RuntimeException in Java
+bool UmlBasePackage::set_MysqlDir(const QByteArray & s) {
+    return set_it_(_mysql_dir, s, setMysqlDirCmd);
+}
+#endif
+
+UmlPackage * UmlBasePackage::getProject()
+{
+  UmlCom::send_cmd(packageGlobalCmd, getProjectCmd);
+  
+  return (UmlPackage *) UmlBaseItem::read_();  
+}
+
+bool UmlBasePackage::isProjectModified()
+{
+  UmlCom::send_cmd(packageGlobalCmd, isProjectModifiedCmd);
+  
+  return UmlCom::read_bool();
+}
+
+void UmlBasePackage::saveProject()
+{
+  UmlCom::send_cmd(packageGlobalCmd, saveProjectCmd);
+}
+
+void UmlBasePackage::loadProject(QByteArray p)
+{
+  UmlCom::send_cmd(miscGlobalCmd, loadCmd, (const char *) p);
+}
+
+void UmlBasePackage::updateProfiles()
+{
+  UmlCom::send_cmd(packageGlobalCmd, updateProfileCmd);
+}
+
+void UmlBasePackage::unload(bool rec, bool del) {
+  _assoc_diagram = 0;
+#ifdef WITHCPP
+  _cpp_src_dir = 0;
+  _cpp_h_dir = 0;
+  _cpp_namespace = 0;
+#endif
+#ifdef WITHJAVA
+  _java_dir = 0;
+  _java_package = 0;
+#endif
+#ifdef WITHPHP
+  _php_dir = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_dir = 0;
+  _python_package = 0;
+#endif
+#ifdef WITHMYSQL
+  _mysql_dir = 0;
+#endif
+#ifdef WITHIDL
+  _idl_dir = 0;
+  _idl_module = 0;
+#endif
+  UmlBaseItem::unload(rec, del);
+}
+
+void UmlBasePackage::read_uml_() {
+  _assoc_diagram = (UmlDiagram *) UmlBaseItem::read_();
+  UmlBaseItem::read_uml_();
+}
+
+#ifdef WITHCPP
+void UmlBasePackage::read_cpp_() {
+  _cpp_src_dir = UmlCom::read_string();
+  _cpp_h_dir = UmlCom::read_string();
+  _cpp_namespace = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHJAVA
+void UmlBasePackage::read_java_() {
+  _java_dir = UmlCom::read_string();
+  _java_package = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPHP
+void UmlBasePackage::read_php_() {
+  _php_dir = UmlCom::read_string();
+  _php_namespace = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHPYTHON
+//internal, do NOT use it
+
+void UmlBasePackage::read_python_() {
+    _python_dir = UmlCom::read_string();
+    _python_package = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHIDL
+void UmlBasePackage::read_idl_() {
+  _idl_dir = UmlCom::read_string();
+  _idl_module = UmlCom::read_string();
+}
+#endif
+
+#ifdef WITHMYSQL
+//internal, do NOT use it
+
+void UmlBasePackage::read_mysql_() {
+    _mysql_dir = UmlCom::read_string();
+}
+#endif
+

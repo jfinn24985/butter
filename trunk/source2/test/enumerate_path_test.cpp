@@ -1,0 +1,355 @@
+
+#include "enumerate_path_test.h"
+#include "utility.h"
+
+
+#include <boost/test/unit_test.hpp>
+
+#include <iostream>
+
+static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+BOOST_AUTO_TEST_CASE( enumerate_path_normalise )
+{
+// test normalize method
+{
+  QString apath;
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("", path);
+}
+{
+  QString apath("./test");
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("test", path);
+}
+{
+  QString apath("./test");
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("test", path);
+}
+{
+  QString apath("./test/best/..");
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("test", path);
+}
+{
+  QString apath("test/");
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("test", path);
+}
+{
+  QString apath("C:\\test");
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("C:/test", path);
+}
+{
+  QString apath("C:/test");
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("C:/test", path);
+}
+{
+  QString apath("../test");
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("../test", path);
+}
+{
+  QString apath("test/././best");
+  QString path(butter::enumerate_path::normalise(apath));
+  BOOST_CHECK_EQUAL("test/best", path);
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( enumerate_path_constructor )
+{
+// Static Lifetime method tests
+BOOST_CHECK( std::is_default_constructible< butter::enumerate_path >::type{} );
+BOOST_CHECK( std::is_copy_constructible< butter::enumerate_path >::type{} );
+BOOST_CHECK( std::is_move_constructible< butter::enumerate_path >::type{} );
+BOOST_CHECK( (std::is_assignable< butter::enumerate_path, butter::enumerate_path >::type{}) );
+BOOST_CHECK( std::has_virtual_destructor< butter::enumerate_path >::type{});
+
+{
+  QString apath;
+  butter::enumerate_path var(apath);
+  BOOST_CHECK_EQUAL(".", var.path());
+  BOOST_CHECK_EQUAL(var.depth(), 1);
+}
+{
+  QString apath("./test");
+  butter::enumerate_path var(apath);
+  BOOST_CHECK_EQUAL("test", var.path());
+  BOOST_CHECK_EQUAL(var.depth(), 1);
+  BOOST_CHECK_EQUAL(var.leaf_at(0), "test");
+}
+{
+  QString apath("./test/best/..");
+  butter::enumerate_path var(apath);
+  BOOST_CHECK_EQUAL("test", var.path());
+  BOOST_CHECK_EQUAL(var.depth(), 1);
+  BOOST_CHECK_EQUAL(var.leaf_at(0), "test");
+}
+{
+  QString apath("test/");
+  butter::enumerate_path var(apath);
+  BOOST_CHECK_EQUAL("test", var.path());
+  BOOST_CHECK_EQUAL(var.depth(), 1);
+  BOOST_CHECK_EQUAL(var.leaf_at(0), "test");
+}
+{
+  QString apath("C:\\test");
+  butter::enumerate_path var(apath);
+  BOOST_CHECK_EQUAL("C:/test", var.path());
+  BOOST_CHECK_EQUAL(var.depth(), 2);
+  BOOST_CHECK_EQUAL(var.leaf_at(0), "C:");
+  BOOST_CHECK_EQUAL(var.leaf_at(1), "test");
+}
+{
+  QString apath("C:/test");
+  butter::enumerate_path var(apath);
+  BOOST_CHECK_EQUAL("C:/test", var.path());
+  BOOST_CHECK_EQUAL(var.depth(), 2);
+  BOOST_CHECK_EQUAL(var.leaf_at(0), "C:");
+  BOOST_CHECK_EQUAL(var.leaf_at(1), "test");
+}
+{
+  QString apath("../test");
+  butter::enumerate_path var(apath);
+  BOOST_CHECK_EQUAL("../test", var.path());
+  BOOST_CHECK_EQUAL(var.depth(), 2);
+  BOOST_CHECK_EQUAL(var.leaf_at(0), "..");
+  BOOST_CHECK_EQUAL(var.leaf_at(1), "test");
+}
+{
+  QString apath("test/././best");
+  butter::enumerate_path var(apath);
+  BOOST_CHECK_EQUAL("test/best", var.path());
+  BOOST_CHECK_EQUAL(var.depth(), 2);
+  BOOST_CHECK_EQUAL(var.leaf_at(0), "test");
+  BOOST_CHECK_EQUAL(var.leaf_at(1), "best");
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( enumerate_path_access_methods_unix )
+{
+// UNIX style paths
+{
+  QString a1("/home/is/where/heart/is");
+	QString a2("/home/is/where/heart/is/");
+	QString a3("/home/is/where");
+	QString a4("/home/is/hwere/heart/is");
+  butter::enumerate_path p1, p2;
+  // Assign from string.
+  p1 = a1;
+  BOOST_CHECK_EQUAL( p1.path(), a1 );
+  BOOST_REQUIRE_EQUAL( p1.depth (), 6 );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 0 ), "" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 1 ), "home" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 2 ), "is" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 3 ), "where" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 4 ), "heart" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 5 ), "is" );
+
+  // Use setPath
+  p2.setPath( a2 );
+  BOOST_CHECK_EQUAL( p2.path(), a2.left( a2.length() - 1 ) );
+  BOOST_CHECK_EQUAL( p2.depth (), 6 );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 0 ), "" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 1 ), "home" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 2 ), "is" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 3 ), "where" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 4 ), "heart" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 5 ), "is" );
+
+  BOOST_CHECK( p1.equality( p2 ) );
+
+  // Construct from string
+  butter::enumerate_path p3( a3 );
+  BOOST_CHECK_EQUAL( p3.path(), a3 );
+  BOOST_CHECK_EQUAL( p3.depth (), 4 );
+  BOOST_CHECK_EQUAL( p3.leaf_at( 0 ), "" );
+  BOOST_CHECK_EQUAL( p3.leaf_at( 1 ), "home" );
+  BOOST_CHECK_EQUAL( p3.leaf_at( 2 ), "is" );
+  BOOST_CHECK_EQUAL( p3.leaf_at( 3 ), "where" );
+
+  BOOST_CHECK( p3.has_subpath(p1) );
+
+  // reassign p2 from string
+  p2 = a4;
+  BOOST_CHECK_EQUAL( p2.path(), a4 );
+  BOOST_CHECK_EQUAL( p2.depth (), 6 );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 0 ), "" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 1 ), "home" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 2 ), "is" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 3 ), "hwere" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 4 ), "heart" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 5 ), "is" );
+
+  BOOST_CHECK( not p1.equality( p2 ) );
+
+  BOOST_CHECK( not p3.has_subpath(p2) );
+}
+
+}
+
+BOOST_AUTO_TEST_CASE( enumerate_path_access_methods_dos )
+{
+// MS DOS style paths
+{
+	QString a1("C:\\home\\is\\where\\.\\heart\\is");
+	QString a2("C:\\home\\is\\where\\heart\\is\\");
+	QString a3("C:\\home\\is\\where");
+	QString a4("D:\\home\\is\\where\\heart\\is");
+  butter::enumerate_path p1, p2;
+  // Assign from string.
+  p1 = a1;
+  BOOST_CHECK_EQUAL( p1.path (), "C:/home/is/where/heart/is" );
+  BOOST_REQUIRE_EQUAL( p1.depth (), 6 );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 0 ), "C:" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 1 ), "home" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 2 ), "is" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 3 ), "where" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 4 ), "heart" );
+  BOOST_CHECK_EQUAL( p1.leaf_at( 5 ), "is" );
+
+  // Use setPath
+  p2.setPath( a2 );
+  BOOST_CHECK_EQUAL( p2.path (), "C:/home/is/where/heart/is" );
+  BOOST_CHECK_EQUAL( p2.depth (), 6 );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 0 ), "C:" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 1 ), "home" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 2 ), "is" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 3 ), "where" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 4 ), "heart" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 5 ), "is" );
+
+  BOOST_CHECK( p1.equality( p2 ) );
+
+  // Construct from string
+  butter::enumerate_path p3( a3 );
+  BOOST_CHECK_EQUAL( p3.path (), "C:/home/is/where" );
+  BOOST_CHECK_EQUAL( p3.depth (), 4 );
+  BOOST_CHECK_EQUAL( p3.leaf_at( 0 ), "C:" );
+  BOOST_CHECK_EQUAL( p3.leaf_at( 1 ), "home" );
+  BOOST_CHECK_EQUAL( p3.leaf_at( 2 ), "is" );
+  BOOST_CHECK_EQUAL( p3.leaf_at( 3 ), "where" );
+
+  BOOST_CHECK( p3.has_subpath(p1) );
+
+  // reassign p2 from string
+  p2 = a4;
+  BOOST_CHECK_EQUAL( p2.path (), "D:/home/is/where/heart/is" );
+  BOOST_CHECK_EQUAL( p2.depth (), 6 );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 0 ), "D:" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 1 ), "home" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 2 ), "is" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 3 ), "where" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 4 ), "heart" );
+  BOOST_CHECK_EQUAL( p2.leaf_at( 5 ), "is" );
+
+  BOOST_CHECK( not p1.equality( p2 ) );
+
+  BOOST_CHECK( not p3.has_subpath(p2) );
+}
+
+
+}
+
+BOOST_AUTO_TEST_CASE( enumerate_path_create_common_unix )
+{
+// UNIX style paths
+QString a1("/home/is/where/heart/is");
+QString a3("/home/is/where");
+QString a4("/home/is/hwere/heart/is");
+butter::enumerate_path p1{ a1 };
+butter::enumerate_path p2{ a4 };
+butter::enumerate_path p3{ a3 };
+
+BOOST_CHECK_EQUAL( p1.create_common( p3 ), a3 );
+BOOST_CHECK_EQUAL( p3.create_common( p1 ), a3 );
+
+QString common23 = p2.create_common( p3 );
+BOOST_CHECK_EQUAL( common23, "/home/is" );
+BOOST_CHECK_EQUAL( common23, p3.create_common( p2 ) );
+
+}
+
+BOOST_AUTO_TEST_CASE( enumerate_path_create_common_dos )
+{
+// MS DOS style paths
+QString a1("C:\\home\\is\\where\\heart\\is");
+QString a2("C:\\home\\is\\where");
+QString a3("D:\\home\\is\\where\\heart\\is");
+butter::enumerate_path p1{ a1 };
+butter::enumerate_path p2{ a2 };
+butter::enumerate_path p3{ a3 };
+
+BOOST_CHECK_EQUAL( p1.create_common( p2 ), "C:/home/is/where" );
+BOOST_CHECK_EQUAL( p2.create_common( p1 ), "C:/home/is/where" );
+
+BOOST_CHECK_EQUAL( p1.create_common( p1 ), "C:/home/is/where/heart/is" );
+
+BOOST_CHECK_THROW( p2.create_common( p3 ), std::domain_error );
+
+}
+
+BOOST_AUTO_TEST_CASE( enumerate_path_create_relative_unix )
+{
+// UNIX style paths
+QString a1("/home/is/where/heart/is");
+QString a3("/home/is/where");
+QString a4("/home/is/hwere/heart/is");
+butter::enumerate_path p1{ a1 };
+butter::enumerate_path p3{ a3 };
+butter::enumerate_path p2{ a4 };
+
+BOOST_CHECK_EQUAL( p3.create_relative( p2 ), "../hwere/heart/is" );
+BOOST_CHECK_EQUAL( p2.create_relative( p3 ), "../../../where" );
+BOOST_CHECK_EQUAL( p3.create_relative( p1 ), "heart/is" );
+BOOST_CHECK_EQUAL( p1.create_relative( p3 ), "../.." );
+
+}
+
+BOOST_AUTO_TEST_CASE( enumerate_path_create_relative_dos )
+{
+// MS DOS style paths
+QString a1("C:\\home\\is\\where\\heart\\is");
+QString a2("C:\\home\\is\\hwere\\heart\\is");
+QString a3("C:\\home\\is\\where");
+QString a4("D:\\home\\is\\where\\heart\\is");
+butter::enumerate_path p1{ a1 };
+butter::enumerate_path p2{ a2 };
+butter::enumerate_path p3{ a3 };
+butter::enumerate_path p4{ a4 };
+
+BOOST_CHECK_EQUAL( p3.create_relative( p2 ), "../hwere/heart/is" );
+BOOST_CHECK_EQUAL( p2.create_relative( p3 ), "../../../where" );
+BOOST_CHECK_EQUAL( p3.create_relative( p1 ), "heart/is" );
+BOOST_CHECK_EQUAL( p1.create_relative( p3 ), "../.." );
+BOOST_CHECK_THROW( p1.create_relative( p4 ), std::domain_error );
+BOOST_CHECK_THROW( p4.create_relative( p1 ), std::domain_error );
+
+}
+
+BOOST_AUTO_TEST_CASE( enumerate_path_modify_method )
+{
+{
+  QDir qp( "../ace" );
+  butter::enumerate_path p1( qp );
+  butter::enumerate_path p2( "leaf" );
+  BOOST_CHECK_EQUAL( qp.path(), p1.path() );
+  BOOST_CHECK( p1.isRelative() );
+  BOOST_CHECK( not p1.exists() );
+  butter::enumerate_path p3( p1 / p2 / "end" );
+  BOOST_CHECK_EQUAL( p3.path(), "../ace/leaf/end" );
+  QString s3( p3.path_convert( "\\" ) );
+  BOOST_CHECK_EQUAL( s3, "..\\ace\\leaf\\end" );
+}
+
+
+}
+

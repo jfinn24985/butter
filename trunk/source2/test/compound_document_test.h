@@ -1,0 +1,6 @@
+#ifndef _COMPOUND_DOCUMENT_TEST_H
+#define _COMPOUND_DOCUMENT_TEST_H
+
+
+
+#endif

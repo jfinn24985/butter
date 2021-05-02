@@ -1,0 +1,3 @@
+
+#include "UmlClassCompositeDiagram.h"
+
