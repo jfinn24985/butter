@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 21
+  revision 22
   modified_by 48 "finnerty"
   // class settings
   
@@ -211,7 +211,6 @@ ${body}
 	
 	
       end
-
     end
 
     class 131888 "compound_document_test"
@@ -1153,16 +1152,17 @@ ${namespace_end}"
 	artifact_ref 189616 // build_style_test
       end
       ncouples 10
-      key "genpro pro" value "/home/finnerty/tmp/butter2/butter/test/unittest.pro"
+      key "genpro pro" value "/home/finnerty/src/butter/trunk/source2/test/unittest.pro"
       key "genpro path" value "/tmp/finnerty/butter2/butter"
-      key "genpro target" value "/home/finnerty/tmp/butter2/butter/test/unittest"
+      key "genpro target" value "/home/finnerty/src/butter/trunk/source2/test/unittest"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt console"
       key "genpro defines" value "WITHCPP"
       key "genpro includepath" value ".."
       key "genpro dependpath" value ""
       key "genpro objectsdir" value "build"
-      key "genpro footer" value "QT += qt3support"
+      key "genpro footer" value "QT += qt3support
+LIBS += -lboost_unit_test_framework"
       simplerelation 128048
 	-_->
 	  on artifact_ref 130480 // butter.lib

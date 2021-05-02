@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 30
+  revision 31
   modified_by 48 "finnerty"
   // class settings
   
@@ -4544,9 +4544,9 @@ style properties before instantiating the template."
 	artifact_ref 189488 // build_style
       end
       ncouples 10
-      key "genpro pro" value "/home/finnerty/tmp/butter2/butter/butter.lib.pro"
+      key "genpro pro" value "/home/finnerty/src/butter/trunk/source2/butter.lib.pro"
       key "genpro path" value "/tmp/finnerty/butter2/butter/"
-      key "genpro target" value "/home/finnerty/tmp/butter2/butter/butter"
+      key "genpro target" value "/home/finnerty/src/butter/trunk/source2/butter.a"
       key "genpro tmplt" value "lib"
       key "genpro config" value "debug warn_on qt staticlib"
       key "genpro defines" value "WITHCPP"
