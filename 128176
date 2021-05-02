@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 20
+  revision 21
   modified_by 48 "finnerty"
   // class settings
   
@@ -97,6 +97,31 @@ ${inlines}
 	mysql ""
       end
 
+      extra_member 183472 "xml_doc"
+	
+	cpp "" "// Return a canonical XML document usable for testing.
+//
+// style = gmake
+// 2 x files (system.mk, local.mk)
+// 4 x properties (root-file, build-file, executable-install-location, executable-install-mode)
+// 9 x templates (comment, start-phrase, end-phrase, root-preamble, preamble, package,
+//                build-target, install-target, sublocation)
+static const QByteArray & xml_doc()
+{
+  static QByteArray xmldoc{ \"<style label='gmake'>\\n<file label='system.mk'>## system.mk\\n#\\n# System Makefile\\n#\\n</file>\\n<file label='local.mk'>## local.mk.tmpl\\n\\nOS ?= LINUX\\nCOMP ?= GNU\\nVARIANT ?= DEBUG\\n</file>\\n<!-- name of the top-most generated buildfile -->\\n<property label='root-file'>makefile</property>\\n\\n<!-- name of build file in any sub-directories -->\\n<property label='build-file'>makefile</property>\\n<!-- default for install flags -->\\n<property label='executable-install-location'>$(BINDIR)</property>\\n<property label='executable-install-mode'>$(BINIFLAGS)</property>\\n\\n<!-- how to make comments -->\\n<template label='comment'>## <replace label='text'/></template>\\n<template label='start-phrase'>## START:<replace label='name'/>\\n</template>\\n<template label='end-phrase'>## END:<replace label='name'/>\\n</template>\\n\\n\\n<!-- template for start of root makefile -->\\n<template label='root-preamble'><option label='rootdir'>export ROOTDIR:=<replace label='location_root'/></option>\\ninclude $(ROOTDIR)/system.mk\\n</template>\\n\\n<!-- template for start of subdirectory makefiles -->\\n<template label='preamble'>\\ninclude $(ROOTDIR)/system.mk\\n</template>\\n\\n<!-- template for start of (internal) package -->\\n<template label='package'>\\n<option label='SYSINCLUDE'>export SYSINCLUDE:= <replace label='package_includes'/>\\n</option><option label='SYSCFLAGS'>export SYSCFLAGS:= <replace label='package_cflags'/>\\n</option><option label='SYSC++FLAGS'>export SYSC++FLAGS:= <replace label='package_c++flags'/>\\n</option><option label='SYSFFLAGS'>export SYSFFLAGS:= <replace label='package_fflags'/>\\n</option><option label='SYSLDFLAGS'>export SYSLDFLAGS:= <replace label='package_ldflags'/>\\n</option></template>\\n\\n<!-- template for a target -->\\n<template label='build-target'>\\n<option label='SRC'><replace label='TARGET_NAME'/>SRC:=<replace label='target_src'/>\\n</option><option label='INCLUDE'><replace label='TARGET_NAME'/>INCLUDE:= $(SYSINCLUDE) <replace label='target_include'/>\\n</option><option label='CFLAGS'><replace label='TARGET_NAME'/>CFLAGS:= $(SYSCFLAGS) <replace label='target_cflags'/>\\n</option><option label='C++FLAGS'><replace label='TARGET_NAME'/>C++FLAGS:= $(SYSC++FLAGS) <replace label='target_c++flags'/>\\n</option><option label='LDFLAGS'><replace label='TARGET_NAME'/>LDFLAGS:= $(SYSLDFLAGS) <replace label='target_ldflags'/>\\n</option><option label='DINC'><replace label='TARGET_NAME'/>DINC := $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFCSRC)=.$(SUFDEP)))\\ninclude $(<replace label='TARGET_NAME'/>DINC)</option>\\n\\n<replace label='TARGET_NAME'/>OBJ := $(<replace label='TARGET_NAME'/>OBJ) $(filter %.o, $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFOBJ)))\\nCLEAN_TEMP := $(CLEAN_TEMP) $(<replace label='TARGET_NAME'/>OBJ)\\n\\n<replace label='target_name'/>$(SUFEXE) :: CFLAGS:=... $(patsubst %,-I%,$(<replace label='TARGET_NAME'/>INCLUDE)) $(VARIANTFLAGS) ...\\n<replace label='target_name'/>$(SUFEXE) :: C++FLAGS:=... $(<replace label='TARGET_NAME'/>INCLUDE) ...\\n<replace label='target_name'/>$(SUFEXE) :: $(<replace label='TARGET_NAME'/>OBJ) <replace label='target_object'/> <replace label='target_local_libs'/> | $(<replace label='TARGET_NAME'/>DINC) \\n#?	$(C++) $(C++FLAGS) -o <replace label='target_name'/>$(SUFEXE) $(<replace label='TARGET_NAME'/>OBJ) $(<replace label='TARGET_NAME'/>LDFLAGS) $(LDFLAGS)\\n\\nall :: <replace label='target_name'/>$(SUFEXE)\\n\\nCLEAN_TARGETS := $(CLEAN_TARGETS) <replace label='target_name'/>$(SUFEXE)\\n</template>\\n\\n<template label='executable-install-target'>\\ninstall:: <replace label='target-name'/>$(SUFEXE)\\n<option label='where'>	$(INSTALL) -d <replace label='executable-install-location'/>\\n</option><option label='install'>	$(INSTALL) <replace label='executable-install-mode'/> $&lt; <replace label='executable-install-location'/>/$&lt;\\n</option>\\n</template>\\n<template label='sublocation'>\\nDIRS:= $(DIRS) <replace label='location_dir'/></template>\\n<template label='close'># Local Variables:\\n# mode:makefile\\n# End:\\n</template><template label='version'># Butter version <replace label='butter-version'/>\\n<option label='version'># Project version <replace label='version'/>\\n</option></template><template label='date'># DATE: <replace label='date'/>\\n</template></style>\" };
+  return xmldoc;
+}
+
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+	comment "Return a standard XML document usable for testing."
+      end
+
       operation 322096 "build_style_constructor"
 	public explicit_return_type ""
 	nparams 0
@@ -127,7 +152,7 @@ ${body}
 	
       end
 
-      operation 322224 "build_style_push_back"
+      operation 322224 "build_style_read_properties"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -142,7 +167,7 @@ ${body}
 	
       end
 
-      operation 322352 "build_style_instantiate_textonly"
+      operation 322352 "build_style_read_special_files"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -157,7 +182,7 @@ ${body}
 	
       end
 
-      operation 322480 "build_style_instantiate_replace_nomatch"
+      operation 322480 "build_style_make_x_no_tmpl"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -172,7 +197,7 @@ ${body}
 	
       end
 
-      operation 322608 "build_style_instantiate_replace_match"
+      operation 322608 "build_style_make_x_some_tmpl"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -187,110 +212,6 @@ ${body}
 	
       end
 
-      operation 322736 "build_style_instantiate_phrase_nomatch"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 322864 "build_style_instantiate_phrase_match"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 322992 "build_style_instantiate_nest_phrase_nomatch"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 323120 "build_style_instantiate_nest_phrase_innermatch"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 323248 "build_style_instantiate_nest_phrase_outermatch"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 323376 "build_style_instantiate_nest_phrase_allmatch"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 323504 "build_style_instantiate_bad_nest_phrase"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
     end
 
     class 131888 "compound_document_test"

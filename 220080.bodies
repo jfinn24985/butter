@@ -96,7 +96,7 @@ if(! this->templates_.empty())
       else if(xml.name() == constants::property_xmlname())
       {
         BUTTER_REQUIRE(xml.attributes().hasAttribute(constants::label_xmlname()),
-                       QString("Propoerty XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
+                       QString("Property XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
         QString & content = this->properties_[ xml.attributes().value(constants::label_xmlname()).toString() ];
         bool in_property = true;
         while(in_property && !xml.atEnd())
@@ -161,6 +161,13 @@ if(! this->templates_.empty())
   }
   BUTTER_REQUIRE( found_style,  QString("Unknown style '%1'.").arg(style).toStdString() );
 }
+!!!331312.cpp!!!	extend_properties(in other : build_style::map_type) : build_style::map_type
+map_type p{ this->properties_ };
+for(auto itr = other.begin(); itr != other.end(); ++itr)
+{
+  p.insert(itr.key(), itr.value());
+}
+return std::move(p);
 !!!306096.cpp!!!	get_build_file_name() : unistr
 auto itr = this->properties_.find( { constants::build_file_xmlname() } );
 return (itr == this->properties_.end() ? QString() : itr.value());
@@ -171,9 +178,7 @@ return (itr == this->properties_.end() ? QString() : itr.value());
 auto itr = this->templates_.find( constants::close_xmllabel() );
 if( itr != this->templates_.end() )
 {
-  map_type p{ this->properties_ };
-  p.unite( properties );
-  return itr.value().instantiate( p );
+  return itr.value().instantiate( this->extend_properties( properties ) );
 }
 return QString();
 !!!315056.cpp!!!	make_comment_text(in text : unistr) : unistr
@@ -205,30 +210,33 @@ else
   return constants::comment_text(text);
 }
 !!!314416.cpp!!!	make_date(in properties : build_style::map_type) : unistr
-auto itr = this->templates_.find( constants::close_xmllabel() );
+auto itr = this->templates_.find( constants::date_xmllabel() );
+map_type p{ this->extend_properties( properties ) };
+if(p.find("date") == p.end())
+{
+  p.insert( QString("date"), QDateTime::currentDateTime().toString() );
+}
 if( itr != this->templates_.end() )
 {
-  map_type p{ this->properties_ };
-  p.unite( properties );
-  p[ "date" ] = QDateTime::currentDateTime().toString();
   return itr.value().instantiate( p );
 }
-return QString();
+else
+{
+  return make_comment_text( p["date"] );
+}
 !!!305200.cpp!!!	make_element(in tmpl : unistr, in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( tmpl );
 if( itr != this->templates_.end() )
 {
-  map_type p{ this->properties_ };
-  p.unite( properties );
-  return itr.value().instantiate( p );
+  return itr.value().instantiate( this->extend_properties( properties ) );
 }
 return QString();
 !!!314928.cpp!!!	make_end_phrase(in name : unistr) : unistr
 auto itr = this->templates_.find( constants::end_phrase_xmlname() );
 if( itr != this->templates_.end() )
 {
-  map_type p;
-  p[ "name" ] = name;
+  map_type p{ this->properties_ };
+  p.insert( QString("name"), name );
   return itr.value().instantiate( p );
 }
 else
@@ -239,29 +247,25 @@ else
 auto itr = this->templates_.find( constants::preamble_xmllabel() );
 if( itr != this->templates_.end() )
 {
-  map_type p{ this->properties_ };
-  p.unite( properties );
-  return itr.value().instantiate( p );
+  return itr.value().instantiate( this->extend_properties( properties ) );
 }
 return QString();
 !!!314800.cpp!!!	make_start_phrase(in name : unistr) : unistr
 auto itr = this->templates_.find( constants::start_phrase_xmlname() );
 if( itr != this->templates_.end() )
 {
-  map_type p;
-  p[ "name" ] = name;
+  map_type p{ this->properties_ };
+  p.insert( QString("name"), name );
   return itr.value().instantiate( p );
 }
 else
 {
-  return make_comment_text( " START:" + name );
+  return make_comment_text( "START:" + name );
 }
 !!!314288.cpp!!!	make_version(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( constants::version_xmllabel() );
 if( itr != this->templates_.end() )
 {
-  map_type p{ this->properties_ };
-  p.unite( properties );
-  return itr.value().instantiate( p );
+  return itr.value().instantiate( this->extend_properties( properties ) );
 }
 return QString();

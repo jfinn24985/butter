@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 29
+  revision 30
   modified_by 48 "finnerty"
   // class settings
   
@@ -1447,6 +1447,22 @@ a_text does not end in a newline."
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   static QString label(\"version\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 331440 "date_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"date\");
   return label;
 }
 "
@@ -4220,6 +4236,23 @@ ${inlines}
 	mysql ""
       end
 
+      operation 331312 "extend_properties"
+	const public return_type class_ref 220208 // map_type
+	nparams 1
+	  param in name "other" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Add the contents of other to the style property map, with any
+existing keys being overwritten by the values in other."
+      end
+
       operation 306096 "get_build_file_name"
 	public explicit_return_type "unistr"
 	nparams 0
@@ -4487,7 +4520,6 @@ style properties before instantiating the template."
 	idl ""
 	mysql ""
       end
-
     end
   end
 

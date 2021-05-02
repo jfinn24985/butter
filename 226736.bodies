@@ -19,170 +19,85 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::build_style >::type{});
 !!!323632.cpp!!!	build_style_read_basic()
 {
   butter::build_style var;
-  QByteArray xmldoc{ "<style label='gmake'>\n<file label='system.mk'>## system.mk\n#\n# System Makefile\n#\n</file>\n<file label='local.mk'>## local.mk.tmpl\n\nOS ?= LINUX\nCOMP ?= GNU\nVARIANT ?= DEBUG\n</file>\n<!-- name of the top-most generated buildfile -->\n<property label='root-file'>makefile</property>\n\n<!-- name of build file in any sub-directories -->\n<property label='build-file'>makefile</property>\n<!-- default for install flags -->\n<property label='target_install_location'>$(BINDIR)</property>\n<property label='target_install_mode'>$(BINIFLAGS)</property>\n\n<!-- how to make comments -->\n<template label='comment'>## <replace label='text'/></template>\n<template label='start-phrase'>## START:<replace label='name'/>\n</template>\n<template label='end-phrase'>## END:<replace label='name'/>\n</template>\n\n\n<!-- template for start of root makefile -->\n<template label='root-preamble'><option label='rootdir'>export ROOTDIR:=<replace label='location_root'/></option>\ninclude $(ROOTDIR)/system.mk\n</template>\n\n<!-- template for start of subdirectory makefiles -->\n<template label='preamble'>\ninclude $(ROOTDIR)/system.mk\n</template>\n\n<!-- template for start of (internal) package -->\n<template label='package'>\n<option label='SYSINCLUDE'>export SYSINCLUDE:= <replace label='package_includes'/>\n</option><option label='SYSCFLAGS'>export SYSCFLAGS:= <replace label='package_cflags'/>\n</option><option label='SYSC++FLAGS'>export SYSC++FLAGS:= <replace label='package_c++flags'/>\n</option><option label='SYSFFLAGS'>export SYSFFLAGS:= <replace label='package_fflags'/>\n</option><option label='SYSLDFLAGS'>export SYSLDFLAGS:= <replace label='package_ldflags'/>\n</option></template>\n\n<!-- template for a target -->\n<template label='build-target'>\n<option label='SRC'><replace label='TARGET_NAME'/>SRC:=<replace label='target_src'/>\n</option><option label='INCLUDE'><replace label='TARGET_NAME'/>INCLUDE:= $(SYSINCLUDE) <replace label='target_include'/>\n</option><option label='CFLAGS'><replace label='TARGET_NAME'/>CFLAGS:= $(SYSCFLAGS) <replace label='target_cflags'/>\n</option><option label='C++FLAGS'><replace label='TARGET_NAME'/>C++FLAGS:= $(SYSC++FLAGS) <replace label='target_c++flags'/>\n</option><option label='LDFLAGS'><replace label='TARGET_NAME'/>LDFLAGS:= $(SYSLDFLAGS) <replace label='target_ldflags'/>\n</option><option label='DINC'><replace label='TARGET_NAME'/>DINC := $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFCSRC)=.$(SUFDEP)))\ninclude $(<replace label='TARGET_NAME'/>DINC)</option>\n\n<replace label='TARGET_NAME'/>OBJ := $(<replace label='TARGET_NAME'/>OBJ) $(filter %.o, $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFOBJ)))\nCLEAN_TEMP := $(CLEAN_TEMP) $(<replace label='TARGET_NAME'/>OBJ)\n\n<replace label='target_name'/>$(SUFEXE) :: CFLAGS:=... $(patsubst %,-I%,$(<replace label='TARGET_NAME'/>INCLUDE)) $(VARIANTFLAGS) ...\n<replace label='target_name'/>$(SUFEXE) :: C++FLAGS:=... $(<replace label='TARGET_NAME'/>INCLUDE) ...\n<replace label='target_name'/>$(SUFEXE) :: $(<replace label='TARGET_NAME'/>OBJ) <replace label='target_object'/> <replace label='target_local_libs'/> | $(<replace label='TARGET_NAME'/>DINC) \n#?	$(C++) $(C++FLAGS) -o <replace label='target_name'/>$(SUFEXE) $(<replace label='TARGET_NAME'/>OBJ) $(<replace label='TARGET_NAME'/>LDFLAGS) $(LDFLAGS)\n\nall :: <replace label='target_name'/>$(SUFEXE)\n\nCLEAN_TARGETS := $(CLEAN_TARGETS) <replace label='target_name'/>$(SUFEXE)\n</template>\n\n<template label='install-target'>\ninstall:: <replace label='target_name'/>$(SUFEXE)\n<option label='where'>	$(INSTALL) -d <replace label='target_install_location'/>\n</option><option label='install'>	$(INSTALL) <replace label='target_install_mode'/> $&lt; <replace label='target_install_location'/>/$&lt;\n</option>\n</template>\n<template label='sublocation'>\nDIRS:= $(DIRS) <replace label='location_dir'/></template>\n</style>" };
-  QXmlStreamReader x(xmldoc);
+  
+  QXmlStreamReader x(xml_doc());
   x.readNextStartElement();
   var.read_style("gmake", x);
   BOOST_CHECK_EQUAL(4, var.get_properties().size());
-  BOOST_CHECK_EQUAL(9, var.get_templates().size());
+  BOOST_CHECK_EQUAL(12, var.get_templates().size());
   BOOST_CHECK_EQUAL(2, var.get_special_files().size());
 }
-!!!322224.cpp!!!	build_style_push_back()
+!!!322224.cpp!!!	build_style_read_properties()
 {
-  butter::text_template var;
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  BOOST_CHECK_EQUAL(1, var.size());
-  BOOST_CHECK( ! var.empty() );
-  BOOST_CHECK( var.begin() != var.end() );
-  BOOST_CHECK_EQUAL( int(butter::text_template::TEXT), int(var.begin()->type_) );
-  BOOST_CHECK_EQUAL( "some text", var.begin()->content_ );
+  butter::build_style var;
+  
+  QXmlStreamReader x(xml_doc());
+  x.readNextStartElement();
+  var.read_style("gmake", x);
+  BOOST_CHECK_EQUAL("makefile", var.get_build_file_name());
+  BOOST_CHECK_EQUAL("makefile", var.get_root_file_name());
+  {
+    butter::build_style::map_type::const_iterator itr = var.get_properties().find("executable-install-location");
+    BOOST_REQUIRE( itr != var.get_properties().end() );
+    BOOST_CHECK_EQUAL(QString("$(BINDIR)"), itr.value());
+  }
+  {
+    butter::build_style::map_type::const_iterator itr = var.get_properties().find("executable-install-mode");
+    BOOST_REQUIRE( itr != var.get_properties().end() );
+    BOOST_CHECK_EQUAL(QString("$(BINIFLAGS)"), itr.value());
+  }
 }
-!!!322352.cpp!!!	build_style_instantiate_textonly()
+!!!322352.cpp!!!	build_style_read_special_files()
 {
-  butter::text_template var;
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  BOOST_CHECK_EQUAL(2, var.size());
-  QString t{ var.instantiate( {} ) };
-  BOOST_CHECK_EQUAL( "some textsome more text", t );
+  butter::build_style var;
+  
+  QXmlStreamReader x(xml_doc());
+  x.readNextStartElement();
+  var.read_style("gmake", x);
+  {
+    butter::build_style::map_type::const_iterator itr = var.get_special_files().find("system.mk");
+    BOOST_REQUIRE( itr != var.get_special_files().end() );
+    BOOST_CHECK_EQUAL(QString("## system.mk\n#\n# System Makefile\n#\n"), itr.value());
+  }
+  {
+    butter::build_style::map_type::const_iterator itr = var.get_special_files().find("local.mk");
+    BOOST_REQUIRE( itr != var.get_special_files().end() );
+    BOOST_CHECK_EQUAL(QString("## local.mk.tmpl\n\nOS ?= LINUX\nCOMP ?= GNU\nVARIANT ?= DEBUG\n"), itr.value());
+  }
 }
-!!!322480.cpp!!!	build_style_instantiate_replace_nomatch()
+!!!322480.cpp!!!	build_style_make_x_no_tmpl()
+// test constructor
 {
-  butter::text_template var;
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  BOOST_CHECK_EQUAL(3, var.size());
-  QString t{ var.instantiate( {} ) };
-  BOOST_CHECK_EQUAL( "some textsome more text", t );
+  butter::build_style tmpl{};
+  butter::build_style::map_type p{};
+  BOOST_CHECK(tmpl.make_close(p).isEmpty());
+  BOOST_CHECK_EQUAL("# X\n", tmpl.make_comment_text("X"));
+  BOOST_CHECK_EQUAL("# START:name\n", tmpl.make_start_phrase("name"));
+  BOOST_CHECK_EQUAL("# END:name\n", tmpl.make_end_phrase("name"));
+  BOOST_CHECK(tmpl.make_element("binary", p).isEmpty());
+  BOOST_CHECK(tmpl.make_preamble(p).isEmpty());
+  BOOST_CHECK(tmpl.make_version(p).isEmpty());
+  p.insert("date", "today");
+  BOOST_CHECK_EQUAL("# today\n", tmpl.make_date(p));
 }
-!!!322608.cpp!!!	build_style_instantiate_replace_match()
+!!!322608.cpp!!!	build_style_make_x_some_tmpl()
+// test make_* methods after reading in xml_doc
 {
-  butter::text_template var;
-  butter::text_template::map_type m;
-  m["key"] = "\nvalue\n";
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  BOOST_CHECK_EQUAL(3, var.size());
-  QString t{ var.instantiate( m ) };
-  BOOST_CHECK_EQUAL( "some text\nvalue\nsome more text", t );
-}
-!!!322736.cpp!!!	build_style_instantiate_phrase_nomatch()
-{
-  butter::text_template var;
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  BOOST_CHECK_EQUAL(5, var.size());
-  QString t{ var.instantiate( {} ) };
-  BOOST_CHECK_EQUAL( "some text", t );
-}
-!!!322864.cpp!!!	build_style_instantiate_phrase_match()
-{
-  butter::text_template var;
-  butter::text_template::map_type m;
-  m["key"] = "\nvalue\n";
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  BOOST_CHECK_EQUAL(5, var.size());
-  QString t{ var.instantiate( m ) };
-  BOOST_CHECK_EQUAL( "some text\nvalue\nsome more text", t );
-}
-!!!322992.cpp!!!	build_style_instantiate_nest_phrase_nomatch()
-{
-  butter::text_template var;
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  BOOST_CHECK_EQUAL(9, var.size());
-  QString t{ var.instantiate( {} ) };
-  BOOST_CHECK_EQUAL( "some text", t );
-}
-!!!323120.cpp!!!	build_style_instantiate_nest_phrase_innermatch()
-{
-  butter::text_template var;
-  butter::text_template::map_type m;
-  m["key2"] = "\nvalue2\n";
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  BOOST_CHECK_EQUAL(9, var.size());
-  QString t{ var.instantiate( m ) };
-  BOOST_CHECK_EQUAL( "some text", t );
-}
-!!!323248.cpp!!!	build_style_instantiate_nest_phrase_outermatch()
-{
-  butter::text_template var;
-  butter::text_template::map_type m;
-  m["key"] = "\nvalue\n";
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  BOOST_CHECK_EQUAL(9, var.size());
-  QString t{ var.instantiate( m ) };
-  BOOST_CHECK_EQUAL( "some textsome other text\nvalue\n", t );
-}
-!!!323376.cpp!!!	build_style_instantiate_nest_phrase_allmatch()
-{
-  butter::text_template var;
-  butter::text_template::map_type m;
-  m["key"] = "\nvalue\n";
-  m["key2"] = "\nvalue2\n";
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  BOOST_CHECK_EQUAL(9, var.size());
-  QString t{ var.instantiate( m ) };
-  BOOST_CHECK_EQUAL( "some textsome other text\nvalue\n\nvalue2\nsome more text", t );
-}
-!!!323504.cpp!!!	build_style_instantiate_bad_nest_phrase()
-{
-  butter::text_template var;
-  butter::text_template::map_type m;
-  m["key"] = "\nvalue\n";
-  m["key2"] = "\nvalue2\n";
-  var.push_back( { butter::text_template::TEXT, { "some text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  var.push_back( { butter::text_template::TEXT, { "some other text" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  var.push_back( { butter::text_template::REPLACEMENT, { "key2" } } );
-  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key" } } );
-  var.push_back( { butter::text_template::PHRASE, { "key2" } } );
-  BOOST_CHECK_EQUAL(9, var.size());
-  QString t;
-  BOOST_CHECK_THROW( var.instantiate( m ), std::runtime_error );
-  auto check_throw = [](std::runtime_error const& e){ return e.what() == std::string("Incorrectly nested optional sections."); };
-  BOOST_CHECK_EXCEPTION( var.instantiate( m ), std::runtime_error, check_throw );
+  butter::build_style tmpl{};
+  QXmlStreamReader x(xml_doc());
+  x.readNextStartElement();
+  tmpl.read_style("gmake", x);
+  butter::build_style::map_type p{};
+  BOOST_CHECK_EQUAL("# Local Variables:\n# mode:makefile\n# End:\n", tmpl.make_close(p));
+  BOOST_CHECK_EQUAL("## X\n", tmpl.make_comment_text("X"));
+  BOOST_CHECK_EQUAL("## START:name\n", tmpl.make_start_phrase("name"));
+  BOOST_CHECK_EQUAL("## END:name\n", tmpl.make_end_phrase("name"));
+  p.insert("target-name", "unittest");
+  BOOST_CHECK_EQUAL("\ninstall:: unittest$(SUFEXE)\n\t$(INSTALL) -d $(BINDIR)\n\t$(INSTALL) $(BINIFLAGS) $< $(BINDIR)/$<\n\n", tmpl.make_element("executable-install-target", p));
+  BOOST_CHECK_EQUAL("\ninclude $(ROOTDIR)/system.mk\n", tmpl.make_preamble(p));
+  p.insert("butter-version", "0.2beta");
+  p.insert("version", "0.1");
+  BOOST_CHECK_EQUAL("# Butter version 0.2beta\n# Project version 0.1\n", tmpl.make_version(p));
+  p.insert("date", "today");
+  BOOST_CHECK_EQUAL("# DATE: today\n", tmpl.make_date(p));
 }

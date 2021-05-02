@@ -6,14 +6,14 @@ QString Result;
   int s_ = 0; // start position
   for (int e_ = a_text.find ('\n', s_); e_ > 0; e_ = a_text.find ('\n', s_))
   {
-    os_ << begin_comment;
+    os_ << begin_comment << ' ';
     os_ << a_text.mid (s_, e_ - s_);
     os_ << end_comment << "\n";
     s_ = e_ + 1;
   }
   if (a_text.at (a_text.length () - 1) != '\n')
   {
-    os_ << begin_comment;
+    os_ << begin_comment << ' ';
     os_ << a_text.mid (s_);
     os_ << end_comment << "\n";
   }
