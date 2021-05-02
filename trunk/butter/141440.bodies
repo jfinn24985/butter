@@ -1,0 +1,34 @@
+class UmlBaseActivityParameter
+!!!256384.cpp!!!	create(inout parent : UmlActivity, inout s : str) : UmlActivityParameter
+  return (UmlActivityParameter *) parent->create_(anActivityParameter, s);
+!!!256384.java!!!	create(inout parent : UmlActivity, inout s : str) : UmlActivityParameter
+  return (UmlActivityParameter) parent.create_(anItemKind.anActivityParameter, s);
+!!!256512.cpp!!!	kind() : anItemKind
+  return anActivityParameter;
+!!!256512.java!!!	kind() : anItemKind
+  return anItemKind.anActivityParameter;
+!!!256768.cpp!!!	defaultValue() : string
+  read_if_needed_();
+  return _default_value;
+!!!256768.java!!!	defaultValue() : string
+  read_if_needed_();
+  return _default_value;
+!!!256896.cpp!!!	set_DefaultValue(in v : str) : bool
+  return set_it_(_default_value, v, setDefaultValueCmd);
+!!!256896.java!!!	set_DefaultValue(in v : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setDefaultValueCmd, v);
+  UmlCom.check();
+
+  _default_value = v;
+!!!257024.cpp!!!	unload(in rec : bool, in del : bool) : void
+  _default_value = 0;
+  UmlBaseActivityObject::unload(rec, del);
+!!!257024.java!!!	unload(in rec : bool, in del : bool) : void
+  _default_value = null;
+  super.unload(rec, del);
+!!!257152.cpp!!!	read_uml_() : void
+  UmlBasePinParameter::read_uml_();
+  _default_value = UmlCom::read_string();
+!!!257152.java!!!	read_uml_() : void
+  super.read_uml_();
+  _default_value = UmlCom.read_string();

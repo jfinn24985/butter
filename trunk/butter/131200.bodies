@@ -1,0 +1,55 @@
+class UmlBaseExtraClassMember
+!!!160896.cpp!!!	create(inout parent : UmlClass, in name : str) : UmlExtraClassMember
+  return (UmlExtraClassMember *) parent->create_(anExtraClassMember, name);
+!!!160896.java!!!	create(inout parent : UmlClass, in name : str) : UmlExtraClassMember
+  return (UmlExtraClassMember) parent.create_(anItemKind.anExtraClassMember, name);
+!!!161024.cpp!!!	kind() : anItemKind
+  return anExtraClassMember;
+!!!161024.java!!!	kind() : anItemKind
+  return anItemKind.anExtraClassMember;
+!!!161152.cpp!!!	isCppInline() : bool
+  read_if_needed_();
+    
+  return _cpp_inline;
+!!!161152.java!!!	isCppInline() : bool
+  read_if_needed_();
+    
+  return _cpp_inline;
+!!!161280.cpp!!!	set_isCppInline(in y : bool) : bool
+  return set_it_(_cpp_inline, y, setIsCppInlineCmd);
+!!!161280.java!!!	set_isCppInline(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppInlineCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_inline = y;
+!!!161408.cpp!!!	cppDef() : string
+  read_if_needed_();
+    
+  return _cpp_def;
+!!!161408.java!!!	cppDef() : string
+  read_if_needed_();
+    
+  return _cpp_def;
+!!!161536.cpp!!!	set_CppDef(in s : str) : bool
+  return set_it_(_cpp_def, s, setCppDefCmd);
+!!!161536.java!!!	set_CppDef(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppDefCmd, s);
+  UmlCom.check();
+
+  _cpp_def = s;
+!!!161664.cpp!!!	unload(in rec : bool, in del : bool) : void
+#ifdef WITHCPP
+  _cpp_def = 0;
+#endif
+  UmlBaseClassItem::unload(rec, del);
+!!!161664.java!!!	unload(in rec : bool, in del : bool) : void
+  _cpp_def = null;
+  super.unload(rec, del);
+!!!161920.cpp!!!	read_cpp_() : void
+  UmlBaseClassItem::read_cpp_();
+  _cpp_def = UmlCom::read_string();
+  _cpp_inline = UmlCom::read_bool();
+!!!161920.java!!!	read_cpp_() : void
+  super.read_cpp_();
+  _cpp_def = UmlCom.read_string();
+  _cpp_inline = UmlCom.read_bool();

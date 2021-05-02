@@ -203,5 +203,11 @@ base_generator::base_generator()
 base_generator::~base_generator() 
 {}
 
+QCString base_generator::quote_string(QCString phrase)
+
+{
+
+}
+
 
 } // namespace butter

@@ -1,0 +1,49 @@
+class UmlBaseReduceAction
+!!!247040.cpp!!!	create(inout parent : UmlItem, inout s : str) : UmlReduceAction
+  return (UmlReduceAction *) parent->create_(aReduceAction, s);
+!!!247040.java!!!	create(inout parent : UmlItem, inout s : str) : UmlReduceAction
+  return (UmlReduceAction) parent.create_(anItemKind.aReduceAction, s);
+!!!247168.cpp!!!	kind() : anItemKind
+  return aReduceAction;
+!!!247168.java!!!	kind() : anItemKind
+  return anItemKind.aReduceAction;
+!!!247424.cpp!!!	isOrdered() : bool
+  read_if_needed_();
+  return _ordered;
+!!!247424.java!!!	isOrdered() : bool
+  read_if_needed_();
+  return _ordered;
+!!!247552.cpp!!!	set_isOrdered(in v : bool) : bool
+  return set_it_(_ordered, v, setFlagCmd);
+!!!247552.java!!!	set_isOrdered(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setFlagCmd, (v) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _ordered = v;
+!!!247680.cpp!!!	reducer() : UmlItem
+  read_if_needed_();
+  return _reducer;
+!!!247680.java!!!	reducer() : UmlItem
+  read_if_needed_();
+  return _reducer;
+!!!247808.cpp!!!	set_Reducer(in v : UmlItem) : bool
+  UmlCom::send_cmd(_identifier, setDefCmd, (v == 0) ? (void *) v : ((UmlBaseItem *) v)->_identifier);
+  if (UmlCom::read_bool()) {
+    _reducer = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!247808.java!!!	set_Reducer(in v : UmlItem) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setDefCmd, (v == null) ? (long) 0 : v.identifier_());
+  UmlCom.check();
+
+  _reducer = v;
+!!!247936.cpp!!!	read_uml_() : void
+  UmlBaseActivityAction::read_uml_();
+  _ordered = UmlCom::read_bool();
+  _reducer = UmlBaseItem::read_();
+!!!247936.java!!!	read_uml_() : void
+  super.read_uml_();
+  _ordered = UmlCom.read_bool();
+  _reducer = UmlBaseItem.read_();

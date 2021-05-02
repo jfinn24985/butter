@@ -20,6 +20,21 @@ class UmlCom;
 
 /**
  * Test core functionality that is dependent on bouml.
+ * 
+ * 
+ * base_generator::create_system( loc, top_pack )
+ * 
+ * base_generator::find_hdr_link( item, &hdr, &link, &flag, sec_label, BOOL )
+ * 
+ * base_generator::get_artifact( loc, name )
+ * 
+ * generator::*
+ * bjam_generator::*
+ * cmake_generator::*
+ * gmake_generator::*
+ * jam_generator::*
+ * location::*
+ * log::*
  */
 class plugout_test_suite
 {
@@ -47,7 +62,7 @@ class plugout_test_suite
         /**
          *  If connection has been made.
          */
-        bool connected_;
+        bool connected_ = false;
 
 
       public:

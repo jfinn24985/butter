@@ -1,0 +1,9 @@
+class UmlBaseJoinPseudoState
+!!!213632.cpp!!!	create(inout parent : UmlItem) : UmlJoinPseudoState
+  return (UmlJoinPseudoState *) parent->create_(aJoinPseudoState, "");
+!!!213632.java!!!	create(inout parent : UmlItem) : UmlJoinPseudoState
+  return (UmlJoinPseudoState) parent.create_(anItemKind.aJoinPseudoState, "");
+!!!213760.cpp!!!	kind() : anItemKind
+  return aJoinPseudoState;
+!!!213760.java!!!	kind() : anItemKind
+  return anItemKind.aJoinPseudoState;

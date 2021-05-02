@@ -1,0 +1,230 @@
+format 221
+
+classcanvas 128000 class_ref 129408 // UmlBaseClassDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 45 91 2000
+end
+classcanvas 128048 class_ref 133120 // UmlBaseStateDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 332 309 2000
+end
+classcanvas 128128 class_ref 130304 // UmlBaseCollaborationDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 600 332 2000
+end
+classcanvas 128176 class_ref 196528 // UmlStateDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 393 389 2000
+end
+classcanvas 128256 class_ref 130432 // UmlBaseComponentDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 607 209 2000
+end
+classcanvas 128304 class_ref 206768 // UmlStateItem
+  classdiagramsettings member_max_width 0 class_drawing_mode class end
+  xyz 485 308 2000
+end
+classcanvas 128384 class_ref 130688 // UmlBaseDeploymentDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 532 84 2000
+end
+classcanvas 128512 class_ref 131072 // UmlBaseDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 315 134 2000
+end
+classcanvas 128640 class_ref 131328 // UmlBaseItem
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 328 6 2000
+end
+classcanvas 128768 class_ref 132608 // UmlBaseUseCaseDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 8 215 2000
+end
+classcanvas 128896 class_ref 132352 // UmlBaseSequenceDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 10 333 2000
+end
+classcanvas 129024 class_ref 129281 // UmlDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 330 194 2000
+end
+classcanvas 129152 class_ref 128513 // UmlItem
+  classdiagramsettings member_max_width 0 end
+  xyz 343 68 2000
+end
+classcanvas 129280 class_ref 130817 // UmlSequenceDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 22 395 2000
+end
+classcanvas 129408 class_ref 130177 // UmlCollaborationDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 612 394 2000
+end
+classcanvas 129536 class_ref 128897 // UmlClassDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 59 156 2000
+end
+classcanvas 129664 class_ref 131073 // UmlUseCaseDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 20 277 2000
+end
+note 129792 "Do not modify the blue classes"
+  xyzwh 28 7 2000 134 56
+classcanvas 129920 class_ref 129793 // UmlDeploymentDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 546 151 2000
+end
+classcanvas 130048 class_ref 130049 // UmlComponentDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 619 276 2000
+end
+classcanvas 130176 class_ref 129536 // UmlBaseObjectDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 33 453 2000
+end
+classcanvas 130304 class_ref 195504 // UmlObjectDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 43 510 2000
+end
+classcanvas 130432 class_ref 196656 // UmlActivityDiagram
+  classdiagramsettings member_max_width 0 end
+  xyz 302 507 2000
+end
+classcanvas 130560 class_ref 206896 // UmlActivityItem
+  classdiagramsettings member_max_width 0 class_drawing_mode class end
+  xyz 464 445 2000
+end
+classcanvas 130688 class_ref 133248 // UmlBaseActivityDiagram
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 240 442 2005
+end
+relationcanvas 128432 relation_ref 139008 // <generalisation>
+  from ref 128048 z 1000 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128560 relation_ref 239536 // <generalisation>
+  from ref 128176 z 1000 to ref 128048
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128688 relation_ref 239664 // <generalisation>
+  from ref 128176 z 1000 to ref 128304
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130816 relation_ref 130049 // <generalisation>
+  from ref 129152 z 1000 to ref 128640
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130944 relation_ref 130817 // <generalisation>
+  from ref 129280 z 1000 to ref 128896
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131072 relation_ref 129793 // <generalisation>
+  from ref 129024 z 1000 to ref 128512
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131200 relation_ref 129025 // <generalisation>
+  from ref 129408 z 1000 to ref 128128
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131328 relation_ref 128513 // <generalisation>
+  from ref 129536 z 1000 to ref 128000
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131456 relation_ref 131073 // <generalisation>
+  from ref 129664 z 1000 to ref 128768
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131584 relation_ref 133376 // <generalisation>
+  from ref 128512 z 1000 to ref 129152
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131712 relation_ref 137088 // <generalisation>
+  from ref 128896 z 1000 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131840 relation_ref 137600 // <generalisation>
+  from ref 128768 z 1000 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131968 relation_ref 132736 // <generalisation>
+  from ref 128256 z 1000 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132096 relation_ref 132480 // <generalisation>
+  from ref 128128 z 1000 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132224 relation_ref 130176 // <generalisation>
+  from ref 128000 z 1000 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132352 relation_ref 132992 // <generalisation>
+  from ref 128384 z 1000 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132480 relation_ref 129537 // <generalisation>
+  from ref 129920 z 1000 to ref 128384
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132608 relation_ref 129153 // <generalisation>
+  from ref 130048 z 1000 to ref 128256
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132736 relation_ref 130304 // <generalisation>
+  from ref 130176 z 1999 to point 180 431
+  line 132864 z 1999 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132992 relation_ref 238768 // <generalisation>
+  from ref 130304 z 1999 to ref 130176
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133120 relation_ref 139136 // <generalisation>
+  from ref 130688 z 1999 to point 315 305
+  line 133248 z 1999 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133376 relation_ref 239792 // <generalisation>
+  from ref 130432 z 1999 to ref 130688
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133504 relation_ref 239920 // <generalisation>
+  from ref 130432 z 1999 to ref 130560
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+preferred_whz 830 545 1
+end

@@ -1,0 +1,29 @@
+class UmlBasePortRef
+!!!267776.cpp!!!	create(inout parent : UmlPortRefOwner, inout s : str, in port : UmlPort) : UmlPortRef
+  UmlCom::send_cmd(parent->_identifier, createCmd, aPortRef,
+		   port->_identifier);
+  return (UmlPortRef *) UmlBaseItem::read_();
+!!!267776.java!!!	create(inout parent : UmlPortRefOwner, inout s : str, in port : UmlPort) : UmlPortRef
+  UmlCom.send_cmd(parent.identifier_(), OnInstanceCmd.createCmd, anItemKind.aPortRef,
+		  port.identifier_());
+  UmlPortRef result = (UmlPortRef) UmlBaseItem.read_();
+  
+  if (result == null)
+    throw new RuntimeException("Cannot create the port reference");
+  return result;
+!!!267904.cpp!!!	kind() : anItemKind
+  return aPortRef;
+!!!267904.java!!!	kind() : anItemKind
+  return anItemKind.aPortRef;
+!!!268032.cpp!!!	port() : UmlPort
+  read_if_needed_();
+  return _port;
+!!!268032.java!!!	port() : UmlPort
+  read_if_needed_();
+  return _port;
+!!!268288.cpp!!!	read_uml_() : void
+  UmlBaseItem::read_uml_();
+  _port = (UmlPort *) UmlBaseItem::read_();
+!!!268288.java!!!	read_uml_() : void
+  super.read_uml_();
+  _port = (UmlPort) UmlBaseItem.read_();

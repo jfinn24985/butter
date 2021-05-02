@@ -95,14 +95,14 @@ friend class generator<cmake_generator>;
     /**
      * When type is library, is this a static library?
      */
-    bool is_static_type_;
+    bool is_static_type_ = false;
 
     /**
      * List of languages to include (excluding C++)
      */
     QStringList language_set_;
 
-    compound_artifact* sys_buildfile_;
+    compound_artifact* sys_buildfile_ = NULL;
 
     /**
      * Create a generator from the top-level a_project

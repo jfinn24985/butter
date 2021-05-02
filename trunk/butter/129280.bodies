@@ -1,0 +1,143 @@
+class UmlBaseClassItem
+!!!143232.cpp!!!	cppDecl() : string
+  read_if_needed_();
+  
+  return _cpp_decl;
+!!!143232.java!!!	cppDecl() : string
+  read_if_needed_();
+  
+  return _cpp_decl;
+!!!143360.cpp!!!	set_CppDecl(in s : str) : bool
+  return set_it_(_cpp_decl, s, setCppDeclCmd);
+!!!143360.java!!!	set_CppDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppDeclCmd, s);
+  UmlCom.check();
+
+  _cpp_decl = s;
+!!!143488.cpp!!!	javaDecl() : string
+  read_if_needed_();
+  
+  return _java_decl;
+!!!143488.java!!!	javaDecl() : string
+  read_if_needed_();
+  
+  return _java_decl;
+!!!143616.cpp!!!	set_JavaDecl(in s : str) : bool
+  return set_it_(_java_decl, s, setJavaDeclCmd);
+!!!143616.java!!!	set_JavaDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaDeclCmd, s);
+  UmlCom.check();
+
+  _java_decl = s;
+!!!143744.cpp!!!	phpDecl() : string
+  read_if_needed_();
+  
+  return _php_decl;
+!!!143744.java!!!	phpDecl() : string
+  read_if_needed_();
+  
+  return _php_decl;
+!!!143872.cpp!!!	set_PhpDecl(in s : str) : bool
+  return set_it_(_php_decl, s, setPhpDeclCmd);
+!!!143872.java!!!	set_PhpDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpDeclCmd, s);
+  UmlCom.check();
+
+  _php_decl = s;
+!!!144000.cpp!!!	pythonDecl() : string
+  read_if_needed_();
+  
+  return _python_decl;
+!!!144000.java!!!	pythonDecl() : string
+  read_if_needed_();
+  
+  return _python_decl;
+!!!144128.cpp!!!	set_PythonDecl(in s : str) : bool
+  return set_it_(_python_decl, s, setPythonDeclCmd);
+!!!144128.java!!!	set_PythonDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonDeclCmd, s);
+  UmlCom.check();
+
+  _python_decl = s;
+!!!144256.cpp!!!	idlDecl() : string
+  read_if_needed_();
+  
+  return _idl_decl;
+!!!144256.java!!!	idlDecl() : string
+  read_if_needed_();
+  
+  return _idl_decl;
+!!!144384.cpp!!!	set_IdlDecl(in s : str) : bool
+  return set_it_(_idl_decl, s, setIdlDeclCmd);
+!!!144384.java!!!	set_IdlDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIdlDeclCmd, s);
+  UmlCom.check();
+
+  _idl_decl = s;
+!!!144512.cpp!!!	mysqlDecl() : string
+  read_if_needed_();
+
+  return _mysql_decl;
+!!!144512.java!!!	mysqlDecl() : string
+  read_if_needed_();
+
+  return _mysql_decl;
+!!!144640.cpp!!!	set_MysqlDecl(in s : str) : bool
+  return set_it_(_mysql_decl, s, setMysqlDeclCmd);
+!!!144640.java!!!	set_MysqlDecl(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setMysqlDeclCmd, s);
+  UmlCom.check();
+
+  _mysql_decl = s;
+!!!144768.cpp!!!	unload(in rec : bool, in del : bool) : void
+#ifdef WITHCPP
+  _cpp_decl = 0;
+#endif
+#ifdef WITHJAVA
+  _java_decl = 0;
+#endif
+#ifdef WITHPHP
+  _php_decl = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_decl = 0;
+#endif
+#ifdef WITHMYSQL
+  _mysql_decl = 0;
+#endif
+#ifdef WITHIDL
+  _idl_decl = 0;
+#endif
+  UmlBaseItem::unload(rec, del);
+!!!144768.java!!!	unload(in rec : bool, in del : bool) : void
+  _cpp_decl = null;
+  _java_decl = null;
+  _php_decl = null;
+  _python_decl = null;
+  _mysql_decl = null;
+  _idl_decl = null;
+  super.unload(rec, del);
+!!!145024.cpp!!!	read_cpp_() : void
+  _cpp_decl = UmlCom::read_string();
+!!!145024.java!!!	read_cpp_() : void
+  _cpp_decl = UmlCom.read_string();
+!!!145152.cpp!!!	read_java_() : void
+  _java_decl = UmlCom::read_string();
+!!!145152.java!!!	read_java_() : void
+  _java_decl = UmlCom.read_string();
+!!!145280.cpp!!!	read_php_() : void
+  _php_decl = UmlCom::read_string();
+!!!145280.java!!!	read_php_() : void
+  _php_decl = UmlCom.read_string();
+!!!145408.cpp!!!	read_python_() : void
+  _python_decl = UmlCom::read_string();
+!!!145408.java!!!	read_python_() : void
+  _python_decl = UmlCom.read_string();
+!!!145536.cpp!!!	read_idl_() : void
+  _idl_decl = UmlCom::read_string();
+!!!145536.java!!!	read_idl_() : void
+  _idl_decl = UmlCom.read_string();
+!!!145664.cpp!!!	read_mysql_() : void
+  _mysql_decl = UmlCom::read_string();
+!!!145664.java!!!	read_mysql_() : void
+  _mysql_decl = UmlCom.read_string();

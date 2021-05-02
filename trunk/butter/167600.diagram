@@ -1,0 +1,132 @@
+format 221
+
+classcanvas 128000 class_ref 131328 // UmlBaseItem
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 198 11 2000
+end
+classcanvas 128128 class_ref 128513 // UmlItem
+  classdiagramsettings member_max_width 0 end
+  xyz 212 70 3001
+end
+classcanvas 128256 class_ref 135552 // UmlBaseActivity
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 14 125 2000
+end
+classcanvas 128384 class_ref 136064 // UmlBaseActivityRegion
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 169 133 2000
+end
+classcanvas 128512 class_ref 135808 // UmlBaseFlow
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 451 120 2000
+end
+classcanvas 128640 class_ref 136192 // UmlBaseExpansionRegion
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 42 269 2000
+end
+classcanvas 128768 class_ref 136448 // UmlBaseInterruptibleActivityRegion
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 260 269 2000
+end
+classcanvas 128896 class_ref 198832 // UmlFlow
+  classdiagramsettings member_max_width 0 end
+  xyz 464 185 2005
+end
+classcanvas 129024 class_ref 199088 // UmlActivityRegion
+  classdiagramsettings member_max_width 0 end
+  xyz 184 198 2000
+end
+classcanvas 129152 class_ref 206896 // UmlActivityItem
+  classdiagramsettings member_max_width 0 class_drawing_mode class end
+  xyz 331 137 2005
+end
+classcanvas 129280 class_ref 199216 // UmlExpansionRegion
+  classdiagramsettings member_max_width 0 end
+  xyz 56 326 2000
+end
+classcanvas 129408 class_ref 199344 // UmlInterruptibleActivityRegion
+  classdiagramsettings member_max_width 0 end
+  xyz 273 326 2005
+end
+classcanvas 129536 class_ref 198704 // UmlActivity
+  classdiagramsettings member_max_width 0 end
+  xyz 27 185 2005
+end
+relationcanvas 129664 relation_ref 130049 // <generalisation>
+  from ref 128128 z 1000 to ref 128000
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129792 relation_ref 141952 // <generalisation>
+  from ref 128256 z 1999 to ref 128128
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129920 relation_ref 143104 // <generalisation>
+  from ref 128384 z 1999 to ref 128128
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130048 relation_ref 243120 // <generalisation>
+  from ref 129024 z 1999 to ref 128384
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130176 relation_ref 243248 // <generalisation>
+  from ref 129024 z 1999 to ref 129152
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130304 relation_ref 242864 // <generalisation>
+  from ref 128896 z 1999 to ref 128512
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130432 relation_ref 242992 // <generalisation>
+  from ref 128896 z 2004 to ref 129152
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130560 relation_ref 243376 // <generalisation>
+  from ref 129280 z 1999 to ref 128640
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130688 relation_ref 243504 // <generalisation>
+  from ref 129408 z 1999 to ref 128768
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130816 relation_ref 242480 // <generalisation>
+  from ref 129536 z 1999 to ref 128256
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130944 relation_ref 142464 // <generalisation>
+  from ref 128512 z 1999 to ref 128128
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131072 relation_ref 143360 // <generalisation>
+  geometry VHV
+  from ref 128640 z 1999 to point 169 256
+  line 131200 z 1999 to point 274 256
+  line 131328 z 1999 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131456 relation_ref 143616 // <generalisation>
+  geometry VHV
+  from ref 128768 z 1999 to point 432 256
+  line 131584 z 1999 to point 274 256
+  line 131712 z 1999 to ref 129024
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

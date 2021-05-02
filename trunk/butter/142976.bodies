@@ -1,0 +1,9 @@
+class UmlBaseClassCompositeDiagram
+!!!269696.cpp!!!	create(inout parent : UmlClass, inout s : str) : UmlClassCompositeDiagram
+  return (UmlClassCompositeDiagram *) parent->create_(aClassCompositeDiagram, s);
+!!!269696.java!!!	create(inout parent : UmlClass, inout s : str) : UmlClassCompositeDiagram
+  return (UmlClassCompositeDiagram) parent.create_(anItemKind.aClassCompositeDiagram, s);
+!!!269824.cpp!!!	kind() : anItemKind
+  return aClassCompositeDiagram;
+!!!269824.java!!!	kind() : anItemKind
+  return anItemKind.aClassCompositeDiagram;

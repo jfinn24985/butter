@@ -1,0 +1,9 @@
+class UmlBaseJoinActivityNode
+!!!250496.cpp!!!	create(inout parent : UmlItem, inout s : str) : UmlJoinActivityNode
+  return (UmlJoinActivityNode *) parent->create_(aJoinActivityNode, s);
+!!!250496.java!!!	create(inout parent : UmlItem, inout s : str) : UmlJoinActivityNode
+  return (UmlJoinActivityNode) parent.create_(anItemKind.aJoinActivityNode, s);
+!!!250624.cpp!!!	kind() : anItemKind
+  return aJoinActivityNode;
+!!!250624.java!!!	kind() : anItemKind
+  return anItemKind.aJoinActivityNode;

@@ -1,0 +1,1167 @@
+class UmlBaseOperation
+!!!168960.cpp!!!	create(inout parent : UmlClass, in s : str) : UmlOperation
+  return (UmlOperation *) parent->create_(anOperation, s);
+!!!168960.java!!!	create(inout parent : UmlClass, in s : str) : UmlOperation
+  return (UmlOperation) parent.create_(anItemKind.anOperation, s);
+!!!169088.cpp!!!	kind() : anItemKind
+  return anOperation;
+!!!169088.java!!!	kind() : anItemKind
+  return anItemKind.anOperation;
+!!!169216.cpp!!!	isBodyGenerationForced() : bool
+  read_if_needed_();
+  return _force_body_generation;
+!!!169216.java!!!	isBodyGenerationForced() : bool
+  read_if_needed_();
+  return _force_body_generation;
+!!!169344.cpp!!!	set_isBodyGenerationForced(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setIsForceBodyGenCmd)) {
+    _force_body_generation = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!169344.java!!!	set_isBodyGenerationForced(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsForceBodyGenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _force_body_generation = v;
+!!!169472.cpp!!!	isAbstract() : bool
+  read_if_needed_();
+    
+  return _abstract;
+!!!169472.java!!!	isAbstract() : bool
+  read_if_needed_();
+    
+  return _abstract;
+!!!169600.cpp!!!	set_isAbstract(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setIsAbstractCmd)) {
+    _abstract = y;
+    if (y) {
+      ((UmlBaseClass *) parent())->set_isAbstract(y);
+#ifdef WITHCPP
+      _cpp_deleted = _cpp_defaulted = FALSE;
+#endif
+    }
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!169600.java!!!	set_isAbstract(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsAbstractCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _abstract =  y;
+  if (y) {
+    ((UmlBaseClass) parent()).set_isAbstract(y);
+    _cpp_deleted = _cpp_defaulted = false;
+  }
+!!!169728.cpp!!!	returnType() : UmlTypeSpec
+  read_if_needed_();
+    
+  return _return_type;
+!!!169728.java!!!	returnType() : UmlTypeSpec
+  read_if_needed_();
+    
+  return _return_type;
+!!!169856.cpp!!!	set_ReturnType(in t : UmlTypeSpec) : bool
+  return set_it_(_return_type, t, setReturnTypeCmd);
+!!!169856.java!!!	set_ReturnType(in t : UmlTypeSpec) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setReturnTypeCmd, t);
+  UmlCom.check();
+
+  _return_type = t;
+!!!169984.cpp!!!	multiplicity() : string
+  read_if_needed_();
+  return _multiplicity;
+!!!169984.java!!!	multiplicity() : string
+  read_if_needed_();
+  return _multiplicity;
+!!!170112.cpp!!!	set_Multiplicity(in v : str) : bool
+  return set_it_(_multiplicity, v, setMultiplicityCmd);
+!!!170112.java!!!	set_Multiplicity(in v : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setMultiplicityCmd, v);
+  UmlCom.check();
+
+  _multiplicity = v;
+!!!170240.cpp!!!	params() : UmlParameter
+  read_if_needed_();
+    
+  return _params;
+!!!170240.java!!!	params() : UmlParameter
+  read_if_needed_();
+    
+  return (UmlParameter[]) _params.clone();
+!!!170368.cpp!!!	addParameter(in rank : unsigned, in p : UmlParameter) : bool
+  UmlCom::send_cmd(_identifier, addParameterCmd, rank, p.dir, p.name, 
+		   p.default_value, p.type, p.multiplicity);
+  if (UmlCom::read_bool()) {
+    if (_defined) {
+      if ((int) rank == _params.size())
+         _params.append(p);
+      else
+         _params.insert(_params.at(rank), p);
+    }
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!170368.java!!!	addParameter(in rank : unsigned, in p : UmlParameter) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.addParameterCmd, rank, (byte) p.dir.value(), p.name, 
+		   p.default_value, p.type, p.multiplicity);
+  UmlCom.check();
+  
+  if (defined_()) {
+    // compatible with old Java versions
+    int n = _params.length;
+    UmlParameter[] params = new UmlParameter[n + 1];
+    int index;
+    
+    for (index = 0; index != rank; index += 1)
+      params[index] = _params[index];
+    params[index] = p.clone_it();
+    while (index++ != n)
+      params[index] = _params[index - 1];
+    _params = params;
+  }
+!!!170496.cpp!!!	removeParameter(in rank : unsigned) : bool
+  UmlCom::send_cmd(_identifier, removeParameterCmd, rank);
+  if (UmlCom::read_bool()) {
+    if (_defined)
+      _params.remove(_params.at(rank));
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!170496.java!!!	removeParameter(in rank : unsigned) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.removeParameterCmd, rank);
+  UmlCom.check();
+  
+  if (defined_()) {
+    int n = _params.length;
+    UmlParameter[] params = new UmlParameter[n - 1];
+    int index;
+    
+    for (index = 0; index != rank; index += 1)
+      params[index] = _params[index];
+    
+    while (++index != n)
+      params[index - 1] = _params[index];
+    
+    _params = params;
+  }
+!!!170624.cpp!!!	replaceParameter(in rank : unsigned, in p : UmlParameter) : bool
+  UmlCom::send_cmd(_identifier, replaceParameterCmd, rank, p.dir, p.name, 
+		   p.default_value, p.type, p.multiplicity);
+  if (UmlCom::read_bool()) {
+    if (_defined)
+      _params[rank] = p;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!170624.java!!!	replaceParameter(in rank : unsigned, in p : UmlParameter) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.replaceParameterCmd, rank,
+		  (byte) p.dir.value(), p.name, p.default_value, p.type, p.multiplicity);
+  UmlCom.check();
+  
+  if (defined_())
+    _params[rank] = p.clone_it();
+!!!170752.cpp!!!	exceptions() : UmlTypeSpec
+  read_if_needed_();
+    
+  return _exceptions;
+!!!170752.java!!!	exceptions() : UmlTypeSpec
+  read_if_needed_();
+    
+  return (UmlTypeSpec[]) _exceptions.clone();
+!!!170880.cpp!!!	addException(in rank : unsigned, in t : UmlTypeSpec) : bool
+  UmlCom::send_cmd(_identifier, addExceptionCmd, rank, t);
+  if (UmlCom::read_bool()) {
+    if (_defined) {
+      if ((int) rank == _exceptions.size()) 
+        _exceptions.append(t);
+      else
+         _exceptions.insert(_exceptions.at(rank), t);
+    }
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!170880.java!!!	addException(in rank : unsigned, in t : UmlTypeSpec) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.addExceptionCmd, rank, t);
+  UmlCom.check();
+  
+  if (defined_()) {
+    // compatible with old Java versions
+    int n = _exceptions.length;
+    int index;
+    
+    UmlTypeSpec[] exceptions = new UmlTypeSpec[n + 1];
+    for (index = 0; index != rank; index += 1)
+      exceptions[index] = _exceptions[index];
+    exceptions[index] = t.clone_it();
+    while (index++ != n)
+      exceptions[index] = _exceptions[index - 1];
+    _exceptions = exceptions;
+  }
+
+!!!171008.cpp!!!	removeException(in rank : unsigned) : bool
+  UmlCom::send_cmd(_identifier, removeExceptionCmd, rank);
+  if (UmlCom::read_bool()) {
+    if (_defined)
+      _exceptions.remove(_exceptions.at(rank));
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!171008.java!!!	removeException(in rank : unsigned) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.removeExceptionCmd, rank);
+  UmlCom.check();
+  
+  if (defined_()) {
+    int n = _exceptions.length;
+    UmlTypeSpec[] exceptions = new UmlTypeSpec[n - 1];
+    int index;
+    
+    for (index = 0; index != rank; index += 1)
+      exceptions[index] = _exceptions[index];
+    
+    while (++index != n)
+      exceptions[index - 1] = _exceptions[index];
+    
+    _exceptions = exceptions;
+  }
+
+!!!171136.cpp!!!	replaceException(in rank : unsigned, in t : UmlTypeSpec) : bool
+  UmlCom::send_cmd(_identifier, replaceExceptionCmd, rank, t);
+  if (UmlCom::read_bool()) {
+    if (_defined)
+      _exceptions[rank] = t;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!171136.java!!!	replaceException(in rank : unsigned, in t : UmlTypeSpec) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.replaceExceptionCmd, rank, t);
+  UmlCom.check();
+  
+  if (defined_())
+    _exceptions[rank] = t.clone_it();
+
+!!!171264.cpp!!!	methods() : UmlItem
+  Q3PtrVector<UmlItem> l;
+
+  UmlCom::send_cmd(_identifier, sideCmd);
+  UmlCom::read_item_list(l);
+  return l;
+!!!171264.java!!!	methods() : UmlItem
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.sideCmd);
+  return UmlCom.read_item_list();
+!!!171392.cpp!!!	getOf() : UmlClassMember
+  read_if_needed_();
+    
+  return _get_of;
+!!!171392.java!!!	getOf() : UmlClassMember
+  read_if_needed_();
+    
+  return _get_of;
+!!!171520.cpp!!!	setOf() : UmlClassMember
+  read_if_needed_();
+    
+  return _set_of;
+!!!171520.java!!!	setOf() : UmlClassMember
+  read_if_needed_();
+    
+  return _set_of;
+!!!171648.cpp!!!	isCppConst() : bool
+  read_if_needed_();
+    
+  return _cpp_const;
+!!!171648.java!!!	isCppConst() : bool
+  read_if_needed_();
+    
+  return _cpp_const;
+!!!171776.cpp!!!	set_isCppConst(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setIsCppConstCmd)) {
+    _cpp_const = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!171776.java!!!	set_isCppConst(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppConstCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_const =  y;
+!!!171904.cpp!!!	isCppFriend() : bool
+  read_if_needed_();
+    
+  return _cpp_friend;
+!!!171904.java!!!	isCppFriend() : bool
+  read_if_needed_();
+    
+  return _cpp_friend;
+!!!172032.cpp!!!	set_isCppFriend(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setIsCppFriendCmd)) {
+    _cpp_friend = y;
+    if (y) {
+      _abstract = FALSE;
+#ifdef WITHCPP
+      _cpp_deleted = _cpp_defaulted = FALSE;
+#endif
+    }
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!172032.java!!!	set_isCppFriend(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppFriendCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_friend =  y;
+  if (y)
+    _cpp_deleted = _cpp_defaulted = false;
+!!!172160.cpp!!!	isCppVirtual() : bool
+  read_if_needed_();
+    
+  return _cpp_virtual;
+!!!172160.java!!!	isCppVirtual() : bool
+  read_if_needed_();
+    
+  return _cpp_virtual;
+!!!172288.cpp!!!	set_isCppVirtual(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setIsCppVirtualCmd)) {
+    _cpp_virtual = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!172288.java!!!	set_isCppVirtual(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppVirtualCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_virtual =  y;
+!!!286512.cpp!!!	isCppOverride() : bool
+  read_if_needed_();
+
+  return _cpp_override;
+!!!286512.java!!!	isCppOverride() : bool
+  read_if_needed_();
+
+  return _cpp_override;
+!!!286640.cpp!!!	set_isCppOverride(in y : bool) : bool
+  UmlCom::send_cmd(_identifier, setIsCppOverrideCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _cpp_override = y;
+    return TRUE;
+  }
+ else
+   return FALSE;
+!!!286640.java!!!	set_isCppOverride(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppOverrideCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_override = y;
+!!!286768.cpp!!!	isCppFinal() : bool
+  read_if_needed_();
+
+  return _cpp_final;
+!!!286768.java!!!	isCppFinal() : bool
+  read_if_needed_();
+
+  return _cpp_final;
+!!!286896.cpp!!!	set_isCppFinal(in y : bool) : bool
+  UmlCom::send_cmd(_identifier, setIsCppFinalCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _cpp_final = y;
+    return TRUE;
+  }
+ else
+   return FALSE;
+!!!286896.java!!!	set_isCppFinal(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppFinalCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_final = y;
+!!!287024.cpp!!!	isCppNoexcept() : bool
+  read_if_needed_();
+
+  return _cpp_noexcept;
+!!!287024.java!!!	isCppNoexcept() : bool
+  read_if_needed_();
+
+  return _cpp_noexcept;
+!!!287152.cpp!!!	set_isCppNoexcept(in y : bool) : bool
+  UmlCom::send_cmd(_identifier, setIsCppNoexceptCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _cpp_noexcept = y;
+    return TRUE;
+  }
+ else
+   return FALSE;
+!!!287152.java!!!	set_isCppNoexcept(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppNoexceptCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_noexcept = y;
+!!!287280.cpp!!!	isCppDeleted() : bool
+  read_if_needed_();
+
+  return _cpp_deleted;
+!!!287280.java!!!	isCppDeleted() : bool
+  read_if_needed_();
+
+  return _cpp_deleted;
+!!!287408.cpp!!!	set_isCppDeleted(in y : bool) : bool
+  UmlCom::send_cmd(_identifier, setIsCppDeletedCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _cpp_deleted = y;
+    if (y)
+      _abstract = _cpp_friend = _cpp_defaulted = FALSE;
+    return TRUE;
+  }
+ else
+   return FALSE;
+!!!287408.java!!!	set_isCppDeleted(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppDeletedCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_deleted = y;
+    if (y)
+      _abstract = _cpp_friend = _cpp_defaulted = false;
+!!!287536.cpp!!!	isCppDefaulted() : bool
+  read_if_needed_();
+
+  return _cpp_defaulted;
+!!!287536.java!!!	isCppDefaulted() : bool
+  read_if_needed_();
+
+  return _cpp_defaulted;
+!!!287664.cpp!!!	set_isCppDefaulted(in y : bool) : bool
+  UmlCom::send_cmd(_identifier, setIsCppDefaultedCmd, (char) y);
+  if (UmlCom::read_bool()) {
+    _cpp_defaulted = y;
+    if (y)
+      _abstract = _cpp_friend = _cpp_deleted = FALSE;
+    return TRUE;
+  }
+ else
+   return FALSE;
+!!!287664.java!!!	set_isCppDefaulted(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppDefaultedCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_defaulted = y;
+    if (y)
+      _abstract = _cpp_friend = _cpp_deleted = false;
+!!!172416.cpp!!!	isCppInline() : bool
+  read_if_needed_();
+    
+  return _cpp_inline;
+!!!172416.java!!!	isCppInline() : bool
+  read_if_needed_();
+    
+  return _cpp_inline;
+!!!172544.cpp!!!	set_isCppInline(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setIsCppInlineCmd)) {
+    _cpp_inline = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!172544.java!!!	set_isCppInline(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsCppInlineCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _cpp_inline =  y;
+!!!172672.cpp!!!	cppDef() : string
+  read_if_needed_();
+    
+  return _cpp_def;
+!!!172672.java!!!	cppDef() : string
+  read_if_needed_();
+    
+  return _cpp_def;
+!!!172800.cpp!!!	set_CppDef(in s : str) : bool
+  return set_it_(_cpp_def, s, setCppDefCmd);
+!!!172800.java!!!	set_CppDef(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppDefCmd, s);
+  UmlCom.check();
+
+  _cpp_def = s;
+!!!172928.cpp!!!	cppBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, cppBodyCmd);
+  return UmlCom::read_string();
+!!!172928.java!!!	cppBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.cppBodyCmd);
+  return UmlCom.read_string();
+!!!173056.cpp!!!	set_CppBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setCppBodyCmd, s);
+  return UmlCom::read_bool();
+!!!173056.java!!!	set_CppBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppBodyCmd, s);
+  UmlCom.check();
+!!!173184.cpp!!!	cppNameSpec() : string
+  read_if_needed_();
+    
+  return _cpp_name_spec;
+!!!173184.java!!!	cppNameSpec() : string
+  read_if_needed_();
+    
+  return _cpp_name_spec;
+!!!173312.cpp!!!	set_CppNameSpec(in s : str) : bool
+  return set_it_(_cpp_name_spec, s, setCppNameSpecCmd);
+!!!173312.java!!!	set_CppNameSpec(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppNameSpecCmd, s);
+  UmlCom.check();
+
+  _cpp_name_spec = s;
+!!!173440.cpp!!!	cppGetSetFrozen() : bool
+  read_if_needed_();
+  return _cpp_get_set_frozen;
+!!!173440.java!!!	cppGetSetFrozen() : bool
+  read_if_needed_();
+  return _cpp_get_set_frozen;
+!!!173568.cpp!!!	set_CppGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setCppFrozenCmd)) {
+    _cpp_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!173568.java!!!	set_CppGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _cpp_get_set_frozen = v;
+!!!173696.cpp!!!	cppContextualBodyIndent() : bool
+  read_if_needed_();
+  return _cpp_contextual_body_indent;
+!!!173696.java!!!	cppContextualBodyIndent() : bool
+  read_if_needed_();
+  return _cpp_contextual_body_indent;
+!!!173824.cpp!!!	set_CppContextualBodyIndent(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setCppContextualBodyIndentCmd)) {
+    _cpp_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!173824.java!!!	set_CppContextualBodyIndent(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppContextualBodyIndentCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _cpp_contextual_body_indent = v;
+!!!173952.cpp!!!	isJavaFinal() : bool
+  read_if_needed_();
+    
+  return _java_final;
+!!!173952.java!!!	isJavaFinal() : bool
+  read_if_needed_();
+    
+  return _java_final;
+!!!174080.cpp!!!	set_isJavaFinal(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setJavaFinalCmd)) {
+    _java_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!174080.java!!!	set_isJavaFinal(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaFinalCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _java_final =  y;
+!!!174208.cpp!!!	isJavaSynchronized() : bool
+  read_if_needed_();
+    
+  return _java_synchronized;
+!!!174208.java!!!	isJavaSynchronized() : bool
+  read_if_needed_();
+    
+  return _java_synchronized;
+!!!174336.cpp!!!	set_isJavaSynchronized(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setJavaSynchronizedCmd)) {
+    _java_synchronized = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!174336.java!!!	set_isJavaSynchronized(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaSynchronizedCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _java_synchronized =  y;
+!!!287792.cpp!!!	isJavaDefault() : bool
+  read_if_needed_();
+
+  return _java_default && !_class_member;
+!!!287792.java!!!	isJavaDefault() : bool
+  read_if_needed_();
+
+  return _java_default && !isClassMember();
+!!!287920.cpp!!!	set_isJavaDefault(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setJavaDefaultOperCmd)) {
+    _java_default = y && !_class_member;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!287920.java!!!	set_isJavaDefault(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaDefaultOperCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _java_default = y && ! isClassMember();
+!!!174464.cpp!!!	javaDef() : string
+  return javaDecl();
+!!!174464.java!!!	javaDef() : string
+  return javaDecl();
+!!!174592.cpp!!!	set_JavaDef(in s : str) : bool
+  return set_JavaDecl(s);
+!!!174592.java!!!	set_JavaDef(in s : str) : bool
+ set_JavaDecl(s);
+!!!174720.cpp!!!	javaBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, javaBodyCmd);
+  return UmlCom::read_string();
+!!!174720.java!!!	javaBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.javaBodyCmd);
+  return UmlCom.read_string();
+!!!174848.cpp!!!	set_JavaBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setJavaBodyCmd, s);
+  return UmlCom::read_bool();
+!!!174848.java!!!	set_JavaBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaBodyCmd, s);
+  UmlCom.check();
+!!!174976.cpp!!!	javaNameSpec() : string
+  read_if_needed_();
+    
+  return _java_name_spec;
+!!!174976.java!!!	javaNameSpec() : string
+  read_if_needed_();
+    
+  return _java_name_spec;
+!!!175104.cpp!!!	set_JavaNameSpec(in s : str) : bool
+  return set_it_(_java_name_spec, s, setJavaNameSpecCmd);
+!!!175104.java!!!	set_JavaNameSpec(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaNameSpecCmd, s);
+  UmlCom.check();
+
+  _java_name_spec = s;
+!!!175232.cpp!!!	javaGetSetFrozen() : bool
+  read_if_needed_();
+  return _java_get_set_frozen;
+!!!175232.java!!!	javaGetSetFrozen() : bool
+  read_if_needed_();
+  return _java_get_set_frozen;
+!!!175360.cpp!!!	set_JavaGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setJavaFrozenCmd)) {
+    _java_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!175360.java!!!	set_JavaGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _java_get_set_frozen = v;
+!!!175488.cpp!!!	javaContextualBodyIndent() : bool
+  read_if_needed_();
+  return _java_contextual_body_indent;
+!!!175488.java!!!	javaContextualBodyIndent() : bool
+  read_if_needed_();
+  return _java_contextual_body_indent;
+!!!175616.cpp!!!	set_JavaContextualBodyIndent(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setJavaContextualBodyIndentCmd)) {
+    _java_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!175616.java!!!	set_JavaContextualBodyIndent(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaContextualBodyIndentCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _java_contextual_body_indent = v;
+!!!175744.cpp!!!	isPhpFinal() : bool
+  read_if_needed_();
+    
+  return _php_final;
+!!!175744.java!!!	isPhpFinal() : bool
+  read_if_needed_();
+    
+  return _php_final;
+!!!175872.cpp!!!	set_isPhpFinal(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setPhpFinalCmd)) {
+    _php_final = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!175872.java!!!	set_isPhpFinal(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpFinalCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _php_final =  y;
+!!!176000.cpp!!!	phpDef() : string
+  return phpDecl();
+!!!176000.java!!!	phpDef() : string
+  return phpDecl();
+!!!176128.cpp!!!	set_PhpDef(in s : str) : bool
+  return set_PhpDecl(s);
+!!!176128.java!!!	set_PhpDef(in s : str) : bool
+ set_PhpDecl(s);
+!!!176256.cpp!!!	phpBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, phpBodyCmd);
+  return UmlCom::read_string();
+!!!176256.java!!!	phpBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.phpBodyCmd);
+  return UmlCom.read_string();
+!!!176384.cpp!!!	set_PhpBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setPhpBodyCmd, s);
+  return UmlCom::read_bool();
+!!!176384.java!!!	set_PhpBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpBodyCmd, s);
+  UmlCom.check();
+!!!176512.cpp!!!	phpNameSpec() : string
+  read_if_needed_();
+    
+  return _php_name_spec;
+!!!176512.java!!!	phpNameSpec() : string
+  read_if_needed_();
+    
+  return _php_name_spec;
+!!!176640.cpp!!!	set_PhpNameSpec(in s : str) : bool
+  return set_it_(_php_name_spec, s, setPhpNameSpecCmd);
+!!!176640.java!!!	set_PhpNameSpec(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpNameSpecCmd, s);
+  UmlCom.check();
+
+  _php_name_spec = s;
+!!!176768.cpp!!!	phpGetSetFrozen() : bool
+  read_if_needed_();
+  return _php_get_set_frozen;
+!!!176768.java!!!	phpGetSetFrozen() : bool
+  read_if_needed_();
+  return _php_get_set_frozen;
+!!!176896.cpp!!!	set_PhpGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setPhpFrozenCmd)) {
+    _php_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!176896.java!!!	set_PhpGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _php_get_set_frozen = v;
+!!!177024.cpp!!!	phpContextualBodyIndent() : bool
+  read_if_needed_();
+  return _php_contextual_body_indent;
+!!!177024.java!!!	phpContextualBodyIndent() : bool
+  read_if_needed_();
+  return _php_contextual_body_indent;
+!!!177152.cpp!!!	set_PhpContextualBodyIndent(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setPhpContextualBodyIndentCmd)) {
+    _php_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!177152.java!!!	set_PhpContextualBodyIndent(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPhpContextualBodyIndentCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _php_contextual_body_indent = v;
+!!!177280.cpp!!!	pythonDef() : string
+  return pythonDecl();
+!!!177280.java!!!	pythonDef() : string
+  return pythonDecl();
+!!!177408.cpp!!!	set_PythonDef(in s : str) : bool
+  return set_PythonDecl(s);
+!!!177408.java!!!	set_PythonDef(in s : str) : bool
+ set_PythonDecl(s);
+!!!177536.cpp!!!	pythonBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, pythonBodyCmd);
+  return UmlCom::read_string();
+!!!177536.java!!!	pythonBody() : string
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.pythonBodyCmd);
+  return UmlCom.read_string();
+!!!177664.cpp!!!	set_PythonBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom::send_cmd(_identifier, setPythonBodyCmd, s);
+  return UmlCom::read_bool();
+!!!177664.java!!!	set_PythonBody(in s : str) : bool
+  // not memorized in the instance for memory size reason
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonBodyCmd, s);
+  UmlCom.check();
+!!!177792.cpp!!!	pythonNameSpec() : string
+  read_if_needed_();
+    
+  return _python_name_spec;
+!!!177792.java!!!	pythonNameSpec() : string
+  read_if_needed_();
+    
+  return _python_name_spec;
+!!!177920.cpp!!!	set_PythonNameSpec(in s : str) : bool
+  return set_it_(_python_name_spec, s, setPythonNameSpecCmd);
+!!!177920.java!!!	set_PythonNameSpec(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonNameSpecCmd, s);
+  UmlCom.check();
+
+  _python_name_spec = s;
+!!!178048.cpp!!!	pythonGetSetFrozen() : bool
+  read_if_needed_();
+  return _python_get_set_frozen;
+!!!178048.java!!!	pythonGetSetFrozen() : bool
+  read_if_needed_();
+  return _python_get_set_frozen;
+!!!178176.cpp!!!	set_PythonGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setPythonFrozenCmd)) {
+    _python_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!178176.java!!!	set_PythonGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _python_get_set_frozen = v;
+!!!178304.cpp!!!	pythonContextualBodyIndent() : bool
+  read_if_needed_();
+  return _python_contextual_body_indent;
+!!!178304.java!!!	pythonContextualBodyIndent() : bool
+  read_if_needed_();
+  return _python_contextual_body_indent;
+!!!178432.cpp!!!	set_PythonContextualBodyIndent(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setPythonContextualBodyIndentCmd)) {
+    _python_contextual_body_indent = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!178432.java!!!	set_PythonContextualBodyIndent(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonContextualBodyIndentCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _python_contextual_body_indent = v;
+!!!178560.cpp!!!	pythonDecorators() : string
+  read_if_needed_();
+  return _python_decorators;
+!!!178560.java!!!	pythonDecorators() : string
+  read_if_needed_();
+  return _python_decorators;
+!!!178688.cpp!!!	set_PythonDecorators(in v : str) : bool
+  return set_it_(_python_decorators, v, setPythonDecoratorsCmd);
+!!!178688.java!!!	set_PythonDecorators(in v : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setPythonDecoratorsCmd, v);
+  UmlCom.check();
+
+  _python_decorators = v;
+!!!178816.cpp!!!	isIdlOneway() : bool
+  read_if_needed_();
+    
+  return _idl_oneway;
+!!!178816.java!!!	isIdlOneway() : bool
+  read_if_needed_();
+    
+  return _idl_oneway;
+!!!178944.cpp!!!	set_isIdlOneway(in y : bool) : bool
+  bool b;
+  
+  if (set_it_(b, y, setIsIdlOnewayCmd)) {
+    _idl_oneway = y;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!178944.java!!!	set_isIdlOneway(in y : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIsIdlOnewayCmd, (y) ? (byte) 1 : (byte) 0);
+  UmlCom.check();
+
+  _idl_oneway = y;
+!!!179072.cpp!!!	idlNameSpec() : string
+  read_if_needed_();
+    
+  return _idl_name_spec;
+!!!179072.java!!!	idlNameSpec() : string
+  read_if_needed_();
+    
+  return _idl_name_spec;
+!!!179200.cpp!!!	set_IdlNameSpec(in s : str) : bool
+  return set_it_(_idl_name_spec, s, setIdlNameSpecCmd);
+!!!179200.java!!!	set_IdlNameSpec(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIdlNameSpecCmd, s);
+  UmlCom.check();
+
+  _idl_name_spec = s;
+!!!179328.cpp!!!	idlGetSetFrozen() : bool
+  read_if_needed_();
+  return _idl_get_set_frozen;
+!!!179328.java!!!	idlGetSetFrozen() : bool
+  read_if_needed_();
+  return _idl_get_set_frozen;
+!!!179456.cpp!!!	set_IdlGetSetFrozen(in v : bool) : bool
+  bool vv;
+
+  if (set_it_(vv, v, setIdlFrozenCmd)) {
+    _idl_get_set_frozen = v;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!179456.java!!!	set_IdlGetSetFrozen(in v : bool) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setIdlFrozenCmd, (v) ? 1 : 0);
+  UmlCom.check();
+
+  _idl_get_set_frozen = v;
+!!!179584.cpp!!!	unload(in rec : bool, in del : bool) : void
+  _return_type.explicit_type = 0;
+  _params.clear();
+  _exceptions.clear();
+#ifdef WITHCPP
+  _cpp_def = 0;
+  _cpp_name_spec = 0;
+#endif
+#ifdef WITHJAVA
+  _java_name_spec = 0;
+#endif
+#ifdef WITHPHP
+  _php_name_spec = 0;
+#endif
+#ifdef WITHPYTHON
+  _python_name_spec = 0;
+  _python_decorators = 0;
+#endif
+#ifdef WITHIDL
+  _idl_name_spec = 0;
+#endif
+  UmlBaseClassMember::unload(rec, del);
+!!!179584.java!!!	unload(in rec : bool, in del : bool) : void
+  _return_type = null;
+  _params = null;
+  _exceptions = null;
+  _cpp_def = null;
+  _cpp_name_spec = null;
+  _java_name_spec = null;
+  _php_name_spec = null;
+  _python_name_spec = null;
+  _python_decorators = null;
+  _idl_name_spec = null;
+  super.unload(rec, del);
+!!!179712.cpp!!!	UmlBaseOperation(in id : item_id, in n : string)
+  _get_of = 0;
+  _set_of = 0;
+!!!179840.cpp!!!	read_uml_() : void
+  UmlBaseClassMember::read_uml_();
+  _return_type.type = (UmlClass *) UmlBaseItem::read_();
+  if (_return_type.type == 0)
+    _return_type.explicit_type = UmlCom::read_string();
+  _multiplicity = UmlCom::read_string();
+  _abstract = UmlCom::read_bool();
+  
+  _force_body_generation = UmlCom::read_bool();
+  
+  unsigned n;
+  
+  for (n = UmlCom::read_unsigned(); n; n -= 1) {
+    UmlParameter param;
+    
+    param.dir = (aDirection) UmlCom::read_char();
+    param.type.type = (UmlClass *) UmlBaseItem::read_();
+    if (param.type.type == 0)
+      param.type.explicit_type = UmlCom::read_string();
+    param.name = UmlCom::read_string();
+    param.default_value = UmlCom::read_string();
+    param.multiplicity = UmlCom::read_string();
+    _params.append(param);
+  }
+  
+  for (n = UmlCom::read_unsigned(); n; n -= 1) {
+    UmlTypeSpec exception;
+    
+    exception.type = (UmlClass *) UmlBaseItem::read_();
+    if (exception.type == 0)
+      exception.explicit_type = UmlCom::read_string();
+    _exceptions.append(exception);
+  }
+  _get_of = (UmlClassMember *) UmlBaseItem::read_();
+  _set_of = (UmlClassMember *) UmlBaseItem::read_();
+!!!179840.java!!!	read_uml_() : void
+  super.read_uml_();
+  _return_type = new UmlTypeSpec();
+  _return_type.type = (UmlClass) UmlBaseItem.read_();
+  if (_return_type.type == null)
+    _return_type.explicit_type = UmlCom.read_string();
+  _multiplicity = UmlCom.read_string();
+  _abstract = UmlCom.read_bool();
+  
+  _force_body_generation = UmlCom.read_bool();
+  
+  int i;
+  int n;
+  
+  n = UmlCom.read_unsigned();
+  _params = new UmlParameter[n];
+
+  for (i = 0; i != n; i += 1) {
+    UmlParameter param = new UmlParameter();
+    
+    param.dir = aDirection.fromInt(UmlCom.read_char());
+    param.type.type = (UmlClass) UmlBaseItem.read_();
+    if (param.type.type == null)
+      param.type.explicit_type = UmlCom.read_string();
+    param.name = UmlCom.read_string();
+    param.default_value = UmlCom.read_string();
+    param.multiplicity = UmlCom.read_string();
+    _params[i] = param;
+  }
+  
+  n = UmlCom.read_unsigned();
+  _exceptions = new UmlTypeSpec[n];
+  
+  for (i = 0; i != n; i += 1) {
+    UmlTypeSpec exception = new UmlTypeSpec();
+    
+    exception.type = (UmlClass) UmlBaseItem.read_();
+    if (exception.type == null)
+      exception.explicit_type = UmlCom.read_string();
+    _exceptions[i] = exception;
+  }
+
+  _get_of = (UmlClassMember) UmlBaseItem.read_();
+  _set_of = (UmlClassMember) UmlBaseItem.read_();
+!!!179968.cpp!!!	read_cpp_() : void
+  UmlBaseClassMember::read_cpp_();
+  _cpp_const = UmlCom::read_bool();
+  _cpp_friend = UmlCom::read_bool();
+  _cpp_virtual = UmlCom::read_bool();
+  _cpp_override = UmlCom::read_bool();
+  _cpp_final = UmlCom::read_bool();
+  _cpp_noexcept = UmlCom::read_bool();
+  _cpp_deleted = UmlCom::read_bool();
+  _cpp_defaulted = UmlCom::read_bool();
+  _cpp_inline = UmlCom::read_bool();
+  _cpp_def = UmlCom::read_string();
+  _cpp_name_spec = UmlCom::read_string();
+  _cpp_get_set_frozen = UmlCom::read_bool();
+  _cpp_contextual_body_indent = UmlCom::read_bool();
+!!!179968.java!!!	read_cpp_() : void
+  super.read_cpp_();
+  _cpp_const = UmlCom.read_bool();
+  _cpp_friend = UmlCom.read_bool();
+  _cpp_virtual = UmlCom.read_bool();
+  _cpp_override = UmlCom.read_bool();
+  _cpp_final = UmlCom.read_bool();
+  _cpp_noexcept = UmlCom.read_bool();
+  _cpp_deleted = UmlCom.read_bool();
+  _cpp_defaulted = UmlCom.read_bool();
+  _cpp_inline = UmlCom.read_bool();
+  _cpp_def = UmlCom.read_string();
+  _cpp_name_spec = UmlCom.read_string();
+  _cpp_get_set_frozen = UmlCom.read_bool();
+  _cpp_contextual_body_indent = UmlCom.read_bool();
+!!!180096.cpp!!!	read_java_() : void
+  UmlBaseClassMember::read_java_();
+  _java_final = UmlCom::read_bool();
+  _java_synchronized = UmlCom::read_bool();
+  _java_name_spec = UmlCom::read_string();
+  _java_get_set_frozen = UmlCom::read_bool();
+  _java_contextual_body_indent = UmlCom::read_bool();
+
+  _java_default = UmlCom::read_bool();
+!!!180096.java!!!	read_java_() : void
+  super.read_java_();
+  _java_final = UmlCom.read_bool();
+  _java_synchronized = UmlCom.read_bool();
+  _java_name_spec = UmlCom.read_string();
+  _java_get_set_frozen = UmlCom.read_bool();
+  _java_contextual_body_indent = UmlCom.read_bool();
+
+  _java_default = UmlCom.read_bool();
+!!!180224.cpp!!!	read_php_() : void
+  UmlBaseClassMember::read_php_();
+  _php_final = UmlCom::read_bool();
+  _php_name_spec = UmlCom::read_string();
+  _php_get_set_frozen = UmlCom::read_bool();
+  _php_contextual_body_indent = UmlCom::read_bool();
+!!!180224.java!!!	read_php_() : void
+  super.read_php_();
+  _php_final = UmlCom.read_bool();
+  _php_name_spec = UmlCom.read_string();
+  _php_get_set_frozen = UmlCom.read_bool();
+  _php_contextual_body_indent = UmlCom.read_bool();
+!!!180352.cpp!!!	read_python_() : void
+  UmlBaseClassMember::read_python_();
+  _python_decorators = UmlCom::read_string();
+  _python_name_spec = UmlCom::read_string();
+  _python_get_set_frozen = UmlCom::read_bool();
+  _python_contextual_body_indent = UmlCom::read_bool();
+!!!180352.java!!!	read_python_() : void
+  super.read_python_();
+  _python_decorators = UmlCom.read_string();
+  _python_name_spec = UmlCom.read_string();
+  _python_get_set_frozen = UmlCom.read_bool();
+  _python_contextual_body_indent = UmlCom.read_bool();
+!!!180480.cpp!!!	read_idl_() : void
+  UmlBaseClassMember::read_idl_();
+  _idl_oneway = UmlCom::read_bool();
+  _idl_name_spec = UmlCom::read_string();
+  _idl_get_set_frozen = UmlCom::read_bool();
+!!!180480.java!!!	read_idl_() : void
+  super.read_idl_();
+  _idl_oneway = UmlCom.read_bool();
+  _idl_name_spec = UmlCom.read_string();
+  _idl_get_set_frozen = UmlCom.read_bool();

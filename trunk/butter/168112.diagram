@@ -1,0 +1,122 @@
+format 221
+
+classcanvas 128000 class_ref 199472 // UmlActivityAction
+  classdiagramsettings member_max_width 0 end
+  xyz 324 17 1995
+end
+classcanvas 128128 class_ref 137984 // UmlBaseAccessVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 272 78 2000
+end
+classcanvas 128256 class_ref 138112 // UmlBaseClearVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 19 194 2000
+end
+classcanvas 128384 class_ref 138240 // UmlBaseReadVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 73 318 2000
+end
+classcanvas 128512 class_ref 138368 // UmlBaseWriteVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 278 248 2000
+end
+classcanvas 128640 class_ref 138496 // UmlBaseAddVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 487 318 2000
+end
+classcanvas 128768 class_ref 138624 // UmlBaseRemoveVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 528 196 2000
+end
+classcanvas 128896 class_ref 200880 // UmlAccessVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  xyz 286 136 2005
+end
+classcanvas 129024 class_ref 201008 // UmlClearVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  xyz 32 256 2005
+end
+classcanvas 129152 class_ref 201136 // UmlReadVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  xyz 85 375 2000
+end
+classcanvas 129280 class_ref 201264 // UmlWriteVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  xyz 292 307 2005
+end
+classcanvas 129408 class_ref 201392 // UmlAddVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  xyz 502 377 2000
+end
+classcanvas 129536 class_ref 201520 // UmlRemoveVariableValueAction
+  classdiagramsettings member_max_width 0 end
+  xyz 542 258 2000
+end
+relationcanvas 129664 relation_ref 145536 // <generalisation>
+  from ref 128128 z 1994 to ref 128000
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129792 relation_ref 245040 // <generalisation>
+  from ref 128896 z 1999 to ref 128128
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129920 relation_ref 245168 // <generalisation>
+  from ref 129024 z 1999 to ref 128256
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130048 relation_ref 245296 // <generalisation>
+  from ref 129152 z 1999 to ref 128384
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130176 relation_ref 245424 // <generalisation>
+  from ref 129280 z 1999 to ref 128512
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130304 relation_ref 245552 // <generalisation>
+  from ref 129408 z 1999 to ref 128640
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130432 relation_ref 245680 // <generalisation>
+  from ref 129536 z 1999 to ref 128768
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130560 relation_ref 145920 // <generalisation>
+  from ref 128384 z 1999 to ref 128896
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130688 relation_ref 146048 // <generalisation>
+  from ref 128512 z 1999 to ref 128896
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130816 relation_ref 146176 // <generalisation>
+  from ref 128640 z 1999 to ref 128896
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130944 relation_ref 146304 // <generalisation>
+  from ref 128768 z 1999 to ref 128896
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131072 relation_ref 145792 // <generalisation>
+  from ref 128256 z 1999 to ref 128896
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+preferred_whz 776 474 1
+end

@@ -1,0 +1,3 @@
+
+#include "bouml/UmlClassInstance.h"
+

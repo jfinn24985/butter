@@ -55,7 +55,7 @@ class generator : public base_generator
 };
 
 template<class derived>
-void generator<derived>::create_system(location & a_base, const ::UmlItem & a_project) 
+inline void generator<derived>::create_system(location & a_base, const ::UmlItem & a_project) 
 {
 // HELPER
 auto set_or_add_and_set = []( compound_artifact * ar, QString l, QString v )
@@ -335,7 +335,7 @@ while( ! location_stack_.isEmpty() )
 }
 
 template<class derived>
-void generator<derived>::rules_file(location & a_base, const ::UmlItem & a_project) 
+inline void generator<derived>::rules_file(location & a_base, const ::UmlItem & a_project) 
 {
 // Helper functions for managing rules files.
 class helper_

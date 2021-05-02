@@ -1,0 +1,19 @@
+#ifndef _UMLACTIVITYNODE_H
+#define _UMLACTIVITYNODE_H
+
+
+#include "bouml/UmlBaseActivityNode.h"
+#include "bouml/UmlActivityItem.h"
+#include <qbytearray.h>
+
+class UmlActivityNode : public UmlBaseActivityNode, public UmlActivityItem {
+  protected:
+    /**
+     *   the constructor, do not call it yourself !!!!!!!!!!
+     */
+     UmlActivityNode(void * id, const QByteArray & s) : UmlBaseActivityNode(id, s) {
+    }
+
+};
+
+#endif

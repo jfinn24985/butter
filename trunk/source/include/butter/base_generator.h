@@ -6,6 +6,7 @@
  */
 #include <qstring.h>
 #include <memory>
+#include <qcstring.h>
 
 namespace butter { class butter_constants; } 
 namespace butter { class compound_document; } 
@@ -189,6 +190,17 @@ class base_generator
     explicit base_generator();
 
     virtual ~base_generator();
+    /**
+     *  Add necessary quoting to an input string.
+     * 
+     *  A user of the system may want to set a preprocessor 
+     *  flag of [-DSOMETEXT="Help Text."] as a property value
+     *  with the same text. The generators must be able to 
+     *  quote/escape this text so that it is correctly passed
+     *  to the final command.
+     */
+    static QCString quote_string(QCString phrase);
+
 
 };
 

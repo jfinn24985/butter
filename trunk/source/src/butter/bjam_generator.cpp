@@ -36,7 +36,7 @@ const QString bjam_generator::rules_name("local.jam");
  * butter is executed with \@style='boost' then one will be created
  * using this string.
  */
-const char * bjam_generator::default_rules[] = { "#\n"
+const char * bjam_generator::default_rules[]{ "#\n"
 , "# local.jam\n"
 , "#\n"
 , "# Set constants for installation paths\n"

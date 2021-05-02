@@ -1,0 +1,222 @@
+format 221
+
+classcanvas 128000 class_ref 131328 // UmlBaseItem
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 202 11 2000
+end
+classcanvas 128128 class_ref 128513 // UmlItem
+  classdiagramsettings member_max_width 0 end
+  xyz 214 66 3001
+end
+classcanvas 128256 class_ref 141568 // UmlBaseParameterSet
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 33 137 2000
+end
+classcanvas 128384 class_ref 206896 // UmlActivityItem
+  classdiagramsettings member_max_width 0 class_drawing_mode class end
+  xyz 479 136 2005
+end
+classcanvas 128512 class_ref 135680 // UmlBaseActivityNode
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 329 137 2000
+end
+classcanvas 128640 class_ref 136576 // UmlBaseActivityAction
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 325 268 2000
+end
+classcanvas 128768 class_ref 140672 // UmlBaseActivityObject
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 166 268 2005
+end
+classcanvas 128896 class_ref 139648 // UmlBaseActivityControlNode
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 481 268 2000
+end
+classcanvas 129024 class_ref 199472 // UmlActivityAction
+  classdiagramsettings member_max_width 0 end
+  xyz 338 324 1994
+end
+classcanvas 129152 class_ref 198960 // UmlActivityNode
+  classdiagramsettings member_max_width 0 end
+  xyz 342 194 2000
+end
+classcanvas 129280 class_ref 202544 // UmlActivityControlNode
+  classdiagramsettings member_max_width 0 end
+  xyz 494 324 1994
+end
+classcanvas 129408 class_ref 203568 // UmlActivityObject
+  classdiagramsettings member_max_width 0 end
+  xyz 180 324 2005
+end
+classcanvas 129536 class_ref 207024 // UmlParameterSet
+  classdiagramsettings member_max_width 0 end
+  xyz 42 194 2000
+end
+classcanvas 129664 class_ref 141056 // UmlBasePinParameter
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 90 390 2000
+end
+classcanvas 129792 class_ref 141312 // UmlBaseActivityPin
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 9 509 2000
+end
+classcanvas 129920 class_ref 141440 // UmlBaseActivityParameter
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 182 509 2000
+end
+classcanvas 130048 class_ref 203824 // UmlPinParameter
+  classdiagramsettings member_max_width 0 end
+  xyz 104 444 2005
+end
+classcanvas 130176 class_ref 203952 // UmlActivityPin
+  classdiagramsettings member_max_width 0 end
+  xyz 23 563 2000
+end
+classcanvas 130304 class_ref 204080 // UmlActivityParameter
+  classdiagramsettings member_max_width 0 end
+  xyz 194 566 2000
+end
+classcanvas 130432 class_ref 140928 // UmlBaseExpansionNode
+  classdiagramsettings member_max_width 0 end
+  color blue
+  xyz 257 390 2000
+end
+classcanvas 130560 class_ref 203696 // UmlExpansionNode
+  classdiagramsettings member_max_width 0 end
+  xyz 269 443 2000
+end
+relationcanvas 130688 relation_ref 130049 // <generalisation>
+  from ref 128128 z 1000 to ref 128000
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130816 relation_ref 149760 // <generalisation>
+  geometry VHV
+  from ref 128256 z 1999 to point 141 124
+  line 130944 z 1999 to point 255 124
+  line 131072 z 1999 to ref 128128
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131200 relation_ref 142336 // <generalisation>
+  geometry VHV
+  from ref 128512 z 1999 to point 433 124
+  line 131328 z 1999 to point 255 124
+  line 131456 z 1999 to ref 128128
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131584 relation_ref 247728 // <generalisation>
+  from ref 129408 z 2004 to ref 128768
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131712 relation_ref 243632 // <generalisation>
+  from ref 129024 z 1999 to ref 128640
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131840 relation_ref 246704 // <generalisation>
+  from ref 129280 z 1999 to ref 128896
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 131968 relation_ref 248368 // <generalisation>
+  from ref 129536 z 1999 to ref 128256
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132096 relation_ref 242608 // <generalisation>
+  from ref 129152 z 1999 to ref 128512
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132224 relation_ref 242736 // <generalisation>
+  from ref 129152 z 1999 to ref 128384
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132352 relation_ref 148480 // <generalisation>
+  geometry VHV
+  from ref 128768 z 1999 to point 277 254
+  line 132480 z 1999 to point 423 254
+  line 132608 z 1999 to ref 129152
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132736 relation_ref 143744 // <generalisation>
+  from ref 128640 z 1999 to ref 129152
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 132864 relation_ref 147456 // <generalisation>
+  geometry VHV
+  from ref 128896 z 1999 to point 621 254
+  line 132992 z 1999 to point 423 254
+  line 133120 z 1999 to ref 129152
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133248 relation_ref 149120 // <generalisation>
+  geometry VHV
+  from ref 129664 z 1999 to point 194 380
+  line 133376 z 1999 to point 264 380
+  line 133504 z 1999 to ref 129408
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133632 relation_ref 247984 // <generalisation>
+  from ref 130048 z 1999 to ref 129664
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133760 relation_ref 248112 // <generalisation>
+  from ref 130176 z 1999 to ref 129792
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 133888 relation_ref 248240 // <generalisation>
+  from ref 130304 z 1999 to ref 129920
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134016 relation_ref 149504 // <generalisation>
+  geometry VHV
+  from ref 129792 z 1999 to point 100 499
+  line 134144 z 1999 to point 184 499
+  line 134272 z 1999 to ref 130048
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134400 relation_ref 149632 // <generalisation>
+  geometry VHV
+  from ref 129920 z 1999 to point 307 499
+  line 134528 z 1999 to point 184 499
+  line 134656 z 1999 to ref 130048
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 134784 relation_ref 148992 // <generalisation>
+  geometry VHV
+  from ref 130432 z 1999 to point 371 380
+  line 134912 z 1999 to point 264 380
+  line 135040 z 1999 to ref 129408
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 135168 relation_ref 247856 // <generalisation>
+  from ref 130560 z 1999 to ref 130432
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+preferred_whz 685 663 1
+end

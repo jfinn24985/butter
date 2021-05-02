@@ -32,7 +32,7 @@ const QString cmake_generator::cmake_minimum_required_("cmake_minimum_required(V
  * butter is executed with \@style='cmake' then one will be created
  * using this string.
  */
-const char * cmake_generator::default_rules[] = { "#\n"
+const char * cmake_generator::default_rules[]{ "#\n"
 , "# local.cmake\n"
 , "#\n"
 , "set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG=1)\n"

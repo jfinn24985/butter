@@ -1,0 +1,37 @@
+class UmlBaseNode
+!!!168192.cpp!!!	create(inout parent : UmlItem, in s : str) : UmlNode
+  return (UmlNode *) parent->create_(aNode, s);
+!!!168192.java!!!	create(inout parent : UmlItem, in s : str) : UmlNode
+  return (UmlNode) parent.create_(anItemKind.aNode, s);
+!!!168320.cpp!!!	kind() : anItemKind
+  return aNode;
+!!!168320.java!!!	kind() : anItemKind
+  return anItemKind.aNode;
+!!!168448.cpp!!!	associatedDiagram() : UmlDeploymentDiagram
+  read_if_needed_();
+  
+  return _assoc_diagram;
+!!!168448.java!!!	associatedDiagram() : UmlDeploymentDiagram
+  read_if_needed_();
+  
+  return _assoc_diagram;
+!!!168576.cpp!!!	set_AssociatedDiagram(inout d : UmlDeploymentDiagram) : bool
+  UmlCom::send_cmd(_identifier, setAssocDiagramCmd, (d == 0) ? (void *) 0 : ((UmlBaseItem *) d)->_identifier);
+  if (UmlCom::read_bool()) {
+    _assoc_diagram = d;
+    return TRUE;
+  }
+  else
+    return FALSE;
+!!!168576.java!!!	set_AssociatedDiagram(inout d : UmlDeploymentDiagram) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setAssocDiagramCmd,
+		  (d == null) ? 0 : (d == null) ? (long) 0 : d.identifier_());
+  UmlCom.check();
+  
+  _assoc_diagram = d;
+!!!168832.cpp!!!	read_uml_() : void
+  _assoc_diagram = (UmlDeploymentDiagram *) UmlBaseItem::read_();
+  UmlBaseItem::read_uml_();
+!!!168832.java!!!	read_uml_() : void
+  _assoc_diagram = (UmlDeploymentDiagram) UmlBaseItem.read_();
+  super.read_uml_();

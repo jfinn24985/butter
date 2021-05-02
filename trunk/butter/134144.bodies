@@ -1,0 +1,9 @@
+class UmlBaseFinalState
+!!!210176.cpp!!!	create(inout parent : UmlItem) : UmlFinalState
+  return (UmlFinalState *) parent->create_(aFinalState, "");
+!!!210176.java!!!	create(inout parent : UmlItem) : UmlFinalState
+  return (UmlFinalState) parent.create_(anItemKind.aFinalState, "");
+!!!210304.cpp!!!	kind() : anItemKind
+  return aFinalState;
+!!!210304.java!!!	kind() : anItemKind
+  return anItemKind.aFinalState;

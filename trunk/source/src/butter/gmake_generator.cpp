@@ -30,7 +30,7 @@ const QString gmake_generator::build_file_sysname("makefile");
  * %butter is executed with \@style='standard' then one will be created
  * using this string.
  */
-const char * gmake_generator::default_rules_sys[] = { "#\n"
+const char * gmake_generator::default_rules_sys[]{ "#\n"
 , "# M_sys.mk\n"
 , "#\n"
 , "##################################\n"
@@ -126,7 +126,7 @@ const char * gmake_generator::default_rules_sys[] = { "#\n"
  * using this string.
  * 
  */
-const char * gmake_generator::default_rules_cl[] = { "##########################################\n"
+const char * gmake_generator::default_rules_cl[]{ "##########################################\n"
 , "##  Definitions for Microsoft VC compiler\n"
 , "#########################################\n"
 , "ifndef M_CL_MK\n"
@@ -203,7 +203,7 @@ const char * gmake_generator::default_rules_cl[] = { "##########################
  * %butter is executed with \@style='standard' then one will be created
  * using this string.
  */
-const char * gmake_generator::default_rules_gcc[] = { "####################################\n"
+const char * gmake_generator::default_rules_gcc[]{ "####################################\n"
 , "##  Definitions for GNU g++ compiler\n"
 , "####################################\n"
 , "ifndef M_GCC_MK\n"
@@ -266,7 +266,7 @@ const char * gmake_generator::default_rules_gcc[] = { "#########################
  * using this string.
  * 
  */
-const char * gmake_generator::default_rules_unix[] = { " # Definition of for loop in local shell.\n"
+const char * gmake_generator::default_rules_unix[]{ " # Definition of for loop in local shell.\n"
 , "define doit\n"
 , "$(if $(2),STATUS=0 ; for subdir in $(2); do $(MAKE) -C $${subdir}  $(1) || STATUS=$$? ; done ; exit $${STATUS})\n"
 , "endef\n"
@@ -317,7 +317,7 @@ const char * gmake_generator::default_rules_unix[] = { " # Definition of for loo
  * %butter is executed with \@style='standard' then one will be created
  * using this string.
  */
-const char * gmake_generator::default_rules_winnt[] = { "# Definition of for loop in local shell.\n\n"
+const char * gmake_generator::default_rules_winnt[]{ "# Definition of for loop in local shell.\n\n"
 , "define doit\n"
 , "IF \"$(2)\" NEQ \"\" FOR %%W IN ( $(2) ) DO \"$(subst /,\\,$(MAKE))\" -C %%W $(1)\n"
 , "endef\n"
@@ -361,7 +361,7 @@ const char * gmake_generator::default_rules_winnt[] = { "# Definition of for loo
  * in the same order as the rules_name attribute. It is only
  * used to initialise the default_rules attribute. 
  */
-const char ** gmake_generator::default_rules_list[] = { default_rules_sys, default_rules_cl, default_rules_gcc, default_rules_unix, default_rules_winnt, 0 };
+const char ** gmake_generator::default_rules_list[]{ default_rules_sys, default_rules_cl, default_rules_gcc, default_rules_unix, default_rules_winnt, 0 };
 
 static char const** combine(char const*** list )
 {

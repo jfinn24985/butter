@@ -22,7 +22,7 @@ const QString jam_generator::build_file_sysname("Jamfile");
 /**
  * A template Jamrules.
  */
-const char * jam_generator::default_rules[] = { "#\n"
+const char * jam_generator::default_rules[]{ "#\n"
 , "# Default Jamrules\n"
 , "#\n"
 , "\nif $(UNIX)  { SUFSHR ?= .so ; }\n"

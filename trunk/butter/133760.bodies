@@ -1,0 +1,76 @@
+class UmlBaseStateAction
+!!!207360.cpp!!!	create(inout parent : UmlItem) : UmlStateAction
+  return (UmlStateAction *) parent->create_(aStateAction, "");
+!!!207360.java!!!	create(inout parent : UmlItem) : UmlStateAction
+  return (UmlStateAction) parent.create_(anItemKind.aStateAction, "");
+!!!207488.cpp!!!	kind() : anItemKind
+  return aStateAction;
+!!!207488.java!!!	kind() : anItemKind
+  return anItemKind.aStateAction;
+!!!207744.cpp!!!	expression() : string
+  read_if_needed_();
+  return _uml;
+!!!207744.java!!!	expression() : string
+  read_if_needed_();
+  return _uml;
+!!!207872.cpp!!!	set_Expression(in s : str) : bool
+  return set_it_(_uml, s, setDefCmd);
+!!!207872.java!!!	set_Expression(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setDefCmd, s);
+  UmlCom.check();
+
+  _uml = s;
+!!!208000.cpp!!!	cppExpression() : string
+  read_if_needed_();
+  return _cpp;
+!!!208000.java!!!	cppExpression() : string
+  read_if_needed_();
+  return _cpp;
+!!!208128.cpp!!!	set_CppExpression(in s : str) : bool
+  return set_it_(_cpp, s, setCppDeclCmd);
+!!!208128.java!!!	set_CppExpression(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setCppDeclCmd, s);
+  UmlCom.check();
+
+  _cpp = s;
+!!!208256.cpp!!!	javaExpression() : string
+  read_if_needed_();
+  return _java;
+!!!208256.java!!!	javaExpression() : string
+  read_if_needed_();
+  return _java;
+!!!208384.cpp!!!	set_JavaExpression(in s : str) : bool
+  return set_it_(_java, s, setJavaDeclCmd);
+!!!208384.java!!!	set_JavaExpression(in s : str) : bool
+  UmlCom.send_cmd(identifier_(), OnInstanceCmd.setJavaDeclCmd, s);
+  UmlCom.check();
+
+  _java = s;
+!!!208512.cpp!!!	unload(in rec : bool, in del : bool) : void
+  _uml = 0;
+#ifdef WITHCPP
+  _cpp = 0;
+#endif
+#ifdef WITHJAVA
+  _java = 0;
+#endif
+  UmlBaseItem::unload(rec, del);
+!!!208512.java!!!	unload(in rec : bool, in del : bool) : void
+  _uml = null;
+  _cpp = null;
+  _java = null;
+  super.unload(rec, del);
+!!!208640.cpp!!!	read_uml_() : void
+  UmlBaseItem::read_uml_();
+  _uml = UmlCom::read_string();
+!!!208640.java!!!	read_uml_() : void
+  super.read_uml_();
+  _uml = UmlCom.read_string();
+!!!208768.cpp!!!	read_cpp_() : void
+  _cpp = UmlCom::read_string();
+!!!208768.java!!!	read_cpp_() : void
+  _cpp  = UmlCom.read_string();
+!!!208896.cpp!!!	read_java_() : void
+  _java = UmlCom::read_string();
+!!!208896.java!!!	read_java_() : void
+  _java = UmlCom.read_string();
