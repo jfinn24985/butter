@@ -1,0 +1,147 @@
+class location_set
+!!!185776.cpp!!!	base_path() : unistr
+return (root_  
+  ? root_->path()
+  : src_dir_.path());
+!!!238640.cpp!!!	find_closest(in a_path : enumerate_path) : location
+if( ! root_ ) return nullptr;
+return find_closest_( src_dir_ / a_path );
+!!!252464.cpp!!!	find_closest_(in a_path : enumerate_path) : location
+BUTTER_ALWAYS( root_.get() != nullptr, "Should never call private find_closest_ with nul root" );
+butter::enumerate_path const parent_path_{ root_->path() };
+butter::enumerate_path const search_path_{ a_path }; // path already adjusted for src_dir
+BUTTER_REQUIRE(parent_path_.has_subpath( search_path_ ), "This location is not a parent of the given path");
+butter::enumerate_path const diff_path_( parent_path_.create_relative( search_path_ ));
+location * cursor_ = root_.get();
+for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
+{
+  butter::location * tmp_ = NULL;
+  for( location * kid : cursor_->children_ )
+  {
+    if( kid->path_ == diff_path_.leaf_at(i_) )
+    {
+      tmp_ = kid;
+      break;
+    }
+  }
+  if( NULL == tmp_ )
+  {
+    break; // At closest point
+  }
+  else
+  {
+    cursor_ = tmp_;
+  }
+}
+return cursor_;
+!!!183344.cpp!!!	topdown() : location [*]
+QVector< location * > v;
+if(this->root_)
+{
+  location * loc{ this->root_.get() };
+  // build vector
+  int idx{ 0 };
+  v.push_back(loc);
+  while( idx != v.size() )
+  {
+    if( ! v[idx]->children_.empty() )
+    {
+      for( location * a : v[idx]->children_ )
+      {
+        v.push_back(a);
+      }
+    }
+    ++idx;
+  }
+}
+return v;
+!!!150192.cpp!!!	serialize(inout a_os : QTextOStream) : void
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+BUTTER_ALWAYS(DEBUG, "Programming error: attempt to get debug info in release build");
+if (DEBUG)
+{
+  if(! root_)
+  {
+    a_os << "EMPTY location set.\n";
+    return;
+  }
+  QVector< const location * > stack_;
+  stack_.push_back(root_.get());
+  while(! stack_.isEmpty())
+  {
+    location const * top_ = stack_.front();
+    stack_.pop_front();
+    a_os << "<<BEGIN location [" << top_->full_path() << "]\n";
+    for(location const * loc_ : top_->children())
+    {
+      a_os << "                |- [" << loc_->path() << "]\n";
+      if(! loc_->children().isEmpty())
+      {
+        stack_.push_back(loc_);
+      }
+    }
+    a_os << "<<  END location [" << top_->full_path() << "]\n";
+  }
+}
+
+!!!150064.cpp!!!	insert(in a_path : unistr) : location
+const enumerate_path search_path_{ src_dir_ / a_path };
+if(! root_)
+{
+  // Empty root so this is the current "root" location
+  root_.reset(new location(search_path_.path()));
+  return root_.get();
+}
+location * cursor_ = root_.get();
+enumerate_path cursor_path_{ root_->path() };
+if( ! cursor_path_.equality(search_path_) )
+{
+  if ( ! cursor_path_.has_subpath(search_path_) )
+  {
+    // Need to reparent root
+    // * either : old root is subdirectory of the search directory
+    // * or     : need new common parent (exception if no common parent possible)
+    enumerate_path new_root_path_{ search_path_.has_subpath(cursor_path_)
+      ? search_path_
+      : src_dir_ / src_dir_.create_relative( cursor_path_.create_common( search_path_ )) };
+    std::unique_ptr< location > new_root_{ new location(new_root_path_.path()) };
+    // Make the old root location a child of the new root location or its children
+    cursor_path_ = new_root_path_.create_relative(cursor_path_);
+    cursor_ = new_root_.get();
+    for( unsigned int i_ = 0; i_ < cursor_path_.depth() - 1; ++i_ )
+    {
+     cursor_ = new location(cursor_path_.leaf_at(i_), *cursor_ );
+    }
+    // change old root's path and parent
+    root_->path_ = cursor_path_.leaf_at(cursor_path_.depth() - 1);
+    root_->parent_ = cursor_;
+    cursor_->children_.push_back(root_.release());
+    // Set the new root location
+    root_.reset(new_root_.release());
+    // New root path is
+    // * either : == search path -> job completed
+    // * or     : parent of search path -> build descendent
+    cursor_ = root_.get();
+    cursor_path_ = root_->path();
+  }
+  else
+  {
+    // Need to find closest existing location. Path is
+    // * either : == search path -> job completed
+    // * or     : parent of search path -> build descendent
+    cursor_ = find_closest_( search_path_ );
+    cursor_path_ = cursor_->full_path();
+  }
+  if ( ! cursor_path_.equality( search_path_ ) )
+  {
+    // New root is parent of search path. Build descendent
+    enumerate_path const diff_path_( cursor_path_.create_relative( search_path_ ) );
+    for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
+    {
+      cursor_ = new location(diff_path_.leaf_at(i_), *cursor_ );
+    }
+  }
+}
+return cursor_;

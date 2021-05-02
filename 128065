@@ -1,0 +1,4774 @@
+format 224
+"butter" // API USER::butter
+  revision 30
+  modified_by 48 "finnerty"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_namespace "butter"
+  classview 128065 "butter"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    associated_deployment_view deploymentview_ref 128065 // butter
+    classdiagram 128048 "compound_document"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 128176 "location"
+      classdiagramsettings draw_all_relations yes member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 134960 "location 2"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 141488 "enumerate_path"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 148016 "logging"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 167728 "text templates"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 174256 "generate a build file"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 128065 "Transcribe"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    class 128065 "BuildFile"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 128961 "get_paragraph"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+    end
+
+    class 128193 "BuildStyle"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 129601 "output_build_project"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "addrbook" explicit_type "string_map"
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 129729 "output_build_library"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "inscope" explicit_type "string_map"
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 129857 "output_build_other"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "inscope" explicit_type "string_map"
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 129985 "output_build_executable"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "inscope" explicit_type "string_map"
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 130113 "output_build_sublocation"
+	public explicit_return_type "void"
+	nparams 1
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 130369 "valid_property_name"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "name" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+    end
+
+    class 128321 "BuildLocation"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128193 // _output (<directional composition>)
+	relation 128193 *-->
+	  a role_name "_output" multiplicity "1" protected
+	    classrelation_ref 128193 // _output (<directional composition>)
+	  b parent class_ref 128065 // BuildFile
+      end
+
+      operation 128833 "path"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      classrelation 131521 // _contains (<directional composition>)
+	relation 131137 *-->
+	  a role_name "_contains" multiplicity "*" protected
+	    classrelation_ref 131521 // _contains (<directional composition>)
+	  b parent class_ref 8193 // UmlArtifact
+      end
+
+      classrelation 131649 // _current_style (<directional aggregation>)
+	relation 131265 o-->
+	  a role_name "_current_style" multiplicity "1" protected
+	    classrelation_ref 131649 // _current_style (<directional aggregation>)
+	  b parent class_ref 128193 // BuildStyle
+      end
+
+      classrelation 131777 // _sublocations (<directional composition>)
+	relation 131393 *-->
+	  a role_name "_sublocations" multiplicity "*" protected
+	    classrelation_ref 131777 // _sublocations (<directional composition>)
+	  b parent class_ref 128321 // BuildLocation
+      end
+    end
+
+    class 128449 "BuildProject"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128833 // _binary_targets (<composition>)
+	relation 128833 *---
+	  a role_name "_binary_targets" multiplicity "*" protected
+	    classrelation_ref 128833 // _binary_targets (<composition>)
+	  b role_name "_project" multiplicity "1" package
+	    classrelation_ref 130497 // _project (<composition>)
+      end
+
+      classrelation 128961 // _library_targets (<composition>)
+	relation 128961 *---
+	  a role_name "_library_targets" multiplicity "*" protected
+	    classrelation_ref 128961 // _library_targets (<composition>)
+	  b role_name "_project" multiplicity "1" package
+	    classrelation_ref 130625 // _project (<composition>)
+      end
+
+      classrelation 129089 // _other_targets (<composition>)
+	relation 129089 *---
+	  a role_name "_other_targets" multiplicity "*" protected
+	    classrelation_ref 129089 // _other_targets (<composition>)
+	  b role_name "_project" multiplicity "1" package
+	    classrelation_ref 130369 // _project (<composition>)
+      end
+
+      classrelation 129473 // <generalisation>
+	relation 129473 ---|>
+	  a public
+	    classrelation_ref 129473 // <generalisation>
+	  b parent class_ref 129217 // BuildParagraph
+      end
+    end
+
+    class 128577 "BuildLibrary"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 130625 // _project (<composition>)
+	relation_ref 128961 // <composition>
+      end
+
+      classrelation 131137 // <generalisation>
+	relation 130753 ---|>
+	  a public
+	    classrelation_ref 131137 // <generalisation>
+	  b parent class_ref 129217 // BuildParagraph
+      end
+    end
+
+    class 128705 "BuildExecutable"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 129217 // _direct_source (<directional composition>)
+	relation 129217 *-->
+	  a role_name "_direct_source" protected
+	    classrelation_ref 129217 // _direct_source (<directional composition>)
+	  b parent class_ref 128961 // BuildSource
+      end
+
+      classrelation 130113 // _link_dependencies (<directional composition>)
+	relation 130113 *-->
+	  a role_name "_link_dependencies" multiplicity "*" protected
+	    classrelation_ref 130113 // _link_dependencies (<directional composition>)
+	  b parent class_ref 128577 // BuildLibrary
+      end
+
+      classrelation 130497 // _project (<composition>)
+	relation_ref 128833 // <composition>
+      end
+
+      classrelation 131393 // <generalisation>
+	relation 131009 ---|>
+	  a public
+	    classrelation_ref 131393 // <generalisation>
+	  b parent class_ref 129217 // BuildParagraph
+      end
+    end
+
+    class 128961 "BuildSource"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 129089 "BuildOther"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 130241 // _link_dependencies (<directional composition>)
+	relation 130241 *-->
+	  a role_name "_link_dependencies" multiplicity "*" protected
+	    classrelation_ref 130241 // _link_dependencies (<directional composition>)
+	  b parent class_ref 128577 // BuildLibrary
+      end
+
+      classrelation 130369 // _project (<composition>)
+	relation_ref 129089 // <composition>
+      end
+
+      classrelation 131265 // <generalisation>
+	relation 130881 ---|>
+	  a public
+	    classrelation_ref 131265 // <generalisation>
+	  b parent class_ref 129217 // BuildParagraph
+      end
+    end
+
+    class 129217 "BuildParagraph"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 129345 // _style (<directional composition>)
+	relation 129345 *-->
+	  a role_name "_style" multiplicity "1" protected
+	    classrelation_ref 129345 // _style (<directional composition>)
+	  b parent class_ref 128193 // BuildStyle
+      end
+
+      operation 128065 "name"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128193 "build_source"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128321 "link_source"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128449 "compiler"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128577 "compiler_flags"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128705 "linker_flags"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129089 "target_type"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129217 "indirect_compiler_flags"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129345 "link_style"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+    end
+
+    class 129328 "constants"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "Static strings for the butter project."
+      attribute 131376 "bindir_value"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"BINDIR\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The label of the install target binary directory.
+"
+      end
+
+      attribute 131504 "buildfile_value"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"buildfile\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Artifacts with the document stereotype that contain this
+string are considered to be templates
+"
+      end
+
+      attribute 131632 "BUTTER_VERSION"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "= \"Butter version 0.2beta.\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The current program version string
+"
+      end
+
+      attribute 131760 "butter_base_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter base\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates the relationship between the package and the root directory set in C++ settings.
+* only used if present on the top-level project
+"
+      end
+
+      attribute 131888 "butter_build_dir_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter build-dir\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates where the project should be compiled.  This is not supported
+on all build platforms.
+* only useful on the project package.
+"
+      end
+
+      attribute 132016 "butter_buildfile_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter buildfile\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates the name of a buildfile to include for the current library.
+* used with 'library' artifacts which also have butter_project_name property to indicate
+they are external projects.
+"
+      end
+
+      attribute 132144 "butter_compiler_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter compiler\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates the name of a compiler tag/variable to use with this artifact.
+"
+      end
+
+      attribute 132272 "butter_flags_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter flags\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates c++flags to use for the current target artifact. This property is automatically 
+inherited from parent objects if not overriden
+* only used on target artifacts (library or executable artifacts)
+"
+      end
+
+      attribute 132400 "butter_install_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter install\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The name of the install property
+"
+      end
+
+      attribute 132528 "butter_ldflags_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter ldflags\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates ldflags to use for the current target artifact (\\see link_label). This property is 
+automatically inherited from parent objects if not overriden
+* only used on target artifacts (library or executable artifacts)
+"
+      end
+
+      attribute 132656 "butter_lib_type_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter type\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates whether the library artifact is static or dynamic. will have value 
+shared_value or static_value. This property is automatically inherited from 
+parent objects if not overriden.
+* only used on library target artifacts.
+"
+      end
+
+      attribute 132784 "butter_log_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter log-level\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates how much information to print:
+0 = (default) warning and error messages
+1 = as for 0 and information messages
+2 = as for 1 and debugging information
+"
+      end
+
+      attribute 132912 "butter_other_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter other\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name
+* Indicates that a library artifact should be built as another target type. 
+For jam based builds this is used directly as the target-type name, for make
+based builds the build rule will replace \"$(CCC)\" with \"$(VALUE)\" (in 
+uppercase)
+* For document artifacts if the property value is 'nowrite' then the document is not written
+to the filesystem.
+* This property only used on library artifact targets.
+"
+      end
+
+      attribute 133040 "butter_include_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter include\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates extra include directories for the current target artifact. The value should be 
+a a list of directory names (\\see header_label)
+* only used on target artifacts (library or executable artifacts)
+"
+      end
+
+      attribute 133168 "butter_project_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter project\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates the artifact represents an object from an external project. The property value is the name of the external project.
+* only used if present on artifacts with the library stereotype
+
+\\see butter_buildfile_name
+"
+      end
+
+      attribute 133296 "butter_style_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter style\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "User property name:
+* indicates the style of build system/files to create, defaults to 'boost'
+* only used if present on the top-level project
+"
+      end
+
+      attribute 133424 "butter_version_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter version\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Property name for the project version.
+"
+      end
+
+      attribute 133552 "document_stereotype"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"document\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The stereotype name for document artifacts.
+"
+      end
+
+      attribute 133680 "executable_stereotype"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"executable\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The stereotype name for executable artifacts.
+"
+      end
+
+      attribute 133808 "flag_label"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"FLAGS\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The  label of a line of std flags in a 'generic' description section. 
+eg:
+
+FLAGS = -DHAVE_ALLOCA
+"
+      end
+
+      attribute 133936 "generic_section"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"generic\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The label of a 'generic' section of an artifact description.
+"
+      end
+
+      attribute 134064 "header_label"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"HDR\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The label of a line of include directories in a 'generic' description section. This
+list should contain directorie names without the \"-I\" include flag. The \"-I' will be
+added when necessary. eg:
+
+HDR=/dir1 /dir2
+"
+      end
+
+      attribute 134192 "libdir_value"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"LIBDIR\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The label of the install target library directory var.
+"
+      end
+
+      attribute 134320 "library_stereotype"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"library\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The stereotype name for library artifacts.
+"
+      end
+
+      attribute 134448 "link_label"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"LINK\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The  label of a line of link flags in a 'generic' description section. 
+eg:
+
+LINK = -L/my/path -lmylib
+"
+      end
+
+      attribute 134576 "no_install_value"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"NONE\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Value of he \"butter install\" property to indicate that the target 
+should not be installed.
+"
+      end
+
+      attribute 134704 "section_prefix"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"butter_\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The prefix for the beginning of section labels that
+might be found in artifact descriptions.
+"
+      end
+
+      attribute 134832 "shared_value"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"shared\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Property value for \"butter_lib_type\" property. Indicates that
+library targets will be shared.
+"
+      end
+
+      attribute 134960 "source_stereotype"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"source\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The stereotype name for source artifacts.
+"
+      end
+
+      attribute 135088 "static_value"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"static\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Property value for \"butter_lib_type\" property. Indicates that
+library targets will be static.
+"
+      end
+
+      attribute 135216 "version_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"version\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Generic property name for the project version.
+"
+      end
+
+      attribute 135344 "version_label"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"version\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Build-file section name for the project version.
+"
+      end
+
+      attribute 135472 "date_label"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"date\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Build file section name for the date.
+"
+      end
+
+      attribute 135600 "preamble_label"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"preamble\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Build file section name for the preamble.
+"
+      end
+
+      attribute 135728 "close_label"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"close\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Build file section name for the closing section.
+"
+      end
+
+      attribute 135856 "target_label"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "(\"target\")"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Build file section label for a target section.
+"
+      end
+
+      attribute 135984 "app_data_env_var"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "= 
+#ifdef _WIN32
+\"APPDATA\"
+#else
+\"HOME\"
+#endif
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Build file section label for a target section.
+"
+      end
+
+      attribute 136112 "app_data_subdir_name"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "= 
+#ifdef _WIN32
+\"Butter\"
+#else
+\".butter\"
+#endif
+"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Build file section label for a target section.
+"
+      end
+
+      operation 266416 "butter_output_label"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return \"butter output\"; }
+"
+	
+	
+	
+	
+	comment "User property name for UMLArtifacts
+
+* For artifacts with stereotype \"document\" if the property value is 
+'nowrite' then the document is not written to the filesystem.  Any
+other value will be used as a filename extension when construting
+the artifact's path."
+      end
+
+      operation 266544 "nowrite_value"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return \"nowrite\"; }
+"
+	
+	
+	
+	
+	comment "Value of \"butter_output\" property that indicates an artifact
+should not be considered for writing to the file system."
+      end
+
+      operation 280496 "comment_text"
+	class_operation preserve_cpp_body_indent public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_text" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Transcribe the given text into a comment in the current
+build system.  In general this prepends comment indicators
+to each line of a_text and adds a terminal newline if
+a_text does not end in a newline."
+      end
+
+      attribute 173232 "begin_comment"
+	class_attribute const_attribute public explicit_type "unistr"
+	init_value "{ \"#\" }"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 173360 "end_comment"
+	class_attribute const_attribute private explicit_type "unistr"
+	init_value "{}"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 297520 "text_template_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"template\"); return label; 
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297648 "label_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"label\"); return label; 
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297776 "replacement_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"replace\"); return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297904 "optional_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"option\"); return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 313776 "build_file_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"build-file\"); return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 313904 "root_file_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"root-file\"); return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 314032 "binary_target_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"binary-target\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 321584 "style_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"style\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 321712 "file_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"file\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 321840 "property_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"property\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 323888 "close_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"close\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 324016 "end_phrase_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"end-phrase\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 324144 "start_phrase_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"start-phrase\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 324272 "preamble_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"preamble\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 324400 "version_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"version\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 331440 "date_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"date\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 129840 "compound_document"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "A compound document is used to manage documents that
+contain user and auto-generated content. The auto-generated
+content contains information about a build target, the
+user content is something manually added by the user,
+possibly build information for subsequent targets. When
+initially generated the targets will have the following
+order: (\"version\", \"date\", \"preamble\", [build targets]*,
+\"close\" {end}). The {end} target is a special unnamed
+pseudo-target that contains any user text added after the
+generated text. The user can manually reorder the build
+target sequence, though the order of \"version\", \"date\",
+\"preamble\" and \"close\" are fixed. The object maintains the
+information as a list of string pairs. The first element
+is any text manually added by the user and the second
+element is the auto generated text.
+
+NOTES:
+
+  * If the user supplies an artifact with the appropriate
+  name before a build generator is run, any text in the
+  document will be added between the \"date\" and \"preamble\"
+  sections.
+
+  * (auto-generted) parts are enclosed in \"start_phrase_\" /
+  \"end_phrase_\" markers that are used to parse the document
+  back into a compound document.
+
+  * (user) parts are any non-whitespace outside the
+  markers. This information is stored with the following
+  auto-generated part, except when there is no following
+  target in which case it is the {end} text.
+
+Standard build-file form is a compound_document with the
+following initial order
+
+[version] generator version information
+[date] generation date
+[preamble] ... (optional)
+[target:....]* ...
+[close] ...  (optional)
+{end}  (optional)
+
+"
+      class 129968 "document_element"
+	visibility package stereotype "struct"
+	cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 137648 "label"
+	  public explicit_type "unistr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "The element's label
+"
+	end
+
+	attribute 137776 "user"
+	  public explicit_type "unistr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "The element's user-added text
+"
+	end
+
+	attribute 137904 "value"
+	  public explicit_type "unistr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "The element's generated text
+"
+	end
+
+	operation 136368 "document_element"
+	  cpp_defaulted public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract};"
+	  
+	  
+	  
+	  
+	end
+
+	operation 136496 "document_element"
+	  public explicit_return_type ""
+	  nparams 3
+	    param in name "a_label" explicit_type "unistr"
+	    param in name "a_user" explicit_type "unistr"
+	    param in name "a_value" explicit_type "unistr"
+	  cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${volatile}${abstract} : label( a_label )
+        , user( a_user )
+        , value( a_value )
+        {};"
+	  
+	  
+	  
+	  
+	end
+
+	operation 136624 "~document_element"
+	  cpp_defaulted public explicit_return_type ""
+	  nparams 0
+	  cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${abstract};"
+	  
+	  
+	  
+	  
+	end
+
+	operation 136752 "document_element"
+	  public explicit_return_type ""
+	  nparams 1
+	    param inout name "source" type class_ref 129968 // document_element
+	  cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${abstract} : label( std::move( source.label ) )
+        , user( std::move( source.user ) )
+        , value( std::move( source.value ) )
+        {};"
+	  
+	  
+	  
+	  
+	end
+
+	operation 136880 "document_element"
+	  public explicit_return_type ""
+	  nparams 1
+	    param in name "source" type class_ref 129968 // document_element
+	  cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract} : label( source.label )
+        , user( source.user )
+        , value( source.value )
+        {};"
+	  
+	  
+	  
+	  
+	end
+
+	operation 137008 "operator ="
+	  public return_type class_ref 129968 // document_element
+	  nparams 1
+	    param in name "source" type class_ref 129968 // document_element
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
+          this->swap( source );
+          return *this;
+        };"
+	  
+	  
+	  
+	  
+	end
+
+	operation 137136 "swap"
+	  public explicit_return_type "void"
+	  nparams 1
+	    param inout name "other" type class_ref 129968 // document_element
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} {
+          std::swap( label, other.label );
+          std::swap( user, other.user );
+          std::swap( value, other.value );
+        };"
+	  
+	  
+	  
+	  
+	end
+
+	operation 273968 "isEmpty"
+	  const public explicit_return_type "bool"
+	  nparams 0
+	  cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	  cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->user.isEmpty() && this->value.isEmpty(); }
+"
+	  
+	  
+	  
+	  
+	  comment "Is there no user or value string set."
+	end
+      end
+
+      attribute 166704 "end_phrase_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Text that ends a delineated section"
+      end
+
+      attribute 166576 "start_phrase_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Text that starts a delineated section"
+      end
+
+      classrelation 129712 // close_ (<directional composition>)
+	relation 129712 *-->
+	  a role_name "close_" private
+	    comment "The close texts (optional)
+"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 129712 // close_ (<directional composition>)
+	  b parent class_ref 129968 // document_element
+      end
+
+      classrelation 129840 // date_ (<directional composition>)
+	relation 129840 *-->
+	  a role_name "date_" private
+	    comment "The date texts
+"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 129840 // date_ (<directional composition>)
+	  b parent class_ref 129968 // document_element
+      end
+
+      attribute 138032 "postscript_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Any user text at the end of the document.
+"
+      end
+
+      classrelation 129968 // preamble_ (<directional composition>)
+	relation 129968 *-->
+	  a role_name "preamble_" private
+	    comment "The preamble texts
+"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 129968 // preamble_ (<directional composition>)
+	  b parent class_ref 129968 // document_element
+      end
+
+      classrelation 130096 // targets_ (<directional composition>)
+	relation 130096 *-->
+	  stereotype "valuevector"
+	  a role_name "targets_" private
+	    comment "The artifact's target parts.  
+
+The order these are read in and written out is meaningful, therefore we use a vector instead of a map.
+"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 130096 // targets_ (<directional composition>)
+	  b parent class_ref 129968 // document_element
+      end
+
+      classrelation 130224 // version_ (<directional composition>)
+	relation 130224 *-->
+	  a role_name "version_" private
+	    comment "The version texts.
+"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 130224 // version_ (<directional composition>)
+	  b parent class_ref 129968 // document_element
+      end
+
+      extra_member 128432 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 137264 "compound_document"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)} 
+: end_phrase_(), start_phrase_()
+, close_( butter::constants::close_label, {}, {} )
+, date_( butter::constants::date_label, {}, {} )
+, postscript_()
+, preamble_( butter::constants::preamble_label, {}, {} )
+, targets_()
+, version_( butter::constants::version_label, {}, {} )
+{}
+"
+	
+	
+	
+	
+	comment "Construct and initialise object from a_art"
+      end
+
+      operation 137392 "~compound_document"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${abstract} = default;"
+	
+	
+	
+	
+      end
+
+      operation 137520 "compound_document"
+	stereotype "copy"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 129840 // compound_document
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract}
+    : end_phrase_( source.end_phrase_ ), start_phrase_( source.start_phrase_ )
+    , close_( source.close_ )
+    , date_( source.date_ )
+    , postscript_( source.postscript_ )
+    , preamble_( source.preamble_ )
+    , targets_( source.targets_ )
+    , version_( source.version_ )
+    {};"
+	
+	
+	
+	
+      end
+
+      operation 137648 "compound_document"
+	stereotype "move"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 129840 // compound_document
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${abstract}
+    : end_phrase_( std::move( source.end_phrase_ ) )
+    , start_phrase_( std::move( source.start_phrase_ ) )
+    , close_( std::move( source.close_ ) )
+    , date_( std::move( source.date_ ) )
+    , postscript_( std::move( source.postscript_ ) )
+    , preamble_( std::move( source.preamble_ ) )
+    , targets_( std::move( source.targets_ ) )
+    , version_( std::move( source.version_ ) )
+    {};"
+	
+	
+	
+	
+      end
+
+      operation 137776 "swap"
+	cpp_noexcept public explicit_return_type "void"
+	nparams 1
+	  param inout name "source" type class_ref 129840 // compound_document
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} noexcept {
+      std::swap( end_phrase_, source.end_phrase_ );
+      std::swap( start_phrase_, source.start_phrase_ );
+      std::swap( close_, source.close_ );
+      std::swap( date_, source.date_ );
+      std::swap( postscript_, source.postscript_ );
+      std::swap( preamble_, source.preamble_ );
+      std::swap( targets_, source.targets_ );
+      std::swap( version_, source.version_ );
+    };"
+	
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 137904 "operator ="
+	public return_type class_ref 129840 // compound_document
+	nparams 1
+	  param in name "source" type class_ref 129840 // compound_document
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
+      this->swap( source );
+      return *this;
+    };"
+	
+	
+	
+	
+      end
+
+      extra_member 128560 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 141104 "at"
+	stereotype "const"
+	preserve_cpp_body_indent const constvalue public return_type class_ref 129968 // document_element
+	nparams 1
+	  param in name "idx" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${typeprefix}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Get target at a given index.
+
+\\pre idx < size"
+      end
+
+      operation 155696 "at"
+	stereotype "const"
+	preserve_cpp_body_indent const constvalue public return_type class_ref 129968 // document_element
+	nparams 1
+	  param in name "a_label" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${typeprefix}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Get target element with a_label.
+
+\\pre has_target( a_label )"
+      end
+
+      operation 155440 "operator[]"
+	stereotype "const"
+	const public return_type class_ref 129968 // document_element
+	nparams 1
+	  param in name "idx" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract} {
+   return this->targets_[ idx ];
+}
+
+"
+	
+	
+	
+	
+	comment "Get target at position idx"
+      end
+
+      operation 138672 "close"
+	stereotype "const"
+	const constvalue public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->close_;
+}"
+	
+	
+	
+	
+	comment "Get the document close element (precedes end_text)."
+      end
+
+      operation 138800 "date"
+	stereotype "const"
+	const constvalue public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->date_;
+}"
+	
+	
+	
+	
+	comment "Get the date element."
+      end
+
+      operation 138928 "empty"
+	const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->targets_.isEmpty();
+}"
+	
+	
+	
+	
+      end
+
+      operation 273584 "end_phrase"
+	stereotype "const"
+	const constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->${name}_; }
+"
+	
+	
+	
+	
+      end
+
+      operation 139056 "postscript"
+	stereotype "const"
+	const constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+  return this->postscript_;
+}"
+	
+	
+	
+	
+	comment "Get any user supplied information at the end of the document"
+      end
+
+      operation 139312 "has_target"
+	preserve_cpp_body_indent const public explicit_return_type "bool"
+	nparams 1
+	  param in name "a_label" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Check for the existance of a target."
+      end
+
+      operation 139440 "preamble"
+	stereotype "const"
+	const constvalue public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->preamble_;
+}"
+	
+	
+	
+	
+	comment "Get the preamble element."
+      end
+
+      operation 141232 "size"
+	const public explicit_return_type "size_t"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+      return this->targets_.size();
+    };"
+	
+	
+	
+	
+      end
+
+      operation 273456 "start_phrase"
+	stereotype "const"
+	const constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->${name}_; }
+"
+	
+	
+	
+	
+      end
+
+      operation 141360 "version"
+	stereotype "const"
+	const constvalue public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->version_;
+}"
+	
+	
+	
+	
+	comment "Get the version element."
+      end
+
+      extra_member 128688 "MODIFY"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 139184 "operator[]"
+	preserve_cpp_body_indent public return_type class_ref 129968 // document_element
+	nparams 1
+	  param in name "a_label" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Get target element with a_label.
+
+If not has_target( a_label ) inserts and returns a new empty element"
+      end
+
+      operation 155568 "close"
+	public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->close_;
+}"
+	
+	
+	
+	
+	comment "Get the document close element (precedes end_text)."
+      end
+
+      operation 155824 "date"
+	public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->date_;
+}"
+	
+	
+	
+	
+	comment "Get the date element."
+      end
+
+      operation 273712 "end_phrase"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "val" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->${name}_ = ${p0}; }
+"
+	
+	
+	
+	
+      end
+
+      operation 155952 "postscript"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+  return this->postscript_;
+}"
+	
+	
+	
+	
+	comment "Get any user supplied information at the end of the document"
+      end
+
+      operation 156080 "preamble"
+	public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->preamble_;
+}"
+	
+	
+	
+	
+	comment "Get the preamble element."
+      end
+
+      operation 273840 "start_phrase"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "val" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->${name}_ = ${p0}; }
+"
+	
+	
+	
+	
+      end
+
+      operation 156208 "version"
+	public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->version_;
+}"
+	
+	
+	
+	
+	comment "Get the version element."
+      end
+
+      extra_member 128816 "METHOD"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 141488 "merge"
+	preserve_cpp_body_indent public explicit_return_type "void"
+	nparams 1
+	  param in name "a_other" type class_ref 129840 // compound_document
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Merges the content of two compound documents.
+
+Merge process:
+
+* For any elements with the same label, append the other data to 
+  the element in this object.
+
+* Append any elements in the other object that are not in this
+  object.
+
+\\pre ! start_phrase.empty && ! end_phrase.empty
+	&& start_phrase == other.start_phrase
+	&& end_phrase == other.end_phrase"
+      end
+
+      operation 141616 "parse"
+	preserve_cpp_body_indent public explicit_return_type "void"
+	nparams 1
+	  param inout name "a_is" explicit_type "QTextIStream"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Reset object and read-in a new artifact.
+
+The version, date, preamble and close are read as-is. User data preceding
+targets are read and the sequence order of targets is maintained, but the 
+content of the target section is left blank.
+
+The method uses the start_phrase and end_phrase as regular expressions for
+finding the beginning and ending of autogenerated and user sections.
+
+\\pre ! start_phrase.empty && ! end_phrase.empty
+"
+      end
+
+      operation 141744 "reset"
+	preserve_cpp_body_indent public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Emptys auto-generated values for all targets, preamble and close 
+labelled sections, leaving any user supplied data and the version and 
+date elements unchanged."
+      end
+
+      operation 141872 "write"
+	preserve_cpp_body_indent const public explicit_return_type "void"
+	nparams 1
+	  param inout name "a_os" explicit_type "QTextOStream"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Output the parts into a_os
+
+The start and end phrase arguments provide bracket lines for each subsection
+of the input text.  These phrases are also used when parsing the text.
+
+\\pre ! start_phrase.empty && ! end_phrase.empty
+"
+      end
+    end
+
+    class 128560 "location"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "Manages a build location in the project. It has a one-to-one correspondence with a filesystem 
+directory and one-to-many with the set of UmlPackages for the directory. These are generated in the first
+phase of the program execution.
+
+Responsibilities:
+- Property handling
+ - base
+ - log-level
+ - style
+
+Location objects form a tree like structure that parallels a filesystem 
+directory structure, except locations may be sparse.
+
+Axioms:
+
+1) There is exactly one root location containing all other locations
+
+2) A location can have children more than one level deep in the filesystem
+
+3) A location can not have a child A that's directory is a 
+  subdirectory of child B. { If child B exists when child A is added then
+  it is forwarded to child B. If child A exists when child B is added then
+  child A is relocated to child B }
+
+Example 1:
+
+.../ rootpath <*> / subpath1     / subpathA     / subpathX <*>
+                  / subpath2 <*> / subpathB <*>
+
+gives
+
+[location:rootpath].children{ [location:subpathX], 
+    [location:subpath2].children{ [location:subpathB] } }
+
+Example 2:
+
+.../ rootpath1 <*>
+.../ rootpath2 <*>
+
+gives
+
+[location:common_parent(rootpath1,rootpath2)].children{ 
+    [location:rootpath1], [location:rootpath2] }
+
+
+"
+      classrelation 140976 // <dependency>
+	relation 140592 -_->
+	  stereotype "friend"
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 140976 // <dependency>
+	  b parent class_ref 138416 // location_set
+      end
+
+      classrelation 132144 // children_ (<composition>)
+	relation 132144 *---
+	  stereotype "qvector"
+	  a role_name "children_" multiplicity "*" private
+	    comment "The child nodes (managed)
+"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}*> ${name}${value};
+"
+	    classrelation_ref 132144 // children_ (<composition>)
+	  b role_name "parent_" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 133424 // parent_ (<composition>)
+      end
+
+      classrelation 133424 // parent_ (<composition>)
+	relation_ref 132144 // <composition>
+      end
+
+      attribute 146608 "path_"
+	private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "* Relative path from parent to this location. If no parent then is the \"location_base_path\"@.
+* Path may not yet exist on filesystem.
+
+@location_base_path is defined as the relative path to the base_path location in the bouml project.
+The bouml base_path location is either relative to the project working directory or absolute. We 
+assume QDir::exists(base_path) or QDir::mkdir(base_path) will succeed and therefore so will
+QDir::exists(location_base_path) or QDir::mkdir(location_base_path)."
+      end
+
+      attribute 153392 "state_"
+	private explicit_type "any"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "An opaque structure used by the butter system to manage build system creation."
+      end
+
+      extra_member 135344 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 148528 "location"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 1
+	  param in name "path" explicit_type "unistr"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${abstract};"
+	cpp_def "// -
+
+${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}
+: children_()
+, parent_(nullptr)
+, path_(${p0})
+, state_(nullptr)
+{}
+"
+	
+	
+	
+	
+	comment "Ctor for location tree root objects"
+      end
+
+      operation 232112 "location"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract};"
+	cpp_def "// -
+
+${inline}${typeprefix}${class}::${name}${(}${)}
+: children_()
+, parent_(nullptr)
+, path_(\".\")
+, state_(nullptr)
+{}
+"
+	
+	
+	
+	
+	comment "Ctor for location tree root objects"
+      end
+
+      operation 148784 "~location"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Deletes all children."
+      end
+
+      operation 148656 "location"
+	preserve_cpp_body_indent public explicit_return_type ""
+	nparams 2
+	  param in name "a_path" explicit_type "unistr"
+	  param inout name "a_parent" type class_ref 128560 // location
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} & ${p1}${v1}${)}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}
+: children_()
+, parent_(&a_parent)
+, path_(a_path)
+, state_(nullptr)
+{
+${body}}
+"
+	
+	
+	
+	
+	comment " Ctor for child location objects (a_path is relative to the parent
+ location.) Not to be called directly, use \"create_as_child\"."
+      end
+
+      operation 148912 "location"
+	stereotype "deleted"
+	cpp_deleted private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 128560 // location
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract};"
+	
+	
+	
+	
+	comment "no copy"
+      end
+
+      operation 149040 "operator="
+	stereotype "deleted"
+	cpp_deleted private return_type class_ref 128560 // location
+	nparams 1
+	  param in name "source" type class_ref 128560 // location
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	
+	
+	
+	
+	comment "no assign"
+      end
+
+      extra_member 135472 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 149168 "children"
+	stereotype "const"
+	const constvalue public explicit_return_type "QVector< location * >"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return children_;
+}"
+	
+	
+	
+	
+	comment "Get the children!"
+      end
+
+      operation 149424 "full_path"
+	stereotype "const"
+	preserve_cpp_body_indent const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "The path from the parent location, this is an empty string for the top-level location
+
+(\\see location_set::offset_path and \\see location::full_path)"
+      end
+
+      operation 149680 "parent"
+	stereotype "const"
+	const constvalue public return_type class_ref 128560 // location
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${)}${const}${volatile}${abstract} {
+   return parent_;
+}"
+	
+	
+	
+	
+	comment "The parent location of this location, or nul for the top-level location."
+      end
+
+      operation 149808 "path"
+	stereotype "const"
+	const constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+  return path_;
+}"
+	
+	
+	
+	
+	comment "The path to the root location of the containing location set.
+
+(\\see location_set::offset_path and \\see location::full_path)"
+      end
+
+      operation 185904 "value"
+	stereotype "const"
+	const constvalue public explicit_return_type "any"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+  return state_;
+}"
+	
+	
+	
+	
+	comment "The value content of this location"
+      end
+
+      extra_member 135600 "METHOD"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 149552 "value"
+	public explicit_return_type "void"
+	nparams 1
+	  param out name "val" explicit_type "any"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
+  state_ = ${p0};
+}"
+	
+	
+	
+	
+	comment "Set the value content of this location"
+      end
+
+      operation 193840 "value"
+	public explicit_return_type "any"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+  return state_;
+}"
+	
+	
+	
+	
+	comment "The value content of this location"
+      end
+    end
+
+    class 138416 "location_set"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "Container for the set of locations that will be used in defining the build system.
+
+
+Programming notes: Paths and locations
+
+* All paths as arguments to methods are directly from bouml
+
+* Relative paths from the bouml project are relative to CppSrcDir.
+
+* Each subdirectory (with content) in the source tree has a corresponding location object.
+
+* The root location may be above the directory pointed to by CppSrcDir, so always incorporates the CppSrcDir in its path.
+
+    * NB. If the root directory does not incorporate the CppSrcDir then path manipulation gets polluted with local paths
+
+"
+      attribute 160048 "src_dir_"
+	private type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "CPP source directory defined in the project.  All paths
+non-absolute paths will be relative to this location.
+
+* All paths as arguments to methods are directly from bouml
+
+* Relative paths from the bouml project are relative to CppSrcDir.
+"
+      end
+
+      classrelation 140464 // root_ (<directional composition>)
+	relation 140208 *-->
+	  stereotype "unique_ptr"
+	  a role_name "root_" multiplicity "0..1" private
+	    comment "The root of the location set
+
+* The root location may be above the directory pointed to by CppSrcDir, so always incorporates the CppSrcDir in its path.
+
+    * NB. If the root directory does not incorporate the CppSrcDir then path manipulation gets polluted with local paths"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 140464 // root_ (<directional composition>)
+	  b parent class_ref 128560 // location
+      end
+
+      extra_member 142128 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 206896 "location_set"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw}
+: src_dir_()
+, root_()
+{}
+"
+	
+	
+	
+	
+	comment "Default constructor (src_dir_ is set to '.')"
+      end
+
+      operation 245296 "location_set"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "src_dir" explicit_type "unistr"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}${)}${volatile}${throw}
+: src_dir_(${p0})
+, root_()
+{}
+"
+	
+	
+	
+	
+	comment "Default constructor, single argument is the CppSrcDir from bouml."
+      end
+
+      operation 207024 "~location_set"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
+"
+	
+	
+	
+	
+      end
+
+      operation 207152 "location_set"
+	stereotype "copy"
+	cpp_deleted private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 138416 // location_set
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 207408 "location_set"
+	stereotype "move"
+	cpp_deleted private explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 138416 // location_set
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${)}${volatile}${throw} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 207280 "operator="
+	cpp_deleted private return_type class_ref 138416 // location_set
+	nparams 1
+	  param in name "source" type class_ref 138416 // location_set
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      extra_member 142256 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 185776 "base_path"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "The path to the root of the build system. All locations in the set are
+below this point. Note this may not be the same as the src_dir which
+is defined in the bouml project.
+
+"
+      end
+
+      operation 238640 "find_closest"
+	const public return_type class_ref 128560 // location
+	nparams 1
+	  param in name "a_path" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Attempt to find the closest location to a_path.
+
+\\pre root.path.fullpath.has_subpath(a_path)
+
+\\result - return nul if location_set is empty
+           - result.path.fullpath.has_subpath(a_path)
+"
+      end
+
+      operation 252464 "find_closest_"
+	const private return_type class_ref 128560 // location
+	nparams 1
+	  param in name "a_path" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Attempt to find the closest location to a_path.
+
+\\pre root.path.fullpath.has_subpath(a_path)
+
+\\result - return nul if location_set is empty
+           - result.path.fullpath.has_subpath(a_path)
+"
+      end
+
+      operation 231984 "root"
+	const constvalue public return_type class_ref 128560 // location
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return root_.get();
+}
+"
+	
+	
+	
+	
+	comment "Return a pointer to the root location, may be nul"
+      end
+
+      operation 245424 "source_directory"
+	const constvalue public return_type class_ref 128432 // enumerate_path
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract} {
+   return src_dir_;
+}
+"
+	
+	
+	
+	
+	comment "CPPSrcDir in bouml project."
+      end
+
+      operation 183344 "topdown"
+	stereotype "qvector"
+	const public return_type class_ref 128560 // location
+	multiplicity "*"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${stereotype}< ${type} * > ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${stereotype}< ${type} * > ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Get the sequence of locations in top-down order."
+      end
+
+      operation 150192 "serialize"
+	preserve_cpp_body_indent const public explicit_return_type "void"
+	nparams 1
+	  param inout name "a_os" explicit_type "QTextOStream"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "This descends the location tree writing debug information to
+a_os as it goes.
+
+(Only if NO_LOG is undefined)"
+      end
+
+      extra_member 142384 "MODIFY"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 150064 "insert"
+	preserve_cpp_body_indent public explicit_return_type "location"
+	nparams 1
+	  param in name "a_path" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Find or create a new location object that matches the given
+path.  If new locations are created, one location is created
+for each level of the path that is a sub-path of offset_path.
+
+It is not an error to provide a path with an existing matching
+path.
+
+
+\\post new.offset_path.equality(old.offset_path) or new.offset_path.has_subpath(old.offset_path)
+\\post result.path = search_path.leaf_at(search_path.depth - 1)
+"
+      end
+    end
+
+    class 128432 "enumerate_path"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "Treat filesystem paths as a list of filesystem folder names.
+This extends the Qt QDir class to allow paths to be manipulated.
+Methods for path manipulation avoid operations that reference
+the real operating system filesystem.  This means that distinct
+paths are assumed to never refer to the same location, which
+is generally valid unless the paths involve symlinks.
+"
+      extra_member 156336 "op<<(os, QString)"
+	
+	cpp "" "std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      classrelation 161072 // <generalisation>
+	relation 160688 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 161072 // <generalisation>
+	  b parent class_ref 166064 // QDir
+      end
+
+      attribute 140848 "default_separator_"
+	class_attribute const_attribute private explicit_type "sbyte"
+	multiplicity "[2]"
+	init_value "= \"/\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Separator to use regardless of OS
+"
+      end
+
+      attribute 140976 "other_separator_"
+	class_attribute const_attribute private explicit_type "sbyte"
+	multiplicity "[2]"
+	init_value "= \"\\\\\""
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${multiplicity}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "separator used on other OS
+"
+      end
+
+      extra_member 149296 "LIFETIME"
+	
+	cpp "
+// Lifetime methods
+
+" "
+// Lifetime methods
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 151344 "enumerate_path"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract}: QDir() {}"
+	
+	
+	
+	
+	comment "Default ctor"
+      end
+
+      operation 151472 "enumerate_path"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "a_path" explicit_type "unistr"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}${)}${volatile}${abstract}: QDir(normalise(a_path)) {}"
+	
+	
+	
+	
+	comment "Construct from string (automatically normalizing the path)"
+      end
+
+      operation 151600 "enumerate_path"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "source" explicit_type "QDir"
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract}: QDir(normalise(source.path())) {}"
+	
+	
+	
+	
+	comment "Construct from base class (automatically normalizing path)"
+      end
+
+      operation 151728 "~enumerate_path"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${abstract} {}"
+	
+	
+	
+	
+      end
+
+      operation 151856 "enumerate_path"
+	stereotype "copy"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract}: QDir(source) {}"
+	
+	
+	
+	
+      end
+
+      operation 214960 "enumerate_path"
+	stereotype "move"
+	public explicit_return_type ""
+	nparams 1
+	  param inout name "source" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${abstract}: QDir(std::move(source)) {}"
+	
+	
+	
+	
+      end
+
+      operation 151984 "operator ="
+	public return_type class_ref 128432 // enumerate_path
+	nparams 1
+	  param in name "source" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
+   this->setPath(source.path());
+   return *this;
+}"
+	
+	
+	
+	
+      end
+
+      operation 217904 "swap"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "other" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 149424 "ACCESS"
+	
+	cpp "
+// Access methods
+
+" "
+// Access methods
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 225456 "is_dos_absolute"
+	const private explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Test if the path starts with a drive letter as in \"?:\""
+      end
+
+      operation 152112 "depth"
+	const public explicit_return_type "uint"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "The number of steps in the path."
+      end
+
+      operation 152368 "has_subpath"
+	preserve_cpp_body_indent const public explicit_return_type "bool"
+	nparams 1
+	  param in name "a_rhs" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Here subpath means that a_rhs is a subdirectory or file in this
+directory.
+
+NOTE: a is_subpath implies that this == create_common(a_rhs).
+"
+      end
+
+      operation 152240 "equality"
+	preserve_cpp_body_indent const public explicit_return_type "bool"
+	nparams 1
+	  param in name "a_rhs" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Compare two paths. Returns canonicalPath = a_rhs.canonicalPath 
+(ignoring trailing separator)"
+      end
+
+      operation 152496 "leaf_at"
+	preserve_cpp_body_indent const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_count" explicit_type "uint"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Get part of path at position a_count"
+      end
+
+      operation 152624 "operator =="
+	friend public explicit_return_type "bool"
+	nparams 2
+	  param in name "a_lhs" type class_ref 128432 // enumerate_path
+	  param in name "a_rhs" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract} {
+  return a_lhs.equality (a_rhs);
+};"
+	
+	
+	
+	
+      end
+
+      extra_member 128048 "using QDir::path"
+	
+	cpp "  using QDir::path;" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      extra_member 128176 "using QDir::exists"
+	
+	cpp "  using QDir::exists;" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      extra_member 128304 "using QDir::isRelative"
+	
+	cpp "  using QDir::isRelative;" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 152752 "create_common"
+	preserve_cpp_body_indent const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_other" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Generate a path that has the greatest shared path between this
+and a_other.
+
+Will raise and exception when paths are on different drives.
+
+**NOTE: This class is not intended as a general solution.
+In the butter program having two paths that have no common root
+is an exception as we can not create a build system without
+the common root.  This is why this method throws an exception**
+"
+      end
+
+      operation 152880 "create_relative"
+	preserve_cpp_body_indent const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_target" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Build a relative path from here to a_target.
+
+canonical (path_ + relative (a_target)) <==> a_target"
+      end
+
+      extra_member 149552 "MODIFY"
+	
+	cpp "
+// Modification methods
+
+" "
+// Modification methods
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 153264 "normalise"
+	class_operation preserve_cpp_body_indent public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_path" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Convert string to form with all separators as \"/\" (function part)"
+      end
+
+      operation 153392 "operator /"
+	const public return_type class_ref 128432 // enumerate_path
+	nparams 1
+	  param in name "rhs" type class_ref 128432 // enumerate_path
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} {
+   return ${type}(path () + default_separator_ + rhs.path ());
+}"
+	
+	
+	
+	
+	comment "Concatenate 2 paths"
+      end
+
+      operation 153520 "operator /"
+	const public return_type class_ref 128432 // enumerate_path
+	nparams 1
+	  param in name "rhs" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
+   return ${type}(path () + default_separator_ + normalise (rhs));
+}"
+	
+	
+	
+	
+	comment "Concatenate 2 paths"
+      end
+
+      operation 153648 "path_localised"
+	const public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+      return QDir::convertSeparators (path ());
+    };"
+	
+	
+	
+	
+	comment "Output path using the current OS'S separators.  Used when
+writing paths for external visibility."
+      end
+
+      operation 153776 "path_convert"
+	preserve_cpp_body_indent const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_trans" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Create a copy of the path string that has all the separators replaced 
+by some arbitrary string \"a_trans\"."
+      end
+
+      operation 153904 "setPath"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "a_path" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} {
+   QDir::setPath (normalise (a_path));
+}"
+	
+	
+	
+	
+	comment "Change to a new internal path (automatically normalize)"
+      end
+
+      extra_member 149680 "MODIFY FILESYSTEM"
+	
+	cpp "
+// Modify filesystem methods
+
+" "
+// Modify filesystem methods
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 153008 "mkpath"
+	preserve_cpp_body_indent const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Create this and all parent directories for the current path."
+      end
+    end
+
+    class 172592 "location_state"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl "${comment}${@}${visibility}${static}${final}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      php_decl "${comment}${final}${visibility}${abstract}class ${name}${extends}${implements} {
+${members}}
+"
+      python_2_2 python_decl "class ${name}${inherit}:
+${docstring}${members}
+"
+      idl_decl "${comment}${abstract}${custom}valuetype ${name}${inherit} {
+${members}};
+"
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 167728 // packages_ (<directional aggregation>)
+	relation 167344 o-->
+	  stereotype "qvector"
+	  a role_name "packages_" multiplicity "*" private
+	    comment "Any packages with content at the current location's path"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 167728 // packages_ (<directional aggregation>)
+	  b parent class_ref 9217 // UmlPackage
+      end
+
+      operation 259632 "write_documents"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Write all UML documents for this and descendent locations.
+
+* This calls write_uml_documents on a_base and all a_base's descendent
+locations."
+      end
+
+      operation 280624 "find_uml_document"
+	public return_type class_ref 8833 // UmlItem
+	nparams 1
+	  param in name "name" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}QVector< ${type} * > ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}QVector< ${type} * > ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Find UmlArtifact objects of the given name at the current location. This
+may return an empty list if none are found
+
+\\pre not name.empty"
+      end
+    end
+
+    class 179120 "base_log"
+      abstract visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 131632 "log_levels"
+	visibility package stereotype "enum"
+	cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 141104 "warn"
+	  public type class_ref 131632 // log_levels
+	  init_value " 0"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 141232 "info"
+	  public type class_ref 131632 // log_levels
+	  init_value " 1"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+
+	attribute 141360 "debug"
+	  public type class_ref 131632 // log_levels
+	  init_value " 2//include debugging messages
+
+    "
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	end
+      end
+
+      operation 266288 "trace"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "level" type class_ref 131632 // log_levels
+	  param in name "msg" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 206256 "text_template"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 206896 "map_type"
+	visibility package stereotype "typedef" explicit_base_type "unistr"
+	cpp_decl "${comment}typedef QMap< ${type}, ${type} > ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      class 206768 "entry_type"
+	visibility package stereotype "enum"
+	cpp_decl "${comment}enum ${name} {
+${items}
+};
+"
+	java_decl "${comment}${@}${visibility}${static}${final}${abstract}enum ${name}${implements} {
+${items};
+${members}}
+"
+	php_decl "${comment}${visibility}final class ${name} {
+${items}}
+"
+	python_2_2 python_decl "class ${name}:
+${docstring}${members}
+"
+	idl_decl "${comment}enum ${name} {
+${items}};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 179888 "TEXT"
+	  public type class_ref 206768 // entry_type
+	  init_value "0"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Plain text inserted as-is when instantiated"
+	end
+
+	attribute 180016 "REPLACEMENT"
+	  public type class_ref 206768 // entry_type
+	  init_value "1"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "A label to search for in a property dictionary."
+	end
+
+	attribute 180400 "PHRASE"
+	  public type class_ref 206768 // entry_type
+	  init_value "2"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Indicate the beginning/end of an optional section. (Any text is used to match the corresponding end.)
+
+A phrase is omitted if none of the replacement texts inside the phrase have a match."
+	end
+      end
+
+      class 206384 "template_entry"
+	visibility protected stereotype "struct"
+	cpp_decl "${comment}${template}struct ${name}${inherit} {
+${members}};
+${inlines}
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}struct ${name} {
+${members}};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+	attribute 180144 "type_"
+	  public type class_ref 206768 // entry_type
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "The type of entry"
+	end
+
+	attribute 180272 "content_"
+	  public explicit_type "unistr"
+	  cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Any textual/label content"
+	end
+      end
+
+      class 213424 "const_iterator"
+	visibility package stereotype "typedef" base_type class_ref 206384 // template_entry
+	cpp_decl "${comment}typedef QVector< ${type} >::${name} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      classrelation 194992 // sequence_ (<directional composition>)
+	relation 194608 *-->
+	  stereotype "qvector"
+	  a role_name "sequence_" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	    classrelation_ref 194992 // sequence_ (<directional composition>)
+	  b parent class_ref 206384 // template_entry
+      end
+
+      extra_member 162864 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 293808 "text_template"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw}
+: sequence_() {}
+"
+	
+	
+	
+	
+      end
+
+      operation 293936 "~text_template"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
+"
+	
+	
+	
+	
+      end
+
+      operation 294064 "text_template"
+	stereotype "copy"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 206256 // text_template
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw}
+: sequence_(${p0}.sequence_) {}
+"
+	
+	
+	
+	
+      end
+
+      operation 324656 "text_template"
+	stereotype "move"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 206256 // text_template
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} && ${p0}${)}${volatile}${throw}
+: sequence_(std::move(${p0}.sequence_)) {}
+"
+	
+	
+	
+	
+      end
+
+      operation 324528 "swap"
+	stereotype "copy"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "source" type class_ref 206256 // text_template
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}
+{
+  std::swap(sequence_, ${p0}.sequence_);
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 294192 "operator="
+	public return_type class_ref 206256 // text_template
+	nparams 1
+	  param in name "source" type class_ref 206256 // text_template
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${abstract}
+{
+  this->swap(${p0}); return *this; 
+}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 162992 "SERIALIZATION"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 287152 "read"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "xml" explicit_type "QXmlStreamReader"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Deserialize template from XML document."
+      end
+
+      extra_member 163120 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 294448 "begin"
+	const public return_type class_ref 213424 // const_iterator
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->sequence_.${name}();
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 294832 "empty"
+	const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->sequence_.${name}();
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 294576 "end"
+	const public return_type class_ref 213424 // const_iterator
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->sequence_.${name}();
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 287280 "instantiate"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "properties" type class_ref 206896 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Instantiate the template from the data in the given dictionary."
+      end
+
+      operation 294704 "size"
+	const public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->sequence_.${name}();
+}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 163376 "MODIFY"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 296112 "push_back"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "v" type class_ref 206384 // template_entry
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->sequence_.${name}(v);
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 220080 "build_style"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      class 220208 "map_type"
+	visibility package stereotype "typedef" explicit_base_type "unistr"
+	cpp_decl "${comment}typedef QMap< ${type}, ${type} > ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl "${comment}typedef ${type} ${name};
+"
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      classrelation 208176 // templates_ (<directional composition>)
+	relation 207792 *-->
+	  stereotype "map"
+	  a role_name "templates_" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${association}, ${type}> ${name}${value};
+"
+	    classrelation_ref 208176 // templates_ (<directional composition>)
+	  b parent class_ref 206256 // text_template
+	  association_explicit_type "unistr"
+      end
+
+      attribute 186928 "properties_"
+	private type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 187056 "special_files_"
+	private type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Map of filenames and content for special/auxilliary build files to create in the root location."
+      end
+
+      extra_member 169904 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 306608 "build_style"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw}
+: templates_()
+, properties_()
+, special_files_() {}
+"
+	
+	
+	
+	
+      end
+
+      operation 306736 "~build_style"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
+"
+	
+	
+	
+	
+      end
+
+      operation 306864 "build_style"
+	stereotype "copy"
+	cpp_deleted private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 220080 // build_style
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 306992 "operator="
+	private return_type class_ref 220080 // build_style
+	nparams 1
+	  param in name "source" type class_ref 220080 // build_style
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} = delete;
+"
+	
+	
+	
+	
+      end
+
+      extra_member 170288 "SERIALIZATION"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 304560 "read_style"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "style" explicit_type "unistr"
+	  param inout name "xml" explicit_type "QXmlStreamReader"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 170032 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 331312 "extend_properties"
+	const public return_type class_ref 220208 // map_type
+	nparams 1
+	  param in name "other" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Add the contents of other to the style property map, with any
+existing keys being overwritten by the values in other."
+      end
+
+      operation 306096 "get_build_file_name"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Name of all non-root build files."
+      end
+
+      operation 323760 "get_properties"
+	const public return_type class_ref 220208 // map_type
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type}& ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->properties_; }
+"
+	
+	
+	
+	
+	comment "A map of filenames and content of any special build files to create in the root location"
+      end
+
+      operation 305968 "get_root_file_name"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Name of the root build file."
+      end
+
+      operation 305712 "get_special_files"
+	const public return_type class_ref 220208 // map_type
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type}& ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type}& ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->special_files_; }
+"
+	
+	
+	
+	
+	comment "A map of filenames and content of any special build files to create in the root location"
+      end
+
+      operation 307248 "get_templates"
+	stereotype "map"
+	const public return_type class_ref 206256 // text_template
+	multiplicity "*"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}QMap< QString, ${type} > const& ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}QMap< QString, ${type} > const& ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->templates_; }
+"
+	
+	
+	
+	
+	comment "A map of filenames and content of any special build files to create in the root location"
+      end
+
+      extra_member 170416 "GENERATE"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 314160 "make_close"
+	const constvalue public explicit_return_type "unistr"
+	nparams 1
+	  param in name "properties" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Adds/Checks the close section.
+
+* Using this method instead of directly accessing the templates is
+recommended as it combines the passed properties to the build
+style properties before instantiating the template."
+      end
+
+      operation 315056 "make_comment_text"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "text" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Generate a comment suitable for putting in the buildfile.
+
+This uses a template labelled \"comment\", splitting text into
+separate lines and feeding the template a line at a time. If
+no template exists, then the fall-back is to use 
+constants::comment_text
+
+\\param text : text to comment
+"
+      end
+
+      operation 314416 "make_date"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "properties" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Adds/Checks the date section
+
+* Using this method instead of directly accessing the templates is
+recommended as it combines the passed properties to the build
+style properties before instantiating the template."
+      end
+
+      operation 305200 "make_element"
+	const public explicit_return_type "unistr"
+	nparams 2
+	  param in name "tmpl" explicit_type "unistr"
+	  param in name "properties" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Instantiate the named template with the given properties and build
+properties.  Returns an empty string if the template
+does not exist.
+
+\\param properties : map of replacement properties for the template
+\\param tmpl : the name of the template to use
+
+* Using this method instead of directly accessing the templates is
+recommended as it combines the passed properties to the build
+style properties before instantiating the template.
+"
+      end
+
+      operation 314928 "make_end_phrase"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "name" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Marker text indicating end of a compound document section with the given name
+
+This uses a template labelled \"end-phrase\". If
+no template exists, then the fall-back is to use 
+comment_text( \" END:\" + name )"
+      end
+
+      operation 304688 "make_preamble"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "properties" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Adds/Checks the preamble section
+
+* Using this method instead of directly accessing the templates is
+recommended as it combines the passed properties to the build
+style properties before instantiating the template."
+      end
+
+      operation 314800 "make_start_phrase"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "name" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Marker text indicating beginning of a compound document section with the  given name
+
+This uses a template labelled \"start-phrase\". If
+no template exists, then the fall-back is to use 
+comment_text( \" START:\" + name )"
+      end
+
+      operation 314288 "make_version"
+	const public explicit_return_type "unistr"
+	nparams 1
+	  param in name "properties" type class_ref 220208 // map_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Adds/Checks the version section
+
+* Using this method instead of directly accessing the templates is
+recommended as it combines the passed properties to the build
+style properties before instantiating the template."
+      end
+
+      extra_member 170160 "MODIFY"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+    end
+  end
+
+  deploymentview 128065 "butter"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    deploymentdiagram 128432 "butter"
+      deploymentdiagramsettings
+       end
+      size A4
+    end
+
+    artifact 130480 "butter.lib"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 128432 // constants
+	artifact_ref 128816 // compound_document
+	artifact_ref 129456 // location
+	artifact_ref 129840 // utility
+	artifact_ref 182704 // text_template
+	artifact_ref 189488 // build_style
+      end
+      ncouples 10
+      key "genpro pro" value "/home/finnerty/tmp/butter2/butter/butter.lib.pro"
+      key "genpro path" value "/tmp/finnerty/butter2/butter/"
+      key "genpro target" value "/home/finnerty/tmp/butter2/butter/butter"
+      key "genpro tmplt" value "lib"
+      key "genpro config" value "debug warn_on qt staticlib"
+      key "genpro defines" value "WITHCPP"
+      key "genpro includepath" value ""
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value "build"
+      key "genpro footer" value "QT += qt3support"
+      simplerelation 134576
+	-_->
+	  on artifact_ref 130096 // config
+      end
+    end
+
+    artifact 130096 "config"
+      stereotype "source"
+      cpp_h "#ifndef @{PROJECT}_CONFIG_H
+#define @{PROJECT}_CONFIG_H 1
+#include <string>
+#include <stdexcept>
+
+#ifdef NO_DBC
+#define NO_DBC 1
+#else
+#define NO_DBC 0
+#endif
+
+inline void @{PROJECT}_ALWAYS(bool X, std::string Y)
+{
+   if (! X) throw std::runtime_error(Y);
+}
+
+inline void @{PROJECT}_REQUIRE(bool X, std::string Y)
+{
+   @{PROJECT}_ALWAYS(X,Y);
+}
+
+inline void @{PROJECT}_CHECK(bool X, std::string Y)
+{
+   if (! NO_DBC) @{PROJECT}_ALWAYS(X,Y);
+}
+
+inline void @{PROJECT}_ENSURE(bool X, std::string Y)
+{
+   if (! NO_DBC) @{PROJECT}_ALWAYS(X,Y);
+}
+
+#undef NO_DBC
+
+#endif
+"
+      associated_elems
+      end
+    end
+
+    artifact 128432 "constants"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include <qtextstream.h>
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 129328 // constants
+      end
+    end
+
+    artifact 128816 "compound_document"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// manual includes
+#include \"config.h\"
+#include \"constants.h\"
+// end
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 129840 // compound_document
+      end
+    end
+
+    artifact 129456 "location"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+// manual includes
+#include \"config.h\"
+#include <qdir.h>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 128560 // location
+	class_ref 138416 // location_set
+      end
+    end
+
+    artifact 129840 "utility"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <config.h>
+#include <iostream>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 128432 // enumerate_path
+      end
+    end
+
+    artifact 182704 "text_template"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+#include <qmap.h>
+${declarations}
+class QXmlStreamReader;
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"config.h\"
+#include \"constants.h\"
+#include <qvector.h>
+#include <qtextstream.h>
+#include <QXmlStreamReader>
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 206256 // text_template
+      end
+    end
+
+    artifact 189488 "build_style"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+#include <qmap.h>
+${declarations}
+class QXmlStreamReader;
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"config.h\"
+#include \"constants.h\"
+#include <qdatetime.h>
+#include <qtextstream.h>
+#include <qvector.h>
+#include <QXmlStreamReader>
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 220080 // build_style
+      end
+    end
+  end
+
+  package_ref 141488 // Build system templates
+end

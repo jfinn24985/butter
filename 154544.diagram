@@ -1,0 +1,77 @@
+format 224
+
+classcanvas 128048 class_ref 185648 // buildfile_template
+  classdiagramsettings member_max_width 0 end
+  xyz 16 50 2000
+end
+classcanvas 128176 class_ref 186032 // project_template
+  classdiagramsettings member_max_width 0 end
+  xyz 19 154 2000
+end
+classcanvas 128304 class_ref 185904 // property_template
+  classdiagramsettings member_max_width 0 end
+  xyz 195 204 2000
+end
+classcanvas 128560 class_ref 186160 // external_project_template
+  classdiagramsettings member_max_width 0 end
+  xyz 235 85 2000
+end
+classcanvas 128816 class_ref 186288 // target_object_template
+  classdiagramsettings member_max_width 0 end
+  xyz 140 301 2000
+end
+classcanvas 129072 class_ref 192816 // psuedo_targets
+  classdiagramsettings member_max_width 0 end
+  xyz 227 133 3005
+end
+relationcanvas 128432 relation_ref 173872 // <directional aggregation>
+  from ref 128176 z 2001 stereotype "<<list>>" xyz 138 198 3000 to ref 128304
+  role_a_pos 138 183 3000 no_role_b
+  multiplicity_a_pos 179 219 3000 no_multiplicity_b
+end
+relationcanvas 128944 relation_ref 174128 // <directional aggregation>
+  from ref 128176 z 2001 stereotype "<<list>>" xyz 121 248 3000 to ref 128816
+  role_a_pos 195 274 3000 no_role_b
+  multiplicity_a_pos 170 274 3000 no_multiplicity_b
+end
+relationcanvas 129200 relation_ref 174256 // <directional aggregation>
+  from ref 128048 z 2001 stereotype "<<list>>" xyz 51 123 3000 to ref 128176
+  role_a_pos 86 127 3000 no_role_b
+  multiplicity_a_pos 61 127 3000 no_multiplicity_b
+end
+relationcanvas 129328 relation_ref 174384 // <directional aggregation>
+  from ref 128048 z 2001 stereotype "<<list>>" xyz 136 52 3000 to point 180 46
+  line 129456 z 2001 to point 175 12
+  line 129584 z 2001 to point 95 13
+  line 129712 z 2001 to ref 128048
+  role_a_pos 97 23 3000 no_role_b
+  multiplicity_a_pos 72 23 3000 no_multiplicity_b
+end
+relationcanvas 129968 relation_ref 174512 // <directional aggregation>
+  from ref 128048 z 3006 stereotype "<<list>>" xyz 157 112 3000 to ref 129072
+  role_a_pos 169 110 3000 no_role_b
+  multiplicity_a_pos 213 146 3000 no_multiplicity_b
+end
+relationcanvas 130096 relation_ref 174640 // <directional aggregation>
+  from ref 128048 z 2001 to point 272 61
+  line 130224 z 2001 to point 273 22
+  line 130352 z 2001 to point 203 6
+  line 130480 z 2001 to point 33 3
+  line 130608 z 2001 to ref 128048
+  role_a_pos 66 23 3000 no_role_b
+  multiplicity_a_pos 41 23 3000 no_multiplicity_b
+end
+relationcanvas 130736 relation_ref 174768 // <directional aggregation>
+  from ref 128048 z 2007 to point 243 76
+  line 130864 z 2007 to point 237 32
+  line 130992 z 2007 to point 147 24
+  line 131120 z 2007 to ref 128048
+  role_a_pos 120 18 3000 no_role_b
+  multiplicity_a_pos 120 54 3000 no_multiplicity_b
+end
+relationcanvas 131248 relation_ref 181296 // <directional aggregation>
+  from ref 128048 z 2001 stereotype "<<list>>" xyz 161 86 3000 to ref 128560
+  role_a_pos 171 68 3000 no_role_b
+  multiplicity_a_pos 219 104 3000 no_multiplicity_b
+end
+end

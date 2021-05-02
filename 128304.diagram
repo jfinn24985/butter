@@ -1,0 +1,37 @@
+format 224
+
+artifactcanvas 128048 artifact_ref 130352 // compound_document_test
+  xyz 190 51 2000
+end
+artifactcanvas 128176 artifact_ref 137008 // unittest
+  xyz 272 335 2000
+end
+artifactcanvas 128304 artifact_ref 130480 // butter.lib
+  xyz 523 335 2000
+end
+artifactcanvas 129072 artifact_ref 143536 // location_test
+  xyz 374 54 2000
+end
+artifactcanvas 129456 artifact_ref 182832 // text_template_test
+  xyz 57 160 2000
+end
+artifactcanvas 129712 artifact_ref 189616 // style_generate_test
+  xyz 546 161 2000
+end
+artifactcanvas 129840 artifact_ref 150064 // enumerate_path_test
+  xyz 53 275 2000
+end
+containcanvas 128560
+  from ref 128176 z 2006 to ref 128048
+containcanvas 129200
+  from ref 128176 z 2001 to ref 129072
+simplerelationcanvas 129328 simplerelation_ref 128048
+  from ref 128176 z 2001 to ref 128304
+end
+containcanvas 129584
+  from ref 128176 z 2001 to ref 129456
+containcanvas 129968
+  from ref 128176 z 2001 to ref 129840
+containcanvas 130096
+  from ref 128176 z 2001 to ref 129712
+end

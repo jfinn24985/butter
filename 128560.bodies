@@ -1,0 +1,17 @@
+class location
+!!!148784.cpp!!!	~location()
+for(location * c : children_) delete c;
+  
+!!!148656.cpp!!!	location(in a_path : unistr, inout a_parent : location)
+a_parent.children_.push_back(this);
+!!!149424.cpp!!!	full_path() : unistr
+enumerate_path result(this->path_);
+// Process locations from here to root
+for (const butter::location * tmp_ = this->parent_;
+	tmp_;
+	tmp_ = tmp_->parent_)
+{
+  enumerate_path lhs_( tmp_->path_ );
+  result = lhs_ / result;
+}
+return QDir::cleanPath(result.path());

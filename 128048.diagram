@@ -1,0 +1,67 @@
+format 224
+
+classcanvas 128048 class_ref 129840 // compound_document
+  classdiagramsettings member_max_width 0 end
+  xyz 46.2 5.1 2000
+end
+classcanvas 128176 class_ref 129968 // document_element
+  classdiagramsettings member_max_width 0 end
+  xyz 579.9 36.3 3005
+end
+classcanvas 129712 class_ref 131888 // compound_document_test
+  classdiagramsettings member_max_width 0 end
+  xyz 569.5 607 2000
+end
+classcanvas 129968 class_ref 129328 // constants
+  classdiagramsettings hide_attributes yes member_max_width 0 end
+  xyz 573.8 446.7 2005
+end
+classcanvas 130096 class_ref 8193 // UmlArtifact
+  classdiagramsettings member_max_width 0 end
+  xyz 357.6 694.6 2000
+end
+line 128304 ---+
+  from ref 128176 z 3006 to point 487 436
+  line 129456 z 3006 to ref 128048
+relationcanvas 128432 relation_ref 129712 // <directional composition>
+  from ref 128048 z 3006 to point 402 276
+  line 129328 z 3006 to ref 128176
+  role_a_pos 523 173 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128560 relation_ref 129840 // <directional composition>
+  from ref 128048 z 3006 to point 405 190
+  line 129200 z 3006 to ref 128176
+  role_a_pos 529 159 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128688 relation_ref 129968 // <directional composition>
+  from ref 128048 z 3006 to point 423 327
+  line 129584 z 3006 to ref 128176
+  role_a_pos 500 188 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128816 relation_ref 130096 // <directional composition>
+  from ref 128048 z 3006 stereotype "<<valuevector>>" xyz 373 356 3006 to ref 128176
+  role_a_pos 521 180 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128944 relation_ref 130224 // <directional composition>
+  from ref 128048 z 3006 to point 523 465
+  line 129072 z 3006 to ref 128176
+  role_a_pos 593 343 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129840 relation_ref 133424 // <dependency>
+  from ref 129712 z 2001 to ref 128048
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130352 relation_ref 187824 // <directional composition>
+  decenter_begin 208
+  decenter_end 910
+  from ref 130096 z 2001 stereotype "<<unique_ptr>>" xyz 231 719 3000 to ref 128048
+  role_a_pos 208 689 3000 no_role_b
+  multiplicity_a_pos 208 725 3000 no_multiplicity_b
+end
+end

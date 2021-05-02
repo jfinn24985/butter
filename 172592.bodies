@@ -1,0 +1,11 @@
+class location_state
+!!!280624.cpp!!!	find_uml_document(in name : unistr) : UmlItem
+BUTTER_REQUIRE (! name.isEmpty (), "Cannot look for a document without a name");  
+QVector< UmlItem* > Result;
+// Only check our deployment views.
+for( UmlPackage * pkg : this->packages_ )
+{
+  pkg->find_uml_document( name, Result );
+}
+return Result;
+

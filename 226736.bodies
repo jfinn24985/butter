@@ -1,0 +1,103 @@
+class build_style_test
+!!!322096.cpp!!!	build_style_constructor()
+// Static Lifetime method tests
+BOOST_CHECK( std::is_default_constructible< butter::build_style >::type{} );
+BOOST_CHECK( ! std::is_copy_constructible< butter::build_style >::type{} );
+BOOST_CHECK( ! std::is_move_constructible< butter::build_style >::type{} );
+BOOST_CHECK( ! (std::is_assignable< butter::build_style, butter::build_style >::type{}) );
+BOOST_CHECK( ! std::has_virtual_destructor< butter::build_style >::type{});
+
+// test constructor
+{
+  butter::build_style tmpl{};
+  BOOST_CHECK(tmpl.get_build_file_name().isEmpty());
+  BOOST_CHECK(tmpl.get_root_file_name().isEmpty());
+  BOOST_CHECK(tmpl.get_special_files().empty());
+  BOOST_CHECK(tmpl.get_templates().empty());
+  BOOST_CHECK(tmpl.get_properties().empty());
+}
+!!!323632.cpp!!!	build_style_read_basic()
+{
+  butter::build_style var;
+  
+  QXmlStreamReader x(xml_doc());
+  x.readNextStartElement();
+  var.read_style("gmake", x);
+  BOOST_CHECK_EQUAL(4, var.get_properties().size());
+  BOOST_CHECK_EQUAL(12, var.get_templates().size());
+  BOOST_CHECK_EQUAL(2, var.get_special_files().size());
+}
+!!!322224.cpp!!!	build_style_read_properties()
+{
+  butter::build_style var;
+  
+  QXmlStreamReader x(xml_doc());
+  x.readNextStartElement();
+  var.read_style("gmake", x);
+  BOOST_CHECK_EQUAL("makefile", var.get_build_file_name());
+  BOOST_CHECK_EQUAL("makefile", var.get_root_file_name());
+  {
+    butter::build_style::map_type::const_iterator itr = var.get_properties().find("executable-install-location");
+    BOOST_REQUIRE( itr != var.get_properties().end() );
+    BOOST_CHECK_EQUAL(QString("$(BINDIR)"), itr.value());
+  }
+  {
+    butter::build_style::map_type::const_iterator itr = var.get_properties().find("executable-install-mode");
+    BOOST_REQUIRE( itr != var.get_properties().end() );
+    BOOST_CHECK_EQUAL(QString("$(BINIFLAGS)"), itr.value());
+  }
+}
+!!!322352.cpp!!!	build_style_read_special_files()
+{
+  butter::build_style var;
+  
+  QXmlStreamReader x(xml_doc());
+  x.readNextStartElement();
+  var.read_style("gmake", x);
+  {
+    butter::build_style::map_type::const_iterator itr = var.get_special_files().find("system.mk");
+    BOOST_REQUIRE( itr != var.get_special_files().end() );
+    BOOST_CHECK_EQUAL(QString("## system.mk\n#\n# System Makefile\n#\n"), itr.value());
+  }
+  {
+    butter::build_style::map_type::const_iterator itr = var.get_special_files().find("local.mk");
+    BOOST_REQUIRE( itr != var.get_special_files().end() );
+    BOOST_CHECK_EQUAL(QString("## local.mk.tmpl\n\nOS ?= LINUX\nCOMP ?= GNU\nVARIANT ?= DEBUG\n"), itr.value());
+  }
+}
+!!!322480.cpp!!!	build_style_make_x_no_tmpl()
+// test constructor
+{
+  butter::build_style tmpl{};
+  butter::build_style::map_type p{};
+  BOOST_CHECK(tmpl.make_close(p).isEmpty());
+  BOOST_CHECK_EQUAL("# X\n", tmpl.make_comment_text("X"));
+  BOOST_CHECK_EQUAL("# START:name\n", tmpl.make_start_phrase("name"));
+  BOOST_CHECK_EQUAL("# END:name\n", tmpl.make_end_phrase("name"));
+  BOOST_CHECK(tmpl.make_element("binary", p).isEmpty());
+  BOOST_CHECK(tmpl.make_preamble(p).isEmpty());
+  BOOST_CHECK(tmpl.make_version(p).isEmpty());
+  p.insert("date", "today");
+  BOOST_CHECK_EQUAL("# today\n", tmpl.make_date(p));
+}
+!!!322608.cpp!!!	build_style_make_x_some_tmpl()
+// test make_* methods after reading in xml_doc
+{
+  butter::build_style tmpl{};
+  QXmlStreamReader x(xml_doc());
+  x.readNextStartElement();
+  tmpl.read_style("gmake", x);
+  butter::build_style::map_type p{};
+  BOOST_CHECK_EQUAL("# Local Variables:\n# mode:makefile\n# End:\n", tmpl.make_close(p));
+  BOOST_CHECK_EQUAL("## X\n", tmpl.make_comment_text("X"));
+  BOOST_CHECK_EQUAL("## START:name\n", tmpl.make_start_phrase("name"));
+  BOOST_CHECK_EQUAL("## END:name\n", tmpl.make_end_phrase("name"));
+  p.insert("target-name", "unittest");
+  BOOST_CHECK_EQUAL("\ninstall:: unittest$(SUFEXE)\n\t$(INSTALL) -d $(BINDIR)\n\t$(INSTALL) $(BINIFLAGS) $< $(BINDIR)/$<\n\n", tmpl.make_element("executable-install-target", p));
+  BOOST_CHECK_EQUAL("\ninclude $(ROOTDIR)/system.mk\n", tmpl.make_preamble(p));
+  p.insert("butter-version", "0.2beta");
+  p.insert("version", "0.1");
+  BOOST_CHECK_EQUAL("# Butter version 0.2beta\n# Project version 0.1\n", tmpl.make_version(p));
+  p.insert("date", "today");
+  BOOST_CHECK_EQUAL("# DATE: today\n", tmpl.make_date(p));
+}

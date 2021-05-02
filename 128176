@@ -1,0 +1,1172 @@
+format 224
+"Unit-tests" // Unit-tests
+  revision 21
+  modified_by 48 "finnerty"
+  // class settings
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
+  
+  cpp_h_dir "test"
+  cpp_src_dir "test"
+  classview 128176 "unit-tests"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    associated_deployment_view deploymentview_ref 128304 // unit-tests
+    class 226736 "build_style_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 214960 // <dependency>
+	relation 214576 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 214960 // <dependency>
+	  b parent class_ref 220080 // build_style
+      end
+
+      classrelation 214832 // <dependency>
+	relation 214448 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 214832 // <dependency>
+	  b parent class_ref 206256 // text_template
+      end
+
+      extra_member 176944 "op<<(os, QString)"
+	
+	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      extra_member 183472 "xml_doc"
+	
+	cpp "" "// Return a canonical XML document usable for testing.
+//
+// style = gmake
+// 2 x files (system.mk, local.mk)
+// 4 x properties (root-file, build-file, executable-install-location, executable-install-mode)
+// 9 x templates (comment, start-phrase, end-phrase, root-preamble, preamble, package,
+//                build-target, install-target, sublocation)
+static const QByteArray & xml_doc()
+{
+  static QByteArray xmldoc{ \"<style label='gmake'>\\n<file label='system.mk'>## system.mk\\n#\\n# System Makefile\\n#\\n</file>\\n<file label='local.mk'>## local.mk.tmpl\\n\\nOS ?= LINUX\\nCOMP ?= GNU\\nVARIANT ?= DEBUG\\n</file>\\n<!-- name of the top-most generated buildfile -->\\n<property label='root-file'>makefile</property>\\n\\n<!-- name of build file in any sub-directories -->\\n<property label='build-file'>makefile</property>\\n<!-- default for install flags -->\\n<property label='executable-install-location'>$(BINDIR)</property>\\n<property label='executable-install-mode'>$(BINIFLAGS)</property>\\n\\n<!-- how to make comments -->\\n<template label='comment'>## <replace label='text'/></template>\\n<template label='start-phrase'>## START:<replace label='name'/>\\n</template>\\n<template label='end-phrase'>## END:<replace label='name'/>\\n</template>\\n\\n\\n<!-- template for start of root makefile -->\\n<template label='root-preamble'><option label='rootdir'>export ROOTDIR:=<replace label='location_root'/></option>\\ninclude $(ROOTDIR)/system.mk\\n</template>\\n\\n<!-- template for start of subdirectory makefiles -->\\n<template label='preamble'>\\ninclude $(ROOTDIR)/system.mk\\n</template>\\n\\n<!-- template for start of (internal) package -->\\n<template label='package'>\\n<option label='SYSINCLUDE'>export SYSINCLUDE:= <replace label='package_includes'/>\\n</option><option label='SYSCFLAGS'>export SYSCFLAGS:= <replace label='package_cflags'/>\\n</option><option label='SYSC++FLAGS'>export SYSC++FLAGS:= <replace label='package_c++flags'/>\\n</option><option label='SYSFFLAGS'>export SYSFFLAGS:= <replace label='package_fflags'/>\\n</option><option label='SYSLDFLAGS'>export SYSLDFLAGS:= <replace label='package_ldflags'/>\\n</option></template>\\n\\n<!-- template for a target -->\\n<template label='build-target'>\\n<option label='SRC'><replace label='TARGET_NAME'/>SRC:=<replace label='target_src'/>\\n</option><option label='INCLUDE'><replace label='TARGET_NAME'/>INCLUDE:= $(SYSINCLUDE) <replace label='target_include'/>\\n</option><option label='CFLAGS'><replace label='TARGET_NAME'/>CFLAGS:= $(SYSCFLAGS) <replace label='target_cflags'/>\\n</option><option label='C++FLAGS'><replace label='TARGET_NAME'/>C++FLAGS:= $(SYSC++FLAGS) <replace label='target_c++flags'/>\\n</option><option label='LDFLAGS'><replace label='TARGET_NAME'/>LDFLAGS:= $(SYSLDFLAGS) <replace label='target_ldflags'/>\\n</option><option label='DINC'><replace label='TARGET_NAME'/>DINC := $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFCSRC)=.$(SUFDEP)))\\ninclude $(<replace label='TARGET_NAME'/>DINC)</option>\\n\\n<replace label='TARGET_NAME'/>OBJ := $(<replace label='TARGET_NAME'/>OBJ) $(filter %.o, $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFOBJ)))\\nCLEAN_TEMP := $(CLEAN_TEMP) $(<replace label='TARGET_NAME'/>OBJ)\\n\\n<replace label='target_name'/>$(SUFEXE) :: CFLAGS:=... $(patsubst %,-I%,$(<replace label='TARGET_NAME'/>INCLUDE)) $(VARIANTFLAGS) ...\\n<replace label='target_name'/>$(SUFEXE) :: C++FLAGS:=... $(<replace label='TARGET_NAME'/>INCLUDE) ...\\n<replace label='target_name'/>$(SUFEXE) :: $(<replace label='TARGET_NAME'/>OBJ) <replace label='target_object'/> <replace label='target_local_libs'/> | $(<replace label='TARGET_NAME'/>DINC) \\n#?	$(C++) $(C++FLAGS) -o <replace label='target_name'/>$(SUFEXE) $(<replace label='TARGET_NAME'/>OBJ) $(<replace label='TARGET_NAME'/>LDFLAGS) $(LDFLAGS)\\n\\nall :: <replace label='target_name'/>$(SUFEXE)\\n\\nCLEAN_TARGETS := $(CLEAN_TARGETS) <replace label='target_name'/>$(SUFEXE)\\n</template>\\n\\n<template label='executable-install-target'>\\ninstall:: <replace label='target-name'/>$(SUFEXE)\\n<option label='where'>	$(INSTALL) -d <replace label='executable-install-location'/>\\n</option><option label='install'>	$(INSTALL) <replace label='executable-install-mode'/> $&lt; <replace label='executable-install-location'/>/$&lt;\\n</option>\\n</template>\\n<template label='sublocation'>\\nDIRS:= $(DIRS) <replace label='location_dir'/></template>\\n<template label='close'># Local Variables:\\n# mode:makefile\\n# End:\\n</template><template label='version'># Butter version <replace label='butter-version'/>\\n<option label='version'># Project version <replace label='version'/>\\n</option></template><template label='date'># DATE: <replace label='date'/>\\n</template></style>\" };
+  return xmldoc;
+}
+
+
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+	comment "Return a standard XML document usable for testing."
+      end
+
+      operation 322096 "build_style_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 323632 "build_style_read_basic"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322224 "build_style_read_properties"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322352 "build_style_read_special_files"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322480 "build_style_make_x_no_tmpl"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 322608 "build_style_make_x_some_tmpl"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+    end
+
+    class 131888 "compound_document_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 133552 // <dependency>
+	relation 133424 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 133552 // <dependency>
+	  b parent class_ref 129840 // compound_document
+      end
+
+      operation 156336 "compdoc_empty_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 162864 "compdoc_access"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 162992 "compdoc_copy_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 163120 "compdoc_assignment"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 163248 "compdoc_move"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 169904 "compdoc_merge"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 176560 "compdoc_parse"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 169776 "compdoc_reset"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 170032 "compdoc_write"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 165680 "enumerate_path_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      extra_member 149808 "op<<(os, QString)"
+	
+	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      classrelation 160944 // <dependency>
+	relation 160560 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 160944 // <dependency>
+	  b parent class_ref 128432 // enumerate_path
+      end
+
+      operation 225200 "enumerate_path_normalise"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 214576 "enumerate_path_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 214704 "enumerate_path_access_methods_unix"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 225328 "enumerate_path_access_methods_dos"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218416 "enumerate_path_create_common_unix"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218544 "enumerate_path_create_common_dos"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218288 "enumerate_path_create_relative_unix"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218672 "enumerate_path_create_relative_dos"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 218160 "enumerate_path_modify_method"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 145712 "location_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 147632 // <dependency>
+	relation 147248 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 147632 // <dependency>
+	  b parent class_ref 128560 // location
+      end
+
+      operation 192432 "location_root_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 193584 "location_child_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 193712 "location_value_method"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 159152 "location_set_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 167600 // <dependency>
+	relation 167216 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 167600 // <dependency>
+	  b parent class_ref 138416 // location_set
+      end
+
+      operation 207536 "location_set_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 207920 "location_set_insert_method"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 208048 "location_set_insert_multiple"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 245168 "location_set_insert_below_root"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 245552 "location_set_insert_src_dir"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 245680 "location_set_insert_negative_dir"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 245936 "location_set_insert_sibling_root"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 252592 "location_set_insert_sibling_root_two"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 207792 "location_set_value_method"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 252720 "location_set_find_closest"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 213552 "text_template_test"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 201648 // <dependency>
+	relation 201264 -_->
+	  a public
+	    cpp default "#include in source"
+	    classrelation_ref 201648 // <dependency>
+	  b parent class_ref 206256 // text_template
+      end
+
+      extra_member 163248 "op<<(os, QString)"
+	
+	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 294960 "text_template_constructor"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 295088 "text_template_push_back"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296240 "text_template_instantiate_textonly"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296368 "text_template_instantiate_replace_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296496 "text_template_instantiate_replace_match"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296624 "text_template_instantiate_phrase_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296752 "text_template_instantiate_phrase_match"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 296880 "text_template_instantiate_nest_phrase_nomatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297008 "text_template_instantiate_nest_phrase_innermatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297136 "text_template_instantiate_nest_phrase_outermatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297264 "text_template_instantiate_nest_phrase_allmatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297392 "text_template_instantiate_bad_nest_phrase"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 298032 "text_template_read_basic"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+    end
+
+    activity 128048 "location_set_insert_sibling_root"
+      specification operation_ref 245680 // location_set_insert_negative_dir
+    end
+  end
+
+  deploymentview 128304 "unit-tests"
+    //deployment diagram settings
+    deploymentdiagramsettings
+     end
+    deploymentdiagram 128304 "Unit tests"
+      deploymentdiagramsettings
+       end
+      size A4
+    end
+
+    artifact 130352 "compound_document_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#define BOOST_TEST_DYN_LINK // only in one file
+#define BOOST_TEST_MODULE butter2
+#include <boost/test/unit_test.hpp>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 131888 // compound_document_test
+      end
+    end
+
+    artifact 150064 "enumerate_path_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <boost/test/unit_test.hpp>
+
+#include <iostream>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 165680 // enumerate_path_test
+      end
+    end
+
+    artifact 143536 "location_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <boost/test/unit_test.hpp>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 145712 // location_test
+	class_ref 159152 // location_set_test
+      end
+    end
+
+    artifact 189616 "build_style_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <boost/test/unit_test.hpp>
+#include <QXmlStreamReader>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 226736 // build_style_test
+      end
+    end
+
+    artifact 182832 "text_template_test"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <boost/test/unit_test.hpp>
+#include <QXmlStreamReader>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 213552 // text_template_test
+      end
+    end
+
+    artifact 137008 "unittest"
+      stereotype "executable"
+      associated_artifacts
+	artifact_ref 130352 // compound_document_test
+	artifact_ref 143536 // location_test
+	artifact_ref 150064 // enumerate_path_test
+	artifact_ref 182832 // text_template_test
+	artifact_ref 189616 // build_style_test
+      end
+      ncouples 10
+      key "genpro pro" value "/home/finnerty/tmp/butter2/butter/test/unittest.pro"
+      key "genpro path" value "/tmp/finnerty/butter2/butter"
+      key "genpro target" value "/home/finnerty/tmp/butter2/butter/test/unittest"
+      key "genpro tmplt" value "app"
+      key "genpro config" value "debug warn_on qt console"
+      key "genpro defines" value "WITHCPP"
+      key "genpro includepath" value ".."
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value "build"
+      key "genpro footer" value "QT += qt3support"
+      simplerelation 128048
+	-_->
+	  on artifact_ref 130480 // butter.lib
+      end
+    end
+  end
+end

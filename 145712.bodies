@@ -1,0 +1,33 @@
+class location_test
+!!!192432.cpp!!!	location_root_constructor()
+butter::location loc;
+const QString t{ '.' };
+BOOST_CHECK_EQUAL(0, loc.children().size());
+BOOST_CHECK(t == loc.path());
+BOOST_CHECK(t == loc.full_path());
+BOOST_CHECK(nullptr == loc.value());
+BOOST_CHECK(nullptr == loc.parent());
+
+!!!193584.cpp!!!	location_child_constructor()
+std::unique_ptr<butter::location> root{ new butter::location }; 
+const QString t{ '.' };
+butter::location * loc = new butter::location{ "subpath", *root };
+
+BOOST_CHECK_EQUAL(1, root->children().size());
+BOOST_CHECK(t == root->path());
+BOOST_CHECK(t == root->full_path());
+BOOST_CHECK(nullptr == root->value());
+BOOST_CHECK(nullptr == root->parent());
+
+BOOST_CHECK_EQUAL(0, loc->children().size());
+BOOST_CHECK("subpath" == loc->path());
+BOOST_CHECK("subpath" == loc->full_path());
+BOOST_CHECK(nullptr == loc->value());
+BOOST_CHECK(root.get() == loc->parent());
+
+!!!193712.cpp!!!	location_value_method()
+butter::location loc;
+int dpi{ 314 };
+const QString t{ '.' };
+loc.value(&dpi);
+BOOST_CHECK_EQUAL(314, *reinterpret_cast<const int *>(loc.value()));

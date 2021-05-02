@@ -1,0 +1,43 @@
+class log
+!!!154544.cpp!!!	~log()
+// NOTE: This will only be called during program exit.
+
+// For some reason under WIN32 we get a violation error, when we
+// reset the pointer, so here we call the dtor and then release
+// the pointers.
+if (DEBUG)
+{
+  if (NULL != debug_os_.get ())
+  {
+    debug_os_->~QTextStream ();
+    debug_os_.release ();
+  }
+  if (NULL != debug_file_.get ())
+  {
+    debug_file_->flush ();
+    debug_file_->~QFile ();
+    debug_file_.release ();
+  }
+}
+
+!!!154672.cpp!!!	debug_log(in a_fname : sbyte) : void
+BUTTER_ALWAYS (DEBUG, "Programming error: attempt to set debug log in release build");
+debug_file_ = std::unique_ptr< QFile >(new QFile (a_fname));
+if (! debug_file_->open (IO_WriteOnly))
+{
+  QString msg_ ("<p>Unable to open log file for read/writing: ");
+  msg_.append (debug_file_->name ());
+  msg_.append ("</p>");
+  debug_os_ = std::unique_ptr< QTextOStream >(); // Reset stream
+  throw std::runtime_error (msg_.utf8 ().data ());
+}
+else
+{
+  debug_os_ = std::unique_ptr< QTextOStream >(new QTextOStream (debug_file_->handle ()));
+}
+
+!!!155184.cpp!!!	stream() : QTextOStream
+  BUTTER_ALWAYS (DEBUG, "Programming error: attempt to get debug log in release build");
+  return *debug_os_;
+!!!155312.cpp!!!	trace(in a_lvl : log::log_levels, in a_msg : sbyte) : void
+  if (level_ >= a_lvl) UmlCom::trace (a_msg);

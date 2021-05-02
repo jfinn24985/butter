@@ -1,0 +1,36 @@
+format 224
+
+classinstancecanvas 128176 classinstance_ref 128176 // global_properties
+  xyz 59 107 2000
+end
+classinstancecanvas 128304 classinstance_ref 128304 // local_tmpl
+  xyz 65 25 2005
+end
+classinstancecanvas 128432 classinstance_ref 128432 // a_project
+  xyz 35 169 2000
+end
+classinstancecanvas 128560 classinstance_ref 128560 // project_settings
+  xyz 241 170 2000
+end
+classinstancecanvas 128816 classinstance_ref 128688 // external_settings
+  xyz 185 209 2000
+end
+classinstancecanvas 128944 classinstance_ref 128816 // object_targets
+  xyz 139 252 2000
+end
+classinstancecanvas 129072 classinstance_ref 128944 // binary_targets
+  xyz 255 292 2000
+end
+classinstancecanvas 129200 classinstance_ref 129072 // library_targets
+  xyz 264 332 2000
+end
+classinstancecanvas 129328 classinstance_ref 135600 // subprojects
+  xyz 252 372 2000
+end
+classinstancecanvas 129456 classinstance_ref 135728 // system
+  xyz 305 57 2000
+end
+objectlinkcanvas 128688 norel
+  from ref 128432 z 2001 to ref 128560
+  no_role_a no_role_b
+end

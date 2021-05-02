@@ -1,0 +1,95 @@
+class cmake_generator
+!!!134064.cpp!!!	create() : std::unique_ptr< base_generator >
+  std::unique_ptr< base_generator > Result (new cmake_generator);
+  return Result;
+!!!134448.cpp!!!	descendent_link(inout a_art : compound_artifact, inout a_sys : compound_artifact, in a_loc : location) : void
+// Keep parent dir definitions.
+if ( NULL != a_loc.parent() )
+{
+  // Add us to base makefile
+  QString tmp_;
+  QTextOStream link_os_( &tmp_ );
+  link_os_ << "add_subdirectory (";
+  link_os_ << pathcmp( root_dir().create_relative( a_loc.full_path() ) ).path();
+  link_os_ << ")\n";
+  a_sys.document().append_close_value( tmp_ );
+}
+
+
+!!!135088.cpp!!!	mangle(in input : unistr) : unistr
+const char dollar_('$');
+const char escape_('\\');
+const char left_paren_('(');
+const char right_paren_(')');
+std::stack< char > quotes_;
+for (unsigned int cursor_(0); cursor_ < input.length (); ++cursor_)
+{
+  const char c_ = input[cursor_].latin1 ();
+  BUTTER_ALWAYS('\0' != c_,"<p><b>Error:</b> No support for non-ASCII/non-latin1 characters.</p>");
+  switch (c_)
+  {
+  case dollar_:
+  {
+    if (cursor_ + 1 < input.length () && left_paren_ == input[cursor_ + 1])
+    {
+      input[cursor_ + 1] = '{';
+      ++cursor_;
+    }
+    break;
+  }
+  case escape_:
+  {
+    ++cursor_;
+    break;
+  }
+  case '\'':
+  case '"':
+  case '`':
+  {
+    if (quotes_.empty () || quotes_.top () != c_)
+    {
+      quotes_.push (c_);
+    }
+    else
+    {
+      quotes_.pop ();
+    }
+    break;
+  }
+  case left_paren_:
+  {
+    quotes_.push (right_paren_);
+    break;
+  }
+  case right_paren_:
+  {
+    if (quotes_.empty () || quotes_.top () != c_)
+    {
+      input[cursor_] = '}';
+    }
+    else
+    {
+      quotes_.pop ();
+    }
+    break;
+  }
+  default: // do nothing
+    break;
+  }
+}
+
+if (! quotes_.empty ())
+{
+  throw std::runtime_error ("<p><b>Error</b> Unmatched quotes in string: " + std::string(input.utf8()) + "</p>");
+}
+while (true)
+{
+  static const QString od_ ("OUTPUTDIR");
+  static const QString cd_ ("CMAKE_BINARY_DIR");
+  const int found_at_ (input.find (od_));
+  if (found_at_ == -1) break;
+  input.replace (found_at_, od_.length (), cd_);
+}
+return input;
+
+
