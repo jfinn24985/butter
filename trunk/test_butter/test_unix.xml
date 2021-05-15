@@ -21,7 +21,7 @@
   <property name="cmake-builder" >%(make)s -k %(make-arg)s install</property>
   <property name="cmake-cleaner" >%(make)s -k %(make-arg)s clean</property>
   <property name="patch-args" >-l -t -i</property>
-  <property name="checkout-tool" >svn</property>
+  <property name="checkout-tool" >git</property>
   <property name="checkout-suf" ></property>
   <property name="exe-suf" ></property>
   <property name="ark-suf" >.a</property>
@@ -30,7 +30,7 @@
   <property name="cmdsep" >;</property>
   <property name="lib-dir" >\lib</property>
   <property name="bin-dir" >\bin</property>
-  <property name="checkout-url" >file:///home/finnerty/Office/Programming/svnroot/butter/trunk</property>
+  <property name="checkout-url" >file:///home/finnerty/src/butter/trunk</property>
   <property name="compare-args" >
 	  <!--Ignore lines with dates: -I '^#[MTWTFS][ouehra][neduit] ' -I '^#Butter.*version'--> -w -B</property>
   <property name="set-library-path">LD_LIBRARY_PATH=ENVVAR{LD_LIBRARY_PATH}:PATH{%(library-path)s} %(cmdsep)s </property>

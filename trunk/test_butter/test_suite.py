@@ -607,7 +607,8 @@ The templates for the various operations are:
 %(unzip-command) %(location) %(to-dir)"""
     __ctor = constructor(verb.element_name, lambda name, attr: verb_checkout.make(name, attr))
     #How to handle different file/dir types
-    _checkout = { u"svn": ( """%(_cmd_name_)s co %(location)s %(base)s""", """Unable to checkout branch from SVN repository %(location)s""" )
+    _checkout = { u"git": ( """%(_cmd_name_)s clone %(location)s %(base)s""", """Unable to clone from git repository %(location)s""" ),
+ u"svn": ( """%(_cmd_name_)s co %(location)s %(base)s""", """Unable to checkout branch from SVN repository %(location)s""" )
 , u"cvs": ( """%(_cmd_name_)s -d %(url)s co %(branch)s -d %(base)s""", """Unable to checkout from CVS branch %(branch)s from repository %(url)s""" )
 ,  u"tar": ( """%(_cmd_name_)s %(compress)s -x -f %(location)s -D %(base)s""", """Unable to unpack archive %(location)s""" )
 ,  u"zip": ( """%(_cmd_name_)s %(location)s %(_to_dir_)s""", """Unable to unpack archive %(location)s""" )
@@ -1604,8 +1605,8 @@ if self.install[buildstyle]:
 if __name__ == "__main__":
   if not _DEBUG:
     print "<html encoding='UTF-8'><body>"
-  suite = test_suite ()
-  suite.run ()
+  suite = test_suite()
+  suite.run()
   print "</body></html>"
   import tkMessageBox
   tkMessageBox.showinfo(title="test_suite", message="Test suite has completed")
