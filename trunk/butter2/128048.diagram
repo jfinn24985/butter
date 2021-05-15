@@ -42,8 +42,8 @@ relationcanvas 128688 relation_ref 129968 // <directional composition>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128816 relation_ref 130096 // <directional composition>
-  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 351 313 3006 to ref 128176
-  role_a_pos 521 187 3000 no_role_b
+  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 351 318.5 3006 to ref 128176
+  role_a_pos 521 188 3000 no_role_b
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128944 relation_ref 130224 // <directional composition>
@@ -60,8 +60,13 @@ end
 relationcanvas 130352 relation_ref 187824 // <directional composition>
   decenter_begin 208
   decenter_end 910
-  from ref 130096 z 2001 stereotype "<<unique_ptr>>" xyz 231 769 3000 to ref 128048
-  role_a_pos 208 784 3000 no_role_b
-  multiplicity_a_pos 208 820 3000 no_multiplicity_b
+  from ref 130096 z 2001 stereotype "<<unique_ptr>>" xyz 231 784 3000 to ref 128048
+  role_a_pos 208 803 3000 no_role_b
+  multiplicity_a_pos 208 839 3000 no_multiplicity_b
+end
+relationcanvas 130480 relation_ref 234160 // <directional composition>
+  from ref 128048 z 3006 to ref 128176
+  role_a_pos 508 188 3000 no_role_b
+  no_multiplicity_a no_multiplicity_b
 end
 end

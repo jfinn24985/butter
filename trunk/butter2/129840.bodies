@@ -93,7 +93,7 @@ for ( QString line_ = a_is.readLine();
       }
       else if ( line_.contains( date_label() ) )
       {
-        cache_ = &tmp.date_;
+        cache_ = &tmp.date_orig_;
       }
       else if ( line_.contains( preamble_label() ) )
       {
@@ -189,7 +189,7 @@ if( ! this->close_.value.isEmpty() )
 {
   this->close_.value.truncate( 0 );
 }
-!!!141872.cpp!!!	write(inout a_os : QTextOStream) : void
+!!!141872.cpp!!!	write(inout a_os : QTextOStream, in a_use_origin : bool = false) : void
 BUTTER_REQUIRE( ! this->start_phrase_.isEmpty(), "Can not write document without phrases set." );
 BUTTER_REQUIRE( ! this->end_phrase_.isEmpty(), "Can not write document without phrases set." );
 const QString start_phrase{ this->start_phrase_ };
@@ -209,7 +209,14 @@ auto do_write = [&start_phrase, &end_phrase]( QTextStream & a_os_, const documen
 };
 
 do_write( a_os, this->version_ );
-do_write( a_os, this->date_ );
+if(a_use_origin)
+{
+  do_write( a_os, this->date_orig_ );
+}
+else
+{
+  do_write( a_os, this->date_ );
+}
 do_write( a_os, this->preamble_ );
 for ( auto const& elem : this->targets_ )
 {

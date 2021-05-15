@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 36
+  revision 37
   modified_by 48 "finnerty"
   // class settings
   
@@ -1004,42 +1004,6 @@ library targets will be static.
 	comment "Build file section label for a target section.
 "
       end
-
-      operation 266416 "butter_output_label"
-	class_operation public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  return \"butter output\"; }
-"
-	
-	
-	
-	
-	comment "User property name for UMLArtifacts
-
-* For artifacts with stereotype \"document\" if the property value is 
-'nowrite' then the document is not written to the filesystem.  Any
-other value will be used as a filename extension when construting
-the artifact's path."
-      end
-
-      operation 266544 "nowrite_value"
-	class_operation public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  return \"nowrite\"; }
-"
-	
-	
-	
-	
-	comment "Value of \"butter_output\" property that indicates an artifact
-should not be considered for writing to the file system."
-      end
     end
 
     class 129840 "compound_document"
@@ -1404,6 +1368,17 @@ ${inlines}
 	  b parent class_ref 129968 // document_element
       end
 
+      classrelation 234544 // date_orig_ (<directional composition>)
+	relation 234160 *-->
+	  a role_name "date_orig_" private
+	    comment "The date texts
+"
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 234544 // date_orig_ (<directional composition>)
+	  b parent class_ref 129968 // document_element
+      end
+
       attribute 138032 "postscript_"
 	private explicit_type "unistr"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -1472,6 +1447,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
 : end_phrase_(), start_phrase_()
 , close_( close_label(), {}, {} )
 , date_( date_label(), {}, {} )
+, date_orig_( date_label(), {}, {} )
 , postscript_()
 , preamble_( preamble_label(), {}, {} )
 , targets_()
@@ -1504,6 +1480,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
     : end_phrase_( source.end_phrase_ ), start_phrase_( source.start_phrase_ )
     , close_( source.close_ )
     , date_( source.date_ )
+    , date_orig_( source.date_orig_ )
     , postscript_( source.postscript_ )
     , preamble_( source.preamble_ )
     , targets_( source.targets_ )
@@ -1525,6 +1502,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
     , start_phrase_( std::move( source.start_phrase_ ) )
     , close_( std::move( source.close_ ) )
     , date_( std::move( source.date_ ) )
+    , date_orig_( std::move( source.date_orig_ ) )
     , postscript_( std::move( source.postscript_ ) )
     , preamble_( std::move( source.preamble_ ) )
     , targets_( std::move( source.targets_ ) )
@@ -1545,6 +1523,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
       std::swap( start_phrase_, source.start_phrase_ );
       std::swap( close_, source.close_ );
       std::swap( date_, source.date_ );
+      std::swap( date_orig_, source.date_orig_ );
       std::swap( postscript_, source.postscript_ );
       std::swap( preamble_, source.preamble_ );
       std::swap( targets_, source.targets_ );
@@ -1660,6 +1639,20 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	
 	
 	comment "Get the date element."
+      end
+
+      operation 375472 "date_original"
+	stereotype "const"
+	const constvalue public return_type class_ref 129968 // document_element
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+   return this->date_;
+}"
+	
+	
+	
+	
+	comment "Get the date element as read in during parse"
       end
 
       operation 138928 "empty"
@@ -1975,11 +1968,13 @@ date elements unchanged."
 
       operation 141872 "write"
 	preserve_cpp_body_indent const public explicit_return_type "void"
-	nparams 1
+	nparams 2
 	  param inout name "a_os" explicit_type "QTextOStream"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "a_use_origin" explicit_type "bool"
+	    defaultvalue "false"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -4899,6 +4894,65 @@ ${inlines}
 	
 	
 	comment "Standard run sequence"
+      end
+
+      operation 374960 "butter_application"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "argc" explicit_type "int"
+	  param in name "argv" explicit_type "char"
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} ** ${p1}${v1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}, ${t1} ** ${p1}${)}${volatile}${throw}
+: QCoreApplication(${p0}, ${p1})
+, interaction_(0)
+, port_(0)
+, root_()
+, style_() {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 375088 "~butter_application"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
+"
+	
+	
+	
+	
+      end
+
+      operation 375216 "butter_application"
+	stereotype "copy"
+	private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 233264 // butter_application
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 375344 "operator="
+	private return_type class_ref 233264 // butter_application
+	nparams 1
+	  param in name "source" type class_ref 233264 // butter_application
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} = delete;
+"
+	
+	
+	
+	
       end
     end
 

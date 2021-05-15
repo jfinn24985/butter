@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 98
+  revision 99
   modified_by 48 "finnerty"
   // class settings
   
@@ -753,6 +753,44 @@ ${members}};
       comment " This class manages 'artifacts'
 
  You can modify it as you want (except the constructor)"
+      operation 266416 "butter_output_name"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static const ${type} s{\"butter output\"};
+  return s;
+}
+"
+	
+	
+	
+	
+	comment "User property name for UMLArtifacts
+
+* For artifacts with stereotype \"document\" if the property value is 
+'nowrite' then the document is not written to the filesystem.  Any
+other value will be used as a filename extension when construting
+the artifact's path."
+      end
+
+      operation 266544 "nowrite_value"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return \"nowrite\"; }
+"
+	
+	
+	
+	
+	comment "Value of \"butter_output\" property that indicates an artifact
+should not be considered for writing to the file system."
+      end
+
       classrelation 16001 // <generalisation>
 	relation 16001 ---|>
 	  a public
@@ -854,7 +892,7 @@ artifact. "
 	  param in name "start_phrase" explicit_type "unistr"
 	  param in name "end_phrase" explicit_type "unistr"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -5717,19 +5755,24 @@ ${definition}"
 	artifact_ref 128130 // UmlStateItem
 	artifact_ref 128256 // UmlBaseState
 	artifact_ref 128386 // UmlState
+	artifact_ref 128432 // constants
 	artifact_ref 128512 // UmlBaseStateDiagram
 	artifact_ref 128642 // UmlStateDiagram
 	artifact_ref 128768 // StateBehavior
+	artifact_ref 128816 // compound_document
 	artifact_ref 128896 // UmlBaseTransition
 	artifact_ref 129026 // UmlTransition
 	artifact_ref 129152 // TransitionBehavior
 	artifact_ref 129280 // UmlBaseRegion
 	artifact_ref 129410 // UmlRegion
+	artifact_ref 129456 // location
 	artifact_ref 129536 // UmlBaseStateAction
 	artifact_ref 129666 // UmlStateAction
 	artifact_ref 129794 // UmlPseudoState
+	artifact_ref 129840 // utility
 	artifact_ref 129920 // UmlBaseInitialPseudoState
 	artifact_ref 130050 // UmlInitialPseudoState
+	artifact_ref 130096 // config
 	artifact_ref 130176 // UmlBaseEntryPointPseudoState
 	artifact_ref 130306 // UmlEntryPointPseudoState
 	artifact_ref 130432 // UmlBaseFinalState
@@ -5863,7 +5906,24 @@ ${definition}"
 	artifact_ref 167426 // UmlStructuralFeatureAction
 	artifact_ref 167552 // UmlBaseWriteStructuralFeatureAction
 	artifact_ref 167682 // UmlWriteStructuralFeatureAction
+	artifact_ref 182704 // text_template
+	artifact_ref 189488 // build_style
+	artifact_ref 202800 // base_log
+	artifact_ref 209328 // mymain
+	artifact_ref 209456 // location_state
+	artifact_ref 215984 // log
       end
+      ncouples 10
+      key "genpro pro" value "/home/finnerty/tmp/butter2/butter/butter.pro"
+      key "genpro path" value "/home/finnerty/tmp/butter2/butter/"
+      key "genpro target" value "/home/finnerty/tmp/butter2/butter/butter"
+      key "genpro tmplt" value "app"
+      key "genpro config" value "debug warn_on qt console"
+      key "genpro defines" value "WITHCPP"
+      key "genpro includepath" value ""
+      key "genpro dependpath" value ""
+      key "genpro objectsdir" value "build"
+      key "genpro footer" value "QT += qt3support network"
       comment "  Reference all the components used to made a C++ executable,
   used by 'genpro' to produce a .pro file allowing to produce a Makefile
   with 'tmake' or 'qmake'"
@@ -5871,21 +5931,10 @@ ${definition}"
 
     artifact 6657 "Main"
       stereotype "source"
-      cpp_src "#include <qapplication.h>
-
+      cpp_src "
 #include \"UmlCom.h\"
-#include \"UmlItem.h\"
-#include \"UmlPackage.h\"
-#include \"UmlArtifact.h\"
-#include \"butter/base_generator.h\"
-#include \"butter/basic_style.h\"
-#include \"butter/location.h\"
-#include \"butter/style.h\"
-#include \"butter/butter_constants.h\"
-#include \"butter/config.h\"
+#include \"mymain.h\"
 
-#include <qtextstream.h>
-#include <qmessagebox.h>
 #ifdef __unix__
 #include <unistd.h>
 #endif
@@ -5897,96 +5946,8 @@ ${definition}"
 
 int main( int argc, char ** argv )
 {
-  unsigned int port = 0; // Port for connection to bouml.
-  // User-interaction variable
-  //    0 = ask user
-  //    1 = assume all answers are \"Ok\"
-  //    2 = assume all answers are \"Abort/Cancel\"
-  unsigned int interaction = 0;
-  QApplication a( argc, argv );
-  if ( argc < 2 )
-  {
-    return -1;
-  }
-
-  if( argc == 2 )
-  {
-    port = QString( argv[1] ).toUInt();
-  }
-  else
-  {
-    for( int c_ = 1; c_ != argc; ++c_ )
-    {
-      if( QString( argv[c_] ) == \"-test:ok\" )
-      {
-        interaction = 1;
-      }
-      else if ( QString( argv[c_] ) == \"-test:cancel\" )
-      {
-        interaction = 2;
-      }
-      else
-      {
-        port = QString( argv[c_] ).toUInt();
-      }
-    }
-  }
-
-  if ( UmlCom::connect( port ) )
-  {
-    try
-    {
-      UmlCom::trace( \"<b>build system generator</b> \" + butter::butter_constants::BUTTER_VERSION + \"<br>\" );
-      if ( DEBUG and 0 == interaction )
-      {
-        QString msg_;
-        QTextOStream mos_( &msg_ );
-#ifdef __unix__
-        mos_ << \"Hit Ok to continue. If you want to debug this application attach to process [pid=\"
-             << getpid() << \"] before continuing.\";
-#else
-#ifdef _WIN32
-        mos_ << \"Hit Ok to continue. If you want to debug this application attach to process [Id=\"
-             << GetCurrentProcessId() << \"] before continuing.\";
-#else
-        mos_ << \"Hit Ok to continue. If you want to debug this application attach to butter process now.\";
-#endif
-#endif
-        QMessageBox msg_box_( butter::butter_constants::BUTTER_VERSION, msg_, QMessageBox::Warning, QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton, QMessageBox::NoButton );
-        msg_box_.exec();
-      }
-      BUTTER_CHECK( NULL != UmlPackage::getProject (), \"Error: no project defined!<br>\" );
-      // Parse the project into a location tree
-      // TODO IN PROCESS
-      std::unique_ptr< butter::location_set > base_( butter::location_set::parse_project( *UmlPackage::getProject(), interaction ) );
-
-      // TODO BELOW
-      // Generate the build-system files.
-      std::unique_ptr< butter::base_generator > writer_( butter::style::get_style().create_writer() );
-      writer_->create_system( *base_.get(), *UmlPackage::getProject() );
-      // Write the build-system files.
-      butter::location::write_documents( *base_.get() );
-    }
-    catch ( const std::exception & a_err )
-    {
-      UmlCom::trace( a_err.what () );
-    }
-    catch ( const char * a_what )
-    {
-      UmlCom::trace( a_what );
-    }
-    catch ( ... )
-    {
-      UmlCom::trace( \"Caught unknown exception.\" );
-    }
-
-    UmlCom::trace( \"<b><i>jamfile/makefile</i> generator</b> complete<br>\" );
-    // must be called to cleanly inform that all is done
-    UmlCom::bye();
-  }
-
-  UmlCom::close();
-  return 0;
+  butter::butter_application a( argc, argv );
+  return a.main();
 }
 
 #ifdef _WIN32
@@ -6248,6 +6209,9 @@ ${definition}"
 
 ${comment}
 ${includes}
+
+#include \"compound_document.h\"
+
 ${declarations}
 ${namespace_start}
 ${definition}
@@ -6256,12 +6220,15 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+
+#include \"config.h\"
+#include \"constants.h\"
+
+#include <qdatetime.h>
+
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_elems
 	class_ref 8193 // UmlArtifact
       end
@@ -6603,12 +6570,12 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
+
+#include \"config.h\"
+
 ${namespace_start}
 ${members}
 ${namespace_end}"
-      java_src "${comment}
-${package}
-${definition}"
       associated_elems
 	class_ref 9217 // UmlPackage
       end
