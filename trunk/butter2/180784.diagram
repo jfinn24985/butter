@@ -1,0 +1,29 @@
+format 224
+
+classcanvas 128048 class_ref 233264 // butter_application
+  classdiagramsettings member_max_width 0 end
+  xyz 64 128 2000
+end
+classcanvas 128176 class_ref 239792 // QCoreApplication
+  classdiagramsettings member_max_width 0 end
+  xyz 64 36 2000
+end
+classcanvas 128432 class_ref 252848 // log
+  classdiagramsettings member_max_width 0 end
+  xyz 365 220 2000
+end
+classcanvas 128560 class_ref 179120 // base_log
+  classdiagramsettings member_max_width 0 end
+  xyz 336 34 2005
+end
+relationcanvas 128304 relation_ref 221104 // <generalisation>
+  from ref 128048 z 2001 to ref 128176
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128688 relation_ref 227632 // <generalisation>
+  from ref 128432 z 2006 to ref 128560
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

@@ -31,3 +31,5 @@
 
 "std::unique_ptr" "#include <memory>"
 
+"QTextStream" "#include <qtextstream.h>"
+

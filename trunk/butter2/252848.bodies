@@ -1,0 +1,15 @@
+class log
+!!!367408.cpp!!!	debug_log(in fname : unistr) : void
+debug_file_.reset(new QFile(fname));
+if (! debug_file_->open(IO_WriteOnly))
+{
+  QString msg_("<p>Unable to open log file for read/writing: ");
+  msg_.append(debug_file_->name());
+  msg_.append("</p>");
+  debug_os_.reset(); // Reset stream
+  throw std::runtime_error(msg_.utf8());
+}
+else
+{
+  debug_os_.reset(new QTextStream(debug_file_.get()));
+}

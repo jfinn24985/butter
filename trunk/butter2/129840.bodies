@@ -1,13 +1,10 @@
 class compound_document
 !!!141104.cpp!!!	at(in idx : uint) : compound_document::document_element
-bool guard=false;
-this->targets_.at( idx, &guard );
-if( ! guard )
+if( idx >= static_cast< unsigned int >(this->targets_.size()) )
 {
   throw std::out_of_range( "index out of range" );
 }
-return this->targets_.at( idx, &guard );
-
+return this->targets_.at( idx );
 !!!155696.cpp!!!	at(in a_label : unistr) : compound_document::document_element
 for( auto const& elem : this->targets_ )
 {
@@ -90,25 +87,25 @@ for ( QString line_ = a_is.readLine();
   {
     if ( line_.startsWith( start_phrase ) )
     {
-      if ( line_.contains( QString( butter::constants::version_label ) ) )
+      if ( line_.contains( version_label() ) )
       {
         cache_ = &tmp.version_;
       }
-      else if ( line_.contains( QString( butter::constants::date_label ) ) )
+      else if ( line_.contains( date_label() ) )
       {
         cache_ = &tmp.date_;
       }
-      else if ( line_.contains( QString( butter::constants::preamble_label ) ) )
+      else if ( line_.contains( preamble_label() ) )
       {
         cache_ = &tmp.preamble_;
       }
-      else if ( line_.contains( QString( butter::constants::close_label ) ) )
+      else if ( line_.contains( close_label() ) )
       {
         cache_ = &tmp.close_;
       }
-      else if ( line_.contains( QString( butter::constants::target_label ) ) )
+      else if ( line_.contains( target_label() ) )
       {
-        const QString label_ = line_.mid( line_.find( QString( butter::constants::target_label ) ) + butter::constants::target_label.length() ).simplifyWhiteSpace();
+        const QString label_ = line_.mid( line_.find( target_label() ) + target_label().length() ).simplifyWhiteSpace();
         cache_ = &tmp[ label_ ];
       }
       else
@@ -217,7 +214,7 @@ do_write( a_os, this->preamble_ );
 for ( auto const& elem : this->targets_ )
 {
   document_element tmp{ elem };
-  tmp.label = butter::constants::target_label + " " + tmp.label;
+  tmp.label = target_label() + " " + tmp.label;
   do_write( a_os, tmp );
 }
 do_write( a_os, this->close_ );

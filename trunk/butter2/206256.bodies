@@ -1,7 +1,7 @@
 class text_template
 !!!287152.cpp!!!	read(inout xml : QXmlStreamReader) : void
-BUTTER_REQUIRE(xml.isStartElement() && (xml.name() == constants::text_template_xmlname()),
-               ("XML reader not at a "+constants::text_template_xmlname()+" element in call to text_template::read.").toStdString());
+BUTTER_REQUIRE(xml.isStartElement() && (xml.name() == text_template_xmlname()),
+               ("XML reader not at a "+text_template_xmlname()+" element in call to text_template::read.").toStdString());
 if(! this->sequence_.empty())
 {
   this->sequence_.clear();
@@ -14,22 +14,22 @@ if(! this->sequence_.empty())
     {
     case QXmlStreamReader::StartElement:
     {
-      if(xml.name() == constants::replacement_xmlname())
+      if(xml.name() == replacement_xmlname())
       {
-        BUTTER_REQUIRE(xml.attributes().hasAttribute(constants::label_xmlname()),
+        BUTTER_REQUIRE(xml.attributes().hasAttribute(label_xmlname()),
                        QString("Replacement XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
-        this->sequence_.push_back( { REPLACEMENT, xml.attributes().value(constants::label_xmlname()).toString() } );
+        this->sequence_.push_back( { REPLACEMENT, xml.attributes().value(label_xmlname()).toString() } );
         if(QXmlStreamReader::EndElement != xml.readNext())
         {
           BUTTER_REQUIRE(false,
                         QString("Replacement XML element should be empty at line %1").arg(xml.lineNumber()).toStdString() );
         }
       }
-      else if(xml.name() == constants::optional_xmlname())
+      else if(xml.name() == optional_xmlname())
       {
-        BUTTER_REQUIRE(xml.attributes().hasAttribute(constants::label_xmlname()),
+        BUTTER_REQUIRE(xml.attributes().hasAttribute(label_xmlname()),
                        QString("Optional section XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
-        phrases.push_back( xml.attributes().value(constants::label_xmlname()).toString() );
+        phrases.push_back( xml.attributes().value(label_xmlname()).toString() );
         this->sequence_.push_back( { PHRASE, phrases.back() } );
       }
       else
@@ -40,18 +40,18 @@ if(! this->sequence_.empty())
     break;
     case QXmlStreamReader::EndElement:
     {
-      if(xml.name() == constants::replacement_xmlname())
+      if(xml.name() == replacement_xmlname())
       {
         BUTTER_REQUIRE(false,
                        QString("Misplaced end to replacement XML element at line %1").arg(xml.lineNumber()).toStdString() );
       }
-      else if(xml.name() == constants::text_template_xmlname())
+      else if(xml.name() == text_template_xmlname())
       {
         // At end of this template
         BUTTER_REQUIRE(phrases.empty(), "Incorrectly nested optional sections.");
         return;
       }
-      else if(xml.name() == constants::optional_xmlname())
+      else if(xml.name() == optional_xmlname())
       {
         this->sequence_.push_back( { PHRASE, phrases.back() } );
         phrases.pop_back();

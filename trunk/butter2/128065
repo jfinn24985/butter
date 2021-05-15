@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 31
+  revision 36
   modified_by 48 "finnerty"
   // class settings
   
@@ -88,6 +88,11 @@ format 224
     end
 
     classdiagram 128065 "Transcribe"
+      classdiagramsettings member_max_width 0 end
+      size A4
+    end
+
+    classdiagram 180784 "Application"
       classdiagramsettings member_max_width 0 end
       size A4
     end
@@ -622,7 +627,7 @@ they are external projects.
       end
 
       attribute 132272 "butter_flags_name"
-	class_attribute const_attribute public explicit_type "unistr"
+	class_attribute const_attribute public explicit_type "string"
 	init_value "(\"butter flags\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -655,7 +660,7 @@ inherited from parent objects if not overriden
       end
 
       attribute 132528 "butter_ldflags_name"
-	class_attribute const_attribute public explicit_type "unistr"
+	class_attribute const_attribute public explicit_type "string"
 	init_value "(\"butter ldflags\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -691,25 +696,6 @@ parent objects if not overriden.
 "
       end
 
-      attribute 132784 "butter_log_name"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"butter log-level\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "User property name:
-* indicates how much information to print:
-0 = (default) warning and error messages
-1 = as for 0 and information messages
-2 = as for 1 and debugging information
-"
-      end
-
       attribute 132912 "butter_other_name"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"butter other\")"
@@ -733,7 +719,7 @@ to the filesystem.
       end
 
       attribute 133040 "butter_include_name"
-	class_attribute const_attribute public explicit_type "unistr"
+	class_attribute const_attribute public explicit_type "string"
 	init_value "(\"butter include\")"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
@@ -769,23 +755,6 @@ a a list of directory names (\\see header_label)
 "
       end
 
-      attribute 133296 "butter_style_name"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"butter style\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "User property name:
-* indicates the style of build system/files to create, defaults to 'boost'
-* only used if present on the top-level project
-"
-      end
-
       attribute 133424 "butter_version_name"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"butter version\")"
@@ -798,21 +767,6 @@ a a list of directory names (\\see header_label)
 	mysql_decl ""
 	MysqlColumn
 	comment "Property name for the project version.
-"
-      end
-
-      attribute 133552 "document_stereotype"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"document\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "The stereotype name for document artifacts.
 "
       end
 
@@ -947,22 +901,6 @@ should not be installed.
 "
       end
 
-      attribute 134704 "section_prefix"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"butter_\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "The prefix for the beginning of section labels that
-might be found in artifact descriptions.
-"
-      end
-
       attribute 134832 "shared_value"
 	class_attribute const_attribute public explicit_type "unistr"
 	init_value "(\"shared\")"
@@ -1022,81 +960,6 @@ library targets will be static.
 	mysql_decl ""
 	MysqlColumn
 	comment "Generic property name for the project version.
-"
-      end
-
-      attribute 135344 "version_label"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"version\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "Build-file section name for the project version.
-"
-      end
-
-      attribute 135472 "date_label"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"date\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "Build file section name for the date.
-"
-      end
-
-      attribute 135600 "preamble_label"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"preamble\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "Build file section name for the preamble.
-"
-      end
-
-      attribute 135728 "close_label"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"close\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "Build file section name for the closing section.
-"
-      end
-
-      attribute 135856 "target_label"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"target\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "Build file section label for a target section.
 "
       end
 
@@ -1177,300 +1040,6 @@ the artifact's path."
 	comment "Value of \"butter_output\" property that indicates an artifact
 should not be considered for writing to the file system."
       end
-
-      operation 280496 "comment_text"
-	class_operation preserve_cpp_body_indent public explicit_return_type "unistr"
-	nparams 1
-	  param in name "a_text" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Transcribe the given text into a comment in the current
-build system.  In general this prepends comment indicators
-to each line of a_text and adds a terminal newline if
-a_text does not end in a newline."
-      end
-
-      attribute 173232 "begin_comment"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "{ \"#\" }"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      attribute 173360 "end_comment"
-	class_attribute const_attribute private explicit_type "unistr"
-	init_value "{}"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-      end
-
-      operation 297520 "text_template_xmlname"
-	class_operation public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"template\"); return label; 
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 297648 "label_xmlname"
-	class_operation public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"label\"); return label; 
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 297776 "replacement_xmlname"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"replace\"); return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 297904 "optional_xmlname"
-	class_operation public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"option\"); return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 313776 "build_file_xmlname"
-	class_operation public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"build-file\"); return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 313904 "root_file_xmlname"
-	class_operation public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"root-file\"); return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 314032 "binary_target_xmllabel"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"binary-target\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 321584 "style_xmlname"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"style\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 321712 "file_xmlname"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"file\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 321840 "property_xmlname"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"property\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 323888 "close_xmllabel"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"close\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 324016 "end_phrase_xmlname"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"end-phrase\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 324144 "start_phrase_xmlname"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"start-phrase\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 324272 "preamble_xmllabel"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"preamble\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 324400 "version_xmllabel"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"version\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 331440 "date_xmllabel"
-	class_operation constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static QString label(\"date\");
-  return label;
-}
-"
-	
-	
-	
-	
-      end
     end
 
     class 129840 "compound_document"
@@ -1529,6 +1098,100 @@ following initial order
 {end}  (optional)
 
 "
+      operation 351280 "close_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"close\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "Build file section name for the closing section.
+"
+      end
+
+      operation 351536 "date_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"date\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "Build file section name for the date of generation
+
+"
+      end
+
+      operation 351408 "preamble_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"preamble\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "Build file section name for the preamble.
+
+"
+      end
+
+      operation 351792 "target_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"target\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "Build file section name for the preamble.
+
+"
+      end
+
+      operation 351664 "version_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"version\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "Build file section name for the generator version
+
+"
+      end
+
       class 129968 "document_element"
 	visibility package stereotype "struct"
 	cpp_decl "${comment}${template}struct ${name}${inherit} {
@@ -1768,7 +1431,7 @@ ${inlines}
 
       classrelation 130096 // targets_ (<directional composition>)
 	relation 130096 *-->
-	  stereotype "valuevector"
+	  stereotype "qvector"
 	  a role_name "targets_" private
 	    comment "The artifact's target parts.  
 
@@ -1807,12 +1470,12 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract};"
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)} 
 : end_phrase_(), start_phrase_()
-, close_( butter::constants::close_label, {}, {} )
-, date_( butter::constants::date_label, {}, {} )
+, close_( close_label(), {}, {} )
+, date_( date_label(), {}, {} )
 , postscript_()
-, preamble_( butter::constants::preamble_label, {}, {} )
+, preamble_( preamble_label(), {}, {} )
 , targets_()
-, version_( butter::constants::version_label, {}, {} )
+, version_( version_label(), {}, {} )
 {}
 "
 	
@@ -1834,7 +1497,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
 
       operation 137520 "compound_document"
 	stereotype "copy"
-	cpp_inline public explicit_return_type ""
+	public explicit_return_type ""
 	nparams 1
 	  param in name "source" type class_ref 129840 // compound_document
 	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract}
@@ -2922,11 +2585,28 @@ is defined in the bouml project.
       end
 
       operation 231984 "root"
+	stereotype "const"
 	const constvalue public return_type class_ref 128560 // location
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}const ${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return root_.get();
+}
+"
+	
+	
+	
+	
+	comment "Return a pointer to the root location, may be nul"
+      end
+
+      operation 366896 "root"
+	public return_type class_ref 128560 // location
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   return root_.get();
 }
 "
@@ -2971,7 +2651,7 @@ is defined in the bouml project.
       operation 150192 "serialize"
 	preserve_cpp_body_indent const public explicit_return_type "void"
 	nparams 1
-	  param inout name "a_os" explicit_type "QTextOStream"
+	  param inout name "a_os" explicit_type "stream"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract};"
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
@@ -3594,6 +3274,38 @@ may return an empty list if none are found
 
 \\pre not name.empty"
       end
+
+      operation 366640 "add_package"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "pack" type class_ref 9217 // UmlPackage
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Add to the list of packages"
+      end
+
+      operation 366768 "empty"
+	const public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->packages_.isEmpty();
+}
+"
+	
+	
+	
+	
+	comment "Do we have any packages"
+      end
     end
 
     class 179120 "base_log"
@@ -3609,7 +3321,7 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      class 131632 "log_levels"
+      class 131632 "log_level"
 	visibility package stereotype "enum"
 	cpp_decl "${comment}enum ${name} {
 ${items}
@@ -3623,7 +3335,7 @@ ${items}
 	mysql_decl ""
 	
 	attribute 141104 "warn"
-	  public type class_ref 131632 // log_levels
+	  public type class_ref 131632 // log_level
 	  init_value " 0"
 	  cpp_decl "  ${name}${value},${comment}"
 	  java_decl ""
@@ -3635,7 +3347,7 @@ ${items}
 	end
 
 	attribute 141232 "info"
-	  public type class_ref 131632 // log_levels
+	  public type class_ref 131632 // log_level
 	  init_value " 1"
 	  cpp_decl "  ${name}${value},${comment}"
 	  java_decl ""
@@ -3647,7 +3359,7 @@ ${items}
 	end
 
 	attribute 141360 "debug"
-	  public type class_ref 131632 // log_levels
+	  public type class_ref 131632 // log_level
 	  init_value " 2//include debugging messages
 
     "
@@ -3664,9 +3376,87 @@ ${items}
       operation 266288 "trace"
 	abstract cpp_virtual public explicit_return_type "void"
 	nparams 2
-	  param in name "level" type class_ref 131632 // log_levels
-	  param in name "msg" explicit_type "unistr"
+	  param in name "level" type class_ref 131632 // log_level
+	  param in name "msg" explicit_type "string"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 368304 "trace"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "level" type class_ref 131632 // log_level
+	  param in name "msg" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, const ${t1} * ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+      end
+
+      operation 368176 "trace"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "level" type class_ref 131632 // log_level
+	  param in name "msg" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract}
+{
+  this->trace(level, msg.utf8());
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 351152 "level"
+	abstract const cpp_virtual public return_type class_ref 131632 // log_level
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+	comment "The minimum log level to forward"
+      end
+
+      operation 359088 "set_level"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "lvl" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+	comment "Set minimum log level to forward"
+      end
+
+      operation 359216 "debug_log"
+	abstract cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "fname" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+	comment "Add an additional file log for messages, mainly for debugging"
+      end
+
+      operation 359344 "stream"
+	abstract cpp_virtual public explicit_return_type "stream"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	
 	
@@ -3688,6 +3478,66 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      operation 297648 "label_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"label\"); return label; 
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297904 "optional_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"option\"); return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297776 "replacement_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"replace\"); return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 297520 "text_template_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"template\"); return label; 
+}
+"
+	
+	
+	
+	
+      end
+
       class 206896 "map_type"
 	visibility package stereotype "typedef" explicit_base_type "unistr"
 	cpp_decl "${comment}typedef QMap< ${type}, ${type} > ${name};
@@ -4086,6 +3936,276 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      extra_member 190000 "XML LABELS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 313776 "build_file_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"build-file\"); return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 314032 "binary_target_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"binary-target\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 323888 "close_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"close\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 331440 "date_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"date\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 324016 "end_phrase_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"end-phrase\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 321712 "file_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"file\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 324272 "preamble_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"preamble\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 321840 "property_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"property\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 313904 "root_file_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"root-file\"); return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 324144 "start_phrase_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"start-phrase\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 321584 "style_xmlname"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"style\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 324400 "version_xmllabel"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"version\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 190128 "DOCUMENT TEXT"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 358320 "begin_comment"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label(\"#\");
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 358448 "end_comment"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static QString label{};
+  return label;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 280496 "comment_text"
+	class_operation preserve_cpp_body_indent public explicit_return_type "unistr"
+	nparams 1
+	  param in name "a_text" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Transcribe the given text into a comment in the current
+build system.  In general this prepends comment indicators
+to each line of a_text and adds a terminal newline if
+a_text does not end in a newline."
+      end
+
+      extra_member 190256 "ATTRIBUTES"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
       class 220208 "map_type"
 	visibility package stereotype "typedef" explicit_base_type "unistr"
 	cpp_decl "${comment}typedef QMap< ${type}, ${type} > ${name};
@@ -4218,6 +4338,22 @@ ${inlines}
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 359600 "read_style"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "style" explicit_type "unistr"
+	  param in name "path" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -4521,6 +4657,495 @@ style properties before instantiating the template."
 	mysql ""
       end
     end
+
+    class 233264 "butter_application"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 358832 "base_prop_name"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"butter base\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates the relationship between the package and the root directory set in C++ settings.
+* only used if present on the top-level project
+"
+      end
+
+      operation 358960 "default_style_value"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"make\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The name of the default style (make) if not style property found
+"
+      end
+
+      operation 359472 "default_style_path_value"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"style_template.xml\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 358576 "log_level_prop_name"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"butter log-level\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates how much information to print:
+0 = (default) warning and error messages
+1 = as for 0 and information messages
+2 = as for 1 and debugging information
+"
+      end
+
+      operation 358704 "style_prop_name"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"butter style\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates the style of build system/files to create, defaults to 'boost'
+* only used if present on the top-level project
+"
+      end
+
+      operation 359728 "style_path_prop_name"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"butter style-template\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates the style of build system/files to create, defaults to 'boost'
+* only used if present on the top-level project
+"
+      end
+
+      classrelation 221488 // <generalisation>
+	relation 221104 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 221488 // <generalisation>
+	  b parent class_ref 239792 // QCoreApplication
+      end
+
+      attribute 200240 "interaction_"
+	private explicit_type "int"
+	init_value "0"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "What to do when user-interaction is needed (eg. when doing test scripting)
+
+0 - (default) ask user
+1 - assume always \"yes\"/\"okay\"
+2 - assume always \"no\"/\"cancel\""
+      end
+
+      attribute 200112 "port_"
+	private explicit_type "int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "The communication port to use with bouml"
+      end
+
+      attribute 193584 "root_"
+	private type class_ref 138416 // location_set
+	multiplicity "0..1"
+	stereotype "unique_ptr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 200368 "style_"
+	private type class_ref 220080 // build_style
+	multiplicity "0..1"
+	stereotype "unique_ptr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      operation 337968 "parse_project"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "a_item" type class_ref 8833 // UmlItem
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 344496 "parse_arguments"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Parse any command line arguments"
+      end
+
+      operation 344624 "main"
+	public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Standard run sequence"
+      end
+    end
+
+    class 252848 "log"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 228016 // <generalisation>
+	relation 227632 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 228016 // <generalisation>
+	  b parent class_ref 179120 // base_log
+      end
+
+      attribute 207280 "level_"
+	private type class_ref 131632 // log_level
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 207024 "debug_file_"
+	private explicit_type "QFile"
+	multiplicity "0..1"
+	stereotype "unique_ptr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 207152 "debug_os_"
+	private explicit_type "stream"
+	multiplicity "0..1"
+	stereotype "unique_ptr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      extra_member 196784 "LIFETIME"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 367664 "log"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw}
+: level_(warn)
+, debug_file_()
+, debug_os_() {}
+"
+	
+	
+	
+	
+      end
+
+      operation 367792 "~log"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 367920 "log"
+	stereotype "copy"
+	cpp_deleted private explicit_return_type ""
+	nparams 1
+	  param in name "source" type class_ref 252848 // log
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} = delete;
+"
+	
+	
+	
+	
+      end
+
+      operation 368048 "operator="
+	private return_type class_ref 252848 // log
+	nparams 1
+	  param in name "source" type class_ref 252848 // log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} = delete;
+"
+	
+	
+	
+	
+      end
+
+      extra_member 196912 "ACCESS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 367152 "level"
+	const cpp_virtual public return_type class_ref 131632 // log_level
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->level_; }
+"
+	
+	
+	
+	
+	comment "The minimum log level to forward"
+      end
+
+      operation 367536 "stream"
+	cpp_virtual public explicit_return_type "stream"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  BUTTER_ALWAYS(DEBUG, \"Programming error: attempt to get debug log in release build\");
+  return *debug_os_;
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 367024 "trace"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "level" type class_ref 131632 // log_level
+	  param in name "msg" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  if (level_ >= ${p0}) UmlCom::trace(${p1});
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 368432 "trace"
+	cpp_virtual public explicit_return_type "void"
+	nparams 2
+	  param in name "level" type class_ref 131632 // log_level
+	  param in name "msg" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, const ${t1} * ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  if (level_ >= ${p0}) UmlCom::trace(${p1});
+}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 197040 "MODIFY"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 367408 "debug_log"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "fname" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Add an additional file log for messages, mainly for debugging"
+      end
+
+      operation 367280 "set_level"
+	cpp_virtual public explicit_return_type "void"
+	nparams 1
+	  param in name "lvl" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  level_ = (0 >= ${p0} ? warn : (2 <= ${p0} ? debug : info ));
+}
+"
+	
+	
+	
+	
+	comment "Set minimum log level to forward"
+      end
+    end
   end
 
   deploymentview 128065 "butter"
@@ -4557,6 +5182,64 @@ style properties before instantiating the template."
       simplerelation 134576
 	-_->
 	  on artifact_ref 130096 // config
+      end
+    end
+
+    artifact 189488 "build_style"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+#include <qmap.h>
+${declarations}
+class QXmlStreamReader;
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+#include \"config.h\"
+#include \"constants.h\"
+#include <qdatetime.h>
+#include <qfile.h>
+#include <qtextstream.h>
+#include <qvector.h>
+#include <QXmlStreamReader>
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 220080 // build_style
+      end
+    end
+
+    artifact 128816 "compound_document"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+// manual includes
+#include \"config.h\"
+// end
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 129840 // compound_document
       end
     end
 
@@ -4625,33 +5308,6 @@ ${namespace_end}"
       end
     end
 
-    artifact 128816 "compound_document"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-${includes}
-// manual includes
-#include \"config.h\"
-#include \"constants.h\"
-// end
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 129840 // compound_document
-      end
-    end
-
     artifact 129456 "location"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -4681,7 +5337,7 @@ ${namespace_end}"
       end
     end
 
-    artifact 129840 "utility"
+    artifact 209456 "location_state"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
@@ -4697,14 +5353,13 @@ ${namespace_end}
       cpp_src "${comment}
 ${includes}
 
-#include <config.h>
-#include <iostream>
+#include \"config.h\"
 
 ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 128432 // enumerate_path
+	class_ref 172592 // location_state
       end
     end
 
@@ -4738,16 +5393,14 @@ ${namespace_end}"
       end
     end
 
-    artifact 189488 "build_style"
+    artifact 129840 "utility"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
 #define ${NAMESPACE}_${NAME}_H
 
 ${comment}
 ${includes}
-#include <qmap.h>
 ${declarations}
-class QXmlStreamReader;
 ${namespace_start}
 ${definition}
 ${namespace_end}
@@ -4755,17 +5408,143 @@ ${namespace_end}
 "
       cpp_src "${comment}
 ${includes}
-#include \"config.h\"
-#include \"constants.h\"
-#include <qdatetime.h>
-#include <qtextstream.h>
-#include <qvector.h>
-#include <QXmlStreamReader>
+
+#include <config.h>
+#include <iostream>
+
 ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
-	class_ref 220080 // build_style
+	class_ref 128432 // enumerate_path
+      end
+    end
+
+    artifact 196144 "README.txt"
+      stereotype "document"
+      associated_artifacts
+      end
+      comment "# Butter
+
+A program to go with jam and bouml.  This plug-out 
+can create a build system that can build and install
+targets defined in UML in bouml.  You can choose from
+Makefile, CMake, Boost Jam and plain Jam.
+
+
+## How it works.
+
+* Check for and add standard build system files
+* Search for targets and determine if they are internal or external
+* Write external targets to the top-level build file
+* Organize internal targets into filesystem folders
+* For each target or subdirectory add an entry in its folder's build file
+
+* Build system files and entries are created from text templates.
+* Properties to insert into the templates are determined from bouml
+
+## TODO
+
+* Walk UMLPackage tree to build location set
+  (see previous version)
+* Walk location set from root down, processing targets when found
+  (see previous version)
+* Define templates for Makefiles
+  (see previous version)
+* Define templates for CMake
+* Define templates for Boost Jam
+* Define templates for Jam
+"
+    end
+
+    artifact 202800 "base_log"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      associated_elems
+	class_ref 179120 // base_log
+      end
+    end
+
+    artifact 209328 "mymain"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
+${includes}
+#include \"config.h\"
+#include \"constants.h\"
+#include \"location_state.h\"
+#include \"log.h\"
+#include \"CppSettings.h\"
+#include \"UmlCom.h\"
+#include \"UmlPackage.h\"
+
+#include <qmessagebox.h>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 233264 // butter_application
+      end
+    end
+
+    artifact 215984 "log"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+class QFile;
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
+${includes}
+
+#include \"config.h\"
+#include \"UmlCom.h\"
+
+#include <qfile.h>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 252848 // log
       end
     end
   end

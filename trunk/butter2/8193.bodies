@@ -25,7 +25,7 @@ if( nullptr != this->doc_.get() )
 }
 
 !!!259760.cpp!!!	write_out(in full_path : enumerate_path, inout log : base_log) : void
-if (constants::document_stereotype == this->stereotype().data())
+if (document_stereotype() == this->stereotype().data())
 {
   // Only write non-empty docs.
   if (! this->description().isEmpty())

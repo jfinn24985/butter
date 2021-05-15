@@ -9,3 +9,5 @@ for( UmlPackage * pkg : this->packages_ )
 }
 return Result;
 
+!!!366640.cpp!!!	add_package(inout pack : UmlPackage) : void
+this->packages_.push_back( &pack );
