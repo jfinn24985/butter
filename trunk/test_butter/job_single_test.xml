@@ -27,17 +27,19 @@
         <verb type="check-out" >
           <property name="type" >%(checkout-tool)s</property>
           <property name="branch" >%(project)s%(checkout-suf)s</property>
-          <property name="location" >%(checkout-url)s/%(branch)s</property>
+          <property name="location" >%(checkout-url)s</property>
         </verb>
         <verb type="patch" >
+          <property name="patch-dir" >%(base-dir)s/%(project)s/trunk/test/%(project)s/patch</property>
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s</property>
           <property name="location" >%(patch-file)s</property>
         </verb>
 
       </verb-list>
       <verb-list category="execute" >
         Generate the build system and the source code
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced

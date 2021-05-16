@@ -16,7 +16,7 @@
 import xml.sax, threading, os.path
 import xml.sax.saxutils as saxutils
 
-_DEBUG = False
+_DEBUG = True
 if _DEBUG:
   print """<html encoding='UTF-8'><body><style type="text/css">pre.debug{color:red}</style>"""
 
@@ -601,13 +601,14 @@ unzip-command  : program to decompress archive (default="unzip")
 to-dir         : flag and location of base output directory (default="-d %(base)")
 
 The templates for the various operations are:
+%(git-command) co %(url) %(base)
 %(svn-command) co %(location) %(base)
 %(cvs-command) -d %(url) co %(branch) -d %(base)
 %(tar-command) %(compress) -x -f %(location) -D %(base)
 %(unzip-command) %(location) %(to-dir)"""
     __ctor = constructor(verb.element_name, lambda name, attr: verb_checkout.make(name, attr))
     #How to handle different file/dir types
-    _checkout = { u"git": ( """%(_cmd_name_)s clone %(location)s %(base)s""", """Unable to clone from git repository %(location)s""" ),
+    _checkout = { u"git": ( """%(_cmd_name_)s clone %(checkout-url)s %(base)s""", """Unable to clone from git repository %(checkout-url)s""" ),
  u"svn": ( """%(_cmd_name_)s co %(location)s %(base)s""", """Unable to checkout branch from SVN repository %(location)s""" )
 , u"cvs": ( """%(_cmd_name_)s -d %(url)s co %(branch)s -d %(base)s""", """Unable to checkout from CVS branch %(branch)s from repository %(url)s""" )
 ,  u"tar": ( """%(_cmd_name_)s %(compress)s -x -f %(location)s -D %(base)s""", """Unable to unpack archive %(location)s""" )
@@ -1608,5 +1609,10 @@ if __name__ == "__main__":
   suite = test_suite()
   suite.run()
   print "</body></html>"
-  import tkMessageBox
-  tkMessageBox.showinfo(title="test_suite", message="Test suite has completed")
+  try:
+    import tkMessageBox
+    tkMessageBox.showinfo(title="test_suite", message="Test suite has completed")
+  except:
+    import sys
+    print(sys.stderr, "Test suite has completed")
+

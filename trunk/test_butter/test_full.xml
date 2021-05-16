@@ -1,0 +1,402 @@
+<?xml version = '1.0'?>
+<test-suite src="test_unix.xml">
+Test suite for &quot;butter&quot; project on UNIX like operating systems.
+ 
+This suite tests building C++ projects.
+
+Note that we make the following assumptions about the set up of the project:
+* The C++ extensions used are hpp/cpp
+* The output directory is &quot;output&quot; in the project directory
+* Build dir is &quot;build&quot; and install dir is &quot;install_dir&quot;
+  <property name="job-id" >%(build-style)s</property>
+  <property name="test-dir" >output</property>
+  <property name="patch-dir" >patch</property>
+  <property name="build-var" ></property>
+  <property name="plug-out2" >cpp_generator</property>
+  <property name="install-dir" >stage</property>
+  <property name="error" >fatal</property>
+  <property name="stage-bin-dir" >stage/bin</property>
+  <property name="stage-lib-dir" >stage/lib</property>
+  <property name="stage-man-dir" >stage/share/man</property>
+  <property name="stage-data-dir" >stage/share</property>
+  <property name="stage-html-dir" >stage/share/html</property>
+  <property name="library-path" >%(stage-lib-dir)s</property>
+  <property name="exe-name" >program%(exe-suf)s</property>
+  <property name="lib-prefix"></property>
+<!--
+
+Single Directory, single target test cases
+
+-->
+ 
+  <job src="job_single_test.xml">
+
+default (jam) build tool + debug + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+  <job src="job_single_test.xml">
+
+default (jam) build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=RELEASE install</property>
+  </job>
+
+   <job src="job_single_test.xml">
+
+jam build tool + debug + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+jam build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=RELEASE install</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+make build tool + debug + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >make</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+make build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >make</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=RELEASE install</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+boost build tool + debug + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="build-style" >boost</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="build-arg" >%(boost-arg)s</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+boost build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="build-style" >boost</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="build-arg" >%(boost-arg)s release</property>
+  </job>
+
+  <job src="job_single_test.xml">
+
+cmake build tool + release + single directory and target
+
+    <property name="project" >single_test</property>
+    <property name="build-tool" >%(cmake)s</property>
+    <property name="build-style" >cmake</property>
+    <property name="patch-file" >cmake.patch</property>
+    <property name="build-arg" >. %(cmake-arg)s -DCMAKE_BUILD_TYPE=DEBUG %(cmdsep)s %(make)s -k %(make-arg)s install</property>
+  </job>
+  
+<!--
+
+Multiple target test cases
+
+-->
+
+  <job src="job_multitarget.xml">
+
+default (jam) build tool + debug + single directory, multiple target
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
+    <property name="build-dir" >DEBUG</property>
+  </job>
+
+   <job src="job_multitarget.xml">
+
+jam build tool + debug + single directory, multiple target
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+
+   <job src="job_multitarget.xml">
+
+boost build tool + debug + single directory, multiple target
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="build-style" >boost</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" > %(boost-arg)s debug</property>
+  </job>
+
+   <job src="job_multitarget.xml">
+
+make build tool + debug + single directory, multiple target
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >make</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
+  </job>
+
+   <job src="job_multitarget.xml">
+
+cmake build tool + debug + single directory, multiple target + build subdirectory
+
+    <property name="project" >multitarget</property>
+    <property name="build-tool" >%(cmake)s</property>
+    <property name="build-style" >cmake</property>
+    <property name="patch-file" >cmake.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >-E make_directory %(build-dir)s %(cmdsep)s cd %(build-dir)s %(cmdsep)s %(cmake)s .. %(cmake-arg)s -DCMAKE_BUILD_TYPE=Debug %(cmdsep)s %(make)s -k %(make-arg)s install</property>
+  </job>
+
+<!--
+
+Multiple Directory test cases
+
+-->
+
+  <job src="job_multidir.xml">
+
+default (jam) build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+
+   <job src="job_multidir.xml">
+
+jam build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+
+   <job src="job_multidir.xml">
+
+boost build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="build-style" >boost</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" > %(boost-arg)s debug</property>
+  </job>
+
+   <job src="job_multidir.xml">
+
+make build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >make</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
+  </job>
+   <job src="job_multidir.xml">
+
+cmake build tool + debug + multiple directory
+
+    <property name="project" >multidir</property>
+    <property name="build-tool" >%(cmake)s</property>
+    <property name="build-style" >cmake</property>
+    <property name="patch-file" >cmake.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >. %(cmake-arg)s -DCMAKE_BUILD_TYPE=Debug %(cmdsep)s %(make)s -k %(make-arg)s install</property>
+  </job>
+
+<!--
+
+Multiple Directory + non-C++ test cases (auto-detect source types)
+
+-->
+
+  <job src="job_multilang.xml">
+
+standard (jam) tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+
+  <job src="job_multilang.xml">
+
+jam tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+
+  <job src="job_multilang.xml">
+
+boost tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="build-style" >boost</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(boost-arg)s debug</property>
+  </job>
+
+  <job src="job_multilang.xml">
+
+make tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >make</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
+  </job>
+
+
+  <job src="job_multilang.xml">
+
+cmake tool + multiple directory + non-C++ (auto-detect source types)
+
+    <property name="project" >multilang</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-tool" >%(cmake)s</property>
+    <property name="build-style" >cmake</property>
+    <property name="patch-file" >cmake.patch</property>
+    <property name="common-arg" >. %(cmake-arg)s -DCMAKE_BUILD_TYPE=Debug %(cmdsep)s %(make)s -k %(make-arg)s</property>
+    <property name="build-arg" >%(common-arg)s install</property>
+  </job>
+
+
+<!--
+
+Multiple Directory, non-C++ source and property usage test cases
+
+-->
+
+   <job src="job_proplang.xml">
+
+default (jam) build tool + debug + non-C++ + property usage + multidirectory
+* shared lib not available for jam yet
+
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >default.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+
+   <job src="job_proplang.xml">
+
+jam build tool + debug + non-C++ + property usage + multidirectory
+* shared lib not available for jam yet
+
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+  </job>
+
+   <job src="job_proplang.xml">
+
+boost build tool + debug + non-C++ + property usage + multidirectory + shared lib
+
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(boost)s</property>
+    <property name="build-style" >boost</property>
+    <property name="patch-file" >boost.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(boost-arg)s debug</property>
+  </job>
+
+   <job src="job_proplang.xml">
+
+ make build tool + debug + non-C++ + property usage + multidirectory + shared lib
+
+    <property name="build-dir" >.</property>
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >make</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(make-arg)s -k VARIANT=DEBUG install</property>
+  </job>
+
+   <job src="job_proplang.xml">
+
+cmake build tool + debug + non-C++ + property usage + multidirectory + shared lib
+
+    <property name="build-dir" >.</property>
+    <property name="project" >proplang</property>
+    <property name="build-tool" if="os=WIN32">%(cmake)s-gui</property>
+    <property name="build-tool" if="os!=WIN32">%(cmake)s</property>
+    <property name="build-style" >cmake</property>
+    <property name="patch-file" >cmake.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug %(cmdsep)s nmake /k install  </property>
+  </job>
+
+</test-suite>
