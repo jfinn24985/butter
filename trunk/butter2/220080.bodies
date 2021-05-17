@@ -183,12 +183,15 @@ if(! this->templates_.empty())
   BUTTER_REQUIRE( found_style,  QString("Unknown style '%1'.").arg(style).toStdString() );
 }
 !!!359600.cpp!!!	read_style(in style : unistr, in path : unistr) : void
-if( ! QDir(path).exists() )
-{
-  throw std::runtime_error(("File "+path+" not found.").toStdString());
-}
+//if( ! QDir(QDir(path).absolutePath()).exists() )
+//{
+//  throw std::runtime_error(("File "+QDir(path).absolutePath()+" not found.").toStdString());
+//}
 
-QFile xmlfile{ path };
+QFile xmlfile{ QDir(path).absolutePath() };
+xmlfile.open(QIODevice::ReadOnly);
+BUTTER_REQUIRE(xmlfile.isOpen(), ("Unable to open file "+QDir(path).absolutePath()+".").toStdString());
+
 QXmlStreamReader xml{ &xmlfile };
 for( ; xml.readNext() && ! xml.atEnd()
   && (! xml.isStartElement() || xml.name() != style_xmlname())

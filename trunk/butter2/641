@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 99
+  revision 100
   modified_by 48 "finnerty"
   // class settings
   
@@ -5919,7 +5919,7 @@ ${definition}"
       key "genpro target" value "/home/finnerty/tmp/butter2/butter/butter"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt console"
-      key "genpro defines" value "WITHCPP"
+      key "genpro defines" value "WITHCPP DEBUG=1"
       key "genpro includepath" value ""
       key "genpro dependpath" value ""
       key "genpro objectsdir" value "build"

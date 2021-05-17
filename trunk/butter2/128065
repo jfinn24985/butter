@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 38
+  revision 39
   modified_by 48 "finnerty"
   // class settings
   
@@ -4908,7 +4908,7 @@ ${inlines}
 , interaction_(0)
 , port_(0)
 , root_()
-, style_() {
+, style_(new build_style{}) {
   ${body}}
 "
 	
