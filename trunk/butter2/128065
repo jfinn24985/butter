@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 37
+  revision 38
   modified_by 48 "finnerty"
   // class settings
   
@@ -3382,11 +3382,14 @@ ${items}
       end
 
       operation 368304 "trace"
-	abstract cpp_virtual public explicit_return_type "void"
+	public explicit_return_type "void"
 	nparams 2
 	  param in name "level" type class_ref 131632 // log_level
 	  param in name "msg" explicit_type "char"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, const ${t1} * ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, const ${t1} * ${p1}${v1}${)}${const}${volatile}${throw}${abstract}
+{
+   this->trace(level, QByteArray(msg));
+}
 "
 	
 	
@@ -3457,6 +3460,18 @@ ${items}
 	
 	
 	
+      end
+
+      operation 382000 "have_stream"
+	abstract const cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	
+	
+	
+	
+	comment "Is it possible to use stream()?"
       end
     end
 
@@ -4783,12 +4798,12 @@ ${inlines}
 "
       end
 
-      classrelation 221488 // <generalisation>
-	relation 221104 ---|>
+      classrelation 241072 // <generalisation>
+	relation 240688 ---|>
 	  a public
 	    cpp default "${type}"
-	    classrelation_ref 221488 // <generalisation>
-	  b parent class_ref 239792 // QCoreApplication
+	    classrelation_ref 241072 // <generalisation>
+	  b parent class_ref 259376 // QApplication
       end
 
       attribute 200240 "interaction_"
@@ -4866,21 +4881,6 @@ ${inlines}
 	
       end
 
-      operation 344496 "parse_arguments"
-	public explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Parse any command line arguments"
-      end
-
       operation 344624 "main"
 	public explicit_return_type "int"
 	nparams 0
@@ -4904,7 +4904,7 @@ ${inlines}
 	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} ** ${p1}${v1}${)}${volatile}${throw};
 "
 	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}, ${t1} ** ${p1}${)}${volatile}${throw}
-: QCoreApplication(${p0}, ${p1})
+: QApplication(${p0}, ${p1})
 , interaction_(0)
 , port_(0)
 , root_()
@@ -4915,6 +4915,7 @@ ${inlines}
 	
 	
 	
+	comment "Parses any command line arguments to set port and interaction"
       end
 
       operation 375088 "~butter_application"
@@ -5131,25 +5132,7 @@ ${inlines}
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
-  if (level_ >= ${p0}) UmlCom::trace(${p1});
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 368432 "trace"
-	cpp_virtual public explicit_return_type "void"
-	nparams 2
-	  param in name "level" type class_ref 131632 // log_level
-	  param in name "msg" explicit_type "char"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, const ${t1} * ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, const ${t1} * ${p1}${)}${const}${volatile}${throw}${staticnl}{
-  if (level_ >= ${p0}) UmlCom::trace(${p1});
-}
+  ${body}}
 "
 	
 	
@@ -5198,6 +5181,22 @@ ${inlines}
 	
 	
 	comment "Set minimum log level to forward"
+      end
+
+      operation 382128 "have_stream"
+	const cpp_virtual public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return (nullptr != this->debug_file_);
+}
+"
+	
+	
+	
+	
+	comment "Is it possible to use stream()?"
       end
     end
   end
@@ -5258,11 +5257,14 @@ ${namespace_end}
 ${includes}
 #include \"config.h\"
 #include \"constants.h\"
+
 #include <qdatetime.h>
+#include <qdir.h>
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qvector.h>
 #include <QXmlStreamReader>
+
 ${namespace_start}
 ${members}
 ${namespace_end}"
@@ -5381,6 +5383,10 @@ ${includes}
 // manual includes
 #include \"config.h\"
 #include <qdir.h>
+
+#ifndef DEBUG
+#define DEBUG 0
+#endif
 
 ${namespace_start}
 ${members}
@@ -5544,10 +5550,6 @@ ${namespace_end}
 "
       cpp_src "${comment}
 
-#ifndef DEBUG
-#define DEBUG 0
-#endif
-
 ${includes}
 #include \"config.h\"
 #include \"constants.h\"
@@ -5558,6 +5560,11 @@ ${includes}
 #include \"UmlPackage.h\"
 
 #include <qmessagebox.h>
+
+#include <iostream>
+#ifndef DEBUG
+#define DEBUG 1
+#endif
 
 ${namespace_start}
 ${members}

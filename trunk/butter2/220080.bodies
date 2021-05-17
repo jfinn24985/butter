@@ -183,12 +183,12 @@ if(! this->templates_.empty())
   BUTTER_REQUIRE( found_style,  QString("Unknown style '%1'.").arg(style).toStdString() );
 }
 !!!359600.cpp!!!	read_style(in style : unistr, in path : unistr) : void
-QFile xmlfile{ path };
-if( xmlfile.exists() )
+if( ! QDir(path).exists() )
 {
   throw std::runtime_error(("File "+path+" not found.").toStdString());
 }
 
+QFile xmlfile{ path };
 QXmlStreamReader xml{ &xmlfile };
 for( ; xml.readNext() && ! xml.atEnd()
   && (! xml.isStartElement() || xml.name() != style_xmlname())

@@ -1,4 +1,12 @@
 class log
+!!!367024.cpp!!!	trace(in level : base_log::log_level, in msg : string) : void
+if (level_ >= level) UmlCom::trace(msg);
+if (debug)
+{
+  static const char labels[][6] = {"warn","info","debug"};
+  stream() << "[" << labels[level] << "]" << msg << "\n";
+}
+
 !!!367408.cpp!!!	debug_log(in fname : unistr) : void
 debug_file_.reset(new QFile(fname));
 if (! debug_file_->open(IO_WriteOnly))

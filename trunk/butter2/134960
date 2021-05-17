@@ -1,6 +1,6 @@
 format 224
 "Qt" // External::Qt
-  revision 2
+  revision 3
   modified_by 48 "finnerty"
   // class settings
   
@@ -68,6 +68,20 @@ format 224
       visibility package 
       cpp_external cpp_decl "${name}
 #include <${name}>
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 259376 "QApplication"
+      visibility package 
+      cpp_external cpp_decl "${name}
+#include <qapplication.h>
 "
       java_decl ""
       php_decl ""

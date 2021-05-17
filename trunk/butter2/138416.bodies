@@ -55,10 +55,7 @@ if(this->root_)
   }
 }
 return v;
-!!!150192.cpp!!!	serialize(inout a_os : QTextOStream) : void
-#ifndef DEBUG
-#define DEBUG 1
-#endif
+!!!150192.cpp!!!	serialize(inout a_os : stream) : void
 BUTTER_ALWAYS(DEBUG, "Programming error: attempt to get debug info in release build");
 if (DEBUG)
 {
