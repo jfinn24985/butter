@@ -1,0 +1,237 @@
+<style label="make">
+ <file label="system.mk">## system.mk
+#
+# System Makefile
+#
+##################################
+# Defaults for current environment
+##################################
+
+-include $(ROOTDIR)/local.mk
+OS ?= LINUX
+VARIANT ?= DEBUG
+
+SHELL=/bin/sh
+.SUFFIXES:
+.SUFFIXES:
+
+############################
+## Default install locations
+############################
+
+PREFIX?=$(ROOTDIR)/installdir
+EXEC_PREFIX=$(PREFIX)
+BINDIR=$(EXEC_PREFIX)/bin
+SBINDIR=$(EXEC_PREFIX)/sbin
+LIBEXECDIR=$(EXEC_PREFIX)/libexec
+LIBDIR=$(EXEC_PREFIX)/lib
+DATAROOTDIR=$(PREFIX)/share
+DATADIR=$(PREFIX)/share
+SYSCONFDIR=$(PREFIX)/etc
+SHAREDSTATEDIR=$(PREFIX)/com
+LOCALSTATEDIR=$(PREFIX)/var
+INCLUDEDIR=$(PREFIX)/include
+LOCALEDIR=$(DATAROOTDIR)/locale
+DOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)
+INFODIR=$(DATAROOTDIR)/info
+MANDIR=$(DATAROOTDIR)/man
+HTMLDIR=$(DOCDIR)
+DVIDIR=$(DOCDIR)
+PDFDIR=$(DOCDIR)
+PSDIR=$(DOCDIR)
+MAN1DIR=$(MANDIR)/man1
+MAN2DIR=$(MANDIR)/man2
+MAN3DIR=$(MANDIR)/man3
+MAN4DIR=$(MANDIR)/man4
+MAN5DIR=$(MANDIR)/man5
+MAN6DIR=$(MANDIR)/man6
+MAN7DIR=$(MANDIR)/man7
+MAN8DIR=$(MANDIR)/man8
+MANNDIR=$(MANDIR)/mann
+
+# Flags for the install targets.
+INSTALL:=install
+BINIFLAGS:=-m 755
+FILEIFLAGS:=-m 644
+LIBIFLAGS:=-m 644 
+MANIFLAGS:=-m 644
+
+####################
+## OS SPECIFIC STUFF
+####################
+
+SUFCSRC:=.c
+SUFC++SRC:=.cpp
+SUFFORTRANSRC:=.f95
+SUFDEPENDS:=.dep
+
+# Assume unix-like 
+SUFOBJ:=.o
+SUFEXE:=
+SUFLIB:=.a
+SUFSHR:=.so.0
+ifeq ($(OS),WIN32)
+SUFEXE:=.exe
+SUFLIB:=.lib
+SUFSHR:=.dll
+endif
+
+######################
+##  Combine flags sets
+######################
+
+ifeq ($(VARIANT),DEBUG)
+VARIANTFLAGS=$(STDDEBUGFLAGS)
+else
+VARIANTFLAGS=$(STDOPTFLAGS)
+endif
+
+CFLAGS=$(VARIANTFLAGS) $(STDCFLAGS)
+CXXFLAGS=$(VARIANTFLAGS) $(STDCXXFLAGS)
+CPPFLAGS=$(DEFINES)
+FFLAGS=$(VARIANTFLAGS) $(STDFFLAGS)
+LDFLAGS=$(VARIANTFLAGS) $(STDLDFLAGS)
+LIBFLAGS:=$(STDLIBFLAGS)
+SHRXFLAGS:=$(STDSHRXFLAGS)
+
+###################################
+## Dependency and other Build rules
+###################################
+
+%.$(SUFDEPENDS): %.$(SUFCSRC)
+	set -e; $(CC) -MM $(CCFLAGS) $&lt; \
+	| sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+	[ -s $@ ] || rm -f $@
+
+%.$(SUFDEPENDS): %.$(SUFC++SRC)
+	set -e; $(C++) -MM $(C++FLAGS) $&lt; \
+	| sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+	[ -s $@ ] || rm -f $@
+
+%.$(SUFOBJ): %.$(SUFCSRC)
+	$(CC) $(CFLAGS) -o $@ $&lt;
+
+%.$(SUFOBJ): %.$(SUFC++SRC)
+	$(C++) $(C++FLAGS) -o $@ $&lt;
+
+%.$(SUFOBJ): %.$(SUFFORTRANSRC)
+	$(FORTRAN) $(FORTRANFLAGS) -o $@ $&lt;
+
+#############################################
+##  Define standard directory descent targets
+##  (required for proper functioning)
+#############################################
+
+all:: dopart
+
+install:: doinstall
+
+doit:
+	for WORKDIR in $(DIRS); do \
+	echo Working on $$WORKDIR; \
+	pushd $$WORKDIR;\
+	OS=$(OS) ROOTDIR="$(ROOTDIR)" SYS...="$(SYS...)" VARIANT="$(VARIANT)"  make $(WHAT); \
+	popd;\
+	done
+
+dopart:
+	WHAT="all" make doit
+
+doinstall:
+	WHAT="install" make doit
+
+distclean: clean
+	rm -f $(CLEAN_TARGETS)
+	WHAT="distclean" make doit
+
+clean: 
+	rm -f $(CLEAN_TEMP)
+	WHAT="clean" make doit
+</file>
+ <file label="local.mk">## local.mk.tmpl
+
+OS ?= LINUX
+COMP ?= GNU
+VARIANT ?= DEBUG
+# for installation targets
+# VERSIONDIR:="@BASE_PROJECT@-@VERSION@"
+# PREFIX?=$(ROOTDIR)/installdir
+</file>
+ <!-- name of the top-most generated buildfile -->
+ <property label="root-file">makefile</property>
+
+ <!-- name of build file in any sub-directories -->
+ <property label="build-file">makefile</property>
+ <!-- default for install flags -->
+ <property label="target_install_location">$(BINDIR)</property>
+ <property label="target_install_mode">$(BINIFLAGS)</property>
+
+  <!-- how to make comments -->
+ <template label="comment">## <replace label="text"/></template>
+ <template label="start-phrase">## START:<replace label="name"/>
+</template>
+ <template label="end-phrase">## END:<replace label="name"/>
+</template>
+
+
+ <!-- template for start of root makefile -->
+ <template label="root-preamble"><option label="rootdir">export ROOTDIR:=<replace label="location_root"/></option>
+include $(ROOTDIR)/system.mk
+</template>
+
+ <!-- template for start of subdirectory makefiles -->
+ <template label="preamble">
+include $(ROOTDIR)/system.mk
+</template>
+
+ <!-- template for start of (internal) package -->
+ <template label="package">
+<option label="SYSINCLUDE">export SYSINCLUDE:= <replace label="package_includes"/>
+</option><option label="SYSCFLAGS">export SYSCFLAGS:= <replace label="package_cflags"/>
+</option><option label="SYSC++FLAGS">export SYSC++FLAGS:= <replace label="package_c++flags"/>
+</option><option label="SYSFFLAGS">export SYSFFLAGS:= <replace label="package_fflags"/>
+</option><option label="SYSLDFLAGS">export SYSLDFLAGS:= <replace label="package_ldflags"/>
+</option>
+</template>
+
+ <!-- template for a target -->
+ <template label="build-target">
+<option label="SRC"><replace label="TARGET_NAME"/>SRC:=<replace label="target_src"/>
+</option><option label="INCLUDE"><replace label="TARGET_NAME"/>INCLUDE:= $(SYSINCLUDE) <replace label="target_include"/>
+</option><option label="CFLAGS"><replace label="TARGET_NAME"/>CFLAGS:= $(SYSCFLAGS) <replace label="target_cflags"/>
+</option><option label="C++FLAGS"><replace label="TARGET_NAME"/>C++FLAGS:= $(SYSC++FLAGS) <replace label="target_c++flags"/>
+</option><option label="LDFLAGS"><replace label="TARGET_NAME"/>LDFLAGS:= $(SYSLDFLAGS) <replace label="target_ldflags"/>
+</option><option label="DINC"><replace label="TARGET_NAME"/>DINC := $(filter %.$(SUFDEP), $(<replace label="TARGET_NAME"/>SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(<replace label="TARGET_NAME"/>SRC:.$(SUFCSRC)=.$(SUFDEP)))
+include $(<replace label="TARGET_NAME"/>DINC)
+
+<replace label="TARGET_NAME"/>OBJ := $(<replace label="TARGET_NAME"/>OBJ) $(filter %.o, $(<replace label="TARGET_NAME"/>SRC:.$(SUFC++SRC)=.$(SUFOBJ)))
+CLEAN_TEMP := $(CLEAN_TEMP) $(<replace label="TARGET_NAME"/>OBJ)
+
+<replace label="target_name"/>$(SUFEXE) :: CFLAGS:=... $(patsubst %,-I%,$(<replace label="TARGET_NAME"/>INCLUDE)) $(VARIANTFLAGS) ...
+<replace label="target_name"/>$(SUFEXE) :: C++FLAGS:=... $(<replace label="TARGET_NAME"/>INCLUDE) ...
+<replace label="target_name"/>$(SUFEXE) :: $(<replace label="TARGET_NAME"/>OBJ) <replace label="target_object"/> <replace label="target_local_libs"/> | $(<replace label="TARGET_NAME"/>DINC) 
+#?	$(C++) $(C++FLAGS) -o <replace label="target_name"/>$(SUFEXE) $(<replace label="TARGET_NAME"/>OBJ) $(<replace label="TARGET_NAME"/>LDFLAGS) $(LDFLAGS)
+
+all :: <replace label="target_name"/>$(SUFEXE)
+
+CLEAN_TARGETS := $(CLEAN_TARGETS) <replace label="target_name"/>$(SUFEXE)
+</option>
+</template>
+
+ <template label="install-target">
+install:: <replace label="target_name"/>$(SUFEXE)
+<option label="where">	$(INSTALL) -d <replace label="target_install_location"/>
+</option><option label="install">	$(INSTALL) <replace label="target_install_mode"/> $&lt; <replace label="target_install_location"/>/$&lt;
+</option>
+</template>
+ <template label="sublocation">
+  DIRS:= $(DIRS) <replace label="location_dir"/></template>
+ <!-- template name="buildfile">content</template>
+ <template name="internal-project">content</template>
+ <template name="external-project">content</template>
+ <template name="object">content</template>
+ <template name="executable">content</template>
+ <template name="library">content</template>
+ <template name="shared">content</template -->
+</style>
+
