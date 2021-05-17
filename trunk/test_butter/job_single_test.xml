@@ -43,6 +43,7 @@
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced
+        <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
         <verb type="file-list" >
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>

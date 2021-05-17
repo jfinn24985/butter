@@ -2,7 +2,7 @@ format 224
 "butter"
   revision 113
   modified_by 48 "finnerty"
-  cpp_root_dir "/home/finnerty/tmp/butter2/butter/"
+  cpp_root_dir "/tmp/butter2/"
 
 
   

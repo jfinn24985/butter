@@ -334,7 +334,7 @@ to a python dictionary.
         """checks if this is a conditional property and if the
 condition is met from the given dictionary."""
         if self.if_property: # Check for dependencies
-        need_match = True # Do we match or not match value?
+          need_match = True # Do we match or not match value?
         chk = self.if_value
         if chk[0] == '!':
           chk = chk[1:]
