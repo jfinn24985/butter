@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 100
+  revision 101
   modified_by 48 "finnerty"
   // class settings
   
@@ -5914,9 +5914,9 @@ ${definition}"
 	artifact_ref 215984 // log
       end
       ncouples 10
-      key "genpro pro" value "/home/finnerty/tmp/butter2/butter/butter.pro"
-      key "genpro path" value "/home/finnerty/tmp/butter2/butter/"
-      key "genpro target" value "/home/finnerty/tmp/butter2/butter/butter"
+      key "genpro pro" value "/tmp/butter2/butter.pro"
+      key "genpro path" value "/tmp/butter2/"
+      key "genpro target" value "/tmp/butter2/butter"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt console"
       key "genpro defines" value "WITHCPP DEBUG=1"

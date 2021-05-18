@@ -39,20 +39,6 @@ if ( ! root_dir_.exists() )
     throw std::runtime_error( msg_.utf8().data() );
   }
 }
-/////////////////////
-// Set style
-QByteArray style_, xml_filename_;
-if ( ! project->propertyValue( style_prop_name(), style_ ) )
-{
-  style_ = default_style_value();
-}
-if ( ! project->propertyValue( style_path_prop_name(), xml_filename_ ) )
-{
-  xml_filename_ = default_style_path_value();
-}
-
-this->style_->read_style( style_, xml_filename_ );
-
 //  Check and create any user-directed top-level directory->
 QByteArray user_base_path_;
 a_item.propertyValue( base_prop_name(), user_base_path_ );
@@ -344,8 +330,8 @@ public:
         msg_box_.exec();
       }
       BUTTER_CHECK( nullptr != UmlPackage::getProject (), "Error: no project defined!<br>" );
+      /////////////////////////////////////////
       // Parse the project into a location tree
-      // TODO IN PROCESS
       butter::log l;
       l.debug_log("butter.log");
       this->parse_project( *UmlPackage::getProject(), l );
@@ -358,6 +344,20 @@ public:
       {
         std::cerr << "No root package found.\n";
         l.stream() << "No root package found.\n";
+      }
+      /////////////////////////
+      // Set output build style
+      {
+        QByteArray style_, xml_filename_;
+        if ( ! UmlPackage::getProject()->propertyValue( style_prop_name(), style_ ) )
+        {
+          style_ = default_style_value();
+        }
+        if ( ! UmlPackage::getProject()->propertyValue( style_path_prop_name(), xml_filename_ ) )
+        {
+          xml_filename_ = default_style_path_value();
+        }
+        this->style_->read_style( style_, xml_filename_ );
       }
 
       // TODO BELOW

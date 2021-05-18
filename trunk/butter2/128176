@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 22
+  revision 23
   modified_by 48 "finnerty"
   // class settings
   
@@ -1013,9 +1013,6 @@ ${body}
       end
     end
 
-    activity 128048 "location_set_insert_sibling_root"
-      specification operation_ref 245680 // location_set_insert_negative_dir
-    end
   end
 
   deploymentview 128304 "unit-tests"

@@ -1,6 +1,6 @@
 format 224
 "Build system templates" // API USER::butter::Build system templates
-  revision 14
+  revision 15
   modified_by 48 "finnerty"
   // class settings
   
@@ -30,6 +30,427 @@ format 224
   activitydiagramsettings
    end
   
+  classview 147760 "Logical View"
+    
+    classdiagramsettings member_max_width 0 end
+    
+    classcompositediagramsettings end
+    
+    collaborationdiagramsettings end
+    
+    objectdiagramsettings end
+    
+    objectcompositediagramsettings end
+    
+    sequencediagramsettings end
+    
+    statediagramsettings
+     end
+    
+    
+    activitydiagramsettings
+     end
+    class 128065 "BuildFile"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 128961 "get_paragraph"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+    end
+
+    class 128193 "BuildStyle"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      operation 129601 "output_build_project"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "addrbook" explicit_type "string_map"
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 129729 "output_build_library"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "inscope" explicit_type "string_map"
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 129857 "output_build_other"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "inscope" explicit_type "string_map"
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 129985 "output_build_executable"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "inscope" explicit_type "string_map"
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 130113 "output_build_sublocation"
+	public explicit_return_type "void"
+	nparams 1
+	  param out name "paragraph" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+
+      operation 130369 "valid_property_name"
+	public explicit_return_type "bool"
+	nparams 1
+	  param in name "name" explicit_type "string"
+	
+	
+	
+	
+	
+      end
+    end
+
+    class 128321 "BuildLocation"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128193 // _output (<directional composition>)
+	relation 128193 *-->
+	  a role_name "_output" multiplicity "1" protected
+	    classrelation_ref 128193 // _output (<directional composition>)
+	  b parent class_ref 128065 // BuildFile
+      end
+
+      operation 128833 "path"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      classrelation 131521 // _contains (<directional composition>)
+	relation 131137 *-->
+	  a role_name "_contains" multiplicity "*" protected
+	    classrelation_ref 131521 // _contains (<directional composition>)
+	  b parent class_ref 8193 // UmlArtifact
+      end
+
+      classrelation 131649 // _current_style (<directional aggregation>)
+	relation 131265 o-->
+	  a role_name "_current_style" multiplicity "1" protected
+	    classrelation_ref 131649 // _current_style (<directional aggregation>)
+	  b parent class_ref 128193 // BuildStyle
+      end
+
+      classrelation 131777 // _sublocations (<directional composition>)
+	relation 131393 *-->
+	  a role_name "_sublocations" multiplicity "*" protected
+	    classrelation_ref 131777 // _sublocations (<directional composition>)
+	  b parent class_ref 128321 // BuildLocation
+      end
+    end
+
+    class 128449 "BuildProject"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 128833 // _binary_targets (<composition>)
+	relation 128833 *---
+	  a role_name "_binary_targets" multiplicity "*" protected
+	    classrelation_ref 128833 // _binary_targets (<composition>)
+	  b role_name "_project" multiplicity "1" package
+	    classrelation_ref 130497 // _project (<composition>)
+      end
+
+      classrelation 128961 // _library_targets (<composition>)
+	relation 128961 *---
+	  a role_name "_library_targets" multiplicity "*" protected
+	    classrelation_ref 128961 // _library_targets (<composition>)
+	  b role_name "_project" multiplicity "1" package
+	    classrelation_ref 130625 // _project (<composition>)
+      end
+
+      classrelation 129089 // _other_targets (<composition>)
+	relation 129089 *---
+	  a role_name "_other_targets" multiplicity "*" protected
+	    classrelation_ref 129089 // _other_targets (<composition>)
+	  b role_name "_project" multiplicity "1" package
+	    classrelation_ref 130369 // _project (<composition>)
+      end
+
+      classrelation 129473 // <generalisation>
+	relation 129473 ---|>
+	  a public
+	    classrelation_ref 129473 // <generalisation>
+	  b parent class_ref 129217 // BuildParagraph
+      end
+    end
+
+    class 128577 "BuildLibrary"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 130625 // _project (<composition>)
+	relation_ref 128961 // <composition>
+      end
+
+      classrelation 131137 // <generalisation>
+	relation 130753 ---|>
+	  a public
+	    classrelation_ref 131137 // <generalisation>
+	  b parent class_ref 129217 // BuildParagraph
+      end
+    end
+
+    class 128705 "BuildExecutable"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 129217 // _direct_source (<directional composition>)
+	relation 129217 *-->
+	  a role_name "_direct_source" protected
+	    classrelation_ref 129217 // _direct_source (<directional composition>)
+	  b parent class_ref 128961 // BuildSource
+      end
+
+      classrelation 130113 // _link_dependencies (<directional composition>)
+	relation 130113 *-->
+	  a role_name "_link_dependencies" multiplicity "*" protected
+	    classrelation_ref 130113 // _link_dependencies (<directional composition>)
+	  b parent class_ref 128577 // BuildLibrary
+      end
+
+      classrelation 130497 // _project (<composition>)
+	relation_ref 128833 // <composition>
+      end
+
+      classrelation 131393 // <generalisation>
+	relation 131009 ---|>
+	  a public
+	    classrelation_ref 131393 // <generalisation>
+	  b parent class_ref 129217 // BuildParagraph
+      end
+    end
+
+    class 129089 "BuildOther"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 130241 // _link_dependencies (<directional composition>)
+	relation 130241 *-->
+	  a role_name "_link_dependencies" multiplicity "*" protected
+	    classrelation_ref 130241 // _link_dependencies (<directional composition>)
+	  b parent class_ref 128577 // BuildLibrary
+      end
+
+      classrelation 130369 // _project (<composition>)
+	relation_ref 129089 // <composition>
+      end
+
+      classrelation 131265 // <generalisation>
+	relation 130881 ---|>
+	  a public
+	    classrelation_ref 131265 // <generalisation>
+	  b parent class_ref 129217 // BuildParagraph
+      end
+    end
+
+    class 128961 "BuildSource"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 129217 "BuildParagraph"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 129345 // _style (<directional composition>)
+	relation 129345 *-->
+	  a role_name "_style" multiplicity "1" protected
+	    classrelation_ref 129345 // _style (<directional composition>)
+	  b parent class_ref 128193 // BuildStyle
+      end
+
+      operation 128065 "name"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128193 "build_source"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128321 "link_source"
+	public explicit_return_type ""
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128449 "compiler"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128577 "compiler_flags"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 128705 "linker_flags"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129089 "target_type"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129217 "indirect_compiler_flags"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+
+      operation 129345 "link_style"
+	public explicit_return_type "string"
+	nparams 0
+	
+	
+	
+	
+	
+      end
+    end
+  end
+
   classview 141232 "Templates"
     
     classdiagramsettings member_max_width 0 end
