@@ -325,11 +325,11 @@ public:
       // Set output build style
       {
         QByteArray style_, xml_filename_;
-        if ( ! UmlPackage::getProject()->propertyValue( style_prop_name(), style_ ) )
+        if ( ! UmlPackage::getProject()->propertyValue( UmlItem::style_label(), style_ ) )
         {
           style_ = default_style_value();
         }
-        if ( ! UmlPackage::getProject()->propertyValue( style_path_prop_name(), xml_filename_ ) )
+        if ( ! UmlPackage::getProject()->propertyValue( UmlItem::style_path_label(), xml_filename_ ) )
         {
           xml_filename_ = default_style_path_value();
         }
@@ -402,6 +402,8 @@ enum target_type
   executable = 3,
   other = 4,
 };
+QString start_phrase{ this->style_->get_start_phrase() };
+QString end_phrase{ this->style_->get_end_phrase() };
 ////////////////////////////////////////////////////
 // Check for top-level system build-file document(s)
 // - create from template if necessary.
@@ -415,7 +417,7 @@ location_state * root_state{ static_cast<location_state *>(this->root_->root()->
     BUTTER_REQUIRE( doc_list.size() <= 1, "Too many root documents found");
     if( 0 == doc_list.size() )
     {
-      root_state->add_uml_document(elem.key())->set_Description(elem.value());
+      root_state->add_uml_document(elem.key())->set_Description(elem.value().utf8());
     }
   }
 }
@@ -475,14 +477,14 @@ while( ! location_stack_.isEmpty() )
   // Get deployment views from current location's packages
   for( int i_ = 0; i_ < state->packages().count(); ++i_ )
   {
-    UmlPackage * I_ = state_->packages().at( i_ );
-    for( int j_ = 0; j_ < I_->children().count(); ++j_ )
+    UmlPackage * I_ = state->packages().at( i_ );
+    for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
     {
       UmlItem * J_ = I_->children().at( j_ );
       if( aDeploymentView == J_->kind() )
       {
         // Scan deployment views for targets.
-        for( int k_ = 0; k_ < J_->children().count(); ++ k_ )
+        for( unsigned int k_ = 0; k_ < J_->children().count(); ++ k_ )
         {
           UmlItem * item_ = J_->children().at( k_ );
           if ( anArtifact == item_->kind() )           // UmlArtifacts.
@@ -490,13 +492,15 @@ while( ! location_stack_.isEmpty() )
             const UmlArtifact & art_item_ = dynamic_cast < UmlArtifact & >( *item_ );
             const QString stereotype_label_( const_cast< UmlArtifact & >( art_item_ ).stereotype() );
             bool installable_( false );
+            const QString target_name_( const_cast< UmlArtifact &>(art_item_).name() );
+            UmlItem::string_map targetbook;
+            item_->in_scope( targetbook, true, log );
             target_type target_type_( executable ); // The target's type, set to exe then change if library etc
             if( stereotype_label_.contains( UmlItem::executable_stereotype(), false )
                 || stereotype_label_.contains( UmlItem::library_stereotype(), false ) )
             {
               installable_ = true;
-              UmlItem::string_map targetbook, fullbook;
-              item_->in_scope( targetbook, true, log );
+              UmlItem::string_map fullbook;
               item_->in_scope( fullbook, false, log );
               if( targetbook.end() != targetbook.find( UmlItem::project_label() ) )
               {
@@ -506,26 +510,26 @@ while( ! location_stack_.isEmpty() )
                 if( targetbook.end() != targetbook.find( UmlItem::buildfile_label() ) )
                 {
                   // Ensure inclusion of external build file
-                  if( root_build_file->document().has_target(extern_project_name) )
+                  if( root_build_file->document(start_phrase, end_phrase).has_target(extern_project_name) )
                   {
-                    if( root_build_file->document().at(extern_project_name).value.isEmpty() )
+                    if( root_build_file->document(start_phrase, end_phrase).at(extern_project_name).value.isEmpty() )
                     {
-                      root_build_file->document().at(extern_project_name).value = this->style_->make_element("include-buildfile", targetbook);
+                      root_build_file->document(start_phrase, end_phrase)[extern_project_name].value = this->style_->make_element("include-buildfile", targetbook);
                     }
                   }
                 }
                 else
                 {
                   // Add section for an external library
-                  if( root_build_file->document().has_target(extern_project_name) )
+                  if( root_build_file->document(start_phrase, end_phrase).has_target(extern_project_name) )
                   {
                     // If needed, add external library preamble
-                    if( root_build_file->document().at(extern_project_name).value.isEmpty() )
+                    if( root_build_file->document(start_phrase, end_phrase).at(extern_project_name).value.isEmpty() )
                     {
-                      root_build_file->document().at(extern_project_name).value = this->style_->make_element("extern-preamble", targetbook);
+                      root_build_file->document(start_phrase, end_phrase)[extern_project_name].value = this->style_->make_element("extern-preamble", targetbook);
                     }
                   }
-                  root_build_file->document()[extern_project_name] += this->style_->make_element("extern-library", targetbook);
+                  root_build_file->document(start_phrase, end_phrase)[extern_project_name].value += this->style_->make_element("extern-library", targetbook);
                 }
               }
               else
@@ -537,7 +541,6 @@ while( ! location_stack_.isEmpty() )
                 ///////////////////////
                 // PROCESS DEPENDENCIES
                 ///////////////////////
-                const QString target_name_( art_item_.name() );
                 std::map< QByteArray, UmlArtifact * > assoc_arts_;
                 // Make map to get sorted list of artifacts
                 for( unsigned int i_ = 0; i_ < const_cast<UmlArtifact &>( art_item_ ).associatedArtifacts().size(); ++i_ )
@@ -551,7 +554,7 @@ while( ! location_stack_.isEmpty() )
                 {
                   QString entry_;           // The target entry
                   {
-                    if ( stereotype_label_.contains( constants::library_stereotype, false ) )
+                    if ( stereotype_label_.contains( UmlItem::library_stereotype(), false ) )
                     {
                       QString value_;
                       auto itr = fullbook.find( UmlItem::lib_type_label() );
@@ -580,16 +583,16 @@ while( ! location_stack_.isEmpty() )
                     QTextOStream entry_os_( &entry_ );
                     ///////////////////
                     // Start the target entry.
-                    build_file->document()[target_name_].value = this->style_->make_element("target-start", targetbook);
+                    build_file->document(start_phrase, end_phrase)[target_name_].value = this->style_->make_element("target-start", targetbook);
                     ///////////////////
                     // Process the associated (dependent) artifacts
-                    for( std::map< QCString, UmlArtifact * >::iterator itr = assoc_arts_.begin(); itr != assoc_arts_.end(); ++itr )
+                    for( std::map< QByteArray, UmlArtifact * >::iterator itr = assoc_arts_.begin(); itr != assoc_arts_.end(); ++itr )
                     {
                       UmlArtifact * const current_art_ = itr->second;
                       const QString stereotype_( current_art_->stereotype ().data () );
                       UmlItem::string_map currentbook;
                       current_art_->in_scope( currentbook, false, log );
-                      if( stereotype_ == butter_constants::library_stereotype )
+                      if( stereotype_ == UmlItem::library_stereotype() )
                       {
                         // For associated libraries, need to pass include, flags and ldflags to target
                         auto itr = currentbook.find( UmlItem::include_label() );
@@ -608,7 +611,7 @@ while( ! location_stack_.isEmpty() )
                           targetbook[ UmlItem::flags_label() ] += " " + itr.value();
                         }
                       }
-                      else if( stereotype_ == butter_constants::source_stereotype )
+                      else if( stereotype_ == UmlItem::source_stereotype() )
                       {
                         // For source need to pass ldflags
                         // If include or flags are set, then we need to create object
@@ -630,8 +633,8 @@ while( ! location_stack_.isEmpty() )
                         }
                         if( need_object )
                         {
-                          currentbook["label"] = current_art_->name()
-                                                 build_file->document()[current_art_->name()] = this->style_->make_element("object", currentbook);
+                          currentbook["label"] = current_art_->name();
+                          build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object", currentbook);
                           targetbook["source"] += " " + current_art_->name() + ".$(SUFOBJ)";
                         }
                         else
@@ -639,7 +642,7 @@ while( ! location_stack_.isEmpty() )
                           targetbook["source"] += " " + current_art_->name() + ".$(SUFSRC)";
                         }
                       }
-                      else if( stereotype_ == butter_constants::document_stereotype )
+                      else if( stereotype_ == UmlItem::document_stereotype() )
                       {
                         // For "document" need to pass ldflags and create object
                         auto itr = currentbook.find( UmlItem::ldflags_label() );
@@ -647,21 +650,21 @@ while( ! location_stack_.isEmpty() )
                         {
                           targetbook[ UmlItem::ldflags_label() ] += " " + itr.value();
                         }
-                        currentbook["label"] = current_art_->name()
-                                               build_file->document()[current_art_->name()] = this->style_->make_element("object-other", currentbook);
+                        currentbook["label"] = current_art_->name();
+                        build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
                         targetbook["source"] += " " + current_art_->name() + ".$(SUFOBJ)";
                       }
                     }
                     ////////////////////
                     // End target
-                    build_file->document()[target_name_].value += this->style_->make_element("target", targetbook);
+                    build_file->document(start_phrase, end_phrase)[target_name_].value += this->style_->make_element("target", targetbook);
                   }
                 }
               }
             }
             //////////////
             // Handle installables
-            if( installable_ || stereotype_label_.contains( constants::document_stereotype, false ) )
+            if( installable_ || stereotype_label_.contains( UmlItem::document_stereotype(), false ) )
             {
               auto itr = targetbook.find( UmlItem::install_label() );
               if( itr == targetbook.end() )
@@ -688,7 +691,7 @@ while( ! location_stack_.isEmpty() )
               }
               if( installable_ )
               {
-                build_file->document()[target_name_].value += this->style_->make_element("target-install", targetbook);
+                build_file->document(start_phrase, end_phrase)[target_name_].value += this->style_->make_element("target-install", targetbook);
               }
             }
           }
@@ -700,13 +703,13 @@ while( ! location_stack_.isEmpty() )
     // end package
   }
   // End of current location
-  if ( top_ != this->root_.root())
+  if ( top_ != this->root_->root() )
   {
     // add the inter-file link
     UmlItem::string_map locbook;
     locbook["name"] = top_->path();
     locbook["path"] = top_->full_path();
-    root_build_file->document()[top_->path()].value += this->style_->make_element("decendent_link", locbook);
+    root_build_file->document(start_phrase, end_phrase)[top_->path()].value += this->style_->make_element("decendent-link", locbook);
   }
 }
 

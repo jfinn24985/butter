@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 44
+  revision 45
   modified_by 48 "finnerty"
   // class settings
   
@@ -292,7 +292,7 @@ ${inlines}
 	mysql ""
       end
 
-      operation 313776 "build_file_xmlname"
+      operation 313776 "build_file_label"
 	class_operation public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -355,7 +355,7 @@ ${inlines}
 	
       end
 
-      operation 324016 "end_phrase_xmlname"
+      operation 324016 "end_phrase_label"
 	class_operation constvalue public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -419,7 +419,7 @@ ${inlines}
 	
       end
 
-      operation 313904 "root_file_xmlname"
+      operation 313904 "root_build_file_label"
 	class_operation public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -434,7 +434,7 @@ ${inlines}
 	
       end
 
-      operation 324144 "start_phrase_xmlname"
+      operation 324144 "start_phrase_label"
 	class_operation constvalue public explicit_return_type "unistr"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -526,10 +526,12 @@ ${inlines}
 
       operation 280496 "comment_text"
 	class_operation preserve_cpp_body_indent public explicit_return_type "unistr"
-	nparams 1
+	nparams 2
 	  param in name "a_text" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${staticnl}{
+	  param in name "newline_at_end" explicit_type "bool"
+	    defaultvalue "true"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${staticnl}{
   ${body}}
 "
 	
@@ -750,6 +752,21 @@ existing keys being overwritten by the values in other."
 	comment "Name of all non-root build files."
       end
 
+      operation 412720 "get_end_phrase"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Name of all non-root build files."
+      end
+
       operation 323760 "get_properties"
 	const public return_type class_ref 220208 // map_type
 	nparams 0
@@ -793,6 +810,21 @@ existing keys being overwritten by the values in other."
 	
 	
 	comment "A map of filenames and content of any special build files to create in the root location"
+      end
+
+      operation 412592 "get_start_phrase"
+	public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Name of all non-root build files."
       end
 
       operation 307248 "get_templates"
@@ -844,11 +876,13 @@ style properties before instantiating the template."
 
       operation 315056 "make_comment_text"
 	const public explicit_return_type "unistr"
-	nparams 1
+	nparams 2
 	  param in name "text" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "newline_at_end" explicit_type "bool"
+	    defaultvalue "true"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -913,26 +947,6 @@ style properties before instantiating the template.
 "
       end
 
-      operation 314928 "make_end_phrase"
-	const public explicit_return_type "unistr"
-	nparams 1
-	  param in name "name" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Marker text indicating end of a compound document section with the given name
-
-This uses a template labelled \"end-phrase\". If
-no template exists, then the fall-back is to use 
-comment_text( \" END:\" + name )"
-      end
-
       operation 304688 "make_preamble"
 	const public explicit_return_type "unistr"
 	nparams 1
@@ -951,26 +965,6 @@ comment_text( \" END:\" + name )"
 * Using this method instead of directly accessing the templates is
 recommended as it combines the passed properties to the build
 style properties before instantiating the template."
-      end
-
-      operation 314800 "make_start_phrase"
-	const public explicit_return_type "unistr"
-	nparams 1
-	  param in name "name" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Marker text indicating beginning of a compound document section with the  given name
-
-This uses a template labelled \"start-phrase\". If
-no template exists, then the fall-back is to use 
-comment_text( \" START:\" + name )"
       end
 
       operation 314288 "make_version"
@@ -1855,7 +1849,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	const constvalue public return_type class_ref 129968 // document_element
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
-   return this->date_;
+   return this->date_orig_;
 }"
 	
 	
@@ -4260,24 +4254,14 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
-      operation 358832 "base_prop_name"
-	class_operation public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} text{ \"butter base\" };
-  return text;
-}
-"
+      extra_member 210352 "DEFAULT STYLE"
 	
-	
-	
-	
-	comment "User property name:
-* indicates the relationship between the package and the root directory set in C++ settings.
-* only used if present on the top-level project
-"
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
       end
 
       operation 358960 "default_style_value"
@@ -4315,35 +4299,23 @@ ${inlines}
 	comment "The default location of the XML file containing style definitions"
       end
 
-      operation 358576 "log_level_prop_name"
-	class_operation public explicit_return_type "string"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} text{ \"butter log-level\" };
-  return text;
-}
-"
+      extra_member 210480 "TEMPLATES"
 	
-	
-	
-	
-	comment "User property name:
-* indicates how much information to print:
-0 = (default) warning and error messages
-1 = as for 0 and information messages
-2 = as for 1 and debugging information
-"
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
       end
 
-      operation 358704 "style_prop_name"
+      operation 412464 "descendent_link_tmpl"
 	class_operation public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} text{ \"butter style\" };
+  static ${type} text{ \"descendent-link\" };
   return text;
 }
 "
@@ -4351,19 +4323,16 @@ ${inlines}
 	
 	
 	
-	comment "User property name:
-* indicates the style of build system/files to create, defaults to 'boost'
-* only used if present on the top-level project
-"
+	comment "The default location of the XML file containing style definitions"
       end
 
-      operation 359728 "style_path_prop_name"
+      operation 411568 "extern_preamble_tmpl"
 	class_operation public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} text{ \"butter style-template\" };
+  static ${type} text{ \"extern-preamble\" };
   return text;
 }
 "
@@ -4371,10 +4340,126 @@ ${inlines}
 	
 	
 	
-	comment "User property name:
-* indicates the style of build system/files to create, defaults to 'boost'
-* only used if present on the top-level project
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 411696 "extern_library_tmpl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"extern-library\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 411440 "include_buildfile_tmpl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"include-buildfile\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 411952 "object_tmpl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"object\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 412080 "obect_other_tmpl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"object-other\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 412208 "target_tmpl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"target\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 411824 "target_start_tmpl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"target-start\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 412336 "target_install_tmpl"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"target\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
       end
 
       classrelation 241072 // <generalisation>
@@ -4550,7 +4635,6 @@ ${inlines}
 	
 	comment "Create the build system from the style and location set."
       end
-
     end
   end
 
@@ -4575,9 +4659,9 @@ ${inlines}
 	artifact_ref 189488 // build_style
       end
       ncouples 10
-      key "genpro pro" value "/home/finnerty/src/butter/trunk/source2/butter.lib.pro"
+      key "genpro pro" value "/tmp/butter2/test/butter.lib.pro"
       key "genpro path" value "/tmp/finnerty/butter2/butter/"
-      key "genpro target" value "/home/finnerty/src/butter/trunk/source2/butter.a"
+      key "genpro target" value "/tmp/butter2/test/butter.a"
       key "genpro tmplt" value "lib"
       key "genpro config" value "debug warn_on qt staticlib"
       key "genpro defines" value "WITHCPP"

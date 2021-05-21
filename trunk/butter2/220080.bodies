@@ -1,5 +1,5 @@
 class build_style
-!!!280496.cpp!!!	comment_text(in a_text : unistr) : unistr
+!!!280496.cpp!!!	comment_text(in a_text : unistr, in newline_at_end : bool = true) : unistr
 QString Result;
 {
   QTextOStream os_ (&Result);
@@ -7,16 +7,20 @@ QString Result;
   for (int e_ = a_text.find('\n', s_); e_ > 0; e_ = a_text.find ('\n', s_))
   {
     os_ << begin_comment() << ' ';
-    os_ << a_text.mid (s_, e_ - s_);
+    os_ << a_text.mid(s_, e_ - s_);
     os_ << end_comment() << "\n";
     s_ = e_ + 1;
   }
-  if (a_text.at(a_text.length () - 1) != '\n')
+  if (a_text.at(a_text.length() - 1) != '\n')
   {
     os_ << begin_comment() << ' ';
-    os_ << a_text.mid (s_);
+    os_ << a_text.mid(s_);
     os_ << end_comment() << "\n";
   }
+}
+if( ! newline_at_end && Result.endsWith('\n'))
+{
+  Result.chop(1);
 }
 return Result;
 
@@ -210,11 +214,17 @@ for(auto itr = other.begin(); itr != other.end(); ++itr)
 }
 return std::move(p);
 !!!306096.cpp!!!	get_build_file_name() : unistr
-auto itr = this->properties_.find( { build_file_xmlname() } );
+auto itr = this->properties_.find( build_file_label() );
 return (itr == this->properties_.end() ? QString() : itr.value());
+!!!412720.cpp!!!	get_end_phrase() : unistr
+auto itr = this->properties_.find( end_phrase_label() );
+return (itr == this->properties_.end() ? make_comment_text("END:", false) : itr.value());
 !!!305968.cpp!!!	get_root_file_name() : unistr
-auto itr = this->properties_.find( { build_file_xmlname() } );
+auto itr = this->properties_.find( root_build_file_label() );
 return (itr == this->properties_.end() ? QString() : itr.value());
+!!!412592.cpp!!!	get_start_phrase() : unistr
+auto itr = this->properties_.find( start_phrase_label() );
+return (itr == this->properties_.end() ? make_comment_text("START:", false) : itr.value());
 !!!314160.cpp!!!	make_close(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( close_xmllabel() );
 if( itr != this->templates_.end() )
@@ -222,33 +232,39 @@ if( itr != this->templates_.end() )
   return itr.value().instantiate( this->extend_properties( properties ) );
 }
 return QString();
-!!!315056.cpp!!!	make_comment_text(in text : unistr) : unistr
+!!!315056.cpp!!!	make_comment_text(in text : unistr, in newline_at_end : bool = true) : unistr
 auto itr = this->templates_.find( "comment" );
 if( itr != this->templates_.end() )
 {
   QString Result;
   {
-    map_type p;
     QTextOStream os_(&Result);
     int s_ = 0; // start position
-    for( int e_ = text.find('\n', s_); e_ > 0; e_ = text.find('\n', s_), s_ = e_ + 1 )
+    for (int e_ = text.find('\n', s_); e_ > 0; e_ = text.find('\n', s_))
     { 
+      map_type p;
       p[ "text" ] = text.mid(s_, e_ - s_);
       os_ << itr.value().instantiate( p );
       os_ << "\n";
+      s_ = e_ + 1;
     }
-    if( text.at(text.length() - 1) != '\n' )
+    if(s_ < text.length())
     {
+      map_type p;
       p[ "text" ] = text.mid(s_);
       os_ << itr.value().instantiate( p );
       os_ << "\n";
     }
   }
+  if( ! newline_at_end && Result.endsWith('\n'))
+  {
+    Result.chop(1);
+  }
   return Result;
 }
 else
 {
-  return comment_text(text);
+  return comment_text(text, newline_at_end);
 }
 !!!314416.cpp!!!	make_date(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( date_xmllabel() );
@@ -272,18 +288,6 @@ if( itr != this->templates_.end() )
   return itr.value().instantiate( this->extend_properties( properties ) );
 }
 return QString();
-!!!314928.cpp!!!	make_end_phrase(in name : unistr) : unistr
-auto itr = this->templates_.find( end_phrase_xmlname() );
-if( itr != this->templates_.end() )
-{
-  map_type p{ this->properties_ };
-  p.insert( QString("name"), name );
-  return itr.value().instantiate( p );
-}
-else
-{
-  return make_comment_text( "END:" + name );
-}
 !!!304688.cpp!!!	make_preamble(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( preamble_xmllabel() );
 if( itr != this->templates_.end() )
@@ -291,18 +295,6 @@ if( itr != this->templates_.end() )
   return itr.value().instantiate( this->extend_properties( properties ) );
 }
 return QString();
-!!!314800.cpp!!!	make_start_phrase(in name : unistr) : unistr
-auto itr = this->templates_.find( start_phrase_xmlname() );
-if( itr != this->templates_.end() )
-{
-  map_type p{ this->properties_ };
-  p.insert( QString("name"), name );
-  return itr.value().instantiate( p );
-}
-else
-{
-  return make_comment_text( "START:" + name );
-}
 !!!314288.cpp!!!	make_version(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( version_xmllabel() );
 if( itr != this->templates_.end() )

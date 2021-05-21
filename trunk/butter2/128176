@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 23
+  revision 24
   modified_by 48 "finnerty"
   // class settings
   
@@ -108,7 +108,7 @@ ${inlines}
 //                build-target, install-target, sublocation)
 static const QByteArray & xml_doc()
 {
-  static QByteArray xmldoc{ \"<style label='gmake'>\\n<file label='system.mk'>## system.mk\\n#\\n# System Makefile\\n#\\n</file>\\n<file label='local.mk'>## local.mk.tmpl\\n\\nOS ?= LINUX\\nCOMP ?= GNU\\nVARIANT ?= DEBUG\\n</file>\\n<!-- name of the top-most generated buildfile -->\\n<property label='root-file'>makefile</property>\\n\\n<!-- name of build file in any sub-directories -->\\n<property label='build-file'>makefile</property>\\n<!-- default for install flags -->\\n<property label='executable-install-location'>$(BINDIR)</property>\\n<property label='executable-install-mode'>$(BINIFLAGS)</property>\\n\\n<!-- how to make comments -->\\n<template label='comment'>## <replace label='text'/></template>\\n<template label='start-phrase'>## START:<replace label='name'/>\\n</template>\\n<template label='end-phrase'>## END:<replace label='name'/>\\n</template>\\n\\n\\n<!-- template for start of root makefile -->\\n<template label='root-preamble'><option label='rootdir'>export ROOTDIR:=<replace label='location_root'/></option>\\ninclude $(ROOTDIR)/system.mk\\n</template>\\n\\n<!-- template for start of subdirectory makefiles -->\\n<template label='preamble'>\\ninclude $(ROOTDIR)/system.mk\\n</template>\\n\\n<!-- template for start of (internal) package -->\\n<template label='package'>\\n<option label='SYSINCLUDE'>export SYSINCLUDE:= <replace label='package_includes'/>\\n</option><option label='SYSCFLAGS'>export SYSCFLAGS:= <replace label='package_cflags'/>\\n</option><option label='SYSC++FLAGS'>export SYSC++FLAGS:= <replace label='package_c++flags'/>\\n</option><option label='SYSFFLAGS'>export SYSFFLAGS:= <replace label='package_fflags'/>\\n</option><option label='SYSLDFLAGS'>export SYSLDFLAGS:= <replace label='package_ldflags'/>\\n</option></template>\\n\\n<!-- template for a target -->\\n<template label='build-target'>\\n<option label='SRC'><replace label='TARGET_NAME'/>SRC:=<replace label='target_src'/>\\n</option><option label='INCLUDE'><replace label='TARGET_NAME'/>INCLUDE:= $(SYSINCLUDE) <replace label='target_include'/>\\n</option><option label='CFLAGS'><replace label='TARGET_NAME'/>CFLAGS:= $(SYSCFLAGS) <replace label='target_cflags'/>\\n</option><option label='C++FLAGS'><replace label='TARGET_NAME'/>C++FLAGS:= $(SYSC++FLAGS) <replace label='target_c++flags'/>\\n</option><option label='LDFLAGS'><replace label='TARGET_NAME'/>LDFLAGS:= $(SYSLDFLAGS) <replace label='target_ldflags'/>\\n</option><option label='DINC'><replace label='TARGET_NAME'/>DINC := $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFCSRC)=.$(SUFDEP)))\\ninclude $(<replace label='TARGET_NAME'/>DINC)</option>\\n\\n<replace label='TARGET_NAME'/>OBJ := $(<replace label='TARGET_NAME'/>OBJ) $(filter %.o, $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFOBJ)))\\nCLEAN_TEMP := $(CLEAN_TEMP) $(<replace label='TARGET_NAME'/>OBJ)\\n\\n<replace label='target_name'/>$(SUFEXE) :: CFLAGS:=... $(patsubst %,-I%,$(<replace label='TARGET_NAME'/>INCLUDE)) $(VARIANTFLAGS) ...\\n<replace label='target_name'/>$(SUFEXE) :: C++FLAGS:=... $(<replace label='TARGET_NAME'/>INCLUDE) ...\\n<replace label='target_name'/>$(SUFEXE) :: $(<replace label='TARGET_NAME'/>OBJ) <replace label='target_object'/> <replace label='target_local_libs'/> | $(<replace label='TARGET_NAME'/>DINC) \\n#?	$(C++) $(C++FLAGS) -o <replace label='target_name'/>$(SUFEXE) $(<replace label='TARGET_NAME'/>OBJ) $(<replace label='TARGET_NAME'/>LDFLAGS) $(LDFLAGS)\\n\\nall :: <replace label='target_name'/>$(SUFEXE)\\n\\nCLEAN_TARGETS := $(CLEAN_TARGETS) <replace label='target_name'/>$(SUFEXE)\\n</template>\\n\\n<template label='executable-install-target'>\\ninstall:: <replace label='target-name'/>$(SUFEXE)\\n<option label='where'>	$(INSTALL) -d <replace label='executable-install-location'/>\\n</option><option label='install'>	$(INSTALL) <replace label='executable-install-mode'/> $&lt; <replace label='executable-install-location'/>/$&lt;\\n</option>\\n</template>\\n<template label='sublocation'>\\nDIRS:= $(DIRS) <replace label='location_dir'/></template>\\n<template label='close'># Local Variables:\\n# mode:makefile\\n# End:\\n</template><template label='version'># Butter version <replace label='butter-version'/>\\n<option label='version'># Project version <replace label='version'/>\\n</option></template><template label='date'># DATE: <replace label='date'/>\\n</template></style>\" };
+  static QByteArray xmldoc{ \"<style label='gmake'>\\n<file label='system.mk'>## system.mk\\n#\\n# System Makefile\\n#\\n</file>\\n<file label='local.mk'>## local.mk.tmpl\\n\\nOS ?= LINUX\\nCOMP ?= GNU\\nVARIANT ?= DEBUG\\n</file>\\n<!-- name of the top-most generated buildfile -->\\n<property label='root-file'>makefile</property>\\n\\n<!-- name of build file in any sub-directories -->\\n<property label='build-file'>makefile</property>\\n<!-- default for install flags -->\\n<property label='executable-install-location'>$(BINDIR)</property>\\n<property label='executable-install-mode'>$(BINIFLAGS)</property>\\n\\n<!-- how to make comments -->\\n<template label='comment'>## <replace label='text'/></template>\\n<property label='start-phrase'>## START:</property>\\n<property label='end-phrase'>## END:</property>\\n\\n<!-- template for start of root makefile -->\\n<template label='root-preamble'><option label='rootdir'>export ROOTDIR:=<replace label='location_root'/></option>\\ninclude $(ROOTDIR)/system.mk\\n</template>\\n\\n<!-- template for start of subdirectory makefiles -->\\n<template label='preamble'>\\ninclude $(ROOTDIR)/system.mk\\n</template>\\n\\n<!-- template for start of (internal) package -->\\n<template label='package'>\\n<option label='SYSINCLUDE'>export SYSINCLUDE:= <replace label='package_includes'/>\\n</option><option label='SYSCFLAGS'>export SYSCFLAGS:= <replace label='package_cflags'/>\\n</option><option label='SYSC++FLAGS'>export SYSC++FLAGS:= <replace label='package_c++flags'/>\\n</option><option label='SYSFFLAGS'>export SYSFFLAGS:= <replace label='package_fflags'/>\\n</option><option label='SYSLDFLAGS'>export SYSLDFLAGS:= <replace label='package_ldflags'/>\\n</option></template>\\n\\n<!-- template for a target -->\\n<template label='build-target'>\\n<option label='SRC'><replace label='TARGET_NAME'/>SRC:=<replace label='target_src'/>\\n</option><option label='INCLUDE'><replace label='TARGET_NAME'/>INCLUDE:= $(SYSINCLUDE) <replace label='target_include'/>\\n</option><option label='CFLAGS'><replace label='TARGET_NAME'/>CFLAGS:= $(SYSCFLAGS) <replace label='target_cflags'/>\\n</option><option label='C++FLAGS'><replace label='TARGET_NAME'/>C++FLAGS:= $(SYSC++FLAGS) <replace label='target_c++flags'/>\\n</option><option label='LDFLAGS'><replace label='TARGET_NAME'/>LDFLAGS:= $(SYSLDFLAGS) <replace label='target_ldflags'/>\\n</option><option label='DINC'><replace label='TARGET_NAME'/>DINC := $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFDEP))) $(filter %.$(SUFDEP), $(<replace label='TARGET_NAME'/>SRC:.$(SUFCSRC)=.$(SUFDEP)))\\ninclude $(<replace label='TARGET_NAME'/>DINC)</option>\\n\\n<replace label='TARGET_NAME'/>OBJ := $(<replace label='TARGET_NAME'/>OBJ) $(filter %.o, $(<replace label='TARGET_NAME'/>SRC:.$(SUFC++SRC)=.$(SUFOBJ)))\\nCLEAN_TEMP := $(CLEAN_TEMP) $(<replace label='TARGET_NAME'/>OBJ)\\n\\n<replace label='target_name'/>$(SUFEXE) :: CFLAGS:=... $(patsubst %,-I%,$(<replace label='TARGET_NAME'/>INCLUDE)) $(VARIANTFLAGS) ...\\n<replace label='target_name'/>$(SUFEXE) :: C++FLAGS:=... $(<replace label='TARGET_NAME'/>INCLUDE) ...\\n<replace label='target_name'/>$(SUFEXE) :: $(<replace label='TARGET_NAME'/>OBJ) <replace label='target_object'/> <replace label='target_local_libs'/> | $(<replace label='TARGET_NAME'/>DINC) \\n#?	$(C++) $(C++FLAGS) -o <replace label='target_name'/>$(SUFEXE) $(<replace label='TARGET_NAME'/>OBJ) $(<replace label='TARGET_NAME'/>LDFLAGS) $(LDFLAGS)\\n\\nall :: <replace label='target_name'/>$(SUFEXE)\\n\\nCLEAN_TARGETS := $(CLEAN_TARGETS) <replace label='target_name'/>$(SUFEXE)\\n</template>\\n\\n<template label='executable-install-target'>\\ninstall:: <replace label='target-name'/>$(SUFEXE)\\n<option label='where'>	$(INSTALL) -d <replace label='executable-install-location'/>\\n</option><option label='install'>	$(INSTALL) <replace label='executable-install-mode'/> $&lt; <replace label='executable-install-location'/>/$&lt;\\n</option>\\n</template>\\n<template label='sublocation'>\\nDIRS:= $(DIRS) <replace label='location_dir'/></template>\\n<template label='close'># Local Variables:\\n# mode:makefile\\n# End:\\n</template><template label='version'># Butter version <replace label='butter-version'/>\\n<option label='version'># Project version <replace label='version'/>\\n</option></template><template label='date'># DATE: <replace label='date'/>\\n</template></style>\" };
   return xmldoc;
 }
 
@@ -226,6 +226,21 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      extra_member 210608 "op<<(os, QString)"
+	
+	cpp "" "static std::ostream & operator<<(std::ostream & os, const QString &s)
+{
+  os << s.toStdString();
+  return os;
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
       classrelation 133552 // <dependency>
 	relation 133424 -_->
 	  a public
@@ -1012,7 +1027,6 @@ ${body}
 	
       end
     end
-
   end
 
   deploymentview 128304 "unit-tests"
@@ -1142,16 +1156,22 @@ ${namespace_end}"
     artifact 137008 "unittest"
       stereotype "executable"
       associated_artifacts
+	artifact_ref 128432 // constants
+	artifact_ref 128816 // compound_document
+	artifact_ref 129456 // location
+	artifact_ref 129840 // utility
 	artifact_ref 130352 // compound_document_test
 	artifact_ref 143536 // location_test
 	artifact_ref 150064 // enumerate_path_test
+	artifact_ref 182704 // text_template
 	artifact_ref 182832 // text_template_test
+	artifact_ref 189488 // build_style
 	artifact_ref 189616 // build_style_test
       end
       ncouples 10
-      key "genpro pro" value "/home/finnerty/src/butter/trunk/source2/test/unittest.pro"
+      key "genpro pro" value "/tmp/butter2/test/unittest.pro"
       key "genpro path" value "/tmp/finnerty/butter2/butter"
-      key "genpro target" value "/home/finnerty/src/butter/trunk/source2/test/unittest"
+      key "genpro target" value "/tmp/butter2/test/unittest"
       key "genpro tmplt" value "app"
       key "genpro config" value "debug warn_on qt console"
       key "genpro defines" value "WITHCPP"

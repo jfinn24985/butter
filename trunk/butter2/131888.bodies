@@ -254,17 +254,19 @@ doc.end_phrase( "## END " );
 doc.parse( iss );
 
 
-BOOST_CHECK(doc["element"].value == "Some value\n");
-BOOST_CHECK(doc["element"].user == "Some user text\n");
-BOOST_CHECK(doc.close().user == "Close user\n");
-BOOST_CHECK(doc.close().value == "Close value\n");
-BOOST_CHECK(doc.date().user == "Date user\n");
-BOOST_CHECK(doc.date().value == "Date value\n");
-BOOST_CHECK(doc.preamble().user == "preamble user\n");
-BOOST_CHECK(doc.preamble().value == "preamble value\n");
-BOOST_CHECK(doc.version().user == "version user\n");
-BOOST_CHECK(doc.version().value == "version value\n");
-BOOST_CHECK(doc.postscript() == "postscript\n");
+BOOST_CHECK_EQUAL(doc["element"].value, "Some value\n");
+BOOST_CHECK_EQUAL(doc["element"].user, "Some user text\n");
+BOOST_CHECK_EQUAL(doc.close().user, "Close user\n");
+BOOST_CHECK_EQUAL(doc.close().value, "Close value\n");
+BOOST_CHECK_EQUAL(doc.date().user, "");
+BOOST_CHECK_EQUAL(doc.date().value, "");
+BOOST_CHECK_EQUAL(doc.date_original().user, "Date user\n");
+BOOST_CHECK_EQUAL(doc.date_original().value, "Date value\n");
+BOOST_CHECK_EQUAL(doc.preamble().user, "preamble user\n");
+BOOST_CHECK_EQUAL(doc.preamble().value, "preamble value\n");
+BOOST_CHECK_EQUAL(doc.version().user, "version user\n");
+BOOST_CHECK_EQUAL(doc.version().value, "version value\n");
+BOOST_CHECK_EQUAL(doc.postscript(), "postscript\n");
 !!!169776.cpp!!!	compdoc_reset()
 butter::compound_document doc;
 

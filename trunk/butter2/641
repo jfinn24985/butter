@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 105
+  revision 106
   modified_by 48 "finnerty"
   // class settings
   
@@ -1464,7 +1464,7 @@ build system"
       end
 
       operation 397360 "style_label"
-	class_operation public explicit_return_type "unistr"
+	class_operation public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1480,6 +1480,24 @@ build system"
 	comment "User property name:
 * The name of the build system type to create
 * Only meaningful on the project package"
+      end
+
+      operation 412848 "style_path_label"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"style-path\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* The path to the XML file containing the style definitions"
       end
 
       operation 397488 "version_label"
@@ -1651,6 +1669,23 @@ build system"
 	
 	
 	
+      end
+
+      operation 412976 "source_stereotype"
+	class_operation constvalue public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"source\");
+  return label;
+}
+"
+	
+	
+	
+	
+	comment "UmlArtifact stereotype indicating this is a \"executable\""
       end
 
       operation 396976 "static_value"

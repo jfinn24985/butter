@@ -165,13 +165,11 @@ VARIANT ?= DEBUG
  <!-- default for install flags -->
  <property label="target_install_location">$(BINDIR)</property>
  <property label="target_install_mode">$(BINIFLAGS)</property>
+ <property label="start-phrase">## START:</property>
+ <property label="end-phrase">## END:</property>
 
   <!-- how to make comments -->
  <template label="comment">## <replace label="text"/></template>
- <template label="start-phrase">## START:<replace label="name"/>
-</template>
- <template label="end-phrase">## END:<replace label="name"/>
-</template>
 
 
  <!-- template for start of root makefile -->
