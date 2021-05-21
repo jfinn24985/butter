@@ -31,7 +31,7 @@ if (document_stereotype() == this->stereotype().data())
   if (! this->description().isEmpty())
   {
     QByteArray document_prop_value_;
-    this->propertyValue(butter_output_name(), document_prop_value_);
+    this->propertyValue(output_label(), document_prop_value_);
     if (document_prop_value_.isEmpty() || (document_prop_value_ != nowrite_value()))
     {
       QString document_filepath_{ (full_path / this->name()).path() };

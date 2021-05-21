@@ -1,4 +1,6 @@
 class location_state
+!!!366640.cpp!!!	add_package(inout pack : UmlPackage) : void
+this->packages_.push_back( &pack );
 !!!280624.cpp!!!	find_uml_document(in name : unistr) : UmlItem
 BUTTER_REQUIRE (! name.isEmpty (), "Cannot look for a document without a name");  
 QVector< UmlItem* > Result;
@@ -9,5 +11,3 @@ for( UmlPackage * pkg : this->packages_ )
 }
 return Result;
 
-!!!366640.cpp!!!	add_package(inout pack : UmlPackage) : void
-this->packages_.push_back( &pack );

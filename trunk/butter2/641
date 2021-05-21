@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 101
+  revision 105
   modified_by 48 "finnerty"
   // class settings
   
@@ -753,7 +753,7 @@ ${members}};
       comment " This class manages 'artifacts'
 
  You can modify it as you want (except the constructor)"
-      operation 266416 "butter_output_name"
+      operation 266416 "output_label"
 	class_operation public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
@@ -1189,6 +1189,403 @@ ${members}};
  allows to generalize their management, declare virtual operations etc ...
 
  You can modify it as you want (except the constructor)"
+      extra_member 203568 "PROPERTY LABELS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 395824 "base_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"base\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates the relationship between the package and the root directory set in C++ settings.
+* only used if present on the top-level project"
+      end
+
+      operation 395952 "build_dir_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"build-dir\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property label:
+* indicates where the project should be compiled.  (This is not supported
+on all build platforms.)
+* only useful on the project package.
+"
+      end
+
+      operation 396080 "buildfile_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"buildfile\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates the name of a buildfile to include for the current external library.
+* used with 'library' artifacts which also have butter_project_name property to indicate
+  they are external projects.
+"
+      end
+
+      operation 396208 "compiler_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"compiler\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates the name of a compiler tag/variable to use with this artifact."
+      end
+
+      operation 396336 "flags_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"flags\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates c++flags to use for the current target artifact. This property is automatically 
+  inherited from parent objects if not overriden
+* only used on target artifacts (library or executable artifacts)"
+      end
+
+      operation 396464 "install_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"install\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* The location or location variable of where to install this target"
+      end
+
+      operation 396592 "ldflags_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"ldflags\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates ldflags to use for the current target artifact (\\see link_label). This property is 
+  automatically inherited from parent objects if not overriden
+* only used on target artifacts (library or executable artifacts)"
+      end
+
+      operation 396720 "lib_type_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"type\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates whether the library artifact is static or dynamic. will have value 
+  shared_value or static_value. This property is automatically inherited from 
+  parent objects if not overriden.
+* only used on library target artifacts."
+      end
+
+      operation 398128 "log_level_label"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"log-level\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates how much information to print:
+0 = (default) warning and error messages
+1 = as for 0 and information messages
+2 = as for 1 and debugging information
+"
+      end
+
+      operation 397104 "include_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"include\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates extra include directories for the current target artifact. The value should be 
+  a a list of directory names (\\see header_label)
+* only used on target artifacts (library or executable artifacts)"
+      end
+
+      operation 404784 "other_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"other\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name
+* Indicates that a library artifact should be built as another target type. 
+  For jam based builds this is used directly as the target-type name, for make
+  based builds the build rule will replace \"$(CCC)\" with \"$(VALUE)\" (in 
+  uppercase)
+* For document artifacts if the property value is 'nowrite' then the document is not written
+  to the filesystem.
+* This property only used on library artifact targets."
+      end
+
+      operation 397232 "project_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"project\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates the artifact represents an object from an external project. The property value is the name
+  of the external project.
+* only used if present on artifacts with the library stereotype
+
+\\see buildfile_label"
+      end
+
+      operation 395696 "property_label_prefix"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"butter\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "The word \"butter\" used as a prefix to identify a property for use by the 
+build system"
+      end
+
+      operation 397360 "style_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"style\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* The name of the build system type to create
+* Only meaningful on the project package"
+      end
+
+      operation 397488 "version_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"version\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "user property name:
+* Use to indicate the project version."
+      end
+
+      extra_member 203824 "DESCRIPTION LABELS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 397616 "header_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"HDR\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User description label
+* The label of a line of include directories in a 'generic' description section. This
+  list should contain directorie names without the \"-I\" include flag. The \"-I' will be
+  added when necessary. eg:
+
+  HDR=/dir1 /dir2
+"
+      end
+
+      operation 397744 "link_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"LINK\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User description label
+* The label of a line of link flags in a 'generic' description section. 
+  eg:
+
+  LINK = -L/my/path -lmylib"
+      end
+
+      operation 397872 "flag_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"FLAGS\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User description label
+* The label of a line of std flags in a 'generic' description section. 
+  eg:
+
+  FLAGS = -DHAVE_ALLOCA
+"
+      end
+
+      extra_member 203696 "PROPERTY_VALUES"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
       operation 359984 "document_stereotype"
 	class_operation constvalue public explicit_return_type "string"
 	nparams 0
@@ -1203,6 +1600,41 @@ ${members}};
 	
 	
 	
+	comment "UmlArtifact stereotype indicating this is a \"document\""
+      end
+
+      operation 404656 "library_stereotype"
+	class_operation constvalue public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"executable\");
+  return label;
+}
+"
+	
+	
+	
+	
+	comment "UmlArtifact stereotype indicating this is a \"library\" (shared or static)"
+      end
+
+      operation 398000 "executable_stereotype"
+	class_operation constvalue public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"executable\");
+  return label;
+}
+"
+	
+	
+	
+	
+	comment "UmlArtifact stereotype indicating this is a \"executable\""
       end
 
       operation 360112 "section_prefix"
@@ -1219,6 +1651,44 @@ ${members}};
 	
 	
 	
+      end
+
+      operation 396976 "static_value"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"static\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property value lib_type
+* Possible value of \"lib_type_label\" property (static|shared)
+* Indicates that a library artifact should be built as a static library"
+      end
+
+      operation 404912 "shared_value"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"shared\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property value lib_type
+* Possible value of \"lib_type_label\" property (static|shared)
+* Indicates that a library artifact should be built as a shared/DLL library"
       end
 
       classrelation 16641 // <generalisation>
@@ -1276,11 +1746,11 @@ ${body}}
 	public explicit_return_type "void"
 	nparams 3
 	  param inout name "addrbook" type class_ref 246320 // string_map
-	  param in name "is_direct" explicit_type "bool"
-	  param in name "is_static" explicit_type "bool"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
+	  param in name "only_direct" explicit_type "bool"
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} & ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}, ${t2} & ${p2}${)}${const}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -6468,6 +6938,7 @@ ${includes}
 #include \"constants.h\"
 
 #include <qregexp.h>
+#include <qstringlist.h>
 
 ${namespace_start}
 ${members}

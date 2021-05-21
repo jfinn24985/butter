@@ -1,14 +1,48 @@
 class UmlItem
-!!!129473.cpp!!!	in_scope(inout addrbook : UmlItem::string_map, in is_direct : bool, in is_static : bool) : void
+!!!129473.cpp!!!	in_scope(inout addrbook : UmlItem::string_map, in only_direct : bool, inout log : base_log) : void
 // Process any data from properties.
 QByteArray value_;
-for(auto label_ : { butter::constants::butter_flags_name, 
-    butter::constants::butter_ldflags_name, 
-    butter::constants::butter_include_name } )
+Q3DictIterator<QByteArray> current_prop_{ this->properties() };
+if ( ! current_prop_.isEmpty() )
 {
-  if (this->propertyValue(label_, value_))
+  for ( ; current_prop_.current(); ++current_prop_ )
   {
-    addrbook.insert(label_, value_);
+    if ( current_prop_.currentKey().contains( property_label_prefix() ) )
+    {
+      const QStringList parts_{ current_prop_.currentKey().split(" ", QString::SkipEmptyParts) };
+      if(parts_.size() > 1 && parts_[0] == property_label_prefix())
+      {
+        if ( parts_[1] != base_label()
+             && parts_[1] != build_dir_label()
+             && parts_[1] != buildfile_label()
+             && parts_[1] != compiler_label()
+             && parts_[1] != flags_label()
+             && parts_[1] != install_label()
+             && parts_[1] != ldflags_label()
+             && parts_[1] != lib_type_label()
+             && parts_[1] != log_level_label()
+             && parts_[1] != other_label()
+             && parts_[1] != include_label()
+             && parts_[1] != project_label()
+             && parts_[1] != style_label()
+             && parts_[1] != version_label() )
+        {
+          log.trace( butter::base_log::warn, ("<p><b>Warning:</b> Item \"" + this->name() + "\" has property name \"" + current_prop_.currentKey() + "\" which contains 'butter' but is not a known property name</p>") );
+        }
+        else
+        {
+          auto itr = addrbook.find(parts_[1]);
+          if( itr != addrbook.end() )
+          {
+            itr.value() += " " + *(current_prop_.current());
+          }
+          else
+          {
+            addrbook.insert( parts_[1], *(current_prop_.current()) );
+          }
+        }
+      }
+    }
   }
 }
 // For non-documents also check for any data in the description.
@@ -34,9 +68,9 @@ if( ! this->stereotype().contains(document_stereotype()))
       }
       if (! section_.isEmpty ())
       {
-        QRegExp hdr_re_("^ *" + butter::constants::header_label + " *= *");
-        QRegExp link_re_("^ *" + butter::constants::link_label + " *= *");
-        QRegExp flag_re_("^ *" + butter::constants::flag_label + " *= *");
+        QRegExp hdr_re_("^ *" + header_label() + " *= *");
+        QRegExp link_re_("^ *" + link_label() + " *= *");
+        QRegExp flag_re_("^ *" + flag_label() + " *= *");
         if (! section_.isEmpty())
         {
           QTextIStream section_is_(&section_);
@@ -46,15 +80,39 @@ if( ! this->stereotype().contains(document_stereotype()))
             int length_;
             if (-1 != (length_ = hdr_re_.indexIn(line_, 0)))
             {
-              addrbook.insert(butter::constants::butter_include_name, line_.mid(length_));
+              auto itr = addrbook.find(include_label());
+              if( itr != addrbook.end() )
+              {
+                itr.value() += " " + line_.mid(length_);
+              }
+              else
+              {
+                addrbook.insert( include_label(), line_.mid(length_) );
+              }
             }
             else if (-1 != (length_ = link_re_.indexIn(line_, 0)))
             {
-              addrbook.insert(butter::constants::butter_ldflags_name, line_.mid(length_));
+              auto itr = addrbook.find(ldflags_label());
+              if( itr != addrbook.end() )
+              {
+                itr.value() += " " + line_.mid(length_);
+              }
+              else
+              {
+                addrbook.insert( ldflags_label(), line_.mid(length_) );
+              }
             }
             else if (-1 != (length_ = flag_re_.indexIn(line_, 0)))
             {
-              addrbook.insert(butter::constants::butter_flags_name, line_.mid(length_));
+              auto itr = addrbook.find(flags_label());
+              if( itr != addrbook.end() )
+              {
+                itr.value() += " " + line_.mid(length_);
+              }
+              else
+              {
+                addrbook.insert( flags_label(), line_.mid(length_) );
+              }
             }
           }
         }
@@ -62,7 +120,11 @@ if( ! this->stereotype().contains(document_stereotype()))
     }
   }
 }
-!!!359856.cpp!!!	debug_print(in depth : int, inout os : ostream) : void
+if(! only_direct && nullptr != this->parent())
+{
+  this->parent()->in_scope(addrbook, only_direct, log);
+}
+!!!359856.cpp!!!	debug_print(in depth : int, inout os : stream) : void
 if (DEBUG)
 {
   static const char kind_as_string_[][22] = {
