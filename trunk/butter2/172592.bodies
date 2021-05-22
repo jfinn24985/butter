@@ -11,3 +11,95 @@ for( UmlPackage * pkg : this->packages_ )
 }
 return Result;
 
+!!!388912.cpp!!!	add_uml_document(in fname : unistr, inout log : base_log) : UmlArtifact
+BUTTER_REQUIRE(! packages_.isEmpty(), "<p><b>Program error:</b> Location has no packages!</p>");
+BUTTER_REQUIRE(find_uml_document(fname).isEmpty(), ("<p><b>Program error:</b> Cannot create a document with the name ("+fname+") of an existing document.</p>").ascii());
+// Find deployment view
+UmlDeploymentView * deployview_ = NULL;
+// Only check local deployment views.
+for( int i_ = 0; i_ < packages_.count(); ++i_)
+{
+  UmlPackage * pkg_cursor_ = packages_.at(i_);
+  if( pkg_cursor_->isWritable() )
+  {
+    for( unsigned int j_ = 0; j_ < pkg_cursor_->children().count(); ++j_)
+    {
+      UmlItem *const deploy_cursor_ = pkg_cursor_->children().at(j_);
+      if (aDeploymentView == deploy_cursor_->kind() && deploy_cursor_->isWritable())
+      {
+        deployview_ = dynamic_cast< UmlDeploymentView * >(deploy_cursor_);
+        BUTTER_CHECK(NULL != deployview_, "<p><b>Program error:</b> Item kind (DeploymentView) did not match class type.</p>");
+        break;
+      }
+    }
+  }
+}
+if (nullptr == deployview_)
+{
+  // Didn't find deployment view, add to first writable package.
+  for( int i_ = 0; i_ < packages_.count(); ++i_)
+  {
+    if (packages_.at(i_)->isWritable())
+    {
+      deployview_ = UmlDeploymentView::create(packages_.at(i_), packages_.at(i_)->name());
+      break;
+    }
+  }
+  // QUERY = fails if create returns nul other than when non-package passed.
+  if (nullptr == deployview_)
+  {
+    QString msg_ ("<p><b>Fatal error:</b> Unable to create a new deployment view, no editable packages at location <b>");
+    msg_.append(packages_.at(0)->cppSrcDir());
+    msg_.append("</b>. Make an editable package at this location and try again.</p>");
+    throw std::runtime_error(msg_.utf8().data ());
+  }
+}
+log.trace(base_log::info, "<p>New UML artifact named " + fname + " being created in package " + deployview_->parent()->name().data() + " (which has source location " + packages_.at(0)->cppSrcDir() + ").</p>");
+UmlArtifact * Result = UmlArtifact::create(deployview_, fname);
+// QUERY = fails if create returns nul other than when non-deployment passed.
+if (nullptr == Result)
+{
+  QString name_("<p><b>Fatal error:</b> Unable to create a new artifact for <b>");
+  name_.append(packages_.at(0)->cppSrcDir() + '/' + fname);
+  name_.append("</b>.</p>");
+  throw std::runtime_error(name_.utf8().data());
+}
+Result->set_Stereotype(UmlItem::document_stereotype());
+return Result;
+!!!259632.cpp!!!	write_documents(in set : location_set, inout log : base_log) : void
+QVector< location * > flattened_{ set.topdown() };
+for(location * loc_ : flattened_)
+{
+  enumerate_path path_{ loc_->full_path() };
+  log.trace(log.info, "<p>Checking for document at " + path_.path() + "</p>");
+  for(UmlPackage * pack_ : static_cast< location_state* >(loc_->value())->packages_)
+  {
+    for( unsigned int j_ = 0; j_ < pack_->children().count(); ++j_)
+    {
+      UmlItem *const deploy_ = pack_->children().at(j_);
+      if (aDeploymentView == deploy_->kind())
+      {
+        log.trace(log.info, "<p>Found deployment view " + deploy_->name() + "</p>");
+        for( unsigned int k_ = 0; k_ < deploy_->children().count(); ++k_)
+        {
+          UmlItem *const art_ = deploy_->children().at(k_);
+          log.trace(log.info, "<p>Found element view " + art_->name() + "</p>");
+          if(anArtifact == art_->kind())
+          {
+            UmlArtifact *const doc_ = dynamic_cast< UmlArtifact * >(art_);
+            BUTTER_CHECK(nullptr != doc_, "<p><b>Program error:</b> Item kind (Artifact) did not match class type.</p>");
+            if(UmlItem::document_stereotype() != doc_->stereotype())
+            {
+              continue;
+            }
+            doc_->update_description();
+            if( ! art_->description().isEmpty())
+            {
+              doc_->write_out(path_, log);
+            }
+          }
+        }
+      }
+    }
+  }
+}

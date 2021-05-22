@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 106
+  revision 107
   modified_by 48 "finnerty"
   // class settings
   
@@ -900,6 +900,21 @@ artifact. "
 	
 	
 	comment " Access the artifact's description as a compound document."
+      end
+
+      operation 419504 "update_description"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "If there is a compound document, use it to update the description"
       end
     end
 

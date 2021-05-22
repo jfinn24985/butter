@@ -339,9 +339,9 @@ public:
       // TODO BELOW
       // Generate the build-system files.
       //std::unique_ptr< butter::base_generator > writer_( butter::style::get_style().create_writer() );
-      //writer_->create_system( *base_.get(), *UmlPackage::getProject() );
+      this->create_system( l );
       // Write the build-system files.
-      //butter::location::write_documents( *base_.get() );
+      location_state::write_documents( *(this->root_), l );
     }
     catch ( const std::exception & a_err )
     {
@@ -417,7 +417,8 @@ location_state * root_state{ static_cast<location_state *>(this->root_->root()->
     BUTTER_REQUIRE( doc_list.size() <= 1, "Too many root documents found");
     if( 0 == doc_list.size() )
     {
-      root_state->add_uml_document(elem.key())->set_Description(elem.value().utf8());
+      QByteArray desc{ elem.value().utf8() };
+      root_state->add_uml_document(elem.key(), log)->set_Description(desc);
     }
   }
 }
@@ -428,7 +429,7 @@ UmlArtifact * root_build_file = nullptr;
   // TODO if more than 1, what to do?
   if( 0 == doc_list.size() )
   {
-    root_build_file = root_state->add_uml_document(this->style_->get_root_file_name());
+    root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
   }
   else
   {
@@ -466,7 +467,7 @@ while( ! location_stack_.isEmpty() )
     // TODO if more than 1, what to do?
     if( 0 == doc_list.size() )
     {
-      build_file = root_state->add_uml_document(this->style_->get_build_file_name());
+      build_file = root_state->add_uml_document(this->style_->get_build_file_name(), log);
     }
     else
     {
@@ -495,6 +496,8 @@ while( ! location_stack_.isEmpty() )
             const QString target_name_( const_cast< UmlArtifact &>(art_item_).name() );
             UmlItem::string_map targetbook;
             item_->in_scope( targetbook, true, log );
+            targetbook["name"] = target_name_;
+            targetbook["NAME"] = target_name_.toUpper();
             target_type target_type_( executable ); // The target's type, set to exe then change if library etc
             if( stereotype_label_.contains( UmlItem::executable_stereotype(), false )
                 || stereotype_label_.contains( UmlItem::library_stereotype(), false ) )
@@ -633,7 +636,8 @@ while( ! location_stack_.isEmpty() )
                         }
                         if( need_object )
                         {
-                          currentbook["label"] = current_art_->name();
+                          currentbook["name"] = current_art_->name();
+                          currentbook["NAME"] = current_art_->name().toUpper();
                           build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object", currentbook);
                           targetbook["source"] += " " + current_art_->name() + ".$(SUFOBJ)";
                         }
@@ -650,7 +654,8 @@ while( ! location_stack_.isEmpty() )
                         {
                           targetbook[ UmlItem::ldflags_label() ] += " " + itr.value();
                         }
-                        currentbook["label"] = current_art_->name();
+                        currentbook["name"] = current_art_->name();
+                        currentbook["NAME"] = current_art_->name().toUpper();
                         build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
                         targetbook["source"] += " " + current_art_->name() + ".$(SUFOBJ)";
                       }
@@ -709,7 +714,7 @@ while( ! location_stack_.isEmpty() )
     UmlItem::string_map locbook;
     locbook["name"] = top_->path();
     locbook["path"] = top_->full_path();
-    root_build_file->document(start_phrase, end_phrase)[top_->path()].value += this->style_->make_element("decendent-link", locbook);
+    root_build_file->document(start_phrase, end_phrase)[top_->path()].value += this->style_->make_element("descendent-link", locbook);
   }
 }
 

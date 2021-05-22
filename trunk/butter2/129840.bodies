@@ -190,8 +190,8 @@ if( ! this->close_.value.isEmpty() )
   this->close_.value.truncate( 0 );
 }
 !!!141872.cpp!!!	write(inout a_os : QTextOStream, in a_use_origin : bool = false) : void
-BUTTER_REQUIRE( ! this->start_phrase_.isEmpty(), "Can not write document without phrases set." );
-BUTTER_REQUIRE( ! this->end_phrase_.isEmpty(), "Can not write document without phrases set." );
+BUTTER_REQUIRE( ! this->start_phrase_.isEmpty(), "Can not write document without start phrase set." );
+BUTTER_REQUIRE( ! this->end_phrase_.isEmpty(), "Can not write document without end phrase set." );
 const QString start_phrase{ this->start_phrase_ };
 const QString end_phrase{ this->end_phrase_ };
 auto do_write = [&start_phrase, &end_phrase]( QTextStream & a_os_, const document_element & a_cache_)

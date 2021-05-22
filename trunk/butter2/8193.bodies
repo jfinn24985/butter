@@ -25,7 +25,8 @@ if( nullptr != this->doc_.get() )
 
 !!!259760.cpp!!!	write_out(in full_path : enumerate_path, inout log : base_log) : void
 using namespace butter;
-if (document_stereotype() == this->stereotype().data())
+log.trace(log.info, "<p>Checking whether to write document : " + this->name() + "</p>");
+if (document_stereotype() == this->stereotype())
 {
   // Only write non-empty docs.
   if (! this->description().isEmpty())
@@ -56,7 +57,7 @@ if (document_stereotype() == this->stereotype().data())
       {
         log.trace(log.warn, "<p>Writing changed document : " + document_filepath_ + "</p>");
         QFile iofile(document_filepath_);
-        if (! iofile.open(IO_ReadOnly))
+        if (! iofile.open(IO_ReadWrite))
         {
           QString msg("<b>Fatal Error:</b> Unable to open file for writing: " + document_filepath_);
           throw std::runtime_error(msg.toStdString());
@@ -89,10 +90,36 @@ this->doc_->merge( *art.doc_ );
 if( ! this->doc_ )
 {
   this->doc_.reset( new butter::compound_document );
-  QByteArray tmp_( this->description() );
-  QTextIStream is_( &tmp_ );
   this->doc_->start_phrase( start_phrase );
   this->doc_->end_phrase( end_phrase );
-  this->doc_->parse( is_ );
+  QByteArray tmp_( this->description() );
+  if( ! tmp_.isEmpty() )
+  {
+    QTextIStream is_( &tmp_ );
+    this->doc_->parse( is_ );
+  }
 }
 return *(this->doc_);
+!!!419504.cpp!!!	update_description() : void
+// Only check if the document has been read.
+if( nullptr != this->doc_.get() )
+{
+  // Compare to existing document
+  QString desc_;
+  const QString orig_desc_( this->description () );
+  {
+    QTextOStream os_( &desc_ );
+    // Output using original date
+    this->doc_->write( os_, true );
+  }
+  if( 0 != orig_desc_.compare( desc_ ) )
+  {
+    QString desc2_;
+    {
+      QTextOStream os_( &desc2_ );
+      this->doc_->write( os_, false );
+    }
+    this->set_Description( desc2_.utf8() );
+  }
+}
+

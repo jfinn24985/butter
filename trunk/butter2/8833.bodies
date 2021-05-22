@@ -2,9 +2,10 @@ class UmlItem
 !!!129473.cpp!!!	in_scope(inout addrbook : UmlItem::string_map, in only_direct : bool, inout log : base_log) : void
 // Process any data from properties.
 QByteArray value_;
-Q3DictIterator<QByteArray> current_prop_{ this->properties() };
-if ( ! current_prop_.isEmpty() )
+Q3Dict<QByteArray> prop_{ this->properties() };
+if ( ! prop_.isEmpty() )
 {
+  Q3DictIterator<QByteArray> current_prop_{ prop_ };
   for ( ; current_prop_.current(); ++current_prop_ )
   {
     if ( current_prop_.currentKey().contains( property_label_prefix() ) )

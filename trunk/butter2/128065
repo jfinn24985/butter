@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 45
+  revision 46
   modified_by 48 "finnerty"
   // class settings
   
@@ -3488,20 +3488,28 @@ may return an empty list if none are found
       end
 
       operation 388912 "add_uml_document"
-	stereotype "TODO"
 	public return_type class_ref 8193 // UmlArtifact
-	nparams 1
+	nparams 2
 	  param in name "fname" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
 	
 	
 	
-	comment "Create and return a \"document\" type UmlArtifact object at the current location."
+	comment "Create and return a \"document\" type UmlArtifact object at the current location.
+Create a document at the current location with  a_name. This 
+scans the package(s) for a deployment view and uses the first one 
+found.  If none are found then it creates a deployment view in
+the first package.  Then it creates an artifact with a_name in the
+selected deployment view.
+
+\\pre not packages.empty
+\\pre not has_document(a_name)"
       end
 
       operation 388784 "packages"
@@ -3522,21 +3530,22 @@ may return an empty list if none are found
       end
 
       operation 259632 "write_documents"
-	public explicit_return_type "void"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param in name "set" type class_ref 138416 // location_set
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
 	
 	
 	
-	comment "Write all UML documents for this and descendent locations.
+	comment "Write all UML documents for the given location set
 
-* This calls write_uml_documents on a_base and all a_base's descendent
-locations."
+* This calls write_out on all document artifacts."
       end
     end
 
@@ -4851,6 +4860,9 @@ ${namespace_end}
 ${includes}
 
 #include \"config.h\"
+
+#include \"anItemKind.h\"
+#include \"UmlDeploymentView.h\"
 
 ${namespace_start}
 ${members}
