@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 107
+  revision 108
   modified_by 48 "finnerty"
   // class settings
   
@@ -838,27 +838,20 @@ should not be considered for writing to the file system."
 	comment "If the compound document of this artifact has changed, update the description."
       end
 
-      operation 259760 "write_out"
-	public explicit_return_type "void"
+      operation 273072 "document"
+	preserve_cpp_body_indent public return_type class_ref 129840 // compound_document
 	nparams 2
-	  param in name "full_path" type class_ref 128432 // enumerate_path
-	  param inout name "log" type class_ref 179120 // base_log
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+	  param in name "start_phrase" explicit_type "unistr"
+	  param in name "end_phrase" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
 	
 	
 	
-	comment "If this artifact has stereotype \"document\" write to the corresponding file,
-if the text has changed.
-
-\\throw : runtime_error if file can not be openned for reading or writing
-
-\\arg full_path : path of directory containing this artifact
-\\arg log : output for user"
+	comment " Access the artifact's description as a compound document."
       end
 
       operation 273200 "merge"
@@ -886,24 +879,8 @@ section or inserted if no existing labelled section exists.
 artifact. "
       end
 
-      operation 273072 "document"
-	preserve_cpp_body_indent public return_type class_ref 129840 // compound_document
-	nparams 2
-	  param in name "start_phrase" explicit_type "unistr"
-	  param in name "end_phrase" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment " Access the artifact's description as a compound document."
-      end
-
       operation 419504 "update_description"
-	public explicit_return_type "void"
+	private explicit_return_type "void"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -915,6 +892,29 @@ artifact. "
 	
 	
 	comment "If there is a compound document, use it to update the description"
+      end
+
+      operation 259760 "write_out"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "full_path" type class_ref 128432 // enumerate_path
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "If this artifact has stereotype \"document\" write to the corresponding file,
+if the text has changed.
+
+\\throw : runtime_error if file can not be openned for reading or writing
+
+\\arg full_path : path of directory containing this artifact
+\\arg log : output for user"
       end
     end
 
@@ -2003,6 +2003,30 @@ ${members}};
 may return an empty list if none are found
 
 \\pre not name.empty"
+      end
+
+      operation 426032 "write_documents"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "path" type class_ref 128432 // enumerate_path
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Write any document type artifacts in this package. Does
+not descend into child packages.
+
+\\arg path : Path to directory for this package.  This method relies on path 
+      being set elsewhere to the correct path for this output.  This is because
+      calculating the path is non-trivial and requires access to information
+      outside the package object.
+\\arg log : logging object to report actions to the user"
       end
     end
 
@@ -6746,6 +6770,8 @@ ${includes}
 
 #include <qdatetime.h>
 
+#include <cstring>
+
 ${namespace_start}
 ${members}
 ${namespace_end}"
@@ -7093,6 +7119,10 @@ ${namespace_end}
 ${includes}
 
 #include \"config.h\"
+#include \"utility.h\"
+
+#include \"CppSettings.h\"
+#include \"UmlArtifact.h\"
 
 ${namespace_start}
 ${members}

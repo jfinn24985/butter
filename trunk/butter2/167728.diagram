@@ -6,15 +6,15 @@ classcanvas 128048 class_ref 206256 // text_template
 end
 classcanvas 128176 class_ref 206768 // entry_type
   classdiagramsettings member_max_width 0 end
-  xyz 11 19 2006
+  xyz 8 26 2006
 end
 classcanvas 128432 class_ref 206384 // template_entry
   classdiagramsettings member_max_width 0 end
-  xyz 1 187 3005
+  xyz 9 192 3005
 end
 classcanvas 129072 class_ref 213552 // text_template_test
   classdiagramsettings member_max_width 0 end
-  xyz 423 118 2000
+  xyz 476 185 2000
 end
 line 128304 ---+ decenter_begin 108
   from ref 128176 z 2007 to ref 128048
@@ -24,9 +24,9 @@ relationcanvas 128688 relation_ref 194608 // <directional composition>
   decenter_begin 117
   from ref 128048 z 3006 to point 216 59
   line 128816 z 3006 to point 217 236
-  line 128944 z 3006 stereotype "<<qvector>>" xyz 123 238 3006 to ref 128432
-  role_a_pos 113 213 3000 no_role_b
-  multiplicity_a_pos 113 249 3000 no_multiplicity_b
+  line 128944 z 3006 stereotype "<<qvector>>" xyz 127 239.5 3006 to ref 128432
+  role_a_pos 121 216 3000 no_role_b
+  multiplicity_a_pos 121 252 3000 no_multiplicity_b
 end
 relationcanvas 129200 relation_ref 201264 // <dependency>
   decenter_begin 144

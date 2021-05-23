@@ -2,22 +2,22 @@ format 224
 
 classcanvas 128048 class_ref 220080 // build_style
   classdiagramsettings member_max_width 0 end
-  xyz 134 62 2000
+  xyz 85 51.4 2000
 end
 classcanvas 128176 class_ref 206256 // text_template
   classdiagramsettings member_max_width 0 end
-  xyz 377 102 2000
+  xyz 368.2 134.4 2000
 end
 classcanvas 129072 class_ref 226736 // build_style_test
   classdiagramsettings member_max_width 0 end
-  xyz 510 65 2006
+  xyz 587.5 85.4 2006
 end
 relationcanvas 128304 relation_ref 207792 // <directional composition>
   decenter_begin 119
   decenter_end 56
-  from ref 128048 z 2001 stereotype "<<map>>" xyz 310 140 3000 to ref 128176
-  role_a_pos 302 95 3000 no_role_b
-  multiplicity_a_pos 361 131 3000 no_multiplicity_b
+  from ref 128048 z 2001 stereotype "<<map>>" xyz 280.5 150 3000 to ref 128176
+  role_a_pos 286 138 3000 no_role_b
+  multiplicity_a_pos 347 174 3000 no_multiplicity_b
 end
 relationcanvas 129328 relation_ref 214576 // <dependency>
   decenter_begin 36

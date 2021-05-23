@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 46
+  revision 47
   modified_by 48 "finnerty"
   // class settings
   
@@ -52,6 +52,11 @@ format 224
     activitydiagramsettings
      end
     associated_deployment_view deploymentview_ref 128065 // butter
+    classdiagram 187312 "Over view"
+      classdiagramsettings member_max_width 0 end
+      size A4-Landscape
+    end
+
     classdiagram 128048 "compound_document"
       classdiagramsettings member_max_width 0 end
       size A4
@@ -59,11 +64,6 @@ format 224
 
     classdiagram 128176 "location"
       classdiagramsettings draw_all_relations yes member_max_width 0 end
-      size A4
-    end
-
-    classdiagram 134960 "location 2"
-      classdiagramsettings member_max_width 0 end
       size A4
     end
 
@@ -3545,7 +3545,15 @@ selected deployment view.
 	
 	comment "Write all UML documents for the given location set
 
-* This calls write_out on all document artifacts."
+* This calls write_documents on all packages which should call write_out on 
+all document artifacts.
+
+Notes:
+
+* We could make write_documents recursive in the UmlPackage class, however
+calculating the correct path is non-trivial and requires information outside the
+package class (although accessible from there).  By putting the method here
+we can pass the path information from the location objects to each package."
       end
     end
 

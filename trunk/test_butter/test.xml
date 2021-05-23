@@ -34,9 +34,9 @@ Single Directory, single target test cases
 default (jam) build tool + debug + single directory and target
 
     <property name="project" >single_test</property>
-    <property name="build-tool" >%(jam)s</property>
-    <property name="build-style" >standard</property>
-    <property name="patch-file" >default.patch</property>
-    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >make</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
   </job>
 </test-suite>

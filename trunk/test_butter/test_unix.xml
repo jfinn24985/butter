@@ -12,7 +12,7 @@
   <property name="boost-release" >gcc-4.3/release</property>
   <property name="makeit" >makeit</property>
   <property name="make" >make</property>
-  <property name="make-sys" >M_sys.mak</property>
+  <property name="make-sys" >system.mk</property>
   <property name="make-arg" > </property>
   <property name="base-dir" >/tmp</property>
   <property name="cmake" >cmake</property>

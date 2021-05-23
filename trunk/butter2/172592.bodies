@@ -68,38 +68,12 @@ Result->set_Stereotype(UmlItem::document_stereotype());
 return Result;
 !!!259632.cpp!!!	write_documents(in set : location_set, inout log : base_log) : void
 QVector< location * > flattened_{ set.topdown() };
-for(location * loc_ : flattened_)
+for(location *const loc_ : flattened_)
 {
   enumerate_path path_{ loc_->full_path() };
-  log.trace(log.info, "<p>Checking for document at " + path_.path() + "</p>");
-  for(UmlPackage * pack_ : static_cast< location_state* >(loc_->value())->packages_)
+  log.trace(log.info, "<p>Checking for documents at " + path_.path() + "</p>");
+  for(UmlPackage *const pack_ : static_cast< location_state* >(loc_->value())->packages_)
   {
-    for( unsigned int j_ = 0; j_ < pack_->children().count(); ++j_)
-    {
-      UmlItem *const deploy_ = pack_->children().at(j_);
-      if (aDeploymentView == deploy_->kind())
-      {
-        log.trace(log.info, "<p>Found deployment view " + deploy_->name() + "</p>");
-        for( unsigned int k_ = 0; k_ < deploy_->children().count(); ++k_)
-        {
-          UmlItem *const art_ = deploy_->children().at(k_);
-          log.trace(log.info, "<p>Found element view " + art_->name() + "</p>");
-          if(anArtifact == art_->kind())
-          {
-            UmlArtifact *const doc_ = dynamic_cast< UmlArtifact * >(art_);
-            BUTTER_CHECK(nullptr != doc_, "<p><b>Program error:</b> Item kind (Artifact) did not match class type.</p>");
-            if(UmlItem::document_stereotype() != doc_->stereotype())
-            {
-              continue;
-            }
-            doc_->update_description();
-            if( ! art_->description().isEmpty())
-            {
-              doc_->write_out(path_, log);
-            }
-          }
-        }
-      }
-    }
+    pack_->write_documents(path_, log);
   }
 }

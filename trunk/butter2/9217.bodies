@@ -19,3 +19,23 @@ for(unsigned int i = 0; i != this->children().size(); ++i )
     }
   }
 }
+!!!426032.cpp!!!	write_documents(in path : enumerate_path, inout log : base_log) : void
+auto pack_kids_ = this->children();
+for( unsigned int i_ = 0; i_ != pack_kids_.count(); ++i_ )
+{
+  UmlItem *const kid_ = pack_kids_.at(i_);
+  if (aDeploymentView == kid_->kind())
+  {
+    auto dep_kids_ = kid_->children();
+    for( unsigned int k_ = 0; k_ < dep_kids_.count(); ++k_)
+    {
+      UmlItem *const art_ = dep_kids_.at(k_);
+      if(anArtifact == art_->kind())
+      {
+        UmlArtifact *const doc_ = dynamic_cast< UmlArtifact * >(art_);
+        BUTTER_CHECK(nullptr != doc_, "<p><b>Program error:</b> Item kind (Artifact) did not match class type.</p>");
+        doc_->write_out(path, log);
+      }
+    }
+  }
+}
