@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 47
+  revision 48
   modified_by 48 "finnerty"
   // class settings
   
@@ -4418,6 +4418,40 @@ ${inlines}
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   static ${type} text{ \"object-other\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 432688 "preamble"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"preamble\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      operation 432560 "preamble_root"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"preamble-root\" };
   return text;
 }
 "

@@ -11,7 +11,7 @@
 OS ?= LINUX
 VARIANT ?= DEBUG
 
-SHELL=/bin/sh
+SHELL=/bin/bash
 .SUFFIXES:
 
 ############################
@@ -180,22 +180,42 @@ VARIANT ?= DEBUG
  <!-- Other target type -->
  <template label="object-other"/>
 
+ <!-- template for start of (internal) package -->
+ <template label="package">
+<option label="SYSINCLUDE">export SYSINCLUDE:= <replace label="package_includes"/>
+</option><option label="SYSCFLAGS">export SYSCFLAGS:= <replace label="package_cflags"/>
+</option><option label="SYSCXXFLAGS">export SYSCXXFLAGS:= <replace label="package_c++flags"/>
+</option><option label="SYSFFLAGS">export SYSFFLAGS:= <replace label="package_fflags"/>
+</option><option label="SYSLDFLAGS">export SYSLDFLAGS:= <replace label="package_ldflags"/>
+</option>
+</template>
+
+ <!-- template for start of root makefile -->
+ <template label="preamble-root"><option label="root-dir">export ROOTDIR:=<replace label="root-dir"/></option>
+include $(ROOTDIR)/system.mk
+</template>
+
+ <!-- template for start of subdirectory makefiles -->
+ <template label="preamble">
+include $(ROOTDIR)/system.mk
+</template>
+
  <!-- template for a target -->
  <template label="target">
 <replace label="NAME"/>SRC:=<replace label="source"/>
 <replace label="NAME"/>CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>) <replace label="flags"/>
 <replace label="NAME"/>LDFLAGS:=$(LDFLAGS) <replace label="ldflags"/>
-<replace label="NAME"/>DINC:=$(filter %.$(SUFDEP), $(<replace label="NAME"/>SRC:.$(SUFSRC)=.$(SUFDEP)))
+<replace label="NAME"/>DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFDEP)))
 include $(<replace label="NAME"/>DINC)
 
-<replace label="NAME"/>OBJ:=$(filter %.o, $(<replace label="NAME"/>SRC:.$(SUFSRC)=.$(SUFOBJ)))
+<replace label="NAME"/>OBJ:=$(filter %$(SUFOBJ), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFOBJ)))
 CLEAN_TEMP:= $(CLEAN_TEMP) $(<replace label="NAME"/>OBJ)
 
 <replace label="name"/>$(SUFEXE) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
 <replace label="name"/>$(SUFEXE) :: $(<replace label="NAME"/>OBJ) | $(<replace label="NAME"/>DINC) 
 	$(CXX) $(CXXFLAGS) -o <replace label="name"/>$(SUFEXE) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>LDFLAGS)
 
-all :: <replace label="target_name"/>$(SUFEXE)
+all :: <replace label="name"/>$(SUFEXE)
 
 CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFEXE)
 </template>
@@ -208,26 +228,6 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFEXE)
 
 
 
-
- <!-- template for start of root makefile -->
- <template label="root-preamble"><option label="rootdir">export ROOTDIR:=<replace label="location_root"/></option>
-include $(ROOTDIR)/system.mk
-</template>
-
- <!-- template for start of subdirectory makefiles -->
- <template label="preamble">
-include $(ROOTDIR)/system.mk
-</template>
-
- <!-- template for start of (internal) package -->
- <template label="package">
-<option label="SYSINCLUDE">export SYSINCLUDE:= <replace label="package_includes"/>
-</option><option label="SYSCFLAGS">export SYSCFLAGS:= <replace label="package_cflags"/>
-</option><option label="SYSCXXFLAGS">export SYSCXXFLAGS:= <replace label="package_c++flags"/>
-</option><option label="SYSFFLAGS">export SYSFFLAGS:= <replace label="package_fflags"/>
-</option><option label="SYSLDFLAGS">export SYSLDFLAGS:= <replace label="package_ldflags"/>
-</option>
-</template>
 
 
  <template label="install-target">

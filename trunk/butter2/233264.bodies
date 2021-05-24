@@ -429,7 +429,11 @@ UmlArtifact * root_build_file = nullptr;
   // TODO if more than 1, what to do?
   if( 0 == doc_list.size() )
   {
+    UmlItem::string_map projectbook;
+    UmlPackage::getProject()->in_scope(projectbook, false, log);
+    projectbook["root-dir"] = this->root_->base_path();
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
+    root_build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble_root(), projectbook);
   }
   else
   {
@@ -468,6 +472,12 @@ while( ! location_stack_.isEmpty() )
     if( 0 == doc_list.size() )
     {
       build_file = root_state->add_uml_document(this->style_->get_build_file_name(), log);
+      UmlItem::string_map packbook;
+      for( int i_ = 0; i_ < state->packages().count(); ++i_ )
+      {
+        state->packages().at(i_)->in_scope(packbook, false, log);
+      }
+      build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble_root(), packbook);
     }
     else
     {
@@ -479,6 +489,11 @@ while( ! location_stack_.isEmpty() )
   for( int i_ = 0; i_ < state->packages().count(); ++i_ )
   {
     UmlPackage * I_ = state->packages().at( i_ );
+    {
+      UmlItem::string_map packbook;
+      I_->in_scope(packbook, false, log);
+      build_file->document(start_phrase, end_phrase)["package-" + I_->name()].value = this->style_->make_element("package", packbook);
+    }
     for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
     {
       UmlItem * J_ = I_->children().at( j_ );

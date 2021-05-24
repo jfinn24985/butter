@@ -59,11 +59,11 @@
    </stage>
     <stage>Perform compilation and test compilation success
       <verb-list category="execute" >
-        <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s %(cat)s build.log %(cmdsep)s popd</verb>
+        <verb type="system" >/bin/bash -c "{ pushd PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/output} %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s %(cat)s build.log %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct file has been produced
         <verb type="file-list" >
-          <property name="base" >%(local-base)s/%(stage-bin-dir)s</property>
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output/%(stage-bin-dir)s</property>
           <property name="file-type" >executable</property>
           <property name="verify" >exist</property>
           <property name="location" >test%(exe-suf)s</property>
