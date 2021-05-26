@@ -506,18 +506,17 @@ while( ! location_stack_.isEmpty() )
           if ( anArtifact == item_->kind() )           // UmlArtifacts.
           {
             const UmlArtifact & art_item_ = dynamic_cast < UmlArtifact & >( *item_ );
-            const QString stereotype_label_( const_cast< UmlArtifact & >( art_item_ ).stereotype() );
+            const QByteArray stereotype_label_( const_cast< UmlArtifact & >( art_item_ ).stereotype() );
             bool installable_( false );
-            const QString target_name_( const_cast< UmlArtifact &>(art_item_).name() );
+            const QByteArray target_name_( const_cast< UmlArtifact &>(art_item_).name() );
             UmlItem::string_map targetbook;
             item_->in_scope( targetbook, true, log );
             targetbook["name"] = target_name_;
             targetbook["NAME"] = target_name_.toUpper();
-            target_type target_type_( executable ); // The target's type, set to exe then change if library etc
-            if( stereotype_label_.contains( UmlItem::executable_stereotype(), false )
-                || stereotype_label_.contains( UmlItem::library_stereotype(), false ) )
+            target_type target_type_( unknown ); // The target's type is set to unknown
+            if( stereotype_label_.contains( UmlItem::executable_stereotype() )
+                || stereotype_label_.contains( UmlItem::library_stereotype() ) )
             {
-              installable_ = true;
               UmlItem::string_map fullbook;
               item_->in_scope( fullbook, false, log );
               if( targetbook.end() != targetbook.find( UmlItem::project_label() ) )
@@ -554,7 +553,10 @@ while( ! location_stack_.isEmpty() )
               {
                 //////////////
                 // Is a local target
-
+                log.trace(base_log::debug, "Local target "+target_name_+" is library or executable");
+                installable_ = true;
+                log.trace(base_log::debug, "- target assumed executable");
+                target_type_ = executable; // The target's type, set to exe then change if library etc
 
                 ///////////////////////
                 // PROCESS DEPENDENCIES
@@ -570,35 +572,27 @@ while( ! location_stack_.isEmpty() )
                 // Only process targets with associated entries.
                 if( ! assoc_arts_.empty() )
                 {
-                  QString entry_;           // The target entry
-                  {
-                    if ( stereotype_label_.contains( UmlItem::library_stereotype(), false ) )
+                    if ( stereotype_label_.contains( UmlItem::library_stereotype() ) )
                     {
+                      log.trace(base_log::debug, "- target found to be library");
                       QString value_;
                       auto itr = fullbook.find( UmlItem::lib_type_label() );
                       if( fullbook.end() != itr && itr.value() == UmlItem::shared_value() )
                       {
+                        log.trace(base_log::debug, "- library is shared type");
                         target_type_ = shared_library;
                       }
                       else
                       {
-                        target_type_ = static_library;
-                      }
-                      itr = targetbook.find( UmlItem::lib_type_label() );
-                      if( targetbook.end() != itr && itr.value() == UmlItem::shared_value() )
-                      {
-                        target_type_ = shared_library;
-                      }
-                      else
-                      {
+                        log.trace(base_log::debug, "- library is static type");
                         target_type_ = static_library;
                       }
                       if( targetbook.end() != targetbook.find( UmlItem::other_label() ) )
                       {
+                        log.trace(base_log::debug, "- library is other type");
                         target_type_ = other;
                       }
                     }
-                    QTextOStream entry_os_( &entry_ );
                     ///////////////////
                     // Start the target entry.
                     build_file->document(start_phrase, end_phrase)[target_name_].value = this->style_->make_element("target-start", targetbook);
@@ -678,13 +672,13 @@ while( ! location_stack_.isEmpty() )
                     ////////////////////
                     // End target
                     build_file->document(start_phrase, end_phrase)[target_name_].value += this->style_->make_element("target", targetbook);
-                  }
                 }
               }
             }
             //////////////
             // Handle installables
-            if( installable_ || stereotype_label_.contains( UmlItem::document_stereotype(), false ) )
+            log.trace(base_log::debug, "Checking if "+target_name_+" is installable");
+            if (installable_ || stereotype_label_.contains( UmlItem::document_stereotype() ) )
             {
               auto itr = targetbook.find( UmlItem::install_label() );
               if( itr == targetbook.end() )
@@ -692,16 +686,33 @@ while( ! location_stack_.isEmpty() )
                 switch( target_type_ )
                 {
                 case static_library:
+                  log.trace(base_log::debug, "- target type is static, no install by default");
+                  installable_ = false;
+                  break;
                 case other:
+                  log.trace(base_log::debug, "- target type is other, no install by default");
+                  installable_ = false;
+                  break;
                 default:
+                  log.trace(base_log::debug, "- target type is unknown, no install");
                   // static libraries and other types without an install property are not installed
                   installable_ = false;
                   break;
                 case shared_library:
+                  log.trace(base_log::debug, "- target type is shared library");
                   targetbook[ UmlItem::install_label() ] = "$(LIBDIR)";
+                  if(targetbook.end() == targetbook.find(UmlItem::install_mode_label()))
+                  {
+                    targetbook[ UmlItem::install_mode_label() ] = "$(LIBIFLAGS)";
+                  }
                   break;
                 case executable:
+                  log.trace(base_log::debug, "- target type is executable");
                   targetbook[ UmlItem::install_label() ] = "$(BINDIR)";
+                  if(targetbook.end() == targetbook.find(UmlItem::install_mode_label()))
+                  {
+                    targetbook[ UmlItem::install_mode_label() ] = "$(BINIFLAGS)";
+                  }
                   break;
                 }
               }
@@ -709,10 +720,32 @@ while( ! location_stack_.isEmpty() )
               {
                 installable_ = ( constants::no_install_value != itr.value() );
               }
-              if( installable_ )
+              itr = targetbook.find( UmlItem::install_mode_label() );
+              if( installable_ && itr == targetbook.end() )
               {
-                build_file->document(start_phrase, end_phrase)[target_name_].value += this->style_->make_element("target-install", targetbook);
+                switch( target_type_ )
+                {
+                default:
+                  // static libraries and other types without an install-mode property are not installed
+                  break;
+                case shared_library:
+                  targetbook[ UmlItem::install_mode_label() ] = "$(LIBIFLAGS)";
+                  break;
+                case executable:
+                  targetbook[ UmlItem::install_mode_label() ] = "$(BINIFLAGS)";
+                  break;
+                }
               }
+            }
+            // Create install entry
+            if( installable_ )
+            {
+              log.trace(base_log::debug, "Adding install section");
+              build_file->document(start_phrase, end_phrase)[target_name_].value += this->style_->make_element("target-install", targetbook);
+            }
+            else
+            {
+              log.trace(base_log::debug, "Tests failed so not installable");
             }
           }
         }

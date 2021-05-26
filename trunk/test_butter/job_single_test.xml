@@ -69,11 +69,13 @@
           <property name="location" >test%(exe-suf)s</property>
         </verb>
         <verb type="file-list" >
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >build.log</property>
         </verb>
         <verb type="compare" >
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
           <property name="location" >build.log</property>
 	  <property name="type" >search</property>
 	<property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[d123]).*single_test.c</property>
@@ -84,15 +86,18 @@
     </stage>
     <stage>Test run the executable.
       <verb-list category="execute" >Run &quot;test&quot;
-	      <verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/test%(exe-suf)s} &gt; output %(cmdsep)s popd</verb>
+        <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
+	      <verb type="system" >/bin/bash -c "{ pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/test%(exe-suf)s} &gt; output %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >
           <property name="file-type" >file</property>
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
           <property name="verify" >exist</property>
           <property name="location" >output</property>
         </verb>
         <verb type="compare" >
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
           <property name="location" >output</property>
         </verb>
         <property name="test-phrase">2.1.1 Program output matchs canon</property>

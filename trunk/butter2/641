@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 109
+  revision 110
   modified_by 48 "finnerty"
   // class settings
   
@@ -1331,6 +1331,24 @@ on all build platforms.)
 * The location or location variable of where to install this target"
       end
 
+      operation 439216 "install_mode_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"install-mode\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* The location or location variable of where to install this target"
+      end
+
       operation 396592 "ldflags_label"
 	class_operation public explicit_return_type "unistr"
 	nparams 0
@@ -1642,7 +1660,7 @@ build system"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"executable\");
+  static ${type} label(\"library\");
   return label;
 }
 "

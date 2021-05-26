@@ -1,4 +1,23 @@
 <style label="make">
+ <file label="GNU.mk">####################################
+##  Definitions for GNU g++ compiler
+####################################
+ifndef M_GCC_MK
+M_GCC_MK:=1
+##
+## Define compiler variables once only.
+## 
+CXX?=g++
+STDCXXFLAGS:=-Wall -std=c++98
+STDDEBUGFLAGS:=-O0 -DDEBUG=1 -Weffc++
+STDOPTFLAGS:=-O2 -march=native -DDEBUG=0
+STDLDFLAGS:=
+STDSHRFLAGS:=-fpic
+STDOPENMP:=-fopenmp
+
+endif
+# END ONCE-ONLY
+</file>
  <file label="system.mk">## system.mk
 #
 # System Makefile
@@ -10,6 +29,8 @@
 -include $(ROOTDIR)/local.mk
 OS ?= LINUX
 VARIANT ?= DEBUG
+COMP ?= GNU
+-include $(ROOTDIR)/$(COMP).mk
 
 SHELL=/bin/bash
 .SUFFIXES:
@@ -18,7 +39,7 @@ SHELL=/bin/bash
 ## Default install locations
 ############################
 
-PREFIX?=$(ROOTDIR)/installdir
+PREFIX?=$(ROOTDIR)/stage
 EXEC_PREFIX=$(PREFIX)
 BINDIR=$(EXEC_PREFIX)/bin
 SBINDIR=$(EXEC_PREFIX)/sbin
@@ -224,20 +245,12 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFEXE)
  <template label="target-start"/>
 
  <!-- template for a target -->
- <template label="target-install"/>
-
-
-
-
-
- <template label="install-target">
-install:: <replace label="target_name"/>$(SUFEXE)
-<option label="where">	$(INSTALL) -d <replace label="target_install_location"/>
-</option><option label="install">	$(INSTALL) <replace label="target_install_mode"/> $&lt; <replace label="target_install_location"/>/$&lt;
+ <template label="target-install">
+install:: <replace label="name"/>$(SUFEXE)
+<option label="where">	$(INSTALL) -d <replace label="install"/>
+</option><option label="install">	$(INSTALL) <replace label="install-mode"/> $&lt; <replace label="install"/>/$&lt;
 </option>
 </template>
- <template label="sublocation">
-  DIRS:= $(DIRS) <replace label="location_dir"/></template>
  <!-- template name="buildfile">content</template>
  <template name="internal-project">content</template>
  <template name="external-project">content</template>

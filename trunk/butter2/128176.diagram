@@ -2,11 +2,11 @@ format 224
 
 classcanvas 128048 class_ref 128560 // location
   classdiagramsettings member_max_width 0 end
-  xyz 233.1 75.9 3005
+  xyz 233.1 75.5 3005
 end
 classcanvas 130992 class_ref 138416 // location_set
   classdiagramsettings member_max_width 0 end
-  xyz 10 23.5 3012
+  xyz 10.8 23.5 3012
 end
 classcanvas 131888 class_ref 172592 // location_state
   classdiagramsettings member_max_width 0 end
@@ -18,20 +18,20 @@ classcanvas 132016 class_ref 9217 // UmlPackage
 end
 classcanvas 132400 class_ref 8833 // UmlItem
   classdiagramsettings member_max_width 0 end
-  xyz 381.1 196.5 2000
+  xyz 380.9 195.5 2000
 end
 classcanvas 132528 class_ref 8193 // UmlArtifact
   classdiagramsettings member_max_width 0 end
-  xyz 590.3 296.3 2000
+  xyz 590.7 296.1 2000
 end
 classcanvas 132656 class_ref 8449 // UmlDeploymentView
   classdiagramsettings member_max_width 0 end
-  xyz 578.1 206.1 2005
+  xyz 578.5 206.7 2005
 end
 relationcanvas 128176 relation_ref 132144 // <composition>
   decenter_begin 197
-  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 157 151 3006 to point 154 148
-  line 128304 z 3006 to point 153.5 254
+  from ref 128048 z 3006 stereotype "<<qvector>>" xyz 157 151 3006 to point 154.6 148
+  line 128304 z 3006 to point 153 254.6
   line 128432 z 3006 to ref 128048
   role_a_pos 170 230 3000 role_b_pos 179 120 3000
   multiplicity_a_pos 217 266 3000 multiplicity_b_pos 215 156 3000
@@ -39,14 +39,14 @@ end
 relationcanvas 131120 relation_ref 140208 // <directional composition>
   decenter_begin 121
   decenter_end 49
-  from ref 130992 z 3013 stereotype "<<unique_ptr>>" xyz 132.5 78.5 3013 to ref 128048
+  from ref 130992 z 3013 stereotype "<<unique_ptr>>" xyz 132 78 3013 to ref 128048
   role_a_pos 193 68 3000 no_role_b
   multiplicity_a_pos 200 104 3000 no_multiplicity_b
 end
 relationcanvas 131248 relation_ref 140592 // <dependency>
   decenter_begin 480
   decenter_end 46
-  from ref 128048 z 3013 stereotype "<<friend>>" xyz 235.5 55.5 3013 to point 266 37.5
+  from ref 128048 z 3013 stereotype "<<friend>>" xyz 235 55 3013 to point 266.8 37.4
   line 131504 z 3013 to ref 130992
   no_role_a no_role_b
   no_multiplicity_a no_multiplicity_b
