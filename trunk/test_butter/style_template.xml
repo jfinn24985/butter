@@ -189,7 +189,7 @@ VARIANT ?= DEBUG
 </template>
 
  <!-- how to include an additional buildfile -->
- <template label="include-buildfile">-include <replace label="path"/>.$(SUFMAK)
+ <template label="include-buildfile">-include $(ROOTDIR)/<replace label="build-file"/>.$(SUFMAK)
 </template>
 
  <!-- how to build an object file -->

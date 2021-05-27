@@ -521,33 +521,9 @@ while( ! location_stack_.isEmpty() )
               item_->in_scope( fullbook, false, log );
               if( targetbook.end() != targetbook.find( UmlItem::project_label() ) )
               {
-                QString extern_project_name{ targetbook[ UmlItem::project_label() ] };
                 //////////////////////////////////////////////////
                 // Is an external target for project.
-                if( targetbook.end() != targetbook.find( UmlItem::buildfile_label() ) )
-                {
-                  // Ensure inclusion of external build file
-                  if( root_build_file->document(start_phrase, end_phrase).has_target(extern_project_name) )
-                  {
-                    if( root_build_file->document(start_phrase, end_phrase).at(extern_project_name).value.isEmpty() )
-                    {
-                      root_build_file->document(start_phrase, end_phrase)[extern_project_name].value = this->style_->make_element("include-buildfile", targetbook);
-                    }
-                  }
-                }
-                else
-                {
-                  // Add section for an external library
-                  if( root_build_file->document(start_phrase, end_phrase).has_target(extern_project_name) )
-                  {
-                    // If needed, add external library preamble
-                    if( root_build_file->document(start_phrase, end_phrase).at(extern_project_name).value.isEmpty() )
-                    {
-                      root_build_file->document(start_phrase, end_phrase)[extern_project_name].value = this->style_->make_element("extern-preamble", targetbook);
-                    }
-                  }
-                  root_build_file->document(start_phrase, end_phrase)[extern_project_name].value += this->style_->make_element("extern-library", targetbook);
-                }
+                this->generate_external_target(&art_item_, root_build_file, targetbook, log);
               }
               else
               {
@@ -766,3 +742,172 @@ while( ! location_stack_.isEmpty() )
   }
 }
 
+!!!445744.cpp!!!	generate_target(inout target : UmlArtifact, inout build_file : UmlArtifact, inout targetbook : build_style::map_type, inout log : base_log) : void
+//////////////
+// Is a local target
+QString start_phrase{ this->style_->get_start_phrase() };
+QString end_phrase{ this->style_->get_end_phrase() };
+const QByteArray target_name_( target->name() );
+log.trace(base_log::debug, "Local target "+target_name_+" is library or executable");
+const QByteArray stereotype_label_( target->stereotype() );
+bool installable_ = true;
+
+if( target->associatedArtifacts().isEmpty() )
+{
+  log.trace(base_log::warn, "No associated objects for target "+target_name_+", ignoring" );
+  return;
+}
+// The target's type, set to exe then change if library etc
+log.trace(base_log::debug, "- target assumed executable");
+if ( stereotype_label_ == UmlItem::library_stereotype() )
+{
+  log.trace(base_log::debug, "- target found to be library");
+  QString value_;
+  UmlItem::string_map fullbook;
+  target->in_scope( fullbook, true, log );
+  auto itr = fullbook.find( UmlItem::lib_type_label() );
+  if( fullbook.end() != itr && itr.value() == UmlItem::shared_value() )
+  {
+    log.trace(base_log::debug, "- library is shared type");
+    targetbook[ UmlItem::install_label() ] = "$(LIBDIR)";
+    if(targetbook.end() == targetbook.find(UmlItem::install_mode_label()))
+    {
+      targetbook[ UmlItem::install_mode_label() ] = "$(LIBIFLAGS)";
+    }
+  }
+  else
+  {
+    log.trace(base_log::debug, "- library is static type");
+    installable_ = false;
+  }
+}
+else
+{
+  auto itr = targetbook.find( UmlItem::install_label() );
+  if( itr != targetbook.end() )
+  {
+    installable_ = ( constants::no_install_value != itr.value() );
+  }
+  else
+  {
+    log.trace(base_log::debug, "- target type assumed to be executable");
+    targetbook[ UmlItem::install_label() ] = "$(BINDIR)";
+  }
+  if(installable_ && targetbook.end() == targetbook.find(UmlItem::install_mode_label()))
+  {
+    targetbook[ UmlItem::install_mode_label() ] = "$(BINIFLAGS)";
+  }
+}
+///////////////////
+// Start the target entry.
+QString entry;
+{
+  QTextOStream eos{ &entry };
+
+  eos << this->style_->make_element("target-start", targetbook);
+
+  auto append_if_present = [](QString const& label, UmlItem::string_map const& book1, UmlItem::string_map & book2)
+  {
+    auto itr = book1.find(label);
+    if( itr != book1.end() )
+    {
+      QString value = book2[label];
+      book2[label] = (value.isEmpty() ? itr.value() : value + " " + itr.value());
+    }
+  };
+
+  ///////////////////////
+  // PROCESS DEPENDENCIES
+  ///////////////////////
+  for( unsigned int i_ = 0; i_ < target->associatedArtifacts().size(); ++i_ )
+  {
+    UmlArtifact * const current_art_ = target->associatedArtifacts().at( i_ );
+    const QByteArray stereotype_( current_art_->stereotype().data() );
+    UmlItem::string_map currentbook;
+    current_art_->in_scope( currentbook, false, log );
+    if( stereotype_ == UmlItem::library_stereotype() )
+    {
+      // For associated libraries, need to pass include, flags and ldflags to target
+      append_if_present(UmlItem::include_label(), currentbook, targetbook);
+      append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
+      append_if_present(UmlItem::flags_label(), currentbook, targetbook);
+    }
+    else if( stereotype_ == UmlItem::source_stereotype() )
+    {
+      // For source need to pass ldflags
+      // If include or flags are set, then we need to create a separate object
+      auto itr1 = currentbook.find( UmlItem::include_label() );
+      auto itr2 = currentbook.find( UmlItem::flags_label() );
+      const bool need_object { itr1 != currentbook.end() || itr2 != currentbook.end() };
+      append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
+      append_if_present(UmlItem::flags_label(), currentbook, targetbook);
+      if( need_object )
+      {
+        currentbook["name"] = current_art_->name();
+        currentbook["NAME"] = current_art_->name().toUpper();
+        build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object", currentbook);
+        targetbook["source"] += " " + current_art_->name() + "$(SUFOBJ)";
+      }
+      else
+      {
+        targetbook["source"] += " " + current_art_->name() + "$(SUFSRC)";
+      }
+    }
+    else if( stereotype_ == UmlItem::document_stereotype() )
+    {
+      // For "document" is "other" type and need to pass ldflags and create object
+      append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
+      currentbook["name"] = current_art_->name();
+      currentbook["NAME"] = current_art_->name().toUpper();
+      build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
+      targetbook["source"] += " " + current_art_->name() + "$(SUFOBJ)";
+    }
+  }
+  ////////////////////
+  // End of dependencies, create target
+  if( targetbook.end() != targetbook.find( UmlItem::other_label() ) 
+    && stereotype_label_ == UmlItem::library_stereotype() )
+  {
+    log.trace(base_log::debug, "- library is other type");
+    installable_ = false;
+    eos << this->style_->make_element("target-other", targetbook);
+  }
+  else
+  {
+    eos << this->style_->make_element("target", targetbook);
+  }
+  if( installable_ )
+  {
+    log.trace(base_log::debug, "- adding install section");
+    eos << this->style_->make_element("target-install", targetbook);
+  }
+  else
+  {
+    log.trace(base_log::debug, "- not installable");
+  }
+}
+if(! entry.isEmpty())
+{
+  std::swap(build_file->document(start_phrase, end_phrase)[target_name_].value, entry);
+}
+
+!!!445872.cpp!!!	generate_external_target(in target : UmlArtifact, inout build_file : UmlArtifact, inout targetbook : build_style::map_type, inout log : base_log) : void
+QString start_phrase{ this->style_->get_start_phrase() };
+QString end_phrase{ this->style_->get_end_phrase() };
+QString extern_project_name{ targetbook[ UmlItem::project_label() ] };
+//////////////////////////////////////////////////
+// Is an external target for project.
+if( targetbook.end() != targetbook.find( UmlItem::buildfile_label() ) )
+{
+  // Ensure inclusion of external build file for external project
+  build_file->document(start_phrase, end_phrase)[extern_project_name].value = this->style_->make_element("include-buildfile", targetbook);
+}
+else
+{
+  // If needed, add external library preamble
+  if( build_file->document(start_phrase, end_phrase)[extern_project_name].value.isEmpty() )
+  {
+    build_file->document(start_phrase, end_phrase)[extern_project_name].value = this->style_->make_element("extern-preamble", targetbook);
+  }
+  build_file->document(start_phrase, end_phrase)[extern_project_name].value += this->style_->make_element("extern-library", targetbook);
+}
