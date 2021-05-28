@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 50
+  revision 51
   modified_by 48 "finnerty"
   // class settings
   
@@ -4258,7 +4258,7 @@ ${members}};
       end
     end
 
-    class 233264 "butter_application"
+    class 233264 "system_generator"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
 ${members}};
@@ -4513,14 +4513,6 @@ ${inlines}
 	comment "The default location of the XML file containing style definitions"
       end
 
-      classrelation 241072 // <generalisation>
-	relation 240688 ---|>
-	  a public
-	    cpp default "${type}"
-	    classrelation_ref 241072 // <generalisation>
-	  b parent class_ref 259376 // QApplication
-      end
-
       attribute 200240 "interaction_"
 	private explicit_type "int"
 	init_value "0"
@@ -4580,47 +4572,13 @@ ${inlines}
 	MysqlColumn
       end
 
-      operation 337968 "parse_project"
-	public explicit_return_type "void"
-	nparams 2
-	  param inout name "a_item" type class_ref 8833 // UmlItem
-	  param inout name "log" type class_ref 179120 // base_log
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 344624 "main"
-	public explicit_return_type "int"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Standard run sequence"
-      end
-
-      operation 374960 "butter_application"
+      operation 374960 "system_generator"
 	public explicit_return_type ""
-	nparams 2
-	  param in name "argc" explicit_type "int"
-	  param in name "argv" explicit_type "char"
-	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} ** ${p1}${v1}${)}${volatile}${throw};
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${class}::${name}${(}${t0} ${p0}, ${t1} ** ${p1}${)}${volatile}${throw}
-: QApplication(${p0}, ${p1})
-, interaction_(0)
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw}
+: interaction_(0)
 , port_(0)
 , root_()
 , style_(new build_style{}) {
@@ -4633,7 +4591,7 @@ ${inlines}
 	comment "Parses any command line arguments to set port and interaction"
       end
 
-      operation 375088 "~butter_application"
+      operation 375088 "~system_generator"
 	public explicit_return_type ""
 	nparams 0
 	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
@@ -4646,11 +4604,11 @@ ${inlines}
 	
       end
 
-      operation 375216 "butter_application"
+      operation 375216 "system_generator"
 	stereotype "copy"
 	private explicit_return_type ""
 	nparams 1
-	  param in name "source" type class_ref 233264 // butter_application
+	  param in name "source" type class_ref 233264 // system_generator
 	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} = delete;
 "
 	
@@ -4660,9 +4618,9 @@ ${inlines}
       end
 
       operation 375344 "operator="
-	private return_type class_ref 233264 // butter_application
+	private return_type class_ref 233264 // system_generator
 	nparams 1
-	  param in name "source" type class_ref 233264 // butter_application
+	  param in name "source" type class_ref 233264 // system_generator
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} & ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract} = delete;
 "
 	
@@ -4722,6 +4680,127 @@ ${inlines}
 	
 	
       end
+
+      operation 452400 "get_build_file"
+	public return_type class_ref 8193 // UmlArtifact
+	nparams 2
+	  param inout name "state" type class_ref 172592 // location_state
+	  param in name "file_name" explicit_type "string"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${t0} * ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${t0} * ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Create a new build file with standard settings."
+      end
+
+      operation 452784 "interaction"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "portnum" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->${name}_ = ${p0};
+}
+"
+	
+	
+	
+	
+	comment "Set the interaction style, 
+
+0 - (default) ask user
+1 - assume always \"yes\"/\"okay\"
+2 - assume always \"no\"/\"cancel\""
+      end
+
+      operation 453168 "interaction"
+	stereotype "const"
+	const public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+	comment "Set the port for communication with bouml application"
+      end
+
+      operation 337968 "parse_project"
+	public explicit_return_type "void"
+	nparams 2
+	  param inout name "a_item" type class_ref 8833 // UmlItem
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 452656 "port"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "portnum" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  this->${name}_ = ${p0};
+}
+"
+	
+	
+	
+	
+	comment "Set the port for communication with bouml application"
+      end
+
+      operation 452912 "port"
+	stereotype "const"
+	const public explicit_return_type "int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  return this->${name}_;
+}
+"
+	
+	
+	
+	
+	comment "Set the port for communication with bouml application"
+      end
+
+      operation 453040 "write_documents"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Write build documents into the real filesystem."
+      end
     end
   end
 
@@ -4759,6 +4838,24 @@ ${inlines}
       simplerelation 134576
 	-_->
 	  on artifact_ref 130096 // config
+      end
+    end
+
+    artifact 202800 "base_log"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      associated_elems
+	class_ref 179120 // base_log
       end
     end
 
@@ -4950,6 +5047,85 @@ ${namespace_end}"
       end
     end
 
+    artifact 215984 "log"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+class QFile;
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
+${includes}
+
+#include \"config.h\"
+#include \"UmlCom.h\"
+
+#include <qfile.h>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 252848 // log
+      end
+    end
+
+    artifact 209328 "system_generator"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+
+${includes}
+#include \"config.h\"
+#include \"constants.h\"
+#include \"location_state.h\"
+#include \"log.h\"
+#include \"text_template.h\"
+#include \"CppSettings.h\"
+#include \"UmlArtifact.h\"
+#include \"UmlCom.h\"
+#include \"UmlPackage.h\"
+
+// #include <qapplication.h>
+#include <qmessagebox.h>
+#include <qstack.h>
+
+// #include <iostream>
+
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 233264 // system_generator
+      end
+    end
+
     artifact 182704 "text_template"
       stereotype "source"
       cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
@@ -5042,101 +5218,6 @@ Makefile, CMake, Boost Jam and plain Jam.
 * Define templates for Boost Jam
 * Define templates for Jam
 "
-    end
-
-    artifact 202800 "base_log"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      associated_elems
-	class_ref 179120 // base_log
-      end
-    end
-
-    artifact 209328 "mymain"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-
-${includes}
-#include \"config.h\"
-#include \"constants.h\"
-#include \"location_state.h\"
-#include \"log.h\"
-#include \"text_template.h\"
-#include \"CppSettings.h\"
-#include \"UmlArtifact.h\"
-#include \"UmlCom.h\"
-#include \"UmlPackage.h\"
-
-#include <qmessagebox.h>
-#include <qstack.h>
-
-#include <iostream>
-#ifndef DEBUG
-#define DEBUG 1
-#endif
-
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 233264 // butter_application
-      end
-    end
-
-    artifact 215984 "log"
-      stereotype "source"
-      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
-#define ${NAMESPACE}_${NAME}_H
-
-${comment}
-${includes}
-${declarations}
-class QFile;
-${namespace_start}
-${definition}
-${namespace_end}
-#endif
-"
-      cpp_src "${comment}
-
-#ifndef DEBUG
-#define DEBUG 0
-#endif
-
-${includes}
-
-#include \"config.h\"
-#include \"UmlCom.h\"
-
-#include <qfile.h>
-
-${namespace_start}
-${members}
-${namespace_end}"
-      associated_elems
-	class_ref 252848 // log
-      end
     end
   end
 
