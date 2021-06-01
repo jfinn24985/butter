@@ -1,3 +1,4 @@
+<style-definitions>
 <style label="make">
  <file label="GNU.mk">####################################
 ##  Definitions for GNU g++ compiler
@@ -259,4 +260,206 @@ install:: <replace label="name"/>$(SUFEXE)
  <template name="library">content</template>
  <template name="shared">content</template -->
 </style>
+<style label="jam">
+ <file label="GNU.jam">####################################
+##  Definitions for GNU g++ compiler
+####################################
+ifndef M_GCC_MK
+M_GCC_MK:=1
+##
+## Define compiler variables once only.
+## 
+CXX?=g++
+STDCXXFLAGS:=-Wall -std=c++98
+STDDEBUGFLAGS:=-O0 -DDEBUG=1 -Weffc++
+STDOPTFLAGS:=-O2 -march=native -DDEBUG=0
+STDLDFLAGS:=
+STDSHRFLAGS:=-fpic
+STDOPENMP:=-fopenmp
 
+endif
+# END ONCE-ONLY
+</file>
+ <file label="Jamrules">#
+# Default Jamrules
+#
+
+if $(UNIX)  { SUFSHR ?= .so ; }
+else if $(NT) { SUFSHR ?= .dll ; }
+
+if $(JAM_TOOLSET) { TOOLSET ?= $(JAM_TOOLSET) ; }
+TOOLSET ?= GNU ;
+VARIANT ?= DEBUG ;
+
+#############################
+##
+##  Default install locations
+##
+#############################
+PREFIX = installdir ;
+BINDIR = $(PREFIX)/bin ;
+DATADIR = $(PREFIX)/share ;
+DOCDIR = $(DATADIR)/doc ;
+HTMLDIR = $(DATADIR)/html ;
+INCDIR = $(PREFIX)/include ;
+LIBDIR = $(PREFIX)/bin ;
+MANDIR = $(DATADIR)/man1 ;
+
+######################################################
+##
+##  Example definitions for compiler suite (TOOLSETS)
+##  It is possible to add definitions here or in a
+##  separate file "$(TOOLSET).jam", the NOCARE rule
+##  tells jam not to worry if file does not exist.
+## 
+######################################################
+NOCARE $(TOOLSET).jam ;
+include $(TOOLSET).jam ;
+switch $(TOOLSET)
+{
+case GNU :
+CC = gcc ;
+C++ = g++ ;
+LINK = $(C++) ;
+CCFLAGS += -Wall -std=c99 ;
+C++FLAGS += -Wall -std=c++98 ;
+SHRFLAGS = -fpic ;
+switch $(VARIANT)
+{
+case RELEASE :
+  OPTIM += -O2 -march=native -DDEBUG=0 ;
+case * :
+  OPTIM = -O0 -ggdb -DDEBUG=1 ;
+  CCFLAGS += -pedantic ;
+  C++FLAGS += ; # -Weffc++ ;
+}
+LINKFLAGS += $(OPTIM) ;
+CCFLAGS += $(OPTIM) ;
+C++FLAGS += $(OPTIM) ;
+OPENMP = -fopenmp ;
+}
+
+# Set variable for variant-specific build-dir handling
+BASE_LOCATE_TARGET = $(BUILDDIR)$(SLASH)$(VARIANT) ;
+ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
+</file>
+ <!-- name of the top-most generated buildfile -->
+ <property label="root-file">Jamfile</property>
+
+ <!-- name of build file in any sub-directories -->
+ <property label="build-file">Jamfile</property>
+ <!-- default for install flags -->
+ <property label="target_install_location">$(BINDIR)</property>
+ <property label="target_install_mode">$(BINIFLAGS)</property>
+ <property label="start-phrase">## START:</property>
+ <property label="end-phrase">## END:</property>
+
+  <!-- how to make comments -->
+ <template label="comment">## <replace label="text"/></template>
+
+ <!-- link to subdirectories -->
+ <template label="descendent-link">SubInclude TOP  [ MATCH "([^/]*)" "/([^/]*)/([^/]*)" : <replace label="path"/> ] ;
+</template>
+
+ <!-- Start for an external library section -->
+ <template label="extern-preamble"/>
+
+ <!-- Actual content for external libraries -->
+ <template label="extern-library"><replace label="NAME"/>FLAGS = <replace label="flags"/> ;
+<replace label="NAME"/>LDFLAGS = <replace label="ldflags"/> ;
+<replace label="NAME"/>INC = <replace label="include"/> ;
+</template>
+
+ <!-- how to include an additional buildfile -->
+ <template label="include-buildfile">-include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
+</template>
+
+ <!-- how to build an object file -->
+ <template label="object">
+<option label="flags">C++FLAGS on :=$(CXXFLAGS) <replace label="flags"/></option>
+Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option>\
+                                    <option label="inc">CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>)</option>
+</template>
+
+ <!-- Other target type -->
+ <template label="object-other"/>
+
+ <!-- template for start of (internal) package -->
+ <template label="package">
+# Package data
+<option label="SYSINCLUDE">SYSINCLUDE on <replace label="path"/> = <replace label="package_includes"/>
+</option><option label="SYSCFLAGS">SYSCFLAGS on <replace label="path"/> = <replace label="package_cflags"/>
+</option><option label="SYSCXXFLAGS">SYSCXXFLAGS on <replace label="path"/> = <replace label="package_c++flags"/>
+</option><option label="SYSFFLAGS">SYSFFLAGS on <replace label="path"/> = <replace label="package_fflags"/>
+</option><option label="SYSLDFLAGS">SYSLDFLAGS on <replace label="path"/> = <replace label="package_ldflags"/>
+</option>
+</template>
+
+ <!-- template for start of root makefile -->
+ <template label="preamble-root">
+<option label="root-dir">BUILDDIR = <replace label="root-dir"/> ;</option>
+SubDir TOP ;
+local HEREGRIST = &lt;.&gt; ;
+</template>
+
+ <!-- template for start of subdirectory makefiles -->
+ <template label="preamble">
+ALL_LOCAL_TARGET = $(BASE_LOCAL_TARGET)<replace label="path"/> ;
+local SEP_PATH = [ MATCH "([^/]*)" "/([^/]*)/([^/]*)" : <replace label="path"/> ]
+SubDir TOP $(SEP_PATH) ;
+local HEREGRIST = &lt;$(SEP_PATH:J=!)&gt; ;
+</template>
+
+ <!-- template for a target -->
+ <template label="target">
+<replace label="PROJECT"/>_<replace label="NAME"/>_SRC =
+                     $(HEREGRIST)<replace label="source"/>
+                     ;
+<replace label="PROJECT"/>_<replace label="NAME"/>_SRC = $(HEREGRIST) ;
+
+C++FLAGS on $(HEREGRIST)<replace label="name"/>$(SUFEXE) = $(C++FLAGS) -I[ <replace label="include"/> ] <replace label="flags"/> ;
+LINKLIBS on $(HEREGRIST)<replace label="name"/>$(SUFEXE) = $(LINKLIBS) <replace label="ldflags"/> ;
+
+Main $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
+  $(<replace label="PROJECT"/>_<replace label="NAME"/>_SRC) ;
+
+<option label="libs">LinkLibraries $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
+	 $(HEREGRIST)[ <replace label="libs"/> ]
+	; </option>
+</template>
+
+ <!-- template for a target -->
+ <template label="target-start"/>
+
+ <!-- template for a target -->
+ <template label="target-install">
+<option label="where">InstallBin <replace label="install"/> : &lt;<replace label="PROJECT"/>&gt;<replace label="name"/>$(SUFEXE) ;
+</option><option label="install">IFLAGS on &lt;<replace label="PROJECT"/>&gt;<replace label="name"/>$(SUFEXE) = <replace label="install-mode"/>
+</option>
+</template>
+ <!-- template name="buildfile">content</template>
+ <template name="internal-project">content</template>
+ <template name="external-project">content</template>
+ <template name="object">content</template>
+ <template name="executable">content</template>
+ <template name="library">content</template>
+ <template name="shared">content</template -->
+</style>
+<style label="bjam">
+
+ <file label="local.jam">#
+# local.jam
+#
+# Set constants for installation paths
+import path ;
+path-constant INSTALL_PREFIX : installdir ;
+constant BINDIR : bin ; # User programs
+constant DATADIR : share ; # Private libraries and static data
+constant DOCDIR : [ path.join share doc ] ;
+constant HTMLDIR : [ path.join share html ] ;
+constant INCDIR : include ;
+constant LIBDIR : bin ; # Shared libraries
+constant MANDIR  : [ path.join share man1 ] ;
+</file>
+</style>
+</style-definitions>
