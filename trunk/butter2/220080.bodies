@@ -25,8 +25,6 @@ if( ! newline_at_end && Result.endsWith('\n'))
 return Result;
 
 !!!304560.cpp!!!	read_style(in style : unistr, inout xml : QXmlStreamReader) : void
-BUTTER_REQUIRE(xml.isStartElement() && (xml.name() == style_xmlname()),
-               ("XML reader not at a "+style_xmlname()+" element in call to build_style::read_style.").toStdString());
 if(! this->properties_.empty())
 {
   this->properties_.clear();
@@ -42,6 +40,19 @@ if(! this->templates_.empty())
 {
   QVector< QString > phrases;
   bool found_style = false;
+  // Scan forward to style we are looking for
+  for( ; xml.readNext() && ! xml.atEnd(); )
+  {
+    if (xml.isStartElement() && xml.name() == style_xmlname()
+      && style == xml.attributes().value(text_template::label_xmlname()) )
+    {
+      break;
+    }
+  }
+  if( xml.atEnd() )
+  {
+    throw std::runtime_error("No style definition found in xml stream");
+  }
   while (!xml.atEnd())
   {
     switch(xml.readNext())
@@ -191,25 +202,11 @@ if(! this->templates_.empty())
 //{
 //  throw std::runtime_error(("File "+QDir(path).absolutePath()+" not found.").toStdString());
 //}
-
 QFile xmlfile{ QDir(path).absolutePath() };
 xmlfile.open(QIODevice::ReadOnly);
 BUTTER_REQUIRE(xmlfile.isOpen(), ("Unable to open file "+QDir(path).absolutePath()+".").toStdString());
 
 QXmlStreamReader xml{ &xmlfile };
-for( ; xml.readNext() && ! xml.atEnd(); )
-{
-  if (xml.isStartElement() && xml.name() == style_xmlname()
-    && style == xml.attributes().value(text_template::label_xmlname()) )
-  {
-    break;
-  }
-}
-  
-if( xml.atEnd() )
-{
-  throw std::runtime_error(("No style definition found in file "+path).toStdString());
-}
 this->read_style( style, xml );
 !!!331312.cpp!!!	extend_properties(in other : build_style::map_type) : build_style::map_type
 map_type p{ this->properties_ };
