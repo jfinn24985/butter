@@ -30,7 +30,7 @@
   <property name="cmdsep" >;</property>
   <property name="lib-dir" >\lib</property>
   <property name="bin-dir" >\bin</property>
-  <property name="checkout-url" >file:///home/finnerty/src/butter</property>
+  <property name="checkout-url" >file:///home/finnerty/repos/butter</property>
   <property name="compare-args" >
 	  <!--Ignore lines with dates: -I '^#[MTWTFS][ouehra][neduit] ' -I '^#Butter.*version'--> -w -B</property>
   <property name="set-library-path">LD_LIBRARY_PATH=ENVVAR{LD_LIBRARY_PATH}:PATH{%(library-path)s} %(cmdsep)s </property>
