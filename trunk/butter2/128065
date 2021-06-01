@@ -1,7 +1,7 @@
 format 224
 "butter" // API USER::butter
-  revision 51
-  modified_by 48 "finnerty"
+  revision 53
+  modified_by 42 "finnerty"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -5208,16 +5208,18 @@ Makefile, CMake, Boost Jam and plain Jam.
 
 ## TODO
 
-* Walk UMLPackage tree to build location set
-  (see previous version)
-* Walk location set from root down, processing targets when found
-  (see previous version)
 * Define templates for Makefiles
   (see previous version)
 * Define templates for CMake
 * Define templates for Boost Jam
 * Define templates for Jam
-"
+
+## New requirements
+
+* <option> part of template should specify which replacements are critical OR should be ignored
+* <replace> template might offer text processing options 
+* Need \"target-reference\" template where which generates a string that can be used to refer to the target
+  from another place in the build  system"
     end
   end
 

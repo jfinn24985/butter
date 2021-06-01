@@ -350,15 +350,18 @@ project->in_scope(project_addrbook, true, log);
 // Set output build style
 {
   QByteArray style_, xml_filename_;
-  if ( ! project->propertyValue( UmlItem::style_label(), style_ ) )
+  if ( ! project->propertyValue( "butter " + UmlItem::style_label(), style_ ) )
   {
+    log.trace( base_log::info, "Using default style" );
     style_ = default_style_value();
   }
-  if ( ! project->propertyValue( UmlItem::style_path_label(), xml_filename_ ) )
+  log.trace( base_log::info, "Style: " + style_ );
+  if ( ! project->propertyValue( "butter " + UmlItem::style_path_label(), xml_filename_ ) )
   {
     xml_filename_ = default_style_path_value();
   }
   this->style_->read_style( style_, xml_filename_ );
+  log.trace( base_log::info, "Build file name set to: " + this->style_->get_build_file_name() );
 }
 /////////////////////
 // Initialisation

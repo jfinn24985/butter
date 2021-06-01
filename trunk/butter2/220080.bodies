@@ -197,10 +197,15 @@ xmlfile.open(QIODevice::ReadOnly);
 BUTTER_REQUIRE(xmlfile.isOpen(), ("Unable to open file "+QDir(path).absolutePath()+".").toStdString());
 
 QXmlStreamReader xml{ &xmlfile };
-for( ; xml.readNext() && ! xml.atEnd()
-  && (! xml.isStartElement() || xml.name() != style_xmlname())
-   ; );
-
+for( ; xml.readNext() && ! xml.atEnd(); )
+{
+  if (xml.isStartElement() && xml.name() == style_xmlname()
+    && style == xml.attributes().value(text_template::label_xmlname()) )
+  {
+    break;
+  }
+}
+  
 if( xml.atEnd() )
 {
   throw std::runtime_error(("No style definition found in file "+path).toStdString());
