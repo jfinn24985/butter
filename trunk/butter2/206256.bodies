@@ -129,19 +129,13 @@ if(! this->sequence_.empty())
         QStringList required_replacements{ entry.content_.split(' ')};
         if(required_replacements.count() > 1)
         {
-          // check for specific missing
+          // all only if specific replacements made
           bool has_missing_replacement = false;
-          for( int i = 1; i != required_replacements.count() && ! has_missing_replacement; ++i )
+          required_replacements.pop_front();
+          for( auto & s : required_replacements )
           {
-            has_missing_replacement = true;
-            for( int j = 0; j != discard_phrase.back().count(); ++j )
-            {
-              if(required_replacements[i] == discard_phrase.back()[j])
-              {
-                has_missing_replacement = false;
-                break;
-              }
-            }
+            has_missing_replacement = ! discard_phrase.back().contains(s);
+            if( has_missing_replacement ) break;
           } 
           if( ! has_missing_replacement )
           {
@@ -150,7 +144,7 @@ if(! this->sequence_.empty())
         }
         else
         {
-          // check for all missing
+          // allow if any replacements made
           if(! discard_phrase.back().isEmpty())
           {
             os << tmp;
