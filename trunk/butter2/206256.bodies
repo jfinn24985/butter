@@ -7,9 +7,11 @@ if(! this->sequence_.empty())
   this->sequence_.clear();
 }
 {
+  int counter{ 0 };
   QVector< QString > phrases;
   while (!xml.atEnd())
   {
+    ++counter;
     switch(xml.readNext())
     {
     case QXmlStreamReader::StartElement:
@@ -29,7 +31,13 @@ if(! this->sequence_.empty())
       {
         BUTTER_REQUIRE(xml.attributes().hasAttribute(label_xmlname()),
                        QString("Optional section XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
-        phrases.push_back( xml.attributes().value(label_xmlname()).toString() );
+        QString content{ xml.attributes().value(label_xmlname()).toString()
+           + QString::number( counter ) };
+        if( ! xml.attributes().value(target_xmlname()).isEmpty() )
+        {
+          content += " " + xml.attributes().value(target_xmlname()).toString();
+        }
+        phrases.push_back( content );
         this->sequence_.push_back( { PHRASE, phrases.back() } );
       }
       else
@@ -87,7 +95,7 @@ result.push_back(QString());
 if(! this->sequence_.empty())
 {
   QVector< QString > phrases;
-  QVector< bool > discard_phrase;
+  QVector< QStringList > discard_phrase;
   QTextOStream os(&result.back());
   for( const template_entry & entry : this->sequence_ )
   {
@@ -103,7 +111,7 @@ if(! this->sequence_.empty())
       {
         if(! discard_phrase.empty()) // in phrase, indicate value found
         {
-          discard_phrase.back() = false;
+          discard_phrase.back().push_back(entry.content_);
         }
         os << itr.value();
       }
@@ -118,9 +126,35 @@ if(! this->sequence_.empty())
         QString tmp{ result.back() };
         result.pop_back();
         os.setString(&result.back());
-        if(! discard_phrase.back())
+        QStringList required_replacements{ entry.content_.split(' ')};
+        if(required_replacements.count() > 1)
         {
-          os << tmp;
+          // check for specific missing
+          bool has_missing_replacement = false;
+          for( int i = 1; i != required_replacements.count() && ! has_missing_replacement; ++i )
+          {
+            has_missing_replacement = true;
+            for( int j = 0; j != discard_phrase.back().count(); ++j )
+            {
+              if(required_replacements[i] == discard_phrase.back()[j])
+              {
+                has_missing_replacement = false;
+                break;
+              }
+            }
+          } 
+          if( ! has_missing_replacement )
+          {
+            os << tmp;
+          }
+        }
+        else
+        {
+          // check for all missing
+          if(! discard_phrase.back().isEmpty())
+          {
+            os << tmp;
+          }
         }
         phrases.pop_back();
         discard_phrase.pop_back();
@@ -131,7 +165,7 @@ if(! this->sequence_.empty())
         result.push_back(QString());
         os.setString(&result.back());
         phrases.push_back(entry.content_);
-        discard_phrase.push_back(true);
+        discard_phrase.push_back(QStringList());
       }
     }
     break;

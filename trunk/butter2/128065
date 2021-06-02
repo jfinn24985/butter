@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 54
+  revision 56
   modified_by 42 "finnerty"
   // class settings
   
@@ -3858,6 +3858,24 @@ ${inlines}
 	
       end
 
+      operation 128042 "target_xmlname"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} label(\"target\"); return label;
+}
+"
+	
+	
+	
+	
+	comment "In an \"option\" element, this attribute name is used to label the replacement 
+elements that must all be present to ensure inclusion of the option. When 
+empty or not present, then any replacement text ensures inclusion."
+      end
+
       operation 297520 "text_template_xmlname"
 	class_operation public explicit_return_type "unistr"
 	nparams 0
@@ -3976,7 +3994,7 @@ ${members}};
 	  idl_decl ""
 	  mysql_decl ""
 	  MysqlColumn
-	  comment "The type of entry"
+	  comment "The type of entry (optional, text or replacement)"
 	end
 
 	attribute 180272 "content_"
@@ -3989,7 +4007,13 @@ ${members}};
 	  idl_decl ""
 	  mysql_decl ""
 	  MysqlColumn
-	  comment "Any textual/label content"
+	  comment "Any textual/label content by type
+
+TEXT : content is transferred directly
+REPLACEMENT : dictionary key of element to replace
+OPTION : LABEL+NUM then possible empty list of required replacement keys
+
+"
 	end
       end
 
@@ -5145,8 +5169,9 @@ ${namespace_end}
 ${includes}
 #include \"config.h\"
 #include \"constants.h\"
-#include <qvector.h>
+#include <qstringlist.h>
 #include <qtextstream.h>
+#include <qvector.h>
 #include <QXmlStreamReader>
 ${namespace_start}
 ${members}
