@@ -41,12 +41,16 @@ if(! this->templates_.empty())
   QVector< QString > phrases;
   bool found_style = false;
   // Scan forward to style we are looking for
-  for( ; xml.readNext() && ! xml.atEnd(); )
+  if( ! (xml.isStartElement() && xml.name() == style_xmlname()
+      && style == xml.attributes().value(text_template::label_xmlname()) ) )
   {
-    if (xml.isStartElement() && xml.name() == style_xmlname()
-      && style == xml.attributes().value(text_template::label_xmlname()) )
+    for( ; xml.readNext() && ! xml.atEnd(); )
     {
-      break;
+      if (xml.isStartElement() && xml.name() == style_xmlname()
+        && style == xml.attributes().value(text_template::label_xmlname()) )
+      {
+        break;
+      }
     }
   }
   if( xml.atEnd() )
