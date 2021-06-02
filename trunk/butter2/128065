@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 57
+  revision 59
   modified_by 42 "finnerty"
   // class settings
   
@@ -5241,10 +5241,15 @@ Makefile, CMake, Boost Jam and plain Jam.
 
 ## New requirements
 
-* <option> part of template should specify which replacements are critical OR should be ignored
 * <replace> template might offer text processing options 
-* Need \"target-reference\" template where which generates a string that can be used to refer to the target
-  from another place in the build  system"
+* \"XX-reference\" templates which generate strings for
+  use in other templates, eg internal library as dependency
+  in another place in the build system.
+
+## Completed
+
+* <option> part of template should specify which replacements are critical OR should be ignored
+"
     end
   end
 
