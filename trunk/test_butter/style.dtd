@@ -1,0 +1,26 @@
+<!ELEMENT style-definitions (style+)>
+
+<!ELEMENT style (#PCDATA|file|property|template)*>
+<!ATTLIST style
+  label CDATA #REQUIRED >
+
+<!ELEMENT file (#PCDATA)>
+<!ATTLIST file
+  label CDATA #REQUIRED >
+  
+<!ELEMENT property (#PCDATA)>
+<!ATTLIST property
+  label CDATA #REQUIRED >
+  
+<!ELEMENT template (#PCDATA|option|replace)*>
+<!ATTLIST template
+  label CDATA #REQUIRED >
+  
+<!ELEMENT option (#PCDATA|option|replace)*>
+<!ATTLIST option
+  label CDATA #REQUIRED
+  target CDATA #IMPLIED>
+  
+<!ELEMENT replace EMPTY>
+<!ATTLIST replace
+  label CDATA #REQUIRED >

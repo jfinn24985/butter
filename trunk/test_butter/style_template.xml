@@ -1,3 +1,5 @@
+﻿<!DOCTYPE style-definitions PUBLIC "-//PURPLETREE//DTD STYLE TEMPLATE//EN"
+"style.dtd">
 <style-definitions>
 <style label="make">
  <file label="GNU.mk">####################################
@@ -260,6 +262,121 @@ install:: <replace label="name"/>$(SUFEXE)
  <template name="library">content</template>
  <template name="shared">content</template -->
 </style>
+<style label="cmake">
+ <file label="local.cmake">#
+# local.cmake
+#
+set (SUFSRC .cc)
+set (SUFHDR .hh)
+set (SUFOBJ .hh)
+set (SUFEXE "")
+set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG=1)
+set_directory_properties(PROPERTIES COMPILE_DEFINITIONS DEBUG=0)
+#############################
+##  Default install locations
+#############################
+set (CMAKE_INSTALL_PREFIX installdir)
+set (BINDIR bin)
+set (BINIFLAGS 0755)
+set (DATADIR share)
+set (DOCDIR share/doc)
+set (HTMLDIR share/html)
+set (INCLUDEDIR include)
+set (LIBDIR bin)
+set (LIBIFLAGS 0755)
+set (MANDIR share/man)
+</file>
+ <!-- name of the top-most generated buildfile -->
+ <property label="root-file">CMakeLists.txt</property>
+
+ <!-- name of build file in any sub-directories -->
+ <property label="build-file">CMakeLists.txt</property>
+ <!-- default for install flags -->
+ <property label="target_install_location">${BINDIR}</property>
+ <property label="target_install_mode">${BINIFLAGS}</property>
+ <property label="start-phrase">## START:</property>
+ <property label="end-phrase">## END:</property>
+
+  <!-- how to make comments -->
+ <template label="comment">## <replace label="text"/></template>
+
+ <!-- link to subdirectories -->
+ <template label="descendent-link">include (<replace label="path"/>/CMakeLists.txt)
+</template>
+
+ <!-- Start for an external library section -->
+ <template label="extern-preamble"/>
+
+ <!-- Actual content for external libraries -->
+ <template label="extern-library"><replace label="NAME"/>FLAGS:=<replace label="flags"/>
+<replace label="NAME"/>LDFLAGS:=<replace label="ldflags"/>
+<replace label="NAME"/>INC:=<replace label="include"/>
+</template>
+
+ <!-- how to include an additional buildfile -->
+ <template label="include-buildfile">-include (${CMAKE_SOURCE_DIR}/<replace label="build-file"/>.$(SUFMAK)
+</template>
+
+ <!-- how to build an object file -->
+ <template label="object">
+<replace label="name"/>.$(SUFOBJ):: <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option>\
+                                    <option label="inc">CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>)</option>
+</template>
+
+ <!-- Other target type -->
+ <template label="object-other"/>
+
+ <!-- template for start of (internal) package -->
+ <template label="package">
+ project (<replace label="PACKAGE"/>)
+<option label="SYSINCLUDE">export SYSINCLUDE:= <replace label="package_includes"/>
+</option><option label="SYSCFLAGS">export SYSCFLAGS:= <replace label="package_cflags"/>
+</option><option label="SYSCXXFLAGS">export SYSCXXFLAGS:= <replace label="package_c++flags"/>
+</option><option label="SYSFFLAGS">export SYSFFLAGS:= <replace label="package_fflags"/>
+</option><option label="SYSLDFLAGS">export SYSLDFLAGS:= <replace label="package_ldflags"/>
+</option>
+</template>
+
+ <!-- template for start of root makefile -->
+ <template label="preamble-root">
+ cmake_minimum_required(VERSION 2.6)
+ include (${CMAKE_SOURCE_DIR}/local.cmake)
+</template>
+
+ <!-- template for start of subdirectory makefiles -->
+ <template label="preamble">
+include (${CMAKE_SOURCE_DIR}/local.cmake)
+</template>
+
+ <!-- template for a target -->
+ <template label="target">
+ ## HERE
+ set ( <replace label="PACKAGE"/>_<replace label="NAME"/>  <replace label="name"/>)
+ 
+ set ( <replace label="PACKAGE"/>_<replace label="NAME"/>_SRC
+  <replace label="source"/> )
+  add_executable ( ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
+    ${<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC} )
+</template>
+
+ <!-- template for a target -->
+ <template label="target-start"/>
+
+ <!-- template for a target -->
+ <template label="target-install">
+<option label="where">
+install (TARGETS ${<replace label="PACKAGE"/>_<replace label="name"/>}
+  RUNTIME DESTINATION <replace label="install"/>
+  CONFIGURATIONS Release)</option>
+</template>
+ <!-- template name="buildfile">content</template>
+ <template name="internal-project">content</template>
+ <template name="external-project">content</template>
+ <template name="object">content</template>
+ <template name="executable">content</template>
+ <template name="library">content</template>
+ <template name="shared">content</template -->
+</style>
 <style label="jam">
  <file label="GNU.jam">####################################
 ##  Definitions for GNU g++ compiler
@@ -412,16 +529,16 @@ local HEREGRIST = &lt;$(SEP_PATH:J=!)&gt; ;
 
  <!-- template for a target -->
  <template label="target">
-<replace label="PROJECT"/>_<replace label="NAME"/>_SRC =
+<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
                      $(HEREGRIST)<replace label="source"/>
                      ;
-<replace label="PROJECT"/>_<replace label="NAME"/>_SRC = $(HEREGRIST) ;
+<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC = $(HEREGRIST) ;
 
 C++FLAGS on $(HEREGRIST)<replace label="name"/>$(SUFEXE) = $(C++FLAGS) -I[ <replace label="include"/> ] <replace label="flags"/> ;
 LINKLIBS on $(HEREGRIST)<replace label="name"/>$(SUFEXE) = $(LINKLIBS) <replace label="ldflags"/> ;
 
 Main $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
-  $(<replace label="PROJECT"/>_<replace label="NAME"/>_SRC) ;
+  $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
 
 <option label="libs">LinkLibraries $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
 	 $(HEREGRIST)[ <replace label="libs"/> ]
@@ -433,8 +550,8 @@ Main $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
 
  <!-- template for a target -->
  <template label="target-install">
-<option label="where">InstallBin <replace label="install"/> : &lt;<replace label="PROJECT"/>&gt;<replace label="name"/>$(SUFEXE) ;
-</option><option label="install">IFLAGS on &lt;<replace label="PROJECT"/>&gt;<replace label="name"/>$(SUFEXE) = <replace label="install-mode"/>
+<option label="where">InstallBin <replace label="install"/> : &lt;<replace label="PACKAGE"/>&gt;<replace label="name"/>$(SUFEXE) ;
+</option><option label="install">IFLAGS on &lt;<replace label="PACKAGE"/>&gt;<replace label="name"/>$(SUFEXE) = <replace label="install-mode"/>
 </option>
 </template>
  <!-- template name="buildfile">content</template>
@@ -461,5 +578,104 @@ constant INCDIR : include ;
 constant LIBDIR : bin ; # Shared libraries
 constant MANDIR  : [ path.join share man1 ] ;
 </file>
-</style>
+ <!-- name of the top-most generated buildfile -->
+ <property label="root-file">Jamroot</property>
+
+ <!-- name of build file in any sub-directories -->
+ <property label="build-file">Jamfile</property>
+ <!-- default for install flags -->
+ <property label="target_install_location">$(BINDIR)</property>
+ <property label="target_install_mode">$(BINIFLAGS)</property>
+ <property label="start-phrase">## START:</property>
+ <property label="end-phrase">## END:</property>
+
+  <!-- how to make comments -->
+ <template label="comment">## <replace label="text"/></template>
+
+ <!-- link to subdirectories -->
+ <template label="descendent-link">SubInclude TOP  [ MATCH "([^/]*)" "/([^/]*)/([^/]*)" : <replace label="path"/> ] ;
+</template>
+
+ <!-- Start for an external library section -->
+ <template label="extern-preamble"/>
+
+ <!-- Actual content for external libraries -->
+ <template label="extern-library"><replace label="NAME"/>FLAGS = <replace label="flags"/> ;
+<replace label="NAME"/>LDFLAGS = <replace label="ldflags"/> ;
+<replace label="NAME"/>INC = <replace label="include"/> ;
+</template>
+
+ <!-- how to include an additional buildfile -->
+ <template label="include-buildfile">-include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
+</template>
+
+ <!-- how to build an object file -->
+ <template label="object">
+<option label="flags">C++FLAGS on :=$(CXXFLAGS) <replace label="flags"/></option>
+Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option>\
+                                    <option label="inc">CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>)</option>
+</template>
+
+ <!-- Other target type -->
+ <template label="object-other"/>
+
+ <!-- template for start of (internal) package -->
+ <template label="package">
+project <replace label="name"/>
+  : requirements &lt;debug-symbols&gt;on:&lt;define&gt;"DEBUG=1"
+    &lt;debug-symbols&gt;off:&lt;define&gt;"Debug=0"<option label="requirements"><option label="SYSINCLUDE">includes "<replace label="includes"/>"
+</option><option label="SYSCFLAGS">flags "<replace label="flags"/>"
+</option><option label="SYSLDFLAGS">linkflags "<replace label="package_ldflags"/>"
+  : build-dir build ;
+</option></option>
+</template>
+
+ <!-- template for start of root makefile -->
+ <template label="preamble-root">
+path-constant topdir : . ;
+include local.jam
+</template>
+
+ <!-- template for start of subdirectory makefiles -->
+ <template label="preamble">
+
+</template>
+
+ <!-- template for a target -->
+ <template label="target">
+exe <replace label="name"/> :
+                     <replace label="source"/>
+                     :
+                     ;
+
+<!--
+C++FLAGS on $(HEREGRIST)<replace label="name"/>$(SUFEXE) = $(C++FLAGS) -I[ <replace label="include"/> ] <replace label="flags"/> ;
+LINKLIBS on $(HEREGRIST)<replace label="name"/>$(SUFEXE) = $(LINKLIBS) <replace label="ldflags"/> ;
+
+Main $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
+  $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
+
+<option label="libs">LinkLibraries $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
+	 $(HEREGRIST)[ <replace label="libs"/> ]
+	; </option> -->
+</template>
+
+ <!-- template for a target -->
+ <template label="target-start"/>
+
+ <!-- template for a target -->
+ <template label="target-install">
+<option label="where">install install_<replace label="name"/> : <replace label="name"/> :
+  &lt;variant&gt;release:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/>
+  &lt;variant&gt;debug:&lt;location&gt;$(DEBUG_PREFIX)/<replace label="install"/> ;
+</option>
+</template>
+ <!-- template name="buildfile">content</template>
+ <template name="internal-project">content</template>
+ <template name="external-project">content</template>
+ <template name="object">content</template>
+ <template name="executable">content</template>
+ <template name="library">content</template>
+ <template name="shared">content</template -->
+ </style>
 </style-definitions>
