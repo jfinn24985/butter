@@ -32,7 +32,10 @@ UmlArtifact * root_build_file = nullptr;
   if( nullptr == root_build_file )
   {
     UmlItem::string_map projectbook;
+    const QByteArray package_name_{ UmlPackage::getProject()->name() };
     UmlPackage::getProject()->in_scope(projectbook, false, log);
+    projectbook["name"] = package_name_;
+    projectbook["NAME"] = package_name_.toUpper();
     projectbook["root-dir"] = this->root_->base_path();
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
     root_build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble_root(), projectbook);
@@ -79,9 +82,12 @@ while( ! location_stack_.isEmpty() )
   for( int i_ = 0; i_ < state->packages().count(); ++i_ )
   {
     UmlPackage * I_ = state->packages().at( i_ );
+    const QByteArray package_name_{ I_->name() };
     {
       UmlItem::string_map packbook;
       I_->in_scope(packbook, false, log);
+      packbook["package"] = package_name_;
+      packbook["PACKAGE"] = package_name_.toUpper();
       build_file->document(start_phrase, end_phrase)["package-" + I_->name()].value = this->style_->make_element("package", packbook);
     }
     for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
@@ -100,6 +106,8 @@ while( ! location_stack_.isEmpty() )
             const QByteArray target_name_( const_cast< UmlArtifact &>(art_item_).name() );
             UmlItem::string_map targetbook;
             item_->in_scope( targetbook, true, log );
+            targetbook["package"] = package_name_;
+            targetbook["PACKAGE"] = package_name_.toUpper();
             targetbook["name"] = target_name_;
             targetbook["NAME"] = target_name_.toUpper();
             if( stereotype_label_.contains( UmlItem::executable_stereotype() )
