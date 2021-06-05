@@ -1,4 +1,4 @@
-<?xml version = '1.0'?>
+﻿<?xml version = '1.0'?>
 <test-suite>
   <property name="os" >UNIX</property>
   <property name="bouml" >/usr/bin/bouml</property>

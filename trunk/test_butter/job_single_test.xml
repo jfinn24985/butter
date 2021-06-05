@@ -1,4 +1,4 @@
-<?xml version = '1.0'?>
+﻿<?xml version = '1.0'?>
 <job>
     <property name="basefile" if="build-style=standard" >makefile</property>
     <property name="sysfile"  if="build-style=standard" >%(make-sys)s</property>
@@ -42,7 +42,7 @@
       <verb-list category="execute" >
         Generate the build system and the source code
         <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/%(project)s.prj} -exec %(plug-out1)s -test:ok -exit</verb>
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced
@@ -62,8 +62,16 @@
    </stage>
     <stage>Perform compilation and test compilation success
       <verb-list category="execute" >
-        <verb type="system" >/bin/bash -c "{ pushd PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/output} %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s %(cat)s build.log %(cmdsep)s popd %(cmdsep)s }" </verb>
-      </verb-list>
+       <property name="compile-command"  if="build-style=cmake" >/bin/bash -c "{ pushd PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/output} %(cmdsep)s
+           { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
+           PATH{%(build-tool)s} %(build-arg)s &gt;&gt; build.log %(cmdsep)s
+           PATH{%(make)s} -k VERBOSE=1 %(make-arg)s install &gt;&gt; build.log %(cmdsep)s
+           %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
+       <property name="compile-command" if="build-style!=cmake" >/bin/bash -c "{ pushd PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/output} %(cmdsep)s
+           { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
+           %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
+        <verb type="system" >%(compile-command)s</verb>
+	     </verb-list>
       <verb-list category="verify" >Verify that the correct file has been produced
         <verb type="file-list" >
           <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output/%(stage-bin-dir)s</property>
@@ -80,9 +88,9 @@
         <verb type="compare" >
           <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
           <property name="location" >build.log</property>
-	  <property name="type" >search</property>
-	<property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[d123]).*single_test.c</property>
-	<property name="search-regex" if="build-style=boost">(debug|release).*single_test\.</property>
+	        <property name="type" >search</property>
+	        <property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[d123]).*single_test.c</property>
+	        <property name="search-regex" if="build-style=boost">(debug|release).*single_test\.</property>
         </verb>
         <property name="test-phrase">2.1.1 Single directory, single target compiled</property>
       </verb-list>
@@ -90,7 +98,8 @@
     <stage>Test run the executable.
       <verb-list category="execute" >Run &quot;test&quot;
         <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
-	      <verb type="system" >/bin/bash -c "{ pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/test%(exe-suf)s} &gt; output %(cmdsep)s popd %(cmdsep)s }" </verb>
+	      <verb type="system">/bin/bash -c "{ pushd PATH{%(base)s} %(cmdsep)s
+	          PATH{%(stage-bin-dir)s/test%(exe-suf)s} &gt; output %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >

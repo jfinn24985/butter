@@ -28,8 +28,7 @@ Note that we make the following assumptions about the set up of the project:
 Single Directory, single target test cases
 
 -->
- <!--
-  <job src="job_single_test.xml">
+<!--  <job src="job_single_test.xml">
 
 default (make) build tool + debug + single directory and target
 
@@ -84,6 +83,6 @@ cmake build tool + release + single directory and target
     <property name="build-tool" >%(cmake)s</property>
     <property name="build-style" >cmake</property>
     <property name="patch-file" >cmake.patch</property>
-    <property name="build-arg" >. %(cmake-arg)s -DCMAKE_BUILD_TYPE=DEBUG %(cmdsep)s %(make)s -k %(make-arg)s install</property>
+    <property name="build-arg" >%(cmake-arg)s -DCMAKE_BUILD_TYPE=DEBUG</property>
   </job>
 </test-suite>

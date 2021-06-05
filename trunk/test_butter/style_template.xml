@@ -1,4 +1,5 @@
-﻿<!DOCTYPE style-definitions PUBLIC "-//PURPLETREE//DTD STYLE TEMPLATE//EN"
+﻿<?xml version = '1.0'?>
+<!DOCTYPE style-definitions PUBLIC "-//PURPLETREE//DTD STYLE TEMPLATE//EN"
 "style.dtd">
 <style-definitions>
 <style label="make">
@@ -43,41 +44,15 @@ SHELL=/bin/bash
 ############################
 
 PREFIX?=$(ROOTDIR)/stage
-EXEC_PREFIX=$(PREFIX)
-BINDIR=$(EXEC_PREFIX)/bin
-SBINDIR=$(EXEC_PREFIX)/sbin
-LIBEXECDIR=$(EXEC_PREFIX)/libexec
-LIBDIR=$(EXEC_PREFIX)/lib
-DATAROOTDIR=$(PREFIX)/share
+BINDIR=$(PREFIX)/bin
+LIBDIR=$(PREFIX)/lib
 DATADIR=$(PREFIX)/share
-SYSCONFDIR=$(PREFIX)/etc
-SHAREDSTATEDIR=$(PREFIX)/com
-LOCALSTATEDIR=$(PREFIX)/var
-INCLUDEDIR=$(PREFIX)/include
-LOCALEDIR=$(DATAROOTDIR)/locale
-DOCDIR=$(DATAROOTDIR)/doc/$(VERSIONDIR)
-INFODIR=$(DATAROOTDIR)/info
-MANDIR=$(DATAROOTDIR)/man
-HTMLDIR=$(DOCDIR)
-DVIDIR=$(DOCDIR)
-PDFDIR=$(DOCDIR)
-PSDIR=$(DOCDIR)
-MAN1DIR=$(MANDIR)/man1
-MAN2DIR=$(MANDIR)/man2
-MAN3DIR=$(MANDIR)/man3
-MAN4DIR=$(MANDIR)/man4
-MAN5DIR=$(MANDIR)/man5
-MAN6DIR=$(MANDIR)/man6
-MAN7DIR=$(MANDIR)/man7
-MAN8DIR=$(MANDIR)/man8
-MANNDIR=$(MANDIR)/mann
 
 # Flags for the install targets.
 INSTALL:=install
 BINIFLAGS:=-m 755
+LIBIFLAGS:=-m 644
 FILEIFLAGS:=-m 644
-LIBIFLAGS:=-m 644 
-MANIFLAGS:=-m 644
 
 ####################
 ## OS SPECIFIC STUFF
@@ -94,6 +69,7 @@ SUFEXE:=
 SUFLIB:=.a
 SUFSHR:=.so.0
 ifeq ($(OS),WIN32)
+SUFOBJ:=.obj
 SUFEXE:=.exe
 SUFLIB:=.lib
 SUFSHR:=.dll
@@ -170,11 +146,17 @@ VARIANT ?= DEBUG
  <!-- name of build file in any sub-directories -->
  <property label="build-file">makefile</property>
  <!-- default for install flags -->
- <property label="target_install_location">$(BINDIR)</property>
- <property label="target_install_mode">$(BINIFLAGS)</property>
+ <property label="binary_install_location">$(BINDIR)</property>
+ <property label="binary_install_mode">$(BINIFLAGS)</property>
+ <property label="library_install_location">$(LIBDIR)</property>
+ <property label="library_install_mode">$(LIBIFLAGS)</property>
+ <property label="other_install_location">$(DATADIR)</property>
+ <property label="other_install_mode">$(FILEIFLAGS)</property>
  <property label="start-phrase">## START:</property>
  <property label="end-phrase">## END:</property>
 
+  <!-- how to make comments -->
+ <template label="comment">## <replace label="text"/></template>
   <!-- how to make comments -->
  <template label="comment">## <replace label="text"/></template>
 
@@ -244,7 +226,10 @@ all :: <replace label="name"/>$(SUFEXE)
 CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFEXE)
 </template>
 
- <!-- template for a target -->
+ <!-- template for a target source -->
+ <template label="dependency-source"><replace label="name"/>$(SUFSRC)</template>
+ <template label="dependency-object"><replace label="name"/>$(SUFOBJ)</template>
+<!-- template for a target -->
  <template label="target-start"/>
 
  <!-- template for a target -->
@@ -270,21 +255,19 @@ set (SUFSRC .cc)
 set (SUFHDR .hh)
 set (SUFOBJ .hh)
 set (SUFEXE "")
-set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG DEBUG=1)
-set_directory_properties(PROPERTIES COMPILE_DEFINITIONS DEBUG=0)
+set (SUFLIB .a)
+set (SUFSHR .so)
+add_compile_options($&lt;$&lt;CONFIG:Debug&gt;:-DDEBUG=1&gt; $&lt;$&lt;CONFIG:Release&gt;:-DDEBUG=0&gt;)
 #############################
 ##  Default install locations
 #############################
-set (CMAKE_INSTALL_PREFIX installdir)
+set (CMAKE_INSTALL_PREFIX stage)
 set (BINDIR bin)
-set (BINIFLAGS 0755)
-set (DATADIR share)
-set (DOCDIR share/doc)
-set (HTMLDIR share/html)
-set (INCLUDEDIR include)
 set (LIBDIR bin)
-set (LIBIFLAGS 0755)
-set (MANDIR share/man)
+set (DATADIR share)
+set (BINIFLAGS 0755)
+set (LIBIFLAGS 0644)
+set (FILEIFLAGS 0644)
 </file>
  <!-- name of the top-most generated buildfile -->
  <property label="root-file">CMakeLists.txt</property>
@@ -292,8 +275,12 @@ set (MANDIR share/man)
  <!-- name of build file in any sub-directories -->
  <property label="build-file">CMakeLists.txt</property>
  <!-- default for install flags -->
- <property label="target_install_location">${BINDIR}</property>
- <property label="target_install_mode">${BINIFLAGS}</property>
+ <property label="binary_install_location">${BINDIR}</property>
+ <property label="binary_install_mode">${BINIFLAGS}</property>
+ <property label="library_install_location">${LIBDIR}</property>
+ <property label="library_install_mode">${LIBIFLAGS}</property>
+ <property label="other_install_location">${DATADIR}</property>
+ <property label="other_install_mode">${FILEIFLAGS}</property>
  <property label="start-phrase">## START:</property>
  <property label="end-phrase">## END:</property>
 
@@ -355,19 +342,24 @@ include (${CMAKE_SOURCE_DIR}/local.cmake)
  
  set ( <replace label="PACKAGE"/>_<replace label="NAME"/>_SRC
   <replace label="source"/> )
-  add_executable ( ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
+ add_executable ( ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
     ${<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC} )
 </template>
 
- <!-- template for a target -->
+ <!-- template for a target source -->
+ <template label="dependency-source"><replace label="name"/>${SUFSRC}</template>
+ <template label="dependency-object"><replace label="name"/>${SUFOBJ}</template>
+ <!-- template label="dependency-static-library"><replace label="name"/>${SUFLIB}</template>
+ <template label="dependency-shared-library"><replace label="name"/>${SUFSHR}</template -->
+
  <template label="target-start"/>
 
  <!-- template for a target -->
  <template label="target-install">
 <option label="where">
-install (TARGETS ${<replace label="PACKAGE"/>_<replace label="name"/>}
+install (TARGETS ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
   RUNTIME DESTINATION <replace label="install"/>
-  CONFIGURATIONS Release)</option>
+  CONFIGURATIONS Release Debug )</option>
 </template>
  <!-- template name="buildfile">content</template>
  <template name="internal-project">content</template>
