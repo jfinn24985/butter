@@ -153,54 +153,13 @@ QString end_phrase{ this->style_->get_end_phrase() };
 const QByteArray target_name_( target->name() );
 log.trace(base_log::debug, "Local target "+target_name_+" is library or executable");
 const QByteArray stereotype_label_( target->stereotype() );
-bool installable_ = true;
 
 if( target->associatedArtifacts().isEmpty() )
 {
   log.trace(base_log::warn, "No associated objects for target "+target_name_+", ignoring" );
   return;
 }
-// The target's type, set to exe then change if library etc
-log.trace(base_log::debug, "- target assumed executable");
-if ( stereotype_label_ == UmlItem::library_stereotype() )
-{
-  log.trace(base_log::debug, "- target found to be library");
-  QString value_;
-  UmlItem::string_map fullbook;
-  target->in_scope( fullbook, true, log );
-  auto itr = fullbook.find( UmlItem::lib_type_label() );
-  if( fullbook.end() != itr && itr.value() == UmlItem::shared_value() )
-  {
-    log.trace(base_log::debug, "- library is shared type");
-    targetbook[ UmlItem::install_label() ] = "$(LIBDIR)";
-    if(targetbook.end() == targetbook.find(UmlItem::install_mode_label()))
-    {
-      targetbook[ UmlItem::install_mode_label() ] = "$(LIBIFLAGS)";
-    }
-  }
-  else
-  {
-    log.trace(base_log::debug, "- library is static type");
-    installable_ = false;
-  }
-}
-else
-{
-  auto itr = targetbook.find( UmlItem::install_label() );
-  if( itr != targetbook.end() )
-  {
-    installable_ = ( constants::no_install_value != itr.value() );
-  }
-  else
-  {
-    log.trace(base_log::debug, "- target type assumed to be executable");
-    targetbook[ UmlItem::install_label() ] = "$(BINDIR)";
-  }
-  if(installable_ && targetbook.end() == targetbook.find(UmlItem::install_mode_label()))
-  {
-    targetbook[ UmlItem::install_mode_label() ] = "$(BINIFLAGS)";
-  }
-}
+
 ///////////////////
 // Start the target entry.
 QString entry;
@@ -228,6 +187,8 @@ QString entry;
     const QByteArray stereotype_( current_art_->stereotype().data() );
     UmlItem::string_map currentbook;
     current_art_->in_scope( currentbook, false, log );
+    currentbook["name"] = current_art_->name();
+    currentbook["NAME"] = current_art_->name().toUpper();
     if( stereotype_ == UmlItem::library_stereotype() )
     {
       // For associated libraries, need to pass include, flags and ldflags to target
@@ -246,47 +207,161 @@ QString entry;
       append_if_present(UmlItem::flags_label(), currentbook, targetbook);
       if( need_object )
       {
-        currentbook["name"] = current_art_->name();
-        currentbook["NAME"] = current_art_->name().toUpper();
         build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object", currentbook);
-        targetbook["source"] += " " + current_art_->name() + "$(SUFOBJ)";
+        targetbook["source"] += this->style_->make_element( "dependency-object", currentbook, current_art_->name());
       }
       else
       {
-        targetbook["source"] += " " + current_art_->name() + "$(SUFSRC)";
+        targetbook["source"] += this->style_->make_element( "dependency-source", currentbook, current_art_->name());
       }
     }
     else if( stereotype_ == UmlItem::document_stereotype() )
     {
       // For "document" is "other" type and need to pass ldflags and create object
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
-      currentbook["name"] = current_art_->name();
-      currentbook["NAME"] = current_art_->name().toUpper();
       build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
-      targetbook["source"] += " " + current_art_->name() + "$(SUFOBJ)";
+      targetbook["source"] += this->style_->make_element( "dependency-object", currentbook, current_art_->name());
     }
   }
   ////////////////////
   // End of dependencies, create target
-  if( targetbook.end() != targetbook.find( UmlItem::other_label() ) 
-    && stereotype_label_ == UmlItem::library_stereotype() )
+  if( targetbook.end() != targetbook.find( UmlItem::other_label() )
+      && stereotype_label_ == UmlItem::library_stereotype() )
   {
     log.trace(base_log::debug, "- library is other type");
-    installable_ = false;
     eos << this->style_->make_element("target-other", targetbook);
+    if( ! targetbook.contains(UmlItem::install_label()) )
+    {
+      // Other targets are only installed if install property is set
+      return;
+    }
   }
   else
   {
     eos << this->style_->make_element("target", targetbook);
   }
-  if( installable_ )
+
+  // INSTALL
+  // The target's type, set to exe then change if library etc
+  log.trace(base_log::debug, "- target assumed executable");
+  if( targetbook.contains(UmlItem::install_label()) )
   {
-    log.trace(base_log::debug, "- adding install section");
-    eos << this->style_->make_element("target-install", targetbook);
+    log.trace(base_log::debug, "- target has install target property, do install regardless of type");
+    if(constants::no_install_value != targetbook[UmlItem::install_label()])
+    {
+      log.trace(base_log::debug, "- except target has install target property to not install");
+      return;
+    }
+    if( ! targetbook.contains(UmlItem::install_mode_label()) )
+    {
+      if ( stereotype_label_ == UmlItem::library_stereotype() )
+      {
+        if( this->style_->get_properties().contains( "library_install_mode" ) )
+        {
+          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["library_install_mode"];
+          // something like "$(LIBIFLAGS)";
+        }
+        else
+        {
+          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+          return;
+        }
+      }
+      else if ( stereotype_label_ == UmlItem::executable_stereotype() )
+      {
+        if( this->style_->get_properties().contains( "binary_install_mode" ) )
+        {
+          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["binary_install_mode"];
+          // something like "$(BINIFLAGS)";
+        }
+        else
+        {
+          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+          return;
+        }
+      }
+      else
+      {
+        if( this->style_->get_properties().contains( "other_install_mode" ) )
+        {
+          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["other_install_mode"];
+          // something like "$(FILEIFLAGS)";
+        }
+        else
+        {
+          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+          return;
+        }
+      }
+    }
   }
   else
   {
-    log.trace(base_log::debug, "- not installable");
+    // NO predefined install label
+    if ( stereotype_label_ == UmlItem::library_stereotype() )
+    {
+      UmlItem::string_map fullbook;
+      target->in_scope( fullbook, true, log );
+      auto itr = fullbook.find( UmlItem::lib_type_label() );
+      if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
+      {
+        // do not install static libraries without install property
+        return;
+      }
+      if( this->style_->get_properties().contains( "library_install_location" ) )
+      {
+        targetbook[ UmlItem::install_label() ] = this->style_->get_properties()["library_install_location"];
+        // something like "$(LIBDIR)";
+      }
+      else
+      {
+        log.trace(base_log::warn, "Install set up failed: unable to determine install location for target " + target_name_);
+        return;
+      }
+      if( ! targetbook.contains( UmlItem::install_mode_label() ) )
+      {
+        if( this->style_->get_properties().contains( "library_install_mode" ) )
+        {
+          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["library_install_mode"];
+        }
+        else
+        {
+          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+          return;
+        }
+      }
+    }
+    else if ( stereotype_label_ == UmlItem::executable_stereotype() )
+    {
+      if( this->style_->get_properties().contains( "binary_install_location" ) )
+      {
+        targetbook[ UmlItem::install_label() ] = this->style_->get_properties()["binary_install_location"];
+        // something like "$(BINDIR)";
+      }
+      else
+      {
+        log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+        return;
+      }
+      if( ! targetbook.contains( UmlItem::install_mode_label() ) )
+      {
+        if( this->style_->get_properties().contains( "binary_install_mode" ) )
+        {
+          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["binary_install_mode"];
+        }
+        else
+        {
+          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+          return;
+        }
+      }
+    }
+    else
+    {
+      return; // other types require specific install instructions
+    }
+    log.trace(base_log::debug, "- adding install section");
+    eos << this->style_->make_element("target-install", targetbook);
   }
 }
 if(! entry.isEmpty())

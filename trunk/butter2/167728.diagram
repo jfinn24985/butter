@@ -24,7 +24,7 @@ relationcanvas 128688 relation_ref 194608 // <directional composition>
   decenter_begin 117
   from ref 128048 z 3006 to point 216 59
   line 128816 z 3006 to point 217 236
-  line 128944 z 3006 stereotype "<<qvector>>" xyz 127 239.5 3006 to ref 128432
+  line 128944 z 3006 stereotype "<<qvector>>" xyz 127 239 3006 to ref 128432
   role_a_pos 121 216 3000 no_role_b
   multiplicity_a_pos 121 252 3000 no_multiplicity_b
 end

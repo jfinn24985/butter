@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 60
+  revision 61
   modified_by 48 "finnerty"
   // class settings
   
@@ -922,12 +922,14 @@ style properties before instantiating the template."
 
       operation 305200 "make_element"
 	const public explicit_return_type "unistr"
-	nparams 2
+	nparams 3
 	  param in name "tmpl" explicit_type "unistr"
 	  param in name "properties" type class_ref 220208 // map_type
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+	  param in name "alttext" explicit_type "unistr"
+	    defaultvalue "QString()"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}, const ${t1} & ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -938,8 +940,9 @@ style properties before instantiating the template."
 properties.  Returns an empty string if the template
 does not exist.
 
-\\param properties : map of replacement properties for the template
 \\param tmpl : the name of the template to use
+\\param properties : map of replacement properties for the template
+\\param alttext : text returned if no template exists
 
 * Using this method instead of directly accessing the templates is
 recommended as it combines the passed properties to the build
@@ -3966,6 +3969,61 @@ ${items}};
 	  comment "Indicate the beginning/end of an optional section. (Any text is used to match the corresponding end.)
 
 A phrase is omitted if none of the replacement texts inside the phrase have a match."
+	end
+
+	attribute 213808 "REPLACE_PREFIX"
+	  public type class_ref 206768 // entry_type
+	  init_value "9"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Indicate text to join to use as a prefix for the next replacement element"
+	end
+
+	attribute 213936 "REPLACE_SUFFIX"
+	  public type class_ref 206768 // entry_type
+	  init_value "10"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Indicate text to join to use as a suffix for the next replacement element"
+	end
+
+	attribute 214064 "REPLACE_SPLIT"
+	  public type class_ref 206768 // entry_type
+	  init_value "11"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Indicate that the next replacement element should be split in
+to a list using the given expression or space"
+	end
+
+	attribute 214192 "REPLACE_JOIN"
+	  public type class_ref 206768 // entry_type
+	  init_value "12"
+	  cpp_decl "  ${name}${value},${comment}"
+	  java_decl ""
+	  php_decl ""
+	  python_decl ""
+	  idl_decl ""
+	  mysql_decl ""
+	  MysqlColumn
+	  comment "Indicate that the next replacement element shoud be split in
+to a list (using space if no split statement) should be joined
+together with the given expression."
 	end
       end
 

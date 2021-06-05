@@ -287,13 +287,13 @@ else
 {
   return make_comment_text( p["date"] );
 }
-!!!305200.cpp!!!	make_element(in tmpl : unistr, in properties : build_style::map_type) : unistr
+!!!305200.cpp!!!	make_element(in tmpl : unistr, in properties : build_style::map_type, in alttext : unistr = QString()) : unistr
 auto itr = this->templates_.find( tmpl );
 if( itr != this->templates_.end() )
 {
   return itr.value().instantiate( this->extend_properties( properties ) );
 }
-return QString();
+return alttext;
 !!!304688.cpp!!!	make_preamble(in properties : build_style::map_type) : unistr
 auto itr = this->templates_.find( preamble_xmllabel() );
 if( itr != this->templates_.end() )
