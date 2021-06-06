@@ -67,7 +67,7 @@
            PATH{%(build-tool)s} %(build-arg)s &gt;&gt; build.log %(cmdsep)s
            PATH{%(make)s} -k VERBOSE=1 %(make-arg)s install &gt;&gt; build.log %(cmdsep)s
            %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
-       <property name="compile-command" if="build-style!=cmake" >/bin/bash -c "{ pushd PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/output} %(cmdsep)s
+       <property name="compile-command">/bin/bash -c "{ pushd PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/output} %(cmdsep)s
            { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
            %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
         <verb type="system" >%(compile-command)s</verb>
@@ -89,7 +89,7 @@
           <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
           <property name="location" >build.log</property>
 	        <property name="type" >search</property>
-	        <property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[d123]).*single_test.c</property>
+	        <property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[d123]).*single_test.[co]</property>
 	        <property name="search-regex" if="build-style=boost">(debug|release).*single_test\.</property>
         </verb>
         <property name="test-phrase">2.1.1 Single directory, single target compiled</property>
