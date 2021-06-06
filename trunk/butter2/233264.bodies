@@ -37,6 +37,7 @@ UmlArtifact * root_build_file = nullptr;
     projectbook["name"] = package_name_;
     projectbook["NAME"] = package_name_.toUpper();
     projectbook["root-dir"] = this->root_->base_path();
+    projectbook["path"] = ".";
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
     root_build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble_root(), projectbook);
   }
@@ -110,6 +111,14 @@ while( ! location_stack_.isEmpty() )
             targetbook["PACKAGE"] = package_name_.toUpper();
             targetbook["name"] = target_name_;
             targetbook["NAME"] = target_name_.toUpper();
+            if( top_ == this->root_->root() )
+            {
+              targetbook["path"] = ".";
+            }
+            else
+            {
+              targetbook["path"] = top_->full_path();
+            }
             if( stereotype_label_.contains( UmlItem::executable_stereotype() )
                 || stereotype_label_.contains( UmlItem::library_stereotype() ) )
             {
@@ -189,6 +198,7 @@ QString entry;
     current_art_->in_scope( currentbook, false, log );
     currentbook["name"] = current_art_->name();
     currentbook["NAME"] = current_art_->name().toUpper();
+    currentbook["path"] = this->find_path( current_art_ );
     if( stereotype_ == UmlItem::library_stereotype() )
     {
       // For associated libraries, need to pass include, flags and ldflags to target
@@ -683,3 +693,26 @@ if ( state_->empty() )
 
 !!!453040.cpp!!!	write_documents(inout log : base_log) : void
 butter::location_state::write_documents( *(this->root_), log );
+!!!459952.cpp!!!	find_path(inout art : UmlArtifact) : unistr
+UmlItem * t = art;
+for( ; t->parent() && t->kind() != aPackage ; t = t->parent() );
+   //empty loop
+BUTTER_ALWAYS(t, "No package parent of artifact.");
+for( auto * l : this->root_->topdown() )
+{
+  location_state * state = static_cast< location_state * >( l->value() );
+  // use static_cast as only interested in pointer comparison
+  if( state->packages().contains( static_cast< UmlPackage* >(t) ) )
+  {
+    if( l == this->root_->root() )
+    {
+      return QString(".");
+    }
+    else
+    {
+      return l->full_path();
+    }
+  }
+}
+BUTTER_ALWAYS(false, "package not found in location set.");
+return QString();

@@ -23,4 +23,8 @@
   
 <!ELEMENT replace EMPTY>
 <!ATTLIST replace
-  label CDATA #REQUIRED >
+  label CDATA #REQUIRED
+  join CDATA #IMPLIED
+  prefix CDATA #IMPLIED
+  split CDATA #IMPLIED
+  suffix CDATA #IMPLIED >

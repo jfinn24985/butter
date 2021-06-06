@@ -291,3 +291,89 @@ BOOST_CHECK( ! std::has_virtual_destructor< butter::text_template >::type{});
   QString t{ var.instantiate( m ) };
   BOOST_CHECK_EQUAL( "some text\navalue\nsome more text\nbvalue\n", t );
 }
+!!!459696.cpp!!!	text_template_instantiate_replace_attrib_match()
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "\nvalue\n";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACE_PREFIX, { "<" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some text<\nvalue\nsome more text", t );
+}
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "\nvalue\n";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACE_SUFFIX, { ">" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some text\nvalue\n>some more text", t );
+}
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "<two values>";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACE_JOIN, { "!" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some text<two!values>some more text", t );
+}
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  m["key"] = "<a!b!c!d>";
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACE_SPLIT, { "!" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some text<a b c d>some more text", t );
+}
+!!!459824.cpp!!!	text_template_instantiate_replace_attrib_nomatch()
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACE_PREFIX, { "<" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some textsome more text", t );
+}
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACE_SUFFIX, { ">" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some textsome more text", t );
+}
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACE_JOIN, { "!" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some textsome more text", t );
+}
+{
+  butter::text_template var;
+  butter::text_template::map_type m;
+  var.push_back( { butter::text_template::TEXT, { "some text" } } );
+  var.push_back( { butter::text_template::REPLACE_SPLIT, { "!" } } );
+  var.push_back( { butter::text_template::REPLACEMENT, { "key" } } );
+  var.push_back( { butter::text_template::TEXT, { "some more text" } } );
+  QString t{ var.instantiate( m ) };
+  BOOST_CHECK_EQUAL( "some textsome more text", t );
+}

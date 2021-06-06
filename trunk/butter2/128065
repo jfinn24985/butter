@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 61
+  revision 62
   modified_by 48 "finnerty"
   // class settings
   
@@ -4882,6 +4882,23 @@ ${inlines}
 	
 	
 	comment "Write build documents into the real filesystem."
+      end
+
+      operation 459952 "find_path"
+	public explicit_return_type "unistr"
+	nparams 1
+	  param inout name "art" type class_ref 8193 // UmlArtifact
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} * ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} * ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Search location set for the package that owns this artifact
+and return the location's path."
       end
     end
   end

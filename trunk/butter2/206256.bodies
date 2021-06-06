@@ -20,6 +20,23 @@ if(! this->sequence_.empty())
       {
         BUTTER_REQUIRE(xml.attributes().hasAttribute(label_xmlname()),
                        QString("Replacement XML element does not have required attribute at line %1").arg(xml.lineNumber()).toStdString() );
+        // Add attribute nodes before replace nodes
+        if(xml.attributes().hasAttribute("prefix"))
+        {
+          this->sequence_.push_back( { REPLACE_PREFIX, xml.attributes().value("prefix").toString() } );
+        }
+        if(xml.attributes().hasAttribute("suffix"))
+        {
+          this->sequence_.push_back( { REPLACE_SUFFIX, xml.attributes().value("suffix").toString() } );
+        }
+        if(xml.attributes().hasAttribute("join"))
+        {
+          this->sequence_.push_back( { REPLACE_JOIN, xml.attributes().value("join").toString() } );
+        }
+        if(xml.attributes().hasAttribute("split"))
+        {
+          this->sequence_.push_back( { REPLACE_SPLIT, xml.attributes().value("split").toString() } );
+        }
         this->sequence_.push_back( { REPLACEMENT, xml.attributes().value(label_xmlname()).toString() } );
         if(QXmlStreamReader::EndElement != xml.readNext())
         {
@@ -96,6 +113,8 @@ if(! this->sequence_.empty())
 {
   QVector< QString > phrases;
   QVector< QStringList > discard_phrase;
+  QString prefix, suffix, split, join;
+  bool has_split{ false }, has_join{ false }; // if split/join called with empty strings
   QTextOStream os(&result.back());
   for( const template_entry & entry : this->sequence_ )
   {
@@ -103,6 +122,20 @@ if(! this->sequence_.empty())
     {
     case entry_type::TEXT:
       os << entry.content_;
+      break;
+    case entry_type::REPLACE_PREFIX:
+      prefix = entry.content_;
+      break;
+    case entry_type::REPLACE_SUFFIX:
+      suffix = entry.content_;
+      break;
+    case entry_type::REPLACE_JOIN:
+      join = entry.content_;
+      has_join = true;
+      break;
+    case entry_type::REPLACE_SPLIT:
+      split = entry.content_;
+      has_split = true;
       break;
     case entry_type::REPLACEMENT:
     {
@@ -113,8 +146,17 @@ if(! this->sequence_.empty())
         {
           discard_phrase.back().push_back(entry.content_);
         }
-        os << itr.value();
+        QString value = itr.value();
+        if( has_split || has_join )
+        {
+          value = value.split( has_split ? split : " " ).join( has_join ? join : " " );
+        }
+        if( ! prefix.isEmpty() ) os << prefix;
+        os << value;
+        if( ! suffix.isEmpty() ) os << suffix;
       }
+      prefix.clear(); suffix.clear(); split.clear(); join.clear();
+      has_split = has_join = false;
     }
     break;
     case entry_type::PHRASE:

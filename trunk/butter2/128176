@@ -1,7 +1,7 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 26
-  modified_by 42 "finnerty"
+  revision 27
+  modified_by 48 "finnerty"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -1073,6 +1073,36 @@ ${body}
       end
 
       operation 134954 "text_template_instantiate_phrase_target_allmatch"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 459696 "text_template_instantiate_replace_attrib_match"
+	public explicit_return_type ""
+	nparams 0
+	
+	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
+{
+${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 459824 "text_template_instantiate_replace_attrib_nomatch"
 	public explicit_return_type ""
 	nparams 0
 	
