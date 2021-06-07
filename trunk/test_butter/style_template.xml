@@ -425,12 +425,11 @@ VARIANT ?= DEBUG ;
 #############################
 PREFIX = stage ;
 BINDIR = $(PREFIX)/bin ;
+LIBDIR = $(PREFIX)/lib64 ;
 DATADIR = $(PREFIX)/share ;
-DOCDIR = $(DATADIR)/doc ;
-HTMLDIR = $(DATADIR)/html ;
-INCDIR = $(PREFIX)/include ;
-LIBDIR = $(PREFIX)/bin ;
-MANDIR = $(DATADIR)/man1 ;
+BINIFLAGS = 0755 ;
+LIBIFLAGS = 0644 ;
+FILEIFLAGS = 0644 ;
 
 ######################################################
 ##
@@ -551,21 +550,37 @@ Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><re
  <template name="library">content</template>
  <template name="shared">content</template -->
 </style>
-<style label="bjam">
+<style label="boost">
 
  <file label="local.jam">#
 # local.jam
 #
+
+using gcc : : : &lt;cflags&gt;"-ansi -std=c11" ;
+# using msvc : : : &lt;cflags&gt;"/std:c11 /Za /DWIN32" ; # /Wall 
+
 # Set constants for installation paths
 import path ;
-path-constant INSTALL_PREFIX : installdir ;
+path-constant INSTALL_PREFIX : stage ;
 constant BINDIR : bin ; # User programs
 constant DATADIR : share ; # Private libraries and static data
-constant DOCDIR : [ path.join share doc ] ;
-constant HTMLDIR : [ path.join share html ] ;
-constant INCDIR : include ;
-constant LIBDIR : bin ; # Shared libraries
-constant MANDIR  : [ path.join share man1 ] ;
+constant LIBDIR : lib64 ; # Shared libraries
+constant BINIFLAGS : 0755 ;
+constant LIBIFLAGS : 0644 ;
+constant FILEIFLAGS : 0644 ;
+constant SUFSRC : .cc ;
+constant SUFHDR : .hh ;
+if $(UNIX)  {
+constant SUFOBJ : .o ; 
+constant SUFLIB : .a ; 
+constant SUFSHR : .so ;
+}
+else if $(NT)
+{
+constant SUFOBJ : .obj ; 
+constant SUFLIB : .lib ; 
+constant SUFSHR : .dll ;
+}
 </file>
  <!-- name of the top-most generated buildfile -->
  <property label="root-file">Jamroot</property>
@@ -573,11 +588,25 @@ constant MANDIR  : [ path.join share man1 ] ;
  <!-- name of build file in any sub-directories -->
  <property label="build-file">Jamfile</property>
  <!-- default for install flags -->
- <property label="target_install_location">$(BINDIR)</property>
- <property label="target_install_mode">$(BINIFLAGS)</property>
- <property label="start-phrase">## START:</property>
+ <property label="binary_install_location">$(BINDIR)</property>
+ <property label="binary_install_mode">$(BINIFLAGS)</property>
+ <property label="library_install_location">$(LIBDIR)</property>
+ <property label="library_install_mode">$(LIBIFLAGS)</property>
+ <property label="other_install_location">$(DATADIR)</property>
+ <property label="other_install_mode">$(FILEIFLAGS)</property>
+<property label="start-phrase">## START:</property>
  <property label="end-phrase">## END:</property>
 
+ <template label="dependency-source"><replace label="name"/>$(SUFSRC)</template>
+ <template label="dependency-object"><replace label="name"/>$(SUFOBJ)</template>
+ 
+ <!-- template for a target -->
+ <template label="target">
+exe <replace label="name"/> :
+                     <replace label="source"/>
+                     :
+                     ;
+</template>
   <!-- how to make comments -->
  <template label="comment">## <replace label="text"/></template>
 
@@ -589,13 +618,13 @@ constant MANDIR  : [ path.join share man1 ] ;
  <template label="extern-preamble"/>
 
  <!-- Actual content for external libraries -->
- <template label="extern-library"><replace label="NAME"/>FLAGS = <replace label="flags"/> ;
-<replace label="NAME"/>LDFLAGS = <replace label="ldflags"/> ;
-<replace label="NAME"/>INC = <replace label="include"/> ;
+ <template label="extern-library">constant <replace label="NAME"/>FLAGS : <replace label="flags"/> ;
+constant <replace label="NAME"/>LDFLAGS : <replace label="ldflags"/> ;
+constant <replace label="NAME"/>INC : <replace label="include"/> ;
 </template>
 
  <!-- how to include an additional buildfile -->
- <template label="include-buildfile">-include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
+ <template label="include-buildfile">-include $(topdir)/<replace label="build-file"/> ;
 </template>
 
  <!-- how to build an object file -->
@@ -610,55 +639,27 @@ Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXF
 
  <!-- template for start of (internal) package -->
  <template label="package">
-project <replace label="name"/>
+project <replace label="package"/>
   : requirements &lt;debug-symbols&gt;on:&lt;define&gt;"DEBUG=1"
-    &lt;debug-symbols&gt;off:&lt;define&gt;"Debug=0"<option label="requirements"><option label="SYSINCLUDE">includes "<replace label="includes"/>"
+    &lt;debug-symbols&gt;off:&lt;define&gt;"DEBUG=0"<option label="requirements"><option label="SYSINCLUDE">includes "<replace label="includes"/>"
 </option><option label="SYSCFLAGS">flags "<replace label="flags"/>"
-</option><option label="SYSLDFLAGS">linkflags "<replace label="package_ldflags"/>"
+</option><option label="SYSLDFLAGS">linkflags "<replace label="package_ldflags"/>"</option></option>
   : build-dir build ;
-</option></option>
 </template>
 
  <!-- template for start of root makefile -->
  <template label="preamble-root">
-path-constant topdir : . ;
-include local.jam
+path-constant topdir : <replace label="path"/> ;
+include local.jam ;
 </template>
 
  <!-- template for start of subdirectory makefiles -->
- <template label="preamble">
-
-</template>
-
- <!-- template for a target -->
- <template label="target">
-exe <replace label="name"/> :
-                     <replace label="source"/>
-                     :
-                     ;
-
-<!--
-C++FLAGS on $(HEREGRIST)<replace label="name"/>$(SUFEXE) = $(C++FLAGS) -I[ <replace label="include"/> ] <replace label="flags"/> ;
-LINKLIBS on $(HEREGRIST)<replace label="name"/>$(SUFEXE) = $(LINKLIBS) <replace label="ldflags"/> ;
-
-Main $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
-  $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
-
-<option label="libs">LinkLibraries $(HEREGRIST)<replace label="name"/>$(SUFEXE) :
-	 $(HEREGRIST)[ <replace label="libs"/> ]
-	; </option> -->
-</template>
-
- <!-- template for a target -->
- <template label="target-start"/>
+ <template label="preamble"></template>
 
  <!-- template for a target -->
  <template label="target-install">
-<option label="where">install install_<replace label="name"/> : <replace label="name"/> :
-  &lt;variant&gt;release:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/>
-  &lt;variant&gt;debug:&lt;location&gt;$(DEBUG_PREFIX)/<replace label="install"/> ;
-</option>
-</template>
+<option label="where" target="install">install $(INSTALL_PREFIX) : <replace label="name"/> : &lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
+</option></template>
  <!-- template name="buildfile">content</template>
  <template name="internal-project">content</template>
  <template name="external-project">content</template>

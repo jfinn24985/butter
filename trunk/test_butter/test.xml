@@ -28,7 +28,7 @@ Note that we make the following assumptions about the set up of the project:
 Single Directory, single target test cases
 
 -->
-<!-- --> <job src="job_single_test.xml">
+<!--  <job src="job_single_test.xml">
 
 default (make) build tool + debug + single directory and target
 
@@ -37,13 +37,13 @@ default (make) build tool + debug + single directory and target
     <property name="build-style" >make</property>
     <property name="patch-file" >make.patch</property>
     <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
-  </job> <!--  -->
+  </job>  -->
 <!--
 
 Single Directory, single target test cases
 
 -->
-<!-- -->
+<!-- 
   <job src="job_single_test.xml">
 
 jam build tool + debug + single directory and target
@@ -54,13 +54,13 @@ jam build tool + debug + single directory and target
     <property name="patch-file" >jam.patch</property>
     <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
   </job>
-  <!-- -->
+   -->
 <!--
 
 Single Directory, single target test cases
 
 -->
-<!--
+<!-- -->
   <job src="job_single_test.xml">
 
 boost build tool + debug + single directory and target
@@ -70,13 +70,13 @@ boost build tool + debug + single directory and target
     <property name="build-style" >boost</property>
     <property name="patch-file" >boost.patch</property>
     <property name="build-arg" >%(boost-arg)s</property>
-  </job> -->
+  </job> <!-- -->
 <!--
 
 Single Directory, single target test cases
 
 -->
-<!-- -->
+<!-- 
   <job src="job_single_test.xml">
 
 cmake build tool + release + single directory and target
@@ -87,5 +87,5 @@ cmake build tool + release + single directory and target
     <property name="patch-file" >cmake.patch</property>
     <property name="build-arg" >%(cmake-arg)s -DCMAKE_BUILD_TYPE=DEBUG</property>
   </job> 
- <!-- -->
+  -->
 </test-suite>
