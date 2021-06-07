@@ -72,6 +72,8 @@ while( ! location_stack_.isEmpty() )
     {
       build_file = root_state->add_uml_document(this->style_->get_build_file_name(), log);
       UmlItem::string_map packbook;
+      packbook["path"] = top_->full_path();
+      packbook["dir"] = top_->path();
       for( int i_ = 0; i_ < state->packages().count(); ++i_ )
       {
         state->packages().at(i_)->in_scope(packbook, false, log);
@@ -87,8 +89,10 @@ while( ! location_stack_.isEmpty() )
     {
       UmlItem::string_map packbook;
       I_->in_scope(packbook, false, log);
+      const QByteArray package_name_{ I_->name() };
       packbook["package"] = package_name_;
       packbook["PACKAGE"] = package_name_.toUpper();
+      packbook["path"] = top_->full_path();
       build_file->document(start_phrase, end_phrase)["package-" + I_->name()].value = this->style_->make_element("package", packbook);
     }
     for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
@@ -172,7 +176,7 @@ if( target->associatedArtifacts().isEmpty() )
 ///////////////////
 // Start the target entry.
 QString entry;
-{
+do {
   QTextOStream eos{ &entry };
 
   eos << this->style_->make_element("target-start", targetbook);
@@ -243,7 +247,7 @@ QString entry;
     if( ! targetbook.contains(UmlItem::install_label()) )
     {
       // Other targets are only installed if install property is set
-      return;
+      break;
     }
   }
   else
@@ -260,7 +264,7 @@ QString entry;
     if(constants::no_install_value != targetbook[UmlItem::install_label()])
     {
       log.trace(base_log::debug, "- except target has install target property to not install");
-      return;
+      break;
     }
     if( ! targetbook.contains(UmlItem::install_mode_label()) )
     {
@@ -274,7 +278,7 @@ QString entry;
         else
         {
           log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          return;
+          break;
         }
       }
       else if ( stereotype_label_ == UmlItem::executable_stereotype() )
@@ -287,7 +291,7 @@ QString entry;
         else
         {
           log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          return;
+          break;
         }
       }
       else
@@ -300,7 +304,7 @@ QString entry;
         else
         {
           log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          return;
+          break;
         }
       }
     }
@@ -316,7 +320,7 @@ QString entry;
       if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
       {
         // do not install static libraries without install property
-        return;
+        break;
       }
       if( this->style_->get_properties().contains( "library_install_location" ) )
       {
@@ -326,7 +330,7 @@ QString entry;
       else
       {
         log.trace(base_log::warn, "Install set up failed: unable to determine install location for target " + target_name_);
-        return;
+        break;
       }
       if( ! targetbook.contains( UmlItem::install_mode_label() ) )
       {
@@ -337,7 +341,7 @@ QString entry;
         else
         {
           log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          return;
+          break;
         }
       }
     }
@@ -351,7 +355,7 @@ QString entry;
       else
       {
         log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-        return;
+        break;
       }
       if( ! targetbook.contains( UmlItem::install_mode_label() ) )
       {
@@ -362,18 +366,18 @@ QString entry;
         else
         {
           log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          return;
+          break;
         }
       }
     }
     else
     {
-      return; // other types require specific install instructions
+      break; // other types require specific install instructions
     }
     log.trace(base_log::debug, "- adding install section");
     eos << this->style_->make_element("target-install", targetbook);
   }
-}
+} while(false);
 if(! entry.isEmpty())
 {
   std::swap(build_file->document(start_phrase, end_phrase)[target_name_].value, entry);
