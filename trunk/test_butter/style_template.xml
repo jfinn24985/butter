@@ -498,11 +498,9 @@ Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXF
  <!-- template for start of (internal) package -->
  <template label="package">
 # Package data
-<option label="SYSINCLUDE">SYSINCLUDE on <replace label="path"/> = <replace label="package_includes"/>
-</option><option label="SYSCFLAGS">SYSCFLAGS on <replace label="path"/> = <replace label="package_cflags"/>
-</option><option label="SYSCXXFLAGS">SYSCXXFLAGS on <replace label="path"/> = <replace label="package_c++flags"/>
-</option><option label="SYSFFLAGS">SYSFFLAGS on <replace label="path"/> = <replace label="package_fflags"/>
-</option><option label="SYSLDFLAGS">SYSLDFLAGS on <replace label="path"/> = <replace label="package_ldflags"/>
+<option label="SYSINCLUDE" target="includes">SYSINCLUDE on <replace label="path"/> = <replace label="includes"/> ;
+</option><option label="SYSCFLAGS" target="flags">SYSCXXFLAGS on <replace label="path"/> = <replace label="flags"/> ;
+</option><option label="SYSLDFLAGS" target="ldflags">SYSLDFLAGS on <replace label="path"/> = <replace label="ldflags"/> ;
 </option>
 </template>
 
