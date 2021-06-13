@@ -1,4 +1,4 @@
-<?xml version = '1.0'?>
+﻿<?xml version = '1.0'?>
 <test-suite src="test_unix.xml">
 Test suite for &quot;butter&quot; project on UNIX like operating systems.
  
@@ -31,23 +31,23 @@ Single Directory, single target test cases
  
   <job src="job_single_test.xml">
 
-default (jam) build tool + debug + single directory and target
+default (make) build tool + debug + single directory and target
 
     <property name="project" >single_test</property>
-    <property name="build-tool" >%(jam)s</property>
+    <property name="build-tool" >%(make)s</property>
     <property name="build-style" >standard</property>
     <property name="patch-file" >default.patch</property>
-    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
   </job>
   <job src="job_single_test.xml">
 
-default (jam) build tool + release + single directory and target
+default (make) build tool + release + single directory and target
 
     <property name="project" >single_test</property>
-    <property name="build-tool" >%(jam)s</property>
+    <property name="build-tool" >%(make)s</property>
     <property name="build-style" >standard</property>
     <property name="patch-file" >default.patch</property>
-    <property name="build-arg" > %(jam-arg)s -sVARIANT=RELEASE install</property>
+    <property name="build-arg" > %(make-arg)s VARIANT=RELEASE install</property>
   </job>
 
    <job src="job_single_test.xml">
@@ -56,7 +56,7 @@ jam build tool + debug + single directory and target
 
     <property name="project" >single_test</property>
     <property name="build-tool" >%(jam)s</property>
-    <property name="build-style" >standard</property>
+    <property name="build-style" >jam</property>
     <property name="patch-file" >jam.patch</property>
     <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
   </job>
@@ -67,7 +67,7 @@ jam build tool + release + single directory and target
 
     <property name="project" >single_test</property>
     <property name="build-tool" >%(jam)s</property>
-    <property name="build-style" >standard</property>
+    <property name="build-style" >jam</property>
     <property name="patch-file" >jam.patch</property>
     <property name="build-arg" > %(jam-arg)s -sVARIANT=RELEASE install</property>
   </job>

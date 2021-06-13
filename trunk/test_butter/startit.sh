@@ -9,5 +9,8 @@ for dir_ in . /tmp/test_suite ; do
   fi
 done
 DATESTAMP=`date +%m%d%H%M`
+if [ "X--file" = "X$1" ] ; then
+python ${SCRIPT} $* > out${DATESTAMP}$$.html
+else
 python ${SCRIPT} --file test.xml $* > out${DATESTAMP}$$.html
-
+fi
