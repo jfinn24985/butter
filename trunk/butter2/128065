@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 65
+  revision 66
   modified_by 48 "finnerty"
   // class settings
   
@@ -4378,6 +4378,24 @@ ${inlines}
 	
 	
 	comment "The name of the default style (make) if not style property found
+"
+      end
+
+      operation 466480 "standard_style_value"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"standard\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "A style value indicating the user wants the default style (currently \"make\")
 "
       end
 

@@ -2,11 +2,11 @@ format 224
 
 classcanvas 128048 class_ref 220080 // build_style
   classdiagramsettings member_max_width 0 end
-  xyz 85 50.2 2000
+  xyz 85 50.4 2000
 end
 classcanvas 128176 class_ref 206256 // text_template
   classdiagramsettings member_max_width 0 end
-  xyz 368.2 133.8 2000
+  xyz 368.1 133.8 2000
 end
 classcanvas 129072 class_ref 226736 // build_style_test
   classdiagramsettings member_max_width 0 end

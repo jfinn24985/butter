@@ -491,6 +491,11 @@ project->in_scope(project_addrbook, true, log);
     log.trace( base_log::info, "Using default style" );
     style_ = default_style_value();
   }
+  else if ( standard_style_value() == style_ )
+  {
+    log.trace( base_log::info, "Using default style" );
+    style_ = default_style_value();
+  }
   log.trace( base_log::info, "Style: " + style_ );
   if ( ! project->propertyValue( "butter " + UmlItem::style_path_label(), xml_filename_ ) )
   {
