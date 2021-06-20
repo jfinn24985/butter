@@ -204,6 +204,8 @@ do {
     current_art_->in_scope( currentbook, false, log );
     currentbook["name"] = current_art_->name();
     currentbook["NAME"] = current_art_->name().toUpper();
+    currentbook["project"] = current_art_->package()->name();
+    currentbook["PROJECT"] = current_art_->package()->name().toUpper();
     currentbook["path"] = this->find_path( current_art_ );
     if( stereotype_ == UmlItem::library_stereotype() )
     {

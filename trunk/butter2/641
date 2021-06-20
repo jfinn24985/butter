@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 119
+  revision 120
   modified_by 48 "finnerty"
   // class settings
   
@@ -1843,6 +1843,23 @@ ${body}}
 	
 	
 	comment "Print debugging information about  the item."
+      end
+
+      operation 473008 "package"
+	public return_type class_ref 8833 // UmlItem
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} * ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} * ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Get the first UmlPackage from here to root package
+
+(will return current object it it is a UmlPackage)"
       end
     end
 

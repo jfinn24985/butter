@@ -184,3 +184,12 @@ if (DEBUG)
     os << indent_ << title_lbl_ << "End Properties\n";
   }
 }
+!!!473008.cpp!!!	package() : UmlItem
+UmlItem * result ;
+for( result = this;
+  result != nullptr && result->kind() != aPackage;
+  result = result->parent() ) /* empty loop */ ;
+if( nullptr == result ) {
+  throw std::runtime_error("Malformed UML Item without root Package.");
+}
+return result;

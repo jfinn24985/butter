@@ -315,6 +315,21 @@ install:: <replace label="name"/>$(SUFEXE)
 
 -->
 <style label="cmake">
+<!---
+
+
+
+
+
+ JAM STYLE
+
+
+
+
+
+
+
+-->
  <file label="local.cmake">#
 # local.cmake
 #
@@ -374,9 +389,9 @@ set (FILEIFLAGS 0644)
  <template label="extern-preamble"/>
 
  <!-- Actual content for external libraries -->
- <template label="extern-library"><replace label="NAME"/>FLAGS:=<replace label="flags"/>
-<replace label="NAME"/>LDFLAGS:=<replace label="ldflags"/>
-<replace label="NAME"/>INC:=<replace label="include"/>
+ <template label="extern-library">set (<replace label="NAME"/>FLAGS <replace label="flags"/>)
+set (<replace label="NAME"/>LDFLAGS <replace label="ldflags"/>)
+set (<replace label="NAME"/>INC <replace label="include"/>)
 </template>
 
  <!-- how to include an additional buildfile -->
@@ -384,9 +399,9 @@ set (FILEIFLAGS 0644)
 </template>
 
  <!-- how to build an object file -->
- <template label="object">
-<replace label="name"/>.$(SUFOBJ):: <option label="flags">CXXFLAGS:=${CXXFLAGS} <replace label="flags"/></option>\
-                                    <option label="inc">CXXFLAGS:=${CXXFLAGS} $(patsubst %,-I%,<replace label="include"/>)</option>
+ <template label="object"><option label="flags" target="flags">
+ set_property( SOURCE <replace label="name"/>.${SUFSRC} PROPERTY APPEND CMAKE_C++_FLAGS <replace label="flags"/> )</option><option label="include" target="include">
+ set_property( SOURCE <replace label="name"/>.${SUFSRC} PROPERTY APPEND INCLUDE_DIRECTORIES <replace label="include"/>)</option>
 </template>
 
  <!-- Other target type -->
@@ -581,8 +596,11 @@ ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
 </template>
 
 
- <template label="dependency-source"><replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSRC)</template>
- <template label="dependency-object"><replace label="name"/>$(SUFOBJ)</template>
+ <template label="dependency-source"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSRC)</template>
+ <template label="dependency-object"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFOBJ)</template>
+ <template label="dependency-static-library"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB)</template>
+ <template label="link-shared-library"> -l<replace label="name"/></template>
+ <template label="dependency-shared-library"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR)</template>
  
  <!-- how to include an additional buildfile -->
  <template label="include-buildfile">-include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
@@ -609,6 +627,8 @@ Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXF
 
  <!-- template for start of root makefile -->
  <template label="preamble-root">
+<option label="sufsrc">SUFSRC = .<replace label="source-extension"/> ;</option>
+<option label="sufhdr">SUFHDR = .<replace label="header-extension"/> ;</option>
 <option label="root-dir">BUILDDIR = <replace label="root-dir"/> ;</option>
 SubDir TOP ;
 </template>
@@ -619,6 +639,34 @@ ALL_LOCAL_TARGET = $(BASE_LOCAL_TARGET)<replace label="path"/> ;
 SubDir TOP <replace label="path" split="/" join =" " /> ;
 </template>
 
+ <!-- template for a target static library-->
+ <template label="target-library"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
+     <replace label="source"/> ;
+<option label="include" target="include">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) =
+     $(C++FLAGS) <replace label="include" split=" " join=" -I"/> ;
+</option><option label="flags" target="flags">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) = 
+     $(C++FLAGS) <replace label="flags"/> ;
+</option>
+Library <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) :
+  $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
+</template>
+	
+ <!-- template for a target -->
+ <template label="target-dso"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
+     <replace label="source"/> ;
+<option label="include" target="include">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) =
+     $(C++FLAGS) <replace label="include" split=" " join=" -I"/> ;
+</option><option label="flags" target="flags">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
+     $(C++FLAGS) <replace label="flags"/> ;
+</option><option label="libs" target="ldflags"> LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
+  $(LINKLIBS) <replace label="ldflags"/> ;
+</option>
+Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) :
+  $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
+<option label="libs" target="libs">LinkLibraries <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) :
+	 <replace label="libs"/>
+	; </option></template>
+	
  <!-- template for a target -->
  <template label="target"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
      <replace label="source"/> ;
@@ -631,8 +679,8 @@ SubDir TOP <replace label="path" split="/" join =" " /> ;
 </option>
 Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) :
   $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
-<option label="libs" target="libs">LinkLibraries <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) :
-	 <replace label="libs"/>
+<option label="libs" target="dependency">LinkLibraries <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) :
+	 <replace label="dependency"/>
 	; </option></template>
 
  <!-- template for a target -->
@@ -651,6 +699,21 @@ Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><re
  <template name="library">content</template>
  <template name="shared">content</template -->
 </style>
+<!---
+
+
+
+
+
+ BOOST JAM STYLE
+
+
+
+
+
+
+
+-->
 <style label="boost">
 
  <file label="local.jam">#
@@ -669,8 +732,13 @@ constant LIBDIR : lib64 ; # Shared libraries
 constant BINIFLAGS : 0755 ;
 constant LIBIFLAGS : 0644 ;
 constant FILEIFLAGS : 0644 ;
+if ! $(SUFSRC) {
 constant SUFSRC : .cc ;
+}
+if ! $(SUFHDR)
+{
 constant SUFHDR : .hh ;
+}
 if $(UNIX)  {
 constant SUFOBJ : .o ; 
 constant SUFLIB : .a ; 
@@ -700,11 +768,30 @@ constant SUFSHR : .dll ;
 
  <template label="dependency-source"><replace label="name"/>$(SUFSRC)</template>
  <template label="dependency-object"><replace label="name"/>$(SUFOBJ)</template>
- 
- <!-- template for a target -->
+ <template label="dependency-static-library"> <option label="path">/<replace label="project"/>//</option><replace label="name"/></template>
+ <template label="link-shared-library"> -l<replace label="name"/></template>
+ <template label="dependency-shared-library"> <option label="path">/<replace label="project"/>//</option><replace label="name"/></template>
+  
+ <!-- template for a static library target -->
+ <template label="target-library">
+lib <replace label="name"/> :
+                     <replace label="source"/>
+                     : &lt;link&gt;static
+                     ;
+</template>
+
+ <!-- template for a shared library target -->
+ <template label="target-dso">
+lib <replace label="name"/> :
+                     <replace label="source"/>
+                     : &lt;link&gt;static
+                     ;
+</template> 
+
+ <!-- template for a executable target -->
  <template label="target">
 exe <replace label="name"/> :
-                     <replace label="source"/>
+                     <replace label="source"/> <replace label="dependency"/>
                      :
                      ;
 </template>
@@ -731,8 +818,9 @@ constant <replace label="NAME"/>INC : <replace label="include"/> ;
  <!-- how to build an object file -->
  <template label="object">
 <option label="flags">C++FLAGS on :=$(CXXFLAGS) <replace label="flags"/></option>
-Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option>\
-                                    <option label="inc">CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>)</option>
+Object <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC) 
+            : <option label="flags">&lt;CXXFLAGS&gt;"<replace label="flags"/>"</option><option label="inc">&lt;includes&gt;"<replace label="include"/>"</option>
+            ;
 </template>
 
  <!-- Other target type -->
@@ -750,6 +838,8 @@ project <replace label="package"/>
 
  <!-- template for start of root makefile -->
  <template label="preamble-root">
+<option label="sufsrc">constant SUFSRC : .<replace label="source-extension"/> ;</option>
+<option label="sufhdr">constant SUFHDR : .<replace label="header-extension"/> ;</option>
 path-constant topdir : <replace label="path"/> ;
 include local.jam ;
 </template>
