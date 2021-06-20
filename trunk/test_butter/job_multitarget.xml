@@ -70,8 +70,8 @@
           <property name="test-phrase">2.1.1 Compiled executable</property>
         </verb>
          <verb type="file-list" >
-          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output/%(stage-bin-dir)s</property>
-          <property name="file-type" >executable</property>
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output/</property>
+          <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(library-name)s</property>
           <property name="test-phrase">2.1.1 Compiled executable</property>
@@ -82,7 +82,7 @@
          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
       <verb-list category="execute" >Run &quot;program&quot;
 	      <verb type="system">/bin/bash -c "{ pushd PATH{%(base)s} %(cmdsep)s
-	          PATH{%(stage-bin-dir)s/test%(exe-suf)s} &gt; output %(cmdsep)s popd %(cmdsep)s }" </verb>
+	          PATH{%(stage-bin-dir)s/program%(exe-suf)s} lorem.txt &gt; output %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
         <verb type="file-list" >

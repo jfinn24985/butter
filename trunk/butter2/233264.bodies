@@ -38,6 +38,8 @@ UmlArtifact * root_build_file = nullptr;
     projectbook["NAME"] = package_name_.toUpper();
     projectbook["root-dir"] = this->root_->base_path();
     projectbook["path"] = ".";
+    projectbook["source-extension"] = CppSettings::sourceExtension();
+    projectbook["header-extension"] = CppSettings::headerExtension();
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
     root_build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble_root(), projectbook);
   }
@@ -215,11 +217,14 @@ do {
       if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
       {
         // Default library type is a static library
-        targetbook[UmlItem::ldflags_label()] += this->style_->make_element("dependency-static-library", currentbook, current_art_->name());
+        QString lib{ this->style_->make_element("dependency-static-library", currentbook, current_art_->name()) };
+        targetbook[UmlItem::ldflags_label()] += lib;
+        targetbook["dependency"] += lib;
       }
       else
       {
-        targetbook[UmlItem::ldflags_label()] += this->style_->make_element("dependency-shared-library", currentbook, current_art_->name());
+        targetbook[UmlItem::ldflags_label()] += this->style_->make_element("link-shared-library", currentbook, current_art_->name());
+        targetbook["dependency"] += this->style_->make_element("dependency-shared-library", currentbook, current_art_->name());
       }
     }
     else if( stereotype_ == UmlItem::source_stereotype() )

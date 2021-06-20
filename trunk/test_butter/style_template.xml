@@ -12,7 +12,7 @@ M_GCC_MK:=1
 ## Define compiler variables once only.
 ## 
 CXX?=g++
-STDCXXFLAGS:=-Wall -std=c++98
+STDCXXFLAGS:=-Wall -std=c++11
 STDDEBUGFLAGS:=-O0 -DDEBUG=1 -Weffc++
 STDOPTFLAGS:=-O2 -march=native -DDEBUG=0
 STDLDFLAGS:=
@@ -86,7 +86,7 @@ VARIANTFLAGS=$(STDOPTFLAGS)
 endif
 
 CXXFLAGS=$(VARIANTFLAGS) $(STDCXXFLAGS) $(DEFINES)
-LDFLAGS=$(VARIANTFLAGS) $(STDLDFLAGS)
+LDFLAGS=$(STDLDFLAGS)
 
 ###################################
 ## Dependency and other Build rules
@@ -198,16 +198,16 @@ VARIANT ?= DEBUG
 
  <!-- template for start of (internal) package -->
  <template label="package">
-<option label="SYSINCLUDE">export SYSINCLUDE:= <replace label="package_includes"/>
-</option><option label="SYSCFLAGS">export SYSCFLAGS:= <replace label="package_cflags"/>
-</option><option label="SYSCXXFLAGS">export SYSCXXFLAGS:= <replace label="package_c++flags"/>
-</option><option label="SYSFFLAGS">export SYSFFLAGS:= <replace label="package_fflags"/>
-</option><option label="SYSLDFLAGS">export SYSLDFLAGS:= <replace label="package_ldflags"/>
+<option label="SYSINCLUDE">export SYSINCLUDE:= <replace label="includes"/>
+</option><option label="SYSCFLAGS">export SYSCFLAGS:= <replace label="flags"/>
+</option><option label="SYSLDFLAGS">export SYSLDFLAGS:= <replace label="ldflags"/>
 </option>
 </template>
 
  <!-- template for start of root makefile -->
  <template label="preamble-root"><option label="root-dir">export ROOTDIR:=<replace label="root-dir"/></option>
+<option label="sufsrc">export SUFSRC:=.<replace label="source-extension"/></option>
+<option label="sufhdr">export SUFHDR:=.<replace label="header-extension"/></option>
 include $(ROOTDIR)/system.mk
 </template>
 
@@ -239,7 +239,7 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFLIB)  $(<replace lab
  <!-- template for a target DLL/shared library -->
  <template label="target-dso">
 <replace label="NAME"/>SRC:=<replace label="source"/>
-<replace label="NAME"/>CXXFLAGS:=-fPIC $(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>) <replace label="flags"/>
+<replace label="NAME"/>CXXFLAGS:=$(STDSHRFLAGS) $(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>) <replace label="flags"/>
 <replace label="NAME"/>LDFLAGS:=$(LDFLAGS) <replace label="ldflags"/>
 <replace label="NAME"/>DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFDEP)))
 include $(<replace label="NAME"/>DINC)
@@ -267,7 +267,7 @@ include $(<replace label="NAME"/>DINC)
 CLEAN_TEMP:= $(CLEAN_TEMP) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>DINC)
 
 <replace label="name"/>$(SUFEXE) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
-<replace label="name"/>$(SUFEXE) :: $(<replace label="NAME"/>OBJ) | $(<replace label="NAME"/>DINC) 
+<replace label="name"/>$(SUFEXE) :: $(<replace label="NAME"/>OBJ) <option label="depends"><replace label="dependency"/></option> | $(<replace label="NAME"/>DINC) 
 	$(CXX) $(CXXFLAGS) -o <replace label="name"/>$(SUFEXE) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>LDFLAGS)
 
 all :: <replace label="name"/>$(SUFEXE) 
@@ -279,7 +279,8 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFEXE)
  <template label="dependency-source"> <replace label="name"/>$(SUFSRC)</template>
  <template label="dependency-object"> <replace label="name"/>$(SUFOBJ)</template>
  <template label="dependency-static-library"> <replace label="name"/>${SUFLIB}</template>
- <template label="dependency-shared-library"> -l<replace label="name"/></template>
+ <template label="link-shared-library"> <replace label="name"/></template>
+ <template label="dependency-shared-library"> <replace label="name"/>$(SUFSHR)</template>
 <!-- template for a target -->
  <template label="target-start"/>
 
