@@ -209,6 +209,18 @@ do {
       append_if_present(UmlItem::include_label(), currentbook, targetbook);
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
       append_if_present(UmlItem::flags_label(), currentbook, targetbook);
+      UmlItem::string_map fullbook;
+      current_art_->in_scope( fullbook, true, log );
+      auto itr = fullbook.find( UmlItem::lib_type_label() );
+      if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
+      {
+        // Default library type is a static library
+        targetbook[UmlItem::ldflags_label()] += this->style_->make_element("dependency-static-library", currentbook, current_art_->name());
+      }
+      else
+      {
+        targetbook[UmlItem::ldflags_label()] += this->style_->make_element("dependency-shared-library", currentbook, current_art_->name());
+      }
     }
     else if( stereotype_ == UmlItem::source_stereotype() )
     {
@@ -239,15 +251,37 @@ do {
   }
   ////////////////////
   // End of dependencies, create target
-  if( targetbook.end() != targetbook.find( UmlItem::other_label() )
-      && stereotype_label_ == UmlItem::library_stereotype() )
+  if( stereotype_label_ == UmlItem::library_stereotype() )
   {
-    log.trace(base_log::debug, "- library is other type");
-    eos << this->style_->make_element("target-other", targetbook);
-    if( ! targetbook.contains(UmlItem::install_label()) )
+    if ( targetbook.end() != targetbook.find( UmlItem::other_label() ) )
     {
-      // Other targets are only installed if install property is set
-      break;
+      log.trace(base_log::debug, "- library is other type");
+      eos << this->style_->make_element("target-other", targetbook);
+      if( ! targetbook.contains(UmlItem::install_label()) )
+      {
+        // Other targets are only installed if install property is set
+        break;
+      }
+    }
+    else
+    {
+      UmlItem::string_map fullbook;
+      target->in_scope( fullbook, true, log );
+      auto itr = fullbook.find( UmlItem::lib_type_label() );
+      if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
+      {
+        // Default library type is a static library
+        eos << this->style_->make_element("target-library", targetbook);
+        if( ! targetbook.contains(UmlItem::install_label()) )
+        {
+          // static libraries are only installed if install property is set
+          break;
+        }
+      }
+      else
+      {
+        eos << this->style_->make_element("target-dso", targetbook);
+      }
     }
   }
   else

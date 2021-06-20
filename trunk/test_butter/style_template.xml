@@ -58,10 +58,10 @@ FILEIFLAGS:=-m 644
 ## OS SPECIFIC STUFF
 ####################
 
-SUFSRC:=.cc
-SUFHDR:=.hh
-SUFDEP:=.dep
-SUFMAK:=.mk
+SUFSRC?=.cc
+SUFHDR?=.hh
+SUFDEP?=.dep
+SUFMAK?=.mk
 
 # Assume unix-like 
 SUFOBJ:=.o
@@ -92,11 +92,21 @@ LDFLAGS=$(VARIANTFLAGS) $(STDLDFLAGS)
 ## Dependency and other Build rules
 ###################################
 
-%$(SUFDEP): %$(SUFSRC)
+%$(SUFDEP): %.cc
+	set -e; $(CXX) -MM $(CXXFLAGS) $&lt; \
+	| sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+	[ -s $@ ] || rm -f $@
+	
+%$(SUFDEP): %.cpp
 	set -e; $(CXX) -MM $(CXXFLAGS) $&lt; \
 	| sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
 	[ -s $@ ] || rm -f $@
 
+%$(SUFDEP): $(SUFSRC)
+	set -e; $(CXX) -MM $(CXXFLAGS) $&lt; \
+	| sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+	[ -s $@ ] || rm -f $@
+	
 %$(SUFOBJ): %$(SUFSRC)
 	$(CXX) $(CXXFLAGS) -c -o $@ $&lt;
 
@@ -206,6 +216,45 @@ include $(ROOTDIR)/system.mk
 include $(ROOTDIR)/system.mk
 </template>
 
+ <!-- template for a target static library -->
+ <template label="target-library">
+<replace label="NAME"/>SRC:=<replace label="source"/>
+<replace label="NAME"/>CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>) <replace label="flags"/>
+<option label="ldflags" target="ldflags"><replace label="NAME"/>LDFLAGS:= <replace label="ldflags"/>
+</option><replace label="NAME"/>DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFDEP)))
+include $(<replace label="NAME"/>DINC)
+
+<replace label="NAME"/>OBJ:=$(filter %$(SUFOBJ), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFOBJ)))
+CLEAN_TEMP:= $(CLEAN_TEMP) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>DINC)
+
+<replace label="name"/>$(SUFLIB) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
+<replace label="name"/>$(SUFLIB) :: $(<replace label="NAME"/>OBJ) | $(<replace label="NAME"/>DINC) 
+	$(AR) $(ARFLAGS) -o <replace label="name"/>$(SUFLIB) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>LDFLAGS)
+
+all :: <replace label="name"/>$(SUFLIB)
+
+CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFLIB)  $(<replace label="NAME"/>DINC)
+</template>
+
+ <!-- template for a target DLL/shared library -->
+ <template label="target-dso">
+<replace label="NAME"/>SRC:=<replace label="source"/>
+<replace label="NAME"/>CXXFLAGS:=-fPIC $(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>) <replace label="flags"/>
+<replace label="NAME"/>LDFLAGS:=$(LDFLAGS) <replace label="ldflags"/>
+<replace label="NAME"/>DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFDEP)))
+include $(<replace label="NAME"/>DINC)
+
+<replace label="NAME"/>OBJ:=$(filter %$(SUFOBJ), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFOBJ)))
+CLEAN_TEMP:= $(CLEAN_TEMP) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>DINC)
+
+<replace label="name"/>$(SUFSHR) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
+<replace label="name"/>$(SUFSHR) :: $(<replace label="NAME"/>OBJ) | $(<replace label="NAME"/>DINC) 
+	$(CXX) $(CXXFLAGS) -shared -o <replace label="name"/>$(SUFSHR) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>LDFLAGS)
+
+all :: <replace label="name"/>$(SUFSHR) 
+
+CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFSHR)
+</template>
  <!-- template for a target -->
  <template label="target">
 <replace label="NAME"/>SRC:=<replace label="source"/>
@@ -215,20 +264,22 @@ include $(ROOTDIR)/system.mk
 include $(<replace label="NAME"/>DINC)
 
 <replace label="NAME"/>OBJ:=$(filter %$(SUFOBJ), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFOBJ)))
-CLEAN_TEMP:= $(CLEAN_TEMP) $(<replace label="NAME"/>OBJ)
+CLEAN_TEMP:= $(CLEAN_TEMP) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>DINC)
 
 <replace label="name"/>$(SUFEXE) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
 <replace label="name"/>$(SUFEXE) :: $(<replace label="NAME"/>OBJ) | $(<replace label="NAME"/>DINC) 
 	$(CXX) $(CXXFLAGS) -o <replace label="name"/>$(SUFEXE) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>LDFLAGS)
 
-all :: <replace label="name"/>$(SUFEXE)
+all :: <replace label="name"/>$(SUFEXE) 
 
 CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFEXE)
 </template>
 
  <!-- template for a target source -->
- <template label="dependency-source"><replace label="name"/>$(SUFSRC)</template>
- <template label="dependency-object"><replace label="name"/>$(SUFOBJ)</template>
+ <template label="dependency-source"> <replace label="name"/>$(SUFSRC)</template>
+ <template label="dependency-object"> <replace label="name"/>$(SUFOBJ)</template>
+ <template label="dependency-static-library"> <replace label="name"/>${SUFLIB}</template>
+ <template label="dependency-shared-library"> -l<replace label="name"/></template>
 <!-- template for a target -->
  <template label="target-start"/>
 

@@ -135,14 +135,14 @@ Multiple target test cases
 
   <job src="job_multitarget.xml">
 
-default (jam) build tool + debug + single directory, multiple target
+default (make) build tool + debug + single directory, multiple target
 
     <property name="project" >multitarget</property>
-    <property name="build-tool" >%(jam)s</property>
+    <property name="build-tool" >%(make)s</property>
     <property name="build-style" >standard</property>
     <property name="patch-file" >default.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
-    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
     <property name="build-dir" >DEBUG</property>
   </job>
 
