@@ -120,7 +120,8 @@ boost build tool + release + single directory and target
 
 cmake build tool + release + single directory and target
 
-    <property name="project" >single_test</property>
+     <property name="build-dir" >build</property>
+        <property name="project" >single_test</property>
     <property name="build-tool" >%(cmake)s</property>
     <property name="build-style" >cmake</property>
     <property name="patch-file" >cmake.patch</property>
@@ -186,13 +187,14 @@ make build tool + debug + single directory, multiple target
 
 cmake build tool + debug + single directory, multiple target + build subdirectory
 
+    <property name="build-dir" >build</property>
     <property name="project" >multitarget</property>
     <property name="build-tool" >%(cmake)s</property>
     <property name="build-style" >cmake</property>
     <property name="patch-file" >cmake.patch</property>
-    <property name="library-name" >library%(ark-suf)s</property>
-    <property name="build-arg" >-E make_directory %(build-dir)s %(cmdsep)s cd %(build-dir)s %(cmdsep)s %(cmake)s .. %(cmake-arg)s -DCMAKE_BUILD_TYPE=Debug %(cmdsep)s %(make)s -k %(make-arg)s install</property>
-  </job>
+    <property name="library-name" >liblibrary%(ark-suf)s</property>
+    <property name="build-arg" >. %(cmake-arg)s -DCMAKE_BUILD_TYPE=DEBUG %(cmdsep)s %(make)s -k %(make-arg)s install</property>
+</job>
 
 <!--
 
