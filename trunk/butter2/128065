@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 67
+  revision 69
   modified_by 48 "finnerty"
   // class settings
   
@@ -3170,7 +3170,8 @@ non-absolute paths will be relative to this location.
 	nparams 0
 	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
 "
 	
 	
@@ -3558,6 +3559,7 @@ calculating the correct path is non-trivial and requires information outside the
 package class (although accessible from there).  By putting the method here
 we can pass the path information from the location objects to each package."
       end
+
     end
 
     class 252848 "log"
@@ -5120,6 +5122,8 @@ ${includes}
 
 // manual includes
 #include \"config.h\"
+#include \"location_state.h\"
+
 #include <qdir.h>
 
 #ifndef DEBUG

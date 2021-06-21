@@ -1,4 +1,22 @@
 class location_set
+!!!207024.cpp!!!	~location_set()
+if(this->root_)
+{
+  QVector< location * > stack_;
+  stack_.push_back(root_.get());
+  while(! stack_.isEmpty())
+  {
+    location * top_ = stack_.front();
+    stack_.pop_front();
+    location_state * tmp = static_cast< location_state * >( top_->value() );
+    top_->value( nullptr );
+    if (tmp) delete tmp;
+    for(location * loc_ : top_->children())
+    {
+      stack_.push_back(loc_);
+    }
+  }
+}
 !!!185776.cpp!!!	base_path() : unistr
 return (root_  
   ? root_->path()
@@ -89,6 +107,7 @@ if(! root_)
 {
   // Empty root so this is the current "root" location
   root_.reset(new location(search_path_.path()));
+  root_->value( new location_state );
   return root_.get();
 }
 location * cursor_ = root_.get();
@@ -104,12 +123,14 @@ if( ! cursor_path_.equality(search_path_) )
       ? search_path_
       : src_dir_ / src_dir_.create_relative( cursor_path_.create_common( search_path_ )) };
     std::unique_ptr< location > new_root_{ new location(new_root_path_.path()) };
+    new_root_->value( new location_state );
     // Make the old root location a child of the new root location or its children
     cursor_path_ = new_root_path_.create_relative(cursor_path_);
     cursor_ = new_root_.get();
     for( unsigned int i_ = 0; i_ < cursor_path_.depth() - 1; ++i_ )
     {
-     cursor_ = new location(cursor_path_.leaf_at(i_), *cursor_ );
+      cursor_ = new location(cursor_path_.leaf_at(i_), *cursor_ );
+      cursor_->value( new location_state );
     }
     // change old root's path and parent
     root_->path_ = cursor_path_.leaf_at(cursor_path_.depth() - 1);
@@ -138,6 +159,7 @@ if( ! cursor_path_.equality(search_path_) )
     for( unsigned int i_ = 0; i_ < diff_path_.depth(); ++i_ )
     {
       cursor_ = new location(diff_path_.leaf_at(i_), *cursor_ );
+      cursor_->value( new location_state );
     }
   }
 }

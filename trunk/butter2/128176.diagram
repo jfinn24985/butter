@@ -2,11 +2,11 @@ format 224
 
 classcanvas 128048 class_ref 128560 // location
   classdiagramsettings member_max_width 0 end
-  xyz 233.1 75.1 3005
+  xyz 233.1 75.5 3005
 end
 classcanvas 130992 class_ref 138416 // location_set
   classdiagramsettings member_max_width 0 end
-  xyz 10.6 23.5 3012
+  xyz 12 23.1 3012
 end
 classcanvas 131888 class_ref 172592 // location_state
   classdiagramsettings member_max_width 0 end
@@ -18,15 +18,15 @@ classcanvas 132016 class_ref 9217 // UmlPackage
 end
 classcanvas 132400 class_ref 8833 // UmlItem
   classdiagramsettings member_max_width 0 end
-  xyz 380.9 195.9 2000
+  xyz 380.9 195.3 2000
 end
 classcanvas 132528 class_ref 8193 // UmlArtifact
   classdiagramsettings member_max_width 0 end
-  xyz 590.1 296.9 2000
+  xyz 590.7 296.1 2000
 end
 classcanvas 132656 class_ref 8449 // UmlDeploymentView
   classdiagramsettings member_max_width 0 end
-  xyz 578.9 206.3 2005
+  xyz 578.5 206.7 2005
 end
 relationcanvas 128176 relation_ref 132144 // <composition>
   decenter_begin 197
@@ -39,9 +39,9 @@ end
 relationcanvas 131120 relation_ref 140208 // <directional composition>
   decenter_begin 121
   decenter_end 49
-  from ref 130992 z 3013 stereotype "<<unique_ptr>>" xyz 132 78 3013 to ref 128048
-  role_a_pos 193 68 3000 no_role_b
-  multiplicity_a_pos 200 104 3000 no_multiplicity_b
+  from ref 130992 z 3013 stereotype "<<unique_ptr>>" xyz 133 79 3013 to ref 128048
+  role_a_pos 186 75 3000 no_role_b
+  multiplicity_a_pos 194 112 3000 no_multiplicity_b
 end
 relationcanvas 131248 relation_ref 140592 // <dependency>
   decenter_begin 480
@@ -52,7 +52,7 @@ relationcanvas 131248 relation_ref 140592 // <dependency>
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 132784 relation_ref 167344 // <directional aggregation>
-  from ref 131888 z 2006 stereotype "<<qvector>>" xyz 506 46 3000 to ref 132016
+  from ref 131888 z 2006 stereotype "<<qvector>>" xyz 506 45.5 3000 to ref 132016
   role_a_pos 499 94 3000 no_role_b
   multiplicity_a_pos 557 131 3000 no_multiplicity_b
 end
