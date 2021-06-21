@@ -155,26 +155,4 @@ return QDir::cleanPath(a_path.replace(QRegExp("\\\\"), default_separator_));
 return path ().replace (QRegExp (default_separator_), a_trans);
 
 !!!153008.cpp!!!	mkpath() : bool
-// std::stack < QString > stack_; // Stores needed path
-// QString path_ (normalise (path ()));  // Current path as string
-// QDir cursor_;  // Current path
-// log::com.trace (log::debug, ("<p>Creating path [" + path_ + "]</p>").utf8());
-// int left_ (path_.findRev (default_separator_));
-// for ( ; (!cursor_.exists (path_, true)) & (!path_.isEmpty ()) & (left_ > 0); )
-// {
-//   stack_.push (path_.mid (left_ + 1));
-//   path_.truncate (left_);
-//   left_ = path_.findRev (default_separator_);
-// }
-// cursor_.cd (path_, true);
-// if (DEBUG)
-// {
-//   log::com.trace (log::debug, ("<p>Found path [" + path_ + "] exists </p>").utf8());
-// }
-// for ( ; !stack_.empty ()
-//          && cursor_.mkdir (stack_.top (), false)
-//          && cursor_.cd (stack_.top (), false)
-//       ; stack_.pop ()) {} // Empty loop
-// return stack_.empty ();
-// 
-return false;
+return QDir::mkpath(this->absolutePath());
