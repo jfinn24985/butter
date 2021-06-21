@@ -70,9 +70,9 @@ while( ! location_stack_.isEmpty() )
   else
   {
     build_file = this->get_build_file( state, this->style_->get_build_file_name().utf8() );
-    if( nullptr == build_file  )
+    if( nullptr == build_file )
     {
-      build_file = root_state->add_uml_document(this->style_->get_build_file_name(), log);
+      build_file = state->add_uml_document(this->style_->get_build_file_name(), log);
       UmlItem::string_map packbook;
       packbook["path"] = top_->full_path();
       packbook["dir"] = top_->path();
@@ -445,7 +445,7 @@ else
   build_file->document(start_phrase, end_phrase)[extern_project_name].value += this->style_->make_element("extern-library", targetbook);
 }
 !!!452400.cpp!!!	get_build_file(inout state : location_state, in file_name : string) : UmlArtifact
-// - pointer to the top level build file
+// - pointer to a build file
 UmlArtifact * build_file = nullptr;
 QString start_phrase{ this->style_->get_start_phrase() };
 QString end_phrase{ this->style_->get_end_phrase() };
@@ -455,11 +455,14 @@ if( ! doc_list.isEmpty() )
   build_file = dynamic_cast< UmlArtifact * >( doc_list[0] );
   BUTTER_REQUIRE(nullptr != build_file, "Document UmlItem is not a UmlArtifact");
   // Merge if more than 1
-  for( int i_ = 1; i_ < doc_list.count(); ++i_ )
+  if(doc_list.count() > 1)
   {
-    build_file->document(start_phrase, end_phrase).merge(
-      dynamic_cast< UmlArtifact * >( doc_list[i_] )->document(start_phrase, end_phrase) );
-    doc_list[i_]->set_Name( ("OLD_" + doc_list[i_]->name() ) );
+    for( int i_ = 1; i_ < doc_list.count(); ++i_ )
+    {
+      build_file->document(start_phrase, end_phrase).merge(
+        dynamic_cast< UmlArtifact * >( doc_list[i_] )->document(start_phrase, end_phrase) );
+      doc_list[i_]->set_Name( ("OLD_" + doc_list[i_]->name() ) );
+    }
   }
   build_file->document(start_phrase, end_phrase).reset();
 }
@@ -720,7 +723,7 @@ if ( state_->empty() )
           , QMessageBox::Abort ) ) )
       {
         UmlPackage * build_ = UmlPackage::create( dynamic_cast< UmlPackage * >( &a_item ), new_name_ );
-        butter::enumerate_path helper_( CppSettings::rootDir () );
+        butter::enumerate_path helper_( CppSettings::rootDir() );
         build_->set_CppSrcDir( helper_.create_relative( this->root_->base_path() ).utf8 () );
         static_cast< location_state * >(this->root_->root()->value())->add_package( *build_ );
       }
