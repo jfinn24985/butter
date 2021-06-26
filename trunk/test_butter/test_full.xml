@@ -205,14 +205,14 @@ Multiple Directory test cases
 
   <job src="job_multidir.xml">
 
-default (jam) build tool + debug + multiple directory
+default (make) build tool + debug + multiple directory
 
     <property name="project" >multidir</property>
-    <property name="build-tool" >%(jam)s</property>
+    <property name="build-tool" >%(make)s</property>
     <property name="build-style" >standard</property>
     <property name="patch-file" >default.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
-    <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
+    <property name="build-arg" > %(make-arg)s -k VARIANT=DEBUG install</property>
   </job>
 
    <job src="job_multidir.xml">
@@ -248,7 +248,7 @@ make build tool + debug + multiple directory
     <property name="build-style" >make</property>
     <property name="patch-file" >make.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
-    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
+    <property name="build-arg" >%(make-arg)s -k VARIANT=DEBUG install</property>
   </job>
    <job src="job_multidir.xml">
 
