@@ -7,7 +7,7 @@ QString end_phrase{ this->style_->get_end_phrase() };
 ////////////////////////////////////////////////////
 // Check for top-level system build-file document(s)
 // - create from template if necessary.
-location_state * root_state{ static_cast<location_state *>(this->root_->root()->value()) };
+location_state * root_state{ &(this->root_->root()->value()) };
 {
   build_style::map_type sysfiles = this->style_->get_special_files();
   for(build_style::map_type::iterator elem = sysfiles.begin(); elem != sysfiles.end(); ++elem)
@@ -59,8 +59,9 @@ while( ! location_stack_.isEmpty() )
   {
     location_stack_.push( top_->children().at( ii_ ) );
   }
-
-  location_state * state{ static_cast<location_state *>(top_->value()) };
+  // Ignore locations without packages
+  if( top_->value().empty() ) continue;
+  location_state * state{ &(top_->value()) };
   // Build file for the current location.
   UmlArtifact * build_file = nullptr;
   if( state == root_state )
@@ -606,14 +607,7 @@ while ( ! item_stack_.isEmpty () )
         << "] at path [" << pack_path_.path() << "]\n";
     }
     cache_ = this->root_->insert( pack_path_.path() );
-    location_state * state_{ static_cast< location_state* >(cache_->value()) };
-    if(nullptr == state_)
-    {
-      std::unique_ptr< location_state >tmp( new location_state );
-      cache_->value(tmp.get());
-      state_ = tmp.release();
-    }
-    state_->add_package( *pack_item_ );
+    cache_->value().add_package( *pack_item_ );
   }
   if ( DEBUG )
   {
@@ -655,14 +649,7 @@ if ( DEBUG )
 // HERE
 // Check whether base location has an associated package and attempt to create
 // one.
-location_state * state_{ static_cast< location_state* >(this->root_->root()->value()) };
-if(nullptr == state_)
-{
-  std::unique_ptr< location_state >tmp( new location_state );
-  this->root_->root()->value(tmp.get());
-  state_ = tmp.release();
-}
-if ( state_->empty() )
+if ( this->root_->root()->value().empty() )
 {
   QString new_name_( "Build" );
   bool top_package_is_writable_( a_item.isWritable () );
@@ -725,7 +712,7 @@ if ( state_->empty() )
         UmlPackage * build_ = UmlPackage::create( dynamic_cast< UmlPackage * >( &a_item ), new_name_ );
         butter::enumerate_path helper_( CppSettings::rootDir() );
         build_->set_CppSrcDir( helper_.create_relative( this->root_->base_path() ).utf8 () );
-        static_cast< location_state * >(this->root_->root()->value())->add_package( *build_ );
+        this->root_->root()->value().add_package( *build_ );
       }
       else
       {
@@ -745,7 +732,7 @@ if ( state_->empty() )
 }
 
 !!!453040.cpp!!!	write_documents(inout log : base_log) : void
-butter::location_state::write_documents( *(this->root_), log );
+this->root_->write_documents( log );
 !!!459952.cpp!!!	find_path(inout art : UmlArtifact) : unistr
 UmlItem * t = art;
 for( ; t->parent() && t->kind() != aPackage ; t = t->parent() );
@@ -753,9 +740,8 @@ for( ; t->parent() && t->kind() != aPackage ; t = t->parent() );
 BUTTER_ALWAYS(t, "No package parent of artifact.");
 for( auto * l : this->root_->topdown() )
 {
-  location_state * state = static_cast< location_state * >( l->value() );
   // use static_cast as only interested in pointer comparison
-  if( state->packages().contains( static_cast< UmlPackage* >(t) ) )
+  if( l->value().packages().contains( static_cast< UmlPackage* >(t) ) )
   {
     if( l == this->root_->root() )
     {

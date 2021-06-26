@@ -66,14 +66,3 @@ if (nullptr == Result)
 }
 Result->set_Stereotype(UmlItem::document_stereotype());
 return Result;
-!!!259632.cpp!!!	write_documents(in set : location_set, inout log : base_log) : void
-QVector< location * > flattened_{ set.topdown() };
-for(location *const loc_ : flattened_)
-{
-  enumerate_path path_{ loc_->full_path() };
-  log.trace(log.info, "<p>Checking for documents at " + path_.path() + "</p>");
-  for(UmlPackage *const pack_ : static_cast< location_state* >(loc_->value())->packages_)
-  {
-    pack_->write_documents(path_, log);
-  }
-}

@@ -1,6 +1,6 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 27
+  revision 29
   modified_by 48 "finnerty"
   // class settings
   
@@ -607,21 +607,6 @@ ${body}
 	
 	
       end
-
-      operation 193712 "location_value_method"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
     end
 
     class 159152 "location_set_test"
@@ -751,21 +736,6 @@ ${body}
       end
 
       operation 252592 "location_set_insert_sibling_root_two"
-	public explicit_return_type ""
-	nparams 0
-	
-	cpp_def "${comment}BOOST_AUTO_TEST_CASE( ${name} )
-{
-${body}
-}
-"
-	
-	
-	
-	
-      end
-
-      operation 207792 "location_set_value_method"
 	public explicit_return_type ""
 	nparams 0
 	
@@ -1187,6 +1157,7 @@ ${comment}
 "
       cpp_src "${comment}
 ${includes}
+#include \"location_state.h\"
 
 #include <boost/test/unit_test.hpp>
 
@@ -1246,17 +1217,118 @@ ${namespace_end}"
     artifact 137008 "unittest"
       stereotype "executable"
       associated_artifacts
+	artifact_ref 256 // UmlBaseActualParameter
+	artifact_ref 384 // UmlBaseClassItem
+	artifact_ref 512 // UmlBaseFormalParameter
+	artifact_ref 768 // UmlBaseAttribute
+	artifact_ref 896 // UmlBaseClass
+	artifact_ref 1024 // UmlBaseClassDiagram
+	artifact_ref 1152 // UmlBaseClassMember
+	artifact_ref 1280 // UmlBaseClassView
+	artifact_ref 1408 // UmlBaseCollaborationDiagram
+	artifact_ref 1536 // UmlBaseArtifact
+	artifact_ref 1664 // UmlBaseComponentDiagram
+	artifact_ref 1792 // UmlBaseComponentView
+	artifact_ref 1920 // UmlBaseDeployment
+	artifact_ref 2048 // UmlBaseDeploymentDiagram
+	artifact_ref 2176 // UmlBaseDeploymentView
+	artifact_ref 2304 // UmlBaseDiagram
+	artifact_ref 2432 // UmlBaseExtraClassMember
+	artifact_ref 2560 // UmlBaseItem
+	artifact_ref 2688 // UmlBaseNode
+	artifact_ref 2816 // UmlBaseOperation
+	artifact_ref 2944 // UmlBasePackage
+	artifact_ref 3072 // UmlBaseRelation
+	artifact_ref 3200 // UmlBaseNcRelation
+	artifact_ref 3328 // UmlBaseSequenceDiagram
+	artifact_ref 3456 // UmlBaseUseCase
+	artifact_ref 3584 // UmlBaseUseCaseDiagram
+	artifact_ref 3712 // UmlBaseUseCaseView
+	artifact_ref 5248 // UmlCom
+	artifact_ref 6528 // UmlBaseComponent
+	artifact_ref 7937 // UmlArtifact
+	artifact_ref 8449 // UmlDeploymentView
+	artifact_ref 8833 // UmlItem
+	artifact_ref 9217 // UmlPackage
+	artifact_ref 128256 // UmlBaseState
 	artifact_ref 128432 // constants
+	artifact_ref 128512 // UmlBaseStateDiagram
+	artifact_ref 128768 // StateBehavior
 	artifact_ref 128816 // compound_document
+	artifact_ref 128896 // UmlBaseTransition
+	artifact_ref 129152 // TransitionBehavior
+	artifact_ref 129280 // UmlBaseRegion
 	artifact_ref 129456 // location
+	artifact_ref 129536 // UmlBaseStateAction
 	artifact_ref 129840 // utility
+	artifact_ref 129920 // UmlBaseInitialPseudoState
+	artifact_ref 130176 // UmlBaseEntryPointPseudoState
 	artifact_ref 130352 // compound_document_test
+	artifact_ref 130432 // UmlBaseFinalState
+	artifact_ref 130688 // UmlBaseTerminatePseudoState
+	artifact_ref 130944 // UmlBaseExitPointPseudoState
+	artifact_ref 131200 // UmlBaseDeepHistoryPseudoState
+	artifact_ref 131456 // UmlBaseShallowHistoryPseudoState
+	artifact_ref 131712 // UmlBaseJunctionPseudoState
+	artifact_ref 131968 // UmlBaseChoicePseudoState
+	artifact_ref 132224 // UmlBaseForkPseudoState
+	artifact_ref 132480 // UmlBaseJoinPseudoState
+	artifact_ref 132736 // UmlBaseObjectDiagram
+	artifact_ref 133120 // UmlBaseActivity
+	artifact_ref 133376 // UmlBaseActivityDiagram
+	artifact_ref 133632 // UmlBaseActivityNode
+	artifact_ref 133888 // UmlBaseFlow
+	artifact_ref 134144 // FlowBehavior
+	artifact_ref 134272 // UmlBaseActivityRegion
+	artifact_ref 134528 // UmlBaseExpansionRegion
+	artifact_ref 134912 // UmlBaseInterruptibleActivityRegion
+	artifact_ref 135168 // UmlBaseActivityAction
+	artifact_ref 135424 // UmlBaseActivityActionClasses
+	artifact_ref 135680 // UmlBaseOnSignalAction
+	artifact_ref 135936 // UmlBaseAccessVariableValueAction
+	artifact_ref 136192 // UmlBaseActivityControlNode
+	artifact_ref 136448 // UmlBaseActivityControlNodeClasses
+	artifact_ref 136704 // UmlBaseActivityObject
+	artifact_ref 137088 // UmlBaseExpansionNode
+	artifact_ref 137344 // UmlBasePinParameter
+	artifact_ref 137728 // UmlBaseActivityPin
+	artifact_ref 137984 // UmlBaseActivityParameter
+	artifact_ref 138240 // UmlBaseParameterSet
+	artifact_ref 138624 // UmlBaseClassInstance
+	artifact_ref 139904 // UmlBaseParameter
+	artifact_ref 140160 // UmlBaseTypeSpec
+	artifact_ref 140416 // UmlBaseView
+	artifact_ref 142208 // UmlBaseFragment
+	artifact_ref 142336 // UmlBaseFragmentCompartment
+	artifact_ref 142592 // UmlBaseSubject
+	artifact_ref 142848 // UmlBaseUseCaseReference
+	artifact_ref 143104 // UmlBaseUseCaseAssociation
+	artifact_ref 143360 // UmlBaseClassInstanceReference
 	artifact_ref 143536 // location_test
+	artifact_ref 143616 // UmlBaseMessage
+	artifact_ref 144000 // UmlBaseSequenceMessage
+	artifact_ref 144256 // UmlBaseCollaborationMessage
+	artifact_ref 144512 // UmlBaseUseCaseDiagramDefinition
+	artifact_ref 144768 // UmlBaseSequenceDiagramDefinition
+	artifact_ref 145024 // UmlBaseCollaborationDiagramDefinition
+	artifact_ref 145408 // UmlBaseActivityPartition
 	artifact_ref 150064 // enumerate_path_test
+	artifact_ref 151936 // UmlBaseExtraArtifactDefinition
+	artifact_ref 158592 // UmlBasePort
+	artifact_ref 159104 // UmlBaseRolePart
+	artifact_ref 159360 // UmlBaseRolePartInstance
+	artifact_ref 159616 // UmlBasePortRef
+	artifact_ref 159872 // UmlBaseConnector
+	artifact_ref 160128 // UmlBaseClassCompositeDiagram
+	artifact_ref 160384 // UmlBaseObjectCompositeDiagram
+	artifact_ref 167040 // UmlBaseVariable
+	artifact_ref 167296 // UmlBaseStructuralFeatureAction
+	artifact_ref 167552 // UmlBaseWriteStructuralFeatureAction
 	artifact_ref 182704 // text_template
 	artifact_ref 182832 // text_template_test
 	artifact_ref 189488 // build_style
 	artifact_ref 189616 // build_style_test
+	artifact_ref 209456 // location_state
       end
       ncouples 10
       key "genpro pro" value "/tmp/butter2/test/unittest.pro"
@@ -1268,7 +1340,7 @@ ${namespace_end}"
       key "genpro includepath" value ".."
       key "genpro dependpath" value ""
       key "genpro objectsdir" value "build"
-      key "genpro footer" value "QT += qt3support
+      key "genpro footer" value "QT += qt3support network
 LIBS += -lboost_unit_test_framework"
       simplerelation 128048
 	-_->

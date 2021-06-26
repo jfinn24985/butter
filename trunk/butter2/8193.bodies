@@ -67,6 +67,16 @@ if (document_stereotype() == this->stereotype())
     this->propertyValue(output_label(), document_prop_value_);
     if (document_prop_value_.isEmpty() || (document_prop_value_ != nowrite_value()))
     {
+      // Check for directories
+      if(! full_path.exists() )
+      {
+        if(! full_path.mkpath() )
+        {
+          QString msg("<b>Fatal Error:</b> Unable to create path " + full_path.path());
+          throw std::runtime_error(msg.toStdString());
+        }
+      }
+      // Check file
       QString document_filepath_{ (full_path / this->name()).path() };
       if (! document_prop_value_.isEmpty())
       {
@@ -78,23 +88,25 @@ if (document_stereotype() == this->stereotype())
         QFile iofile(document_filepath_);
         if (! iofile.open(IO_ReadOnly))
         {
-          QString msg("<b>Fatal Error:</b> Unable to open file for reading: " + document_filepath_);
+          QString msg("<b>Fatal Error:</b> Unable to open file for reading: " + document_filepath_ + ": reason " + iofile.errorString());
           throw std::runtime_error(msg.toStdString());
         }
         QByteArray contents_{ iofile.readAll() };
         result = (contents_.size() == this->description().size()
                   && 0 == strncmp(contents_.constData(), this->description().constData(), contents_.size()));
+        iofile.close();
       }
       if (! result)
       {
         log.trace(log.warn, "<p>Writing changed document : " + document_filepath_ + "</p>");
         QFile iofile(document_filepath_);
-        if (! iofile.open(IO_ReadWrite))
+        if (! iofile.open(IO_WriteOnly))
         {
-          QString msg("<b>Fatal Error:</b> Unable to open file for writing: " + document_filepath_);
+          QString msg("<b>Fatal Error:</b> Unable to open file for writing: " + document_filepath_ + ": reason " + iofile.errorString());
           throw std::runtime_error(msg.toStdString());
         }
         iofile.writeBlock(this->description(), this->description().size());
+        iofile.close();
       }
       else
       {

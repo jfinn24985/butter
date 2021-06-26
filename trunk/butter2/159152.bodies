@@ -109,12 +109,6 @@ BOOST_CHECK_EQUAL(10, loc.topdown().size());
 //os << "base_path: " << loc.base_path() << "\n";
 //loc.serialize(os);
 
-!!!207792.cpp!!!	location_set_value_method()
-butter::location loc;
-int dpi{ 314 };
-const QString t{ '.' };
-loc.value(&dpi);
-BOOST_CHECK_EQUAL(314, *reinterpret_cast<const int *>(loc.value()));
 !!!252720.cpp!!!	location_set_find_closest()
 butter::location_set loc("src");
 loc.insert("path1");

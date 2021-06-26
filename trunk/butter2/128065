@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 69
+  revision 71
   modified_by 48 "finnerty"
   // class settings
   
@@ -2808,8 +2808,10 @@ QDir::exists(location_base_path) or QDir::mkdir(location_base_path)."
       end
 
       attribute 153392 "state_"
-	private explicit_type "any"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+	private type class_ref 172592 // location_state
+	multiplicity "*"
+	stereotype "unique_ptr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type}> ${name}${value};
 "
 	java_decl ""
 	php_decl ""
@@ -2817,7 +2819,7 @@ QDir::exists(location_base_path) or QDir::mkdir(location_base_path)."
 	idl_decl ""
 	mysql_decl ""
 	MysqlColumn
-	comment "An opaque structure used by the butter system to manage build system creation."
+	comment "An structure used by the butter system to interface between filesystem locations and UML packages."
       end
 
       extra_member 135344 "LIFETIME"
@@ -2841,7 +2843,7 @@ ${inline}${typeprefix}${class}::${name}${(}${t0} ${p0}${)}
 : children_()
 , parent_(nullptr)
 , path_(${p0})
-, state_(nullptr)
+, state_(new location_state)
 {}
 "
 	
@@ -2861,7 +2863,7 @@ ${inline}${typeprefix}${class}::${name}${(}${)}
 : children_()
 , parent_(nullptr)
 , path_(\".\")
-, state_(nullptr)
+, state_(new location_state)
 {}
 "
 	
@@ -2896,7 +2898,7 @@ ${inline}${typeprefix}${class}::${name}${(}${)}
 : children_()
 , parent_(&a_parent)
 , path_(a_path)
-, state_(nullptr)
+, state_(new location_state)
 {
 ${body}}
 "
@@ -3007,10 +3009,10 @@ ${body}}
 
       operation 185904 "value"
 	stereotype "const"
-	const constvalue public explicit_return_type "any"
+	const constvalue public return_type class_ref 172592 // location_state
 	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
-  return state_;
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+  return *state_;
 }"
 	
 	
@@ -3029,25 +3031,11 @@ ${body}}
 	mysql ""
       end
 
-      operation 149552 "value"
-	public explicit_return_type "void"
-	nparams 1
-	  param out name "val" explicit_type "any"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
-  state_ = ${p0};
-}"
-	
-	
-	
-	
-	comment "Set the value content of this location"
-      end
-
       operation 193840 "value"
-	public explicit_return_type "any"
+	public return_type class_ref 172592 // location_state
 	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
-  return state_;
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+  return *state_;
 }"
 	
 	
@@ -3170,8 +3158,7 @@ non-absolute paths will be relative to this location.
 	nparams 0
 	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
 "
-	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
-  ${body}}
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {}
 "
 	
 	
@@ -3372,6 +3359,32 @@ a_os as it goes.
 (Only if NO_LOG is undefined)"
       end
 
+      operation 259632 "write_documents"
+	public explicit_return_type "void"
+	nparams 1
+	  param inout name "log" type class_ref 179120 // base_log
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Write all UML documents for the given location set
+
+* This calls write_documents on all packages which should call write_out on 
+all document artifacts.
+
+Notes:
+
+* We could make write_documents recursive in the UmlPackage class, however
+calculating the correct path is non-trivial and requires information outside the
+package class (although accessible from there).  By putting the method here
+we can pass the path information from the location objects to each package."
+      end
+
       extra_member 142384 "MODIFY"
 	
 	cpp "" ""
@@ -3532,34 +3545,6 @@ selected deployment view.
 	
 	comment "Get set of packages at this location, may be empty"
       end
-
-      operation 259632 "write_documents"
-	class_operation public explicit_return_type "void"
-	nparams 2
-	  param in name "set" type class_ref 138416 // location_set
-	  param inout name "log" type class_ref 179120 // base_log
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${v0}, ${t1} & ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-	comment "Write all UML documents for the given location set
-
-* This calls write_documents on all packages which should call write_out on 
-all document artifacts.
-
-Notes:
-
-* We could make write_documents recursive in the UmlPackage class, however
-calculating the correct path is non-trivial and requires information outside the
-package class (although accessible from there).  By putting the method here
-we can pass the path information from the location objects to each package."
-      end
-
     end
 
     class 252848 "log"
@@ -4920,6 +4905,7 @@ ${inlines}
 	comment "Search location set for the package that owns this artifact
 and return the location's path."
       end
+
     end
   end
 
@@ -5123,6 +5109,7 @@ ${includes}
 // manual includes
 #include \"config.h\"
 #include \"location_state.h\"
+#include \"UmlPackage.h\"
 
 #include <qdir.h>
 
