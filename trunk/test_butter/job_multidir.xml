@@ -88,31 +88,31 @@
         <verb type="system" >%(compile-command)s</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
+        <verb type="file-list" >
+          <property name="base" >%(local-base)s/src/Library</property>
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >%(library-name)s</property>
+          <property name="test-phrase">2.1.1 Library built</property>
+        </verb>
+      </verb-list>
+      <verb-list category="verify" >Verify that the correct files have been produced
         <property name="base" >%(local-base)s</property>
         <verb type="file-list" >
           <property name="base" >%(local-base)s/%(stage-bin-dir)s</property>
           <property name="file-type" >executable</property>
           <property name="verify" >exist</property>
           <property name="location" >%(exe-name)s</property>
-          <property name="test-phrase">2.1.1 Executable built</property>
-        </verb>
-      </verb-list>
-      <verb-list category="verify" >Verify that the correct files have been produced
-        <verb type="file-list" >
-          <property name="base" >%(local-base)s/%(stage-data-dir)s</property>
-          <property name="file-type" >file</property>
-          <property name="verify" >exist</property>
-          <property name="location" >%(library-name)s</property>
-          <property name="test-phrase">2.1.2 Library built</property>
+          <property name="test-phrase">2.1.2 Executable built and installed</property>
         </verb>
       </verb-list>
     </stage>
     <stage>Test run the executable.
       <verb-list category="execute" >Run &quot;program&quot;
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(local-base)s/%(stage-bin-dir)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd</verb>
+	<verb type="system" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s %(set-library-path)s PATH{%(local-base)s/%(stage-bin-dir)s/%(exe-name)s} lorem.txt > output %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced
-      <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s</property>
+      <property name="base" >%(local-base)s</property>
         <verb type="file-list" >
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>

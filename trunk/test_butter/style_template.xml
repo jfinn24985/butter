@@ -171,7 +171,7 @@ VARIANT ?= DEBUG
  <template label="comment">## <replace label="text"/></template>
 
  <!-- link to subdirectories -->
- <template label="descendent-link">DIRS:=$(DIRS) <replace label="path"/>
+ <template label="descendent-link">DIRS:=$(DIRS) $(ROOTDIR)/<replace label="path"/>
 </template>
 
  <!-- Start for an external library section -->
@@ -198,9 +198,9 @@ VARIANT ?= DEBUG
 
  <!-- template for start of (internal) package -->
  <template label="package">
-<option label="SYSINCLUDE">export SYSINCLUDE:= <replace label="includes"/>
-</option><option label="SYSCFLAGS">export SYSCFLAGS:= <replace label="flags"/>
-</option><option label="SYSLDFLAGS">export SYSLDFLAGS:= <replace label="ldflags"/>
+<option label="INCLUDE" target="includes"><replace label="PACKAGE"/>INCLUDE:= $(SYSINCLUDE) $(ROOTDIR)/<replace label="includes"/>
+</option><option label="CFLAGS" target="flags"><replace label="PACKAGE"/>CXXFLAGS:= $(SYSCXXFLAGS) <replace label="flags"/>
+</option><option label="LDFLAGS" target="ldflags"><replace label="PACKAGE"/>LDFLAGS:= $(SYSLDFLAGS) <replace label="ldflags"/>
 </option>
 </template>
 
@@ -208,6 +208,10 @@ VARIANT ?= DEBUG
  <template label="preamble-root"><option label="root-dir">export ROOTDIR:=<replace label="root-dir"/></option>
 <option label="sufsrc">export SUFSRC:=.<replace label="source-extension"/></option>
 <option label="sufhdr">export SUFHDR:=.<replace label="header-extension"/></option>
+<option label="SYSINCLUDE">export SYSINCLUDE:= $(ROOTDIR)/<replace label="includes"/>
+</option><option label="SYSCFLAGS">export SYSCXXFLAGS:= <replace label="flags"/>
+</option><option label="SYSLDFLAGS">export SYSLDFLAGS:= <replace label="ldflags"/>
+</option>
 include $(ROOTDIR)/system.mk
 </template>
 
@@ -219,9 +223,9 @@ include $(ROOTDIR)/system.mk
  <!-- template for a target static library -->
  <template label="target-library">
 <replace label="NAME"/>SRC:=<replace label="source"/>
-<replace label="NAME"/>CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>) <replace label="flags"/>
-<option label="ldflags" target="ldflags"><replace label="NAME"/>LDFLAGS:= <replace label="ldflags"/>
-</option><replace label="NAME"/>DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFDEP)))
+<replace label="NAME"/>CXXFLAGS:=$(CXXFLAGS) $(<replace label="PACKAGE"/>CXXFLAGS) $(patsubst %,-I%,<replace label="includes"/> $(<replace label="PACKAGE"/>INCLUDE)) <replace label="flags"/>
+<replace label="NAME"/>LDFLAGS:= $(LDFLAGS) $(<replace label="PACKAGE"/>LDFLAGS) <replace label="ldflags"/>
+<replace label="NAME"/>DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFDEP)))
 $(<replace label="NAME"/>DINC) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
 include $(<replace label="NAME"/>DINC)
 
@@ -240,7 +244,7 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFLIB)  $(<replace lab
  <!-- template for a target DLL/shared library -->
  <template label="target-dso">
 <replace label="NAME"/>SRC:=<replace label="source"/>
-<replace label="NAME"/>CXXFLAGS:=$(STDSHRFLAGS) $(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>) <replace label="flags"/>
+<replace label="NAME"/>CXXFLAGS:=$(STDSHRFLAGS) $(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/> $(<replace label="PACKAGE"/>INCLUDE)) <replace label="flags"/>
 <replace label="NAME"/>LDFLAGS:=$(LDFLAGS) <replace label="ldflags"/>
 <replace label="NAME"/>DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFDEP)))
 $(<replace label="NAME"/>DINC) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
@@ -260,7 +264,7 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFSHR)
  <!-- template for a target -->
  <template label="target">
 <replace label="NAME"/>SRC:=<replace label="source"/>
-<replace label="NAME"/>CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>) <replace label="flags"/>
+<replace label="NAME"/>CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/> $(<replace label="PACKAGE"/>INCLUDE)) <replace label="flags"/>
 <replace label="NAME"/>LDFLAGS:=$(LDFLAGS) <replace label="ldflags"/>
 <replace label="NAME"/>DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>SRC:$(SUFSRC)=$(SUFDEP)))
 $(<replace label="NAME"/>DINC) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
@@ -281,17 +285,17 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFEXE)
  <!-- template for a target source -->
  <template label="dependency-source"> <replace label="name"/>$(SUFSRC)</template>
  <template label="dependency-object"> <replace label="name"/>$(SUFOBJ)</template>
- <template label="dependency-static-library"> <replace label="path"/>/<replace label="name"/>${SUFLIB}</template>
- <template label="link-shared-library"> -L<replace label="path"/> <replace label="name"/></template>
- <template label="dependency-shared-library"> <replace label="path"/>/<replace label="name"/>$(SUFSHR)</template>
+ <template label="dependency-static-library"> $(ROOTDIR)/<replace label="path"/>/<replace label="name"/>${SUFLIB}</template>
+ <template label="link-shared-library"> -L$(ROOTDIR)/<replace label="path"/> <replace label="name"/></template>
+ <template label="dependency-shared-library"> $(ROOTDIR)/<replace label="path"/>/<replace label="name"/>$(SUFSHR)</template>
 <!-- template for a target -->
  <template label="target-start"/>
 
  <!-- template for a target -->
  <template label="target-install">
 install:: <replace label="name"/>$(SUFEXE)
-<option label="where">  $(INSTALL) -d <replace label="install"/>
-</option><option label="install"> $(INSTALL) <replace label="install-mode"/> $&lt; <replace label="install"/>/$&lt;
+<option label="where">	$(INSTALL) -d <replace label="install"/>
+</option><option label="install">	$(INSTALL) <replace label="install-mode"/> $&lt; <replace label="install"/>/$&lt;
 </option>
 </template>
  <!-- template name="buildfile">content</template>

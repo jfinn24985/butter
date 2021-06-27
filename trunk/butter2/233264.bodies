@@ -40,6 +40,7 @@ UmlArtifact * root_build_file = nullptr;
     projectbook["path"] = ".";
     projectbook["source-extension"] = CppSettings::sourceExtension();
     projectbook["header-extension"] = CppSettings::headerExtension();
+    projectbook["includes"] = enumerate_path(this->root_->base_path()).create_relative( UmlPackage::getProject()->hdr_path());
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
     root_build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble_root(), projectbook);
   }
@@ -75,8 +76,8 @@ while( ! location_stack_.isEmpty() )
     {
       build_file = state->add_uml_document(this->style_->get_build_file_name(), log);
       UmlItem::string_map packbook;
-      packbook["path"] = top_->full_path();
-      packbook["dir"] = top_->path();
+      packbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
+      packbook["dir"] = enumerate_path(this->root_->base_path()).create_relative(top_->path());
       for( int i_ = 0; i_ < state->packages().count(); ++i_ )
       {
         state->packages().at(i_)->in_scope(packbook, false, log);
@@ -95,7 +96,8 @@ while( ! location_stack_.isEmpty() )
       const QByteArray package_name_{ I_->name() };
       packbook["package"] = package_name_;
       packbook["PACKAGE"] = package_name_.toUpper();
-      packbook["path"] = top_->full_path();
+      packbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
+      packbook["includes"] = enumerate_path(this->root_->base_path()).create_relative(I_->hdr_path());
       build_file->document(start_phrase, end_phrase)["package-" + I_->name()].value = this->style_->make_element("package", packbook);
     }
     for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
@@ -124,7 +126,7 @@ while( ! location_stack_.isEmpty() )
             }
             else
             {
-              targetbook["path"] = top_->full_path();
+              targetbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
             }
             if( stereotype_label_.contains( UmlItem::executable_stereotype() )
                 || stereotype_label_.contains( UmlItem::library_stereotype() ) )
@@ -156,7 +158,7 @@ while( ! location_stack_.isEmpty() )
     // add the inter-file links to the root buildfile
     UmlItem::string_map locbook;
     locbook["name"] = top_->path();
-    locbook["path"] = top_->full_path();
+    locbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
     root_build_file->document(start_phrase, end_phrase)[top_->path()].value += this->style_->make_element("descendent-link", locbook);
   }
 }
@@ -207,7 +209,7 @@ do {
     currentbook["NAME"] = current_art_->name().toUpper();
     currentbook["project"] = current_art_->package()->name();
     currentbook["PROJECT"] = current_art_->package()->name().toUpper();
-    currentbook["path"] = this->find_path( current_art_ );
+    currentbook["path"] = enumerate_path(this->root_->base_path()).create_relative(this->find_path(current_art_));
     if( stereotype_ == UmlItem::library_stereotype() )
     {
       // For associated libraries, need to pass include, flags and ldflags to target

@@ -39,3 +39,30 @@ for( unsigned int i_ = 0; i_ != pack_kids_.count(); ++i_ )
     }
   }
 }
+!!!479536.cpp!!!	hdr_path() : QDir
+if( ! base_ )
+{
+  set_base();
+}
+return QDir(base_->path() + QDir::separator() + const_cast< UmlPackage & >(*this).cppHDir());
+!!!479664.cpp!!!	src_path() : QDir
+if( ! base_ )
+{
+  set_base();
+}
+return QDir(base_->path() + QDir::separator() + const_cast< UmlPackage & >(*this).cppHDir());
+!!!479792.cpp!!!	set_base() : void
+if( ! base_ )
+{
+  base_.reset(new QDir(CppSettings::rootDir()));
+  if( base_->isRelative() )
+  {
+    UmlItem *p_ = const_cast< UmlPackage* >(this);
+    while( p_->parent() != NULL )
+    {
+      p_ = p_->parent();
+    }
+    QFileInfo f_(dynamic_cast< UmlPackage* >(p_)->supportFile());
+    base_->setPath(f_.dir().filePath(base_->path()));
+  }
+}
