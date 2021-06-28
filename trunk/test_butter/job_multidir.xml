@@ -38,7 +38,7 @@
         </verb>
       </verb-list>
       <verb-list category="execute" >Generate the build system and the source code
-        <verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out1)s -test:ok -exit</verb>
         <verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
       </verb-list>
       <verb-list category="verify" >Verify that the correct files have been produced

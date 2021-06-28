@@ -221,7 +221,7 @@ jam build tool + debug + multiple directory
 
     <property name="project" >multidir</property>
     <property name="build-tool" >%(jam)s</property>
-    <property name="build-style" >standard</property>
+    <property name="build-style" >jam</property>
     <property name="patch-file" >jam.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
     <property name="build-arg" > %(jam-arg)s -sVARIANT=DEBUG install</property>
