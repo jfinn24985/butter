@@ -322,21 +322,6 @@ install:: <replace label="name"/>$(SUFEXE)
 
 -->
 <style label="cmake">
-<!---
-
-
-
-
-
- JAM STYLE
-
-
-
-
-
-
-
--->
  <file label="local.cmake">#
 # local.cmake
 #
@@ -494,6 +479,21 @@ install (TARGETS ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
  <template name="library">content</template>
  <template name="shared">content</template -->
 </style>
+<!---
+
+
+
+
+
+ JAM STYLE
+
+
+
+
+
+
+
+-->
 <style label="jam">
  <file label="GNU.jam">####################################
 ##  Definitions for GNU g++ compiler
@@ -505,7 +505,7 @@ CC = gcc ;
 C++ = g++ ;
 LINK = $(C++) ;
 CCFLAGS += -Wall -std=c99 ;
-C++FLAGS += -Wall -std=c++98 ;
+C++FLAGS += -Wall -std=c++11 ;
 SHRFLAGS = -fpic ;
 switch $(VARIANT)
 {
@@ -617,7 +617,7 @@ ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
  <template label="object">
 <option label="flags">C++FLAGS on :=$(CXXFLAGS) <replace label="flags"/></option>
 Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option>\
-                                    <option label="inc">CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="include"/>)</option>
+                                    <option label="inc">CXXFLAGS:=$(CXXFLAGS) -I"<replace label="includes"/>" $(SYSINCLUDES) $(INC)</option>
 </template>
 
  <!-- Other target type -->
@@ -626,9 +626,9 @@ Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXF
  <!-- template for start of (internal) package -->
  <template label="package">
 # Package data
-<option label="SYSINCLUDE" target="includes">SYSINCLUDE on <replace label="path"/> = <replace label="includes"/> ;
-</option><option label="SYSCFLAGS" target="flags">SYSCXXFLAGS on <replace label="path"/> = <replace label="flags"/> ;
-</option><option label="SYSLDFLAGS" target="ldflags">SYSLDFLAGS on <replace label="path"/> = <replace label="ldflags"/> ;
+<option label="SYSINC" target="includes"><replace label="PACKAGE"/>INC = <replace label="includes"/> $(SYSINC) ;
+</option><option label="SYSCFLAGS" target="flags"><replace label="PACKAGE"/>CXXFLAGS = <replace label="flags"/> ;
+</option><option label="SYSLDFLAGS" target="ldflags"><replace label="PACKAGE"/>LDFLAGS = <replace label="ldflags"/> ;
 </option>
 </template>
 
@@ -638,7 +638,8 @@ Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXF
 <option label="sufhdr">SUFHDR = .<replace label="header-extension"/> ;</option>
 <option label="root-dir">BUILDDIR = <replace label="root-dir"/> ;</option>
 SubDir TOP ;
-</template>
+<option label="SYSINC" target="includes">SYSINC = <replace label="includes"/> ;
+</option></template>
 
  <!-- template for start of subdirectory makefiles -->
  <template label="preamble">
@@ -649,23 +650,23 @@ SubDir TOP <replace label="path" split="/" join =" " /> ;
  <!-- template for a target static library-->
  <template label="target-library"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
      <replace label="source"/> ;
-<option label="include" target="include">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) =
-     $(C++FLAGS) <replace label="include" split=" " join=" -I"/> ;
-</option><option label="flags" target="flags">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) = 
-     $(C++FLAGS) <replace label="flags"/> ;
-</option>
+<replace label="NAME"/>INC on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) =
+     <replace label="includes" split=" " join=" -I"/> $(<replace label="PACKAGE"/>INC) ;
+C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) = 
+     $(C++FLAGS) <replace label="flags"/> -I$(<replace label="NAME"/>INC) ;
+
 Library <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) :
   $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
 </template>
 	
  <!-- template for a target -->
  <template label="target-dso"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
-     <replace label="source"/> ;
-<option label="include" target="include">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) =
-     $(C++FLAGS) <replace label="include" split=" " join=" -I"/> ;
-</option><option label="flags" target="flags">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
+     <replace label="source"/> $(<replace label="PACKAGE"/>INC) ;
+<replace label="NAME"/>INC on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) =
+    <replace label="include" split=" " join=" -I"/> -I$(<replace label="NAME"/>INC) ;
+C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
      $(C++FLAGS) <replace label="flags"/> ;
-</option><option label="libs" target="ldflags"> LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
+<option label="libs" target="ldflags"> LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
   $(LINKLIBS) <replace label="ldflags"/> ;
 </option>
 Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) :
@@ -677,11 +678,11 @@ Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><re
  <!-- template for a target -->
  <template label="target"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
      <replace label="source"/> ;
-<option label="include" target="include">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) =
-     $(C++FLAGS) <replace label="include" split=" " join=" -I"/> ;
-</option><option label="flags" target="flags">C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = 
-     $(C++FLAGS) <replace label="flags"/> ;
-</option><option label="libs" target="ldflags"> LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = 
+<replace label="NAME"/>INC on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) =
+     <replace label="include" split=" " join=" -I"/> $(<replace label="PACKAGE"/>INC) ;
+C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = 
+     $(C++FLAGS) <replace label="flags"/> -I$(<replace label="NAME"/>INC) ;
+<option label="libs" target="ldflags"> LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = 
   $(LINKLIBS) <replace label="ldflags"/> ;
 </option>
 Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) :
