@@ -275,7 +275,7 @@ CLEAN_TEMP:= $(CLEAN_TEMP) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"
 
 <replace label="name"/>$(SUFEXE) :: CXXFLAGS:=$(<replace label="NAME"/>CXXFLAGS)
 <replace label="name"/>$(SUFEXE) :: $(<replace label="NAME"/>OBJ) <option label="depends"><replace label="dependency"/></option> | $(<replace label="NAME"/>DINC) 
-	$(CXX) $(CXXFLAGS) -o <replace label="name"/>$(SUFEXE) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o <replace label="name"/>$(SUFEXE) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"/>LDFLAGS) <option label="depends"><replace label="dependency"/></option>
 
 all :: <replace label="name"/>$(SUFEXE) 
 
@@ -402,7 +402,7 @@ set (<replace label="NAME"/>INC <replace label="include"/>)
  <!-- template for start of (internal) package -->
  <template label="package">
  project (<replace label="PACKAGE"/>)
-<option label="SYSINCLUDE">set (SYSINCLUDE <replace label="includes"/>)
+<option label="SYSINCLUDE">include_directories(<replace label="includes"/>)
 </option><option label="SYSCXXFLAGS">set (SYSCFLAGS <replace label="flags"/>)
 </option><option label="SYSLDFLAGS">set (SYSLDFLAGS <replace label="ldflags"/>)
 </option>
@@ -424,7 +424,7 @@ include (${CMAKE_SOURCE_DIR}/local.cmake)
  <!-- template for a target -->
  <template label="target-library">
  # STATIC
- set ( <replace label="PACKAGE"/>_<replace label="NAME"/>  <replace label="name"/>)
+ set ( <replace label="PACKAGE"/>_<replace label="NAME"/> <replace label="name"/>)
  
  set ( <replace label="PACKAGE"/>_<replace label="NAME"/>_SRC
   <replace label="source"/> )
@@ -456,8 +456,8 @@ include (${CMAKE_SOURCE_DIR}/local.cmake)
 </option></template>
 
  <!-- template for a target source -->
- <template label="dependency-source"> <replace label="name"/>${SUFSRC}</template>
- <template label="dependency-object"> <replace label="name"/>${SUFOBJ}</template>
+ <template label="dependency-source"> ${CMAKE_CURRENT_LIST_DIR}/<replace label="name"/>${SUFSRC}</template>
+ <template label="dependency-object"> ${CMAKE_CURRENT_LIST_DIR}/<replace label="name"/>${SUFOBJ}</template>
  <template label="dependency-static-library"> <replace label="name"/></template>
  <template label="link-shared-library"> -l<replace label="name"/></template>
  <template label="dependency-shared-library"> <replace label="name"/></template>
@@ -597,9 +597,9 @@ ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
  <template label="extern-preamble"/>
 
  <!-- Actual content for external libraries -->
- <template label="extern-library"><replace label="NAME"/>FLAGS = <replace label="flags"/> ;
-<replace label="NAME"/>LDFLAGS = <replace label="ldflags"/> ;
-<replace label="NAME"/>INC = <replace label="include"/> ;
+ <template label="extern-library"><replace label="NAME"/>_FLAGS = <replace label="flags"/> ;
+<replace label="NAME"/>_LDFLAGS = <replace label="ldflags"/> ;
+<replace label="NAME"/>_INC = <replace label="include"/> ;
 </template>
 
 
@@ -610,12 +610,12 @@ ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
  <template label="dependency-shared-library"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR)</template>
  
  <!-- how to include an additional buildfile -->
- <template label="include-buildfile">-include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
+ <template label="include-buildfile">include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
 </template>
 
  <!-- how to build an object file -->
  <template label="object">
-<option label="flags">C++FLAGS on :=$(CXXFLAGS) <replace label="flags"/></option>
+<option label="flags">ObjectC++Flags <replace label="name"/>$(SUFSRC) : $(CXXFLAGS) <replace label="flags"/></option>
 Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option>\
                                     <option label="inc">CXXFLAGS:=$(CXXFLAGS) -I"<replace label="includes"/>" $(SYSINCLUDES) $(INC)</option>
 </template>
@@ -626,9 +626,9 @@ Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXF
  <!-- template for start of (internal) package -->
  <template label="package">
 # Package data
-<option label="SYSINC" target="includes"><replace label="PACKAGE"/>INC = <replace label="includes"/> $(SYSINC) ;
-</option><option label="SYSCFLAGS" target="flags"><replace label="PACKAGE"/>CXXFLAGS = <replace label="flags"/> ;
-</option><option label="SYSLDFLAGS" target="ldflags"><replace label="PACKAGE"/>LDFLAGS = <replace label="ldflags"/> ;
+<option label="SYSINC" target="includes"><replace label="PACKAGE"/>_INC = <replace label="includes"/> $(SYSINC) ;
+</option><option label="SYSCFLAGS" target="flags"><replace label="PACKAGE"/>_C++FLAGS = <replace label="flags"/> ;
+</option><option label="SYSLDFLAGS" target="ldflags"><replace label="PACKAGE"/>_LDFLAGS = <replace label="ldflags"/> ;
 </option>
 </template>
 
@@ -650,10 +650,9 @@ SubDir TOP <replace label="path" split="/" join =" " /> ;
  <!-- template for a target static library-->
  <template label="target-library"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
      <replace label="source"/> ;
-<replace label="NAME"/>INC on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) =
-     <replace label="includes" split=" " join=" -I"/> $(<replace label="PACKAGE"/>INC) ;
-C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) = 
-     $(C++FLAGS) <replace label="flags"/> -I$(<replace label="NAME"/>INC) ;
+<replace label="PACKAGE"/>_<replace label="NAME"/>_INC = <replace label="includes"/> $(<replace label="PACKAGE"/>_INC) ;
+ObjectC++Flags $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) : 
+     $(C++FLAGS) <replace label="flags"/> -I$(<replace label="PACKAGE"/>_<replace label="NAME"/>_INC) ;
 
 Library <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) :
   $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
@@ -678,11 +677,10 @@ Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><re
  <!-- template for a target -->
  <template label="target"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
      <replace label="source"/> ;
-<replace label="NAME"/>INC on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) =
-     <replace label="include" split=" " join=" -I"/> $(<replace label="PACKAGE"/>INC) ;
-C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = 
-     $(C++FLAGS) <replace label="flags"/> -I$(<replace label="NAME"/>INC) ;
-<option label="libs" target="ldflags"> LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = 
+<replace label="PACKAGE"/>_<replace label="NAME"/>_INC = <replace label="include"/> $(<replace label="PACKAGE"/>_INC) ;
+ObjectC++Flags $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) :
+     $(C++FLAGS) <replace label="flags"/> -I$(<replace label="PACKAGE"/>_<replace label="NAME"/>_INC) ;
+<option label="libs" target="ldflags">LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = 
   $(LINKLIBS) <replace label="ldflags"/> ;
 </option>
 Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) :
@@ -792,7 +790,7 @@ lib <replace label="name"/> :
  <template label="target-dso">
 lib <replace label="name"/> :
                      <replace label="source"/>
-                     : &lt;link&gt;static
+                     : &lt;link&gt;share
                      ;
 </template> 
 
@@ -807,7 +805,7 @@ exe <replace label="name"/> :
  <template label="comment">## <replace label="text"/></template>
 
  <!-- link to subdirectories -->
- <template label="descendent-link">SubInclude TOP  [ MATCH "([^/]*)" "/([^/]*)/([^/]*)" : <replace label="path"/> ] ;
+ <template label="descendent-link">build-project "<replace label="path"/>" ;
 </template>
 
  <!-- Start for an external library section -->
@@ -825,9 +823,10 @@ constant <replace label="NAME"/>INC : <replace label="include"/> ;
 
  <!-- how to build an object file -->
  <template label="object">
-<option label="flags">C++FLAGS on :=$(CXXFLAGS) <replace label="flags"/></option>
-Object <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC) 
-            : <option label="flags">&lt;CXXFLAGS&gt;"<replace label="flags"/>"</option><option label="inc">&lt;includes&gt;"<replace label="include"/>"</option>
+<option label="flags">C++FLAGS on <replace label="name"/>$(SUFOBJ) = $(CXXFLAGS) <replace label="flags"/></option>
+obj <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC) 
+            : <option label="flags">&lt;CXXFLAGS&gt;"<replace label="flags"/>"</option><option label="inc" target="includes">
+            &lt;include&gt;"<replace label="includes"/>"</option>
             ;
 </template>
 
@@ -838,9 +837,9 @@ Object <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC)
  <template label="package">
 project <replace label="package"/>
   : requirements &lt;debug-symbols&gt;on:&lt;define&gt;"DEBUG=1"
-    &lt;debug-symbols&gt;off:&lt;define&gt;"DEBUG=0"<option label="requirements"><option label="SYSINCLUDE">includes "<replace label="includes"/>"
-</option><option label="SYSCFLAGS">flags "<replace label="flags"/>"
-</option><option label="SYSLDFLAGS">linkflags "<replace label="package_ldflags"/>"</option></option>
+    &lt;debug-symbols&gt;off:&lt;define&gt;"DEBUG=0"<option label="INCLUDE" target="includes"> &lt;include&gt;"<replace label="includes"/>"
+</option><option label="CFLAGS"> &lt;flags&gt;"<replace label="flags"/>"
+</option><option label="LDFLAGS"> &lt;linkflags&gt;"<replace label="package_ldflags"/>"</option>
   : build-dir build ;
 </template>
 

@@ -9,6 +9,7 @@ for dir_ in . /tmp/test_suite ; do
   fi
 done
 DATESTAMP=`date +%m%d%H%M`
+ln -sf out${DATESTAMP}$$.html output.html
 if [ "X--file" = "X$1" ] ; then
 python ${SCRIPT} $* > out${DATESTAMP}$$.html
 else

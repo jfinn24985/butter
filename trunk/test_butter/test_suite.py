@@ -1609,10 +1609,6 @@ if __name__ == "__main__":
   suite = test_suite()
   suite.run()
   print "</body></html>"
-  try:
-    import tkMessageBox
-    tkMessageBox.showinfo(title="test_suite", message="Test suite has completed")
-  except:
-    import sys
-    print(sys.stderr, "Test suite has completed")
+  import sys
+  print(sys.stderr, "Test suite has completed")
 
