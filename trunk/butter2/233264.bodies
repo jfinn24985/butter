@@ -41,6 +41,10 @@ UmlArtifact * root_build_file = nullptr;
     projectbook["source-extension"] = CppSettings::sourceExtension();
     projectbook["header-extension"] = CppSettings::headerExtension();
     projectbook["includes"] = enumerate_path(this->root_->base_path()).create_relative( UmlPackage::getProject()->hdr_path());
+    if( "" == projectbook["includes"] )
+    {
+      projectbook["includes"] = ".";
+    }
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
     root_build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble_root(), projectbook);
   }
@@ -98,6 +102,10 @@ while( ! location_stack_.isEmpty() )
       packbook["PACKAGE"] = package_name_.toUpper();
       packbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
       packbook["includes"] = enumerate_path(this->root_->base_path()).create_relative(I_->hdr_path());
+      if( "" == packbook["includes"] )
+      {
+        packbook["includes"] = ".";
+      }
       build_file->document(start_phrase, end_phrase)["package-" + I_->name()].value = this->style_->make_element("package", packbook);
     }
     for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
@@ -209,7 +217,14 @@ do {
     currentbook["NAME"] = current_art_->name().toUpper();
     currentbook["project"] = current_art_->package()->name();
     currentbook["PROJECT"] = current_art_->package()->name().toUpper();
-    currentbook["path"] = enumerate_path(this->root_->base_path()).create_relative(this->find_path(current_art_));
+    if( "." == this->find_path(current_art_) )
+    {
+      currentbook["path"] = ".";
+    }
+    else
+    {
+      currentbook["path"] = enumerate_path(this->root_->base_path()).create_relative(this->find_path(current_art_));
+    }
     if( stereotype_ == UmlItem::library_stereotype() )
     {
       // For associated libraries, need to pass include, flags and ldflags to target
