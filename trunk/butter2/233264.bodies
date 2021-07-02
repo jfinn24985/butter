@@ -737,7 +737,7 @@ if ( this->root_->root()->value().empty() )
 this->root_->write_documents( log );
 !!!459952.cpp!!!	find_path(inout art : UmlArtifact) : unistr
 UmlItem * t = art;
-for( ; t->parent() && t->kind() != aPackage ; t = t->parent() );
+for( ; t && t->kind() != aPackage ; t = t->parent() );
    //empty loop
 BUTTER_ALWAYS(t, "No package parent of artifact.");
 for( auto * l : this->root_->topdown() )
