@@ -223,7 +223,6 @@ do {
       {
         // Default library type is a static library
         QString lib{ this->style_->make_element("dependency-static-library", currentbook, current_art_->name()) };
-        targetbook[UmlItem::ldflags_label()] += lib;
         targetbook["dependency"] += lib;
       }
       else
