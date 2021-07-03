@@ -7,7 +7,7 @@ Index: multilang.prj
    mark_for_import
    
 +  ncouples 1
-+  key "butter style" value "standard"
++  key "butter style" value "jam"
    comment "Project to test single-directory multiple target use-case for \"butter\" plugout"
    package_ref 128041 // Library
  
