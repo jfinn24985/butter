@@ -270,14 +270,14 @@ Multiple Directory + non-C++ test cases (auto-detect source types)
 
   <job src="job_multilang.xml">
 
-standard (jam) tool + multiple directory + non-C++ (auto-detect source types)
+standard (make) tool + multiple directory + non-C++ (auto-detect source types)
 
     <property name="project" >multilang</property>
-    <property name="build-tool" >%(jam)s</property>
+    <property name="build-tool" >%(make)s</property>
     <property name="build-style" >standard</property>
     <property name="patch-file" >default.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
-    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+    <property name="build-arg" > %(make-arg)s -k VARIANT=DEBUG install</property>
   </job>
 
   <job src="job_multilang.xml">
@@ -286,7 +286,7 @@ jam tool + multiple directory + non-C++ (auto-detect source types)
 
     <property name="project" >multilang</property>
     <property name="build-tool" >%(jam)s</property>
-    <property name="build-style" >standard</property>
+    <property name="build-style" >jam</property>
     <property name="patch-file" >jam.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
     <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>

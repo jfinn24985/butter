@@ -267,6 +267,8 @@ do {
     }
     else if( stereotype_ == UmlItem::document_stereotype() )
     {
+      // Name will have file extension, need version without
+      currentbook["basename"] = current_art_->name().left(current_art_->name().lastIndexOf("."));
       // For "document" is "other" type and need to pass ldflags and create object
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
       build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
