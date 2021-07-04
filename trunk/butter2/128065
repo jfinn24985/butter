@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 75
+  revision 76
   modified_by 42 "finnerty"
   // class settings
   
@@ -5302,7 +5302,6 @@ can create a build system that can build and install
 targets defined in UML in bouml.  You can choose from
 Makefile, CMake, Boost Jam and plain Jam.
 
-
 ## How it works.
 
 * Check for and add standard build system files
@@ -5316,22 +5315,20 @@ Makefile, CMake, Boost Jam and plain Jam.
 
 ## TODO
 
-* Define templates for Makefiles
-  (see previous version)
-* Define templates for CMake
-* Define templates for Boost Jam
-* Define templates for Jam
+* What to do with an unknown style (error message and default?)
+* Document current templates and available values
 
 ## New requirements
 
-* <replace> template might offer text processing options 
-* \"XX-reference\" templates which generate strings for
+ \"XX-reference\" templates which generate strings for
   use in other templates, eg internal library as dependency
   in another place in the build system.
 
 ## Completed
 
-* <option> part of template should specify which replacements are critical OR should be ignored
+* <option> @target specifies which replacements are critical
+* <replace> can @split/@join string and add @prefix/@suffix text
+* 2021 July: Runs single, multi-dir and multi-lang (auto-detect compiler)
 "
     end
   end
