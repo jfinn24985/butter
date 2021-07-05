@@ -1,12 +1,10 @@
 class UmlArtifact
 !!!273328.cpp!!!	~UmlArtifact()
 this->update_description();
-!!!273072.cpp!!!	document(in start_phrase : unistr, in end_phrase : unistr) : compound_document
+!!!273072.cpp!!!	document() : compound_document
 if( ! this->doc_ )
 {
   this->doc_.reset( new butter::compound_document );
-  this->doc_->start_phrase( start_phrase );
-  this->doc_->end_phrase( end_phrase );
   QByteArray tmp_( this->description() );
   if( ! tmp_.isEmpty() )
   {
@@ -20,12 +18,12 @@ return *(this->doc_);
 if( nullptr == this->doc_.get() )
 {
   BUTTER_REQUIRE( nullptr != art.doc_.get(), "Get document before merging." );
-  this->document( art.doc_->start_phrase(), art.doc_->end_phrase() );
+  this->document();
 }
 // check we have other doc or generate
 if( nullptr == art.doc_.get() )
 {
-  art.document( this->doc_->start_phrase(), this->doc_->end_phrase() );
+  art.document();
 }
 BUTTER_REQUIRE( nullptr != this->doc_.get() && nullptr != art.doc_.get(), "Unable to create compound documents from UmlArtifact object." );
 // merge

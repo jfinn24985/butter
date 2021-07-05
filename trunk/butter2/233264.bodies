@@ -2,8 +2,8 @@ class system_generator
 !!!388656.cpp!!!	create_system(inout log : base_log) : void
 BUTTER_REQUIRE(nullptr != this->style_.get(), "Need to have a style object before calling create_system");
 BUTTER_REQUIRE(nullptr != this->root_.get(), "Need to have a location set before calling create_system");
-QString start_phrase{ this->style_->get_start_phrase() };
-QString end_phrase{ this->style_->get_end_phrase() };
+compound_document::start_phrase( this->style_->get_start_phrase() );
+compound_document::end_phrase( this->style_->get_end_phrase() );
 ////////////////////////////////////////////////////
 // Check for top-level system build-file document(s)
 // - create from template if necessary.
@@ -46,7 +46,7 @@ UmlArtifact * root_build_file = nullptr;
       projectbook["includes"] = ".";
     }
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
-    root_build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble_root(), projectbook);
+    root_build_file->document().preamble().value = this->style_->make_element(preamble_root(), projectbook);
   }
 }
 
@@ -86,7 +86,7 @@ while( ! location_stack_.isEmpty() )
       {
         state->packages().at(i_)->in_scope(packbook, false, log);
       }
-      build_file->document(start_phrase, end_phrase).preamble().value = this->style_->make_element(preamble(), packbook);
+      build_file->document().preamble().value = this->style_->make_element(preamble(), packbook);
     }
   }
   // Get deployment views from current location's packages
@@ -106,7 +106,7 @@ while( ! location_stack_.isEmpty() )
       {
         packbook["includes"] = ".";
       }
-      build_file->document(start_phrase, end_phrase)["package-" + I_->name()].value = this->style_->make_element("package", packbook);
+      build_file->document()["package-" + I_->name()].value = this->style_->make_element("package", packbook);
     }
     for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
     {
@@ -167,15 +167,13 @@ while( ! location_stack_.isEmpty() )
     UmlItem::string_map locbook;
     locbook["name"] = top_->path();
     locbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
-    root_build_file->document(start_phrase, end_phrase)[top_->path()].value += this->style_->make_element("descendent-link", locbook);
+    root_build_file->document()[top_->path()].value += this->style_->make_element("descendent-link", locbook);
   }
 }
 
 !!!445744.cpp!!!	generate_target(inout target : UmlArtifact, inout build_file : UmlArtifact, inout targetbook : build_style::map_type, inout log : base_log) : void
 //////////////
 // Is a local target
-QString start_phrase{ this->style_->get_start_phrase() };
-QString end_phrase{ this->style_->get_end_phrase() };
 const QByteArray target_name_( target->name() );
 log.trace(base_log::debug, "Local target "+target_name_+" is library or executable");
 const QByteArray stereotype_label_( target->stereotype() );
@@ -258,7 +256,7 @@ do {
       {
         currentbook["basename"] = current_art_->name();
         currentbook["BASENAME"] = currentbook["basename"].toUpper();
-        build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object", currentbook);
+        build_file->document()[current_art_->name()].value = this->style_->make_element("object", currentbook);
         targetbook["source"] += this->style_->make_element( "dependency-object", currentbook, current_art_->name());
       }
       else
@@ -273,7 +271,7 @@ do {
       currentbook["BASENAME"] = currentbook["basename"].toUpper();
       // For "document" is "other" type and need to pass ldflags and create object
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
-      build_file->document(start_phrase, end_phrase)[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
+      build_file->document()[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
       targetbook["source"] += this->style_->make_element( "dependency-object", currentbook, current_art_->name());
     }
   }
@@ -442,34 +440,31 @@ do {
 } while(false);
 if(! entry.isEmpty())
 {
-  std::swap(build_file->document(start_phrase, end_phrase)[target_name_].value, entry);
+  std::swap(build_file->document()[target_name_].value, entry);
 }
 
 !!!445872.cpp!!!	generate_external_target(in target : UmlArtifact, inout build_file : UmlArtifact, inout targetbook : build_style::map_type, inout log : base_log) : void
-QString start_phrase{ this->style_->get_start_phrase() };
-QString end_phrase{ this->style_->get_end_phrase() };
 QString extern_project_name{ targetbook[ UmlItem::project_label() ] };
 //////////////////////////////////////////////////
 // Is an external target for project.
+log.trace(base_log::warn, "Generate external target : "+const_cast<UmlArtifact*>(target)->name()+"." );
 if( targetbook.end() != targetbook.find( UmlItem::buildfile_label() ) )
 {
   // Ensure inclusion of external build file for external project
-  build_file->document(start_phrase, end_phrase)[extern_project_name].value = this->style_->make_element("include-buildfile", targetbook);
+  build_file->document()[extern_project_name].value = this->style_->make_element("include-buildfile", targetbook);
 }
 else
 {
   // If needed, add external library preamble
-  if( build_file->document(start_phrase, end_phrase)[extern_project_name].value.isEmpty() )
+  if( build_file->document()[extern_project_name].value.isEmpty() )
   {
-    build_file->document(start_phrase, end_phrase)[extern_project_name].value = this->style_->make_element("extern-preamble", targetbook);
+    build_file->document()[extern_project_name].value = this->style_->make_element("extern-preamble", targetbook);
   }
-  build_file->document(start_phrase, end_phrase)[extern_project_name].value += this->style_->make_element("extern-library", targetbook);
+  build_file->document()[extern_project_name].value += this->style_->make_element("extern-library", targetbook);
 }
 !!!452400.cpp!!!	get_build_file(inout state : location_state, in file_name : string) : UmlArtifact
 // - pointer to a build file
 UmlArtifact * build_file = nullptr;
-QString start_phrase{ this->style_->get_start_phrase() };
-QString end_phrase{ this->style_->get_end_phrase() };
 QVector< UmlItem * > doc_list = state->find_uml_document( file_name );
 if( ! doc_list.isEmpty() )
 {
@@ -480,12 +475,11 @@ if( ! doc_list.isEmpty() )
   {
     for( int i_ = 1; i_ < doc_list.count(); ++i_ )
     {
-      build_file->document(start_phrase, end_phrase).merge(
-        dynamic_cast< UmlArtifact * >( doc_list[i_] )->document(start_phrase, end_phrase) );
+      build_file->document().merge( dynamic_cast< UmlArtifact * >( doc_list[i_] )->document() );
       doc_list[i_]->set_Name( ("OLD_" + doc_list[i_]->name() ) );
     }
   }
-  build_file->document(start_phrase, end_phrase).reset();
+  build_file->document().reset();
 }
 return build_file;
 !!!337968.cpp!!!	parse_project(inout a_item : UmlItem, inout log : base_log) : void

@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 76
+  revision 77
   modified_by 42 "finnerty"
   // class settings
   
@@ -1362,6 +1362,97 @@ following initial order
 "
       end
 
+      attribute 166704 "end_phrase_"
+	class_attribute private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Text that ends a delineated section"
+      end
+
+      attribute 166576 "start_phrase_"
+	class_attribute private explicit_type "unistr"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+	comment "Text that starts a delineated section"
+      end
+
+      operation 273584 "end_phrase"
+	stereotype "const"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 273456 "start_phrase"
+	stereotype "const"
+	class_operation constvalue public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}
+}
+"
+	
+	
+	
+	
+      end
+
+      operation 273712 "end_phrase"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "val" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${name}_ = ${p0}; 
+}
+
+"
+	
+	
+	
+	
+      end
+
+      operation 273840 "start_phrase"
+	class_operation public explicit_return_type "void"
+	nparams 1
+	  param in name "val" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${name}_ = ${p0}; 
+}
+"
+	
+	
+	
+	
+      end
+
       class 129968 "document_element"
 	visibility package stereotype "struct"
 	cpp_decl "${comment}${template}struct ${name}${inherit} {
@@ -1526,32 +1617,6 @@ ${inlines}
 	end
       end
 
-      attribute 166704 "end_phrase_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "Text that ends a delineated section"
-      end
-
-      attribute 166576 "start_phrase_"
-	private explicit_type "unistr"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "Text that starts a delineated section"
-      end
-
       classrelation 129712 // close_ (<directional composition>)
 	relation 129712 *-->
 	  a role_name "close_" private
@@ -1650,8 +1715,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	nparams 0
 	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract};"
 	cpp_def "${comment}${inline}${typeprefix}${class}::${name}${(}${)} 
-: end_phrase_(), start_phrase_()
-, close_( close_label(), {}, {} )
+: close_( close_label(), {}, {} )
 , date_( date_label(), {}, {} )
 , date_orig_( date_label(), {}, {} )
 , postscript_()
@@ -1683,8 +1747,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	nparams 1
 	  param in name "source" type class_ref 129840 // compound_document
 	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract}
-    : end_phrase_( source.end_phrase_ ), start_phrase_( source.start_phrase_ )
-    , close_( source.close_ )
+    : close_( source.close_ )
     , date_( source.date_ )
     , date_orig_( source.date_orig_ )
     , postscript_( source.postscript_ )
@@ -1704,9 +1767,7 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	nparams 1
 	  param inout name "source" type class_ref 129840 // compound_document
 	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${abstract}
-    : end_phrase_( std::move( source.end_phrase_ ) )
-    , start_phrase_( std::move( source.start_phrase_ ) )
-    , close_( std::move( source.close_ ) )
+    : close_( std::move( source.close_ ) )
     , date_( std::move( source.date_ ) )
     , date_orig_( std::move( source.date_orig_ ) )
     , postscript_( std::move( source.postscript_ ) )
@@ -1725,8 +1786,6 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	nparams 1
 	  param inout name "source" type class_ref 129840 // compound_document
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} noexcept {
-      std::swap( end_phrase_, source.end_phrase_ );
-      std::swap( start_phrase_, source.start_phrase_ );
       std::swap( close_, source.close_ );
       std::swap( date_, source.date_ );
       std::swap( date_orig_, source.date_orig_ );
@@ -1873,21 +1932,6 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	
       end
 
-      operation 273584 "end_phrase"
-	stereotype "const"
-	const constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  return this->${name}_; }
-"
-	
-	
-	
-	
-      end
-
       operation 139056 "postscript"
 	stereotype "const"
 	const constvalue public explicit_return_type "unistr"
@@ -1937,21 +1981,6 @@ The order these are read in and written out is meaningful, therefore we use a ve
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
       return this->targets_.size();
     };"
-	
-	
-	
-	
-      end
-
-      operation 273456 "start_phrase"
-	stereotype "const"
-	const constvalue public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  return this->${name}_; }
-"
 	
 	
 	
@@ -2025,21 +2054,6 @@ If not has_target( a_label ) inserts and returns a new empty element"
 	comment "Get the date element."
       end
 
-      operation 273712 "end_phrase"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "val" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  this->${name}_ = ${p0}; }
-"
-	
-	
-	
-	
-      end
-
       operation 155952 "postscript"
 	public explicit_return_type "unistr"
 	nparams 0
@@ -2064,21 +2078,6 @@ If not has_target( a_label ) inserts and returns a new empty element"
 	
 	
 	comment "Get the preamble element."
-      end
-
-      operation 273840 "start_phrase"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "val" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  this->${name}_ = ${p0}; }
-"
-	
-	
-	
-	
       end
 
       operation 156208 "version"

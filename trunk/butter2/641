@@ -1,7 +1,7 @@
 format 224
 "API USER" // API USER
-  revision 125
-  modified_by 48 "finnerty"
+  revision 126
+  modified_by 42 "finnerty"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -840,11 +840,9 @@ should not be considered for writing to the file system."
 
       operation 273072 "document"
 	preserve_cpp_body_indent public return_type class_ref 129840 // compound_document
-	nparams 2
-	  param in name "start_phrase" explicit_type "unistr"
-	  param in name "end_phrase" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${abstract};"
-	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${t0} ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	

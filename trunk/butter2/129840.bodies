@@ -1,4 +1,8 @@
 class compound_document
+!!!273584.cpp!!!	end_phrase() : unistr
+return end_phrase_;
+!!!273456.cpp!!!	start_phrase() : unistr
+return start_phrase_;
 !!!141104.cpp!!!	at(in idx : uint) : compound_document::document_element
 if( idx >= static_cast< unsigned int >(this->targets_.size()) )
 {
