@@ -1,4 +1,4 @@
-<?xml version = '1.0'?>
+﻿<?xml version = '1.0'?>
 <job>
     <property name="basefile" if="build-style=standard" >Jamfile</property>
     <property name="sysfile"  if="build-style=standard" >Jamrules</property>
@@ -13,8 +13,8 @@
     <property name="sysfile"  if="build-style=cmake" >local.cmake</property>
     <property name="mainfile" if="build-style=cmake" >CMakeLists.txt</property>
     <property name="lib-prefix" if="build-style=boost" >lib</property>
-    <property name="local-base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
-    <property name="base" >%(local-base)s</property>
+    <property name="deploy-base" >%(base-dir)s/%(project)s/trunk/test/%(project)s</property>
+    <property name="local-base" >%(deploy-base)s/output</property>
     <stage>Test generating source and build system from a single level project with 2 targets
       <verb-list category="setup" >
         Initialise the test location with latest copy of test.
@@ -31,18 +31,19 @@
           <property name="location" >%(checkout-url)s/%(branch)s</property>
         </verb>
         <verb type="patch" >
-          <property name="base" >%(base-dir)s/%(project)s</property>
+          <property name="base">%(base-dir)s/%(project)s/trunk/test/%(project)s</property>
           <property name="location" >%(patch-file)s</property>
         </verb>
 
       </verb-list>
-      <verb-list category="execute" >
-        Generate the build system and the source code
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec PATH{%(plug-out1)s} -exit</verb>
-        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/%(project)s.prj} -exec PATH{%(plug-out2)s} -exit</verb>
+      <verb-list category="execute">Generate the build system and the source code
+        <verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
+        <!-- verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out1)s -test:ok -exit</verb -->
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced
+        <property name="test-phrase">3.9.1 style-dependent build files exist</property>
         <verb type="file-list" >
           <property name="base" >%(local-base)s/src</property>
           <property name="file-type" >file</property>
@@ -71,17 +72,25 @@
           <property name="test-phrase">2.3.2 Document as non-C++ (t2t) source file</property>
         </verb>
         <verb type="file-list" >
+          <property name="base" >%(local-base)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(basefile)s %(sysfile)s</property>
         </verb>
-        <property name="test-phrase">3.9.1 style-dependent build files exist</property>
       </verb-list>
     </stage>
     <stage>
       Perform compilation and test compilation success
       <verb-list category="execute" >
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(build-tool)s} %(build-arg)s > build.log %(cmdsep)s %(cat)s build.log %(cmdsep)s popd</verb>
+       <property name="compile-command"  if="build-style=cmake" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s
+           { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
+           PATH{%(build-tool)s} %(build-arg)s &gt;&gt; build.log %(cmdsep)s
+           PATH{%(make)s} -k VERBOSE=1 %(make-arg)s install &gt;&gt; build.log %(cmdsep)s
+           %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
+       <property name="compile-command">/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s
+           { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
+           %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
+        <verb type="system" >%(compile-command)s</verb>
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced
@@ -108,7 +117,7 @@
            <property name="test-phrase">2.1.2 built shared library using build system</property>
         </verb>
         <verb type="file-list" >
-          <property name="base" >%(local-base)s/%(stage-data-dir)s</property>
+          <property name="base" >%(local-base)s/src/Library</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="error" >nonfatal</property>
@@ -138,11 +147,13 @@
       <verb-list category="verify" >
       Verify that the correct files have been produced
         <verb type="file-list" >
+          <property name="base" >%(local-base)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >output1</property>
         </verb>
         <verb type="compare" >
+          <property name="base" >%(local-base)s</property>
           <property name="location" >output1</property>
           <property name="test-phrase">1.2.1 Output of compiled program verified</property>
         </verb>
@@ -154,6 +165,7 @@
       </verb-list>
       <verb-list category="verify" >
       Verify that the correct files have been produced
+      <property name="base" >%(local-base)s/doc</property>
         <verb type="file-list" >
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
@@ -177,6 +189,7 @@
       </verb-list>
        <verb-list category="verify" >
       Verify that the correct files have been produced
+      <property name="base" >%(local-base)s</property>
         <verb type="file-list" >
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
