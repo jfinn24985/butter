@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 78
+  revision 79
   modified_by 42 "finnerty"
   // class settings
   
@@ -4463,13 +4463,13 @@ ${inlines}
 	comment "The default location of the XML file containing style definitions"
       end
 
-      operation 411440 "include_buildfile_tmpl"
+      operation 411440 "include_build_file_tmpl"
 	class_operation public explicit_return_type "string"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} text{ \"include-buildfile\" };
+  static ${type} text{ \"include-build-file\" };
   return text;
 }
 "
@@ -5315,19 +5315,14 @@ Makefile, CMake, Boost Jam and plain Jam.
 ## TODO
 
 * What to do with an unknown style (error message and default?)
-* Document current templates and available values
-
-## New requirements
-
- \"XX-reference\" templates which generate strings for
-  use in other templates, eg internal library as dependency
-  in another place in the build system.
+* Support user ''build-dir''
 
 ## Completed
 
 * <option> @target specifies which replacements are critical
 * <replace> can @split/@join string and add @prefix/@suffix text
 * 2021 July: Runs single, multi-dir and multi-lang (auto-detect compiler)
+* Draft document of current templates and properties
 
 # Developer documentation
 
@@ -5423,9 +5418,9 @@ The following table lists the required templates and their purpose.
 | extern-library | Set up an external library for use by other targets
 | include-buildfile | How to directly include a build file in another build file
 | link-shared-library | How to link a source library into a target (*ldflag* property)
-| object-other | Used for a dependent *document* artifact. Set options and compile.
+| object-other | Used when a *document* artifact is a dependent in a known non-c++ language.
 | object | Used when a dependent source artifact has local compilation properties. 
-| object | - Set extra options and possibly compile source. 
+|        | - Set extra options and possibly compile source. 
 | package | Add any properties defined on a package before its targets are defined.
 | preamble-root | The first generated content in the root build file.
 | preamble | The first generated content in non-root build files.
@@ -5434,6 +5429,47 @@ The following table lists the required templates and their purpose.
 | target-install | How to install a target
 | target-library | How to build a static library
 | target-other | How to build a non-standard target
+
+#### The build templates
+
+* package:
+    * key properties: name NAME path package PACKAGE includes flags ldflags
+    * set package level includes/flags/ldflags in build file, inheriting flags from system
+    * recommend: create labelled constants that can be referred to in other rules
+* object/object-other:
+    * key properties: name NAME path package PACKAGE project PROJECT includes flags ldflags
+    * set object level includes/flags in build file, inheriting flags from package
+    * user properties: compiler
+    * (system adds ldflags to targets)
+    * recommend: set flags on object, make object depend on source,
+    * recommend: build target if needed by style or if compiler specified
+* target:
+    * key properties: name NAME path package PACKAGE project PROJECT source dependency includes flags ldflags
+    * set include/flags/ldflags, inheriting flags from package
+    * user properties: type(static|shared)
+    * build target rule
+* target-install:
+    * key properties: name NAME path package PACKAGE project PROJECT install install-mode
+    * install target rule
+
+* target-other:
+    * When a library target has the user-defined property \"other\" set
+    * key properties: name NAME path package PACKAGE project PROJECT source dependency includes flags ldflags
+    * user properties: other OTHER buildfile (install) compiler
+
+'''
+    <if buildfile>{template build-file}
+    # jam
+    [OTHER]FLAGS on [target] = [flags] [ldflags] ;
+    [other] [target] : [sources] ;
+    # bjam
+    [other] [target] : [sources] <flags>\"[flags] [ldflags]\" ;
+    # make
+    [target] :: [OTHER]FLAGS=[flags] [ldflags]
+    [target] :: [source]
+    <if compiler>{tab}[compiler] $([OTHER]FLAGS) $< $@
+'''
+
 
 ## Dictionary properties
 
@@ -5454,6 +5490,7 @@ The following table lists the *implicit* properties defined by the program in ev
 | PACKAGE | All uppercase version of *package*.
 | path | The file system path from the *root* location (or \".\" if at *root*).
 | source | Space separated list of source file dependencies (see *Dependency templates*)
+| ldflags | link flags for shared libraries
 
 The following table lists *implicit* properties defined by the program for specific templates.
 
@@ -5492,6 +5529,9 @@ these are derived from see **User defined properties**
 | install | Location to install target (has style specific default)
 | install-mode | File-system access mode for installed target (has style specific default)
 | ldflags | Extra linker flags
+| compiler | Set explicit compiler for a source file
+| other | Set alternate build rule for a target
+| build-dir | Set directory to build object files in (if supported)
 
 ## Compound documents
 

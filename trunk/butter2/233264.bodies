@@ -190,8 +190,6 @@ QString entry;
 do {
   QTextOStream eos{ &entry };
 
-  eos << this->style_->make_element("target-start", targetbook);
-
   auto append_if_present = [](QString const& label, UmlItem::string_map const& book1, UmlItem::string_map & book2)
   {
     auto itr = book1.find(label);
@@ -282,6 +280,13 @@ do {
     if ( targetbook.end() != targetbook.find( UmlItem::other_label() ) )
     {
       log.trace(base_log::debug, "- library is other type");
+      if( targetbook.end() != targetbook.find( "build-file" ) )
+      {
+        eos << this->style_->make_element(include_build_file_tmpl(), targetbook);
+      }
+      targetbook["basename"] = target_name_.left(target_name_.lastIndexOf("."));
+      targetbook["BASENAME"] = targetbook["basename"].toUpper();
+      targetbook["OTHER"] = targetbook["other"].toUpper();
       eos << this->style_->make_element("target-other", targetbook);
       if( ! targetbook.contains(UmlItem::install_label()) )
       {

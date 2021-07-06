@@ -193,18 +193,28 @@ VARIANT ?= DEBUG
 </template>
 
  <!-- how to include an additional buildfile -->
- <template label="include-buildfile">-include $(ROOTDIR)/<replace label="build-file"/>.$(SUFMAK)
+ <template label="include-build-file">-include $(ROOTDIR)/<replace label="build-file"/>.$(SUFMAK)
 </template>
 
  <!-- how to build an object file -->
  <template label="object">
-<replace label="name"/>$(SUFOBJ) :: <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option><option label="inc">$(patsubst %,-I%,<replace label="includes"/>)</option>
+<replace label="NAME"/>_FLAGS := $(CXXFLAGS)
+<option label="inc" target="includes"><replace label="NAME"/>_FLAGS += $(patsubst %,-I%,<replace label="includes"/>) <replace label="flags"/></option>
+<option label="flags" target="flags"><replace label="NAME"/>_FLAGS += <replace label="flags"/></option>
+<replace label="basename"/>$(SUFOBJ) :: CXXFLAGS=$(<replace label="NAME"/>_FLAGS)
+<replace label="basename"/>$(SUFOBJ) :: <replace label="name"/>
+<option label="build" target="compiler">	<replace label="compiler"/> $(<replace label="NAME"/>_FLAGS) <replace label="basename"/>$(SUFOBJ) <replace label="name"/></option>
 </template>
 
  <!-- Other target type -->
  <template label="object-other">
+<replace label="NAME"/>_FLAGS := ""
+<option label="inc" target="includes"><replace label="NAME"/>_FLAGS += $(patsubst %,-I%,<replace label="includes"/>) <replace label="flags"/></option>
+<option label="flags" target="flags"><replace label="NAME"/>_FLAGS += <replace label="flags"/></option>
+<replace label="basename"/>$(SUFOBJ) :: CFLAGS=$(<replace label="NAME"/>_FLAGS)
+<replace label="basename"/>$(SUFOBJ) :: FORTRANFLAGS=$(<replace label="NAME"/>_FLAGS)
 <replace label="basename"/>$(SUFOBJ) :: <replace label="name"/>
-<replace label="basename"/>$(SUFOBJ) :: <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option><option label="inc">$(patsubst %,-I%,<replace label="includes"/>)</option>
+<option label="build" target="compiler">	<replace label="compiler"/> $(<replace label="NAME"/>_FLAGS) <replace label="basename"/>$(SUFOBJ) <replace label="name"/></option>
 </template>
 
  <!-- template for start of (internal) package -->
@@ -290,6 +300,23 @@ CLEAN_TEMP:= $(CLEAN_TEMP) $(<replace label="NAME"/>OBJ) $(<replace label="NAME"
 all :: <replace label="name"/>$(SUFEXE) 
 
 CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFEXE)
+</template>
+
+ <!-- template for a target other -->
+ <template label="target-other">
+<replace label="BASENAME"/>_SRC:=<replace label="source"/>
+<replace label="BASENAME"/>_FLAGS:=""
+<option label="flags" target="flags"><replace label="BASENAME"/>_FLAGS+=<replace label="flags"/>
+</option><option label="ldflags" target="ldflags"><replace label="BASENAME"/>_FLAGS+=<replace label="ldflags"/>
+</option>
+
+<replace label="name"/> :: <replace label="OTHER"/>FLAGS:=$(<replace label="BASENAME"/>_FLAGS) $(<replace label="OTHER"/>FLAGS)
+<replace label="name"/> :: $(<replace label="BASENAME"/>_SRC) <option label="depends"><replace label="dependency"/></option> 
+<option label="build" target="compiler">	<replace label="compiler"/> $(<replace label="OTHER"/>FLAGS) <replace label="name"/> $(<replace label="BASENAME"/>_SRC) <option label="depends"><replace label="dependency"/></option></option>
+
+all :: <replace label="name"/> 
+
+CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>
 </template>
 
  <!-- template for a target source -->
@@ -392,7 +419,7 @@ set (<replace label="NAME"/>INC <replace label="includes"/>)
 </template>
 
  <!-- how to include an additional buildfile -->
- <template label="include-buildfile">-include (${CMAKE_SOURCE_DIR}/<replace label="build-file"/>.${SUFMAK}
+ <template label="include-build-file">-include (${CMAKE_SOURCE_DIR}/<replace label="build-file"/>.${SUFMAK}
 </template>
 
  <!-- how to build an object file -->
@@ -616,7 +643,7 @@ ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
  <template label="dependency-shared-library"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR)</template>
  
  <!-- how to include an additional buildfile -->
- <template label="include-buildfile">include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
+ <template label="include-build-file">include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
 </template>
 
  <!-- how to build an object file -->
@@ -822,7 +849,7 @@ constant <replace label="NAME"/>INC : <replace label="includes"/> ;
 </template>
 
  <!-- how to include an additional buildfile -->
- <template label="include-buildfile">-include $(topdir)/<replace label="build-file"/> ;
+ <template label="include-build-file">-include $(topdir)/<replace label="build-file"/> ;
 </template>
 
  <!-- how to build an object file -->
