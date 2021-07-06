@@ -1,7 +1,7 @@
 format 224
 "Unit-tests" // Unit-tests
-  revision 29
-  modified_by 48 "finnerty"
+  revision 30
+  modified_by 42 "finnerty"
   // class settings
   
   classdiagramsettings member_max_width 0 end
@@ -1244,6 +1244,8 @@ ${namespace_end}"
 	artifact_ref 3456 // UmlBaseUseCase
 	artifact_ref 3584 // UmlBaseUseCaseDiagram
 	artifact_ref 3712 // UmlBaseUseCaseView
+	artifact_ref 4736 // CppSettings
+	artifact_ref 5120 // UmlSettings
 	artifact_ref 5248 // UmlCom
 	artifact_ref 6528 // UmlBaseComponent
 	artifact_ref 7937 // UmlArtifact

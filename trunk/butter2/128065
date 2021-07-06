@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 77
+  revision 78
   modified_by 42 "finnerty"
   // class settings
   
@@ -5328,6 +5328,206 @@ Makefile, CMake, Boost Jam and plain Jam.
 * <option> @target specifies which replacements are critical
 * <replace> can @split/@join string and add @prefix/@suffix text
 * 2021 July: Runs single, multi-dir and multi-lang (auto-detect compiler)
+
+# Developer documentation
+
+The program operates as follows:
+
+* Map each *UmlPackage* in the *bouml* project onto a file-system *location*.
+* These *locations* are formed into a tree, with the lowest *location* being the *root*.
+    * A *location* may have to be added for this *root* location.
+* A set of *properties*, verbatim *files* and *templates* are read for the chosen *style*
+* Starting at the *root* location and proceeding down the tree:
+    * A dictionary of properties for the current context/scope is made containing:
+        * Any *properties* from the style definition
+        * Explicit properties set by the user on the current *bouml* object
+        * Implicit properties derived from the current object, such as *name*, *path* etc.
+    * For each *UmlPackage* at each *location*:
+        * A dictionary is created and any *package* style *templates* are instantiated
+        * For each *UmlArtifact* that is a target:
+            * A dictionary is created and any  *target* style *templates* are instantiated
+            * For each dependent *UmlArtifact* of the target:
+                * A dictionary is created and any *dependency* style *templates* are instantiated
+
+## Style definitions
+
+Each style defines a set of files, properties and templates.
+
+### Verbatim files
+
+A style can define a set of files to be copied verbatim into the root directory of the 
+build system.  These files are copied into the *bouml* project once.  Subsequent calls to the
+*butter* plugout will not recopy these files if they already exist.  This allows the user to
+alter the original file to suit their needs.
+
+### Properties
+
+The system relies on a set of predefined properties to adapt to the current build style.  These
+include details such as the names of the artifacts to create.  The dictionary of these properties
+is available when instantiating all templates.  This allows the style writer to include 
+additional properties as needed when writing templates.
+
+The following table lists the expected predefined properties
+
+| Property | Value  |
+| :--- | :--- |
+| root-file | The name of the top-level build file
+| build-file | The name of sub-level build files
+| start-phrase | Indicates the start of a compound document element (see *Compound documents*)
+| end-phrase | Indicates the start of a compound document element (see *Compound documents*)
+
+| binary-install | Location to install executable files
+| binary-install-mode | Access permissions on executable files
+| library-install | Location to install shared library files
+| library-install-mode | Access permissions on shared library files
+| other-install | Location to install documentation or data files
+| other-install-mode | Access permissions on ordinary files
+
+### Templates
+
+Templates are used to generate text to insert into build files.  Templates can not be
+nested. Templates contain the following elements:
+
+* Verbatim text - copied directly into output
+* replace element - text from the property dictionaries or nothing if no matching property
+* option element - defines a region that is only included if enclosed *replace* elements have values
+
+The *replace* element has the following attributes
+
+| Attribute | Purpose  |
+| :--- | :--- |
+| label | The name of the target property in the dictionary
+| split | A character to use to split the property value into a list
+| join | A string to use to rejoin a list created by the *split* attribute
+| prefix | A string to prepend to the value
+| suffix | A string to append to the value
+
+The *option* element has the following attributes
+
+| Attribute | Purpose  |
+| :--- | :--- |
+| label | User supplied name for optional section
+| target | List of replace@label elements that must have values
+|        | If no option@target then all *replace* elements must have values
+
+The following table lists the required templates and their purpose.
+
+| Template | Purpose  |
+| :--- | :--- |
+| comment | Add comment to a build file
+| dependency-object | How to add a object artifact as *dependency* property of target
+| dependency-shared-library | How to add a shared library as *dependency* property of target
+| dependency-source | How to add a source artifact as *source* property of target
+| dependency-static-library | How to add a static library as *dependency* property of target
+| descendent-link | How to connect to build files in subdirectories
+| extern-library | Set up an external library for use by other targets
+| include-buildfile | How to directly include a build file in another build file
+| link-shared-library | How to link a source library into a target (*ldflag* property)
+| object-other | Used for a dependent *document* artifact. Set options and compile.
+| object | Used when a dependent source artifact has local compilation properties. 
+| object | - Set extra options and possibly compile source. 
+| package | Add any properties defined on a package before its targets are defined.
+| preamble-root | The first generated content in the root build file.
+| preamble | The first generated content in non-root build files.
+| target-dso | How to build a shared library
+| target | How to build an executable
+| target-install | How to install a target
+| target-library | How to build a static library
+| target-other | How to build a non-standard target
+
+## Dictionary properties
+
+At each scope entry a new dictionary is created and filled from the current artifact.  This
+can be done with tree descent or only the current object.  Depending on the situation some
+properties, like *includes*, *flags* and *ldflags*, are propagated to the enclosing scope.
+Conversely some properties, like *path*, are injected into the sub-scope.
+
+The following table lists the *implicit* properties defined by the program in every scope.
+
+| Property | Value  |
+| :--- | :--- |
+| dependency | Space separated list of linker dependencies (see *Dependency templates*)
+| includes | Space separated list with the current *UmlPackage* header directory and any user-defined locations
+| name | Current name of the in-scope object as seen in bouml (any spaces replaced by \"\\_\").
+| NAME | All uppercase version of *name*.
+| package | The name of the current target's *UmlPackage*.
+| PACKAGE | All uppercase version of *package*.
+| path | The file system path from the *root* location (or \".\" if at *root*).
+| source | Space separated list of source file dependencies (see *Dependency templates*)
+
+The following table lists *implicit* properties defined by the program for specific templates.
+
+| Property | Template Scope | Value |
+| :--- | :--- | :--- |
+| build-file | include-buildfile | Name of file to include
+| header-extension | preamble | The value set as the header file extension in the project's generation settings
+| project | dependency-... | The name of the dependency's *UmlPackage*.
+| PROJECT | dependency-... | All uppercase version of *project*.
+| root-dir | preamble | Absolute path to root of build system
+| source-extension | preamble | The value set as the source file extension in the project's generation settings
+| text | comment | Text that is to be inserted as a comment in build files
+
+The following table lists the common *implicit* properties defined by the program for specific scopes.
+
+| Property | Scope | Value |
+| :--- | :--- | :--- |
+| basename | artifact@stereotype = source | As per *name*. 
+| basename | artifact@stereotype = document | As per *name* except with any ''.\\*'' suffix removed. 
+| BASENAME | artifact@stereotype = document | All uppercase version of *basename*.
+
+The following table lists the *explicit* properties with default values in the style definition file
+
+| Property | Value  |
+| :--- | :--- |
+| install | Location to install target
+| install-mode | File-system access mode for installed target
+
+The following table lists the *explicit* properties that can be set by the users at for each scope.  For where
+these are derived from see **User defined properties**
+
+| Property | Value  |
+| :--- | :--- |
+| flags | Extra compilation flags
+| includes | Space separated list of header directories 
+| install | Location to install target (has style specific default)
+| install-mode | File-system access mode for installed target (has style specific default)
+| ldflags | Extra linker flags
+
+## Compound documents
+
+The *butter* program wants to be able to reread and edit existing
+build files while also keeping any changes made by the user.
+It does this using a contract: The system designates parts of the
+file it has complete control of and promises to leave unaltered any
+content outside the designated parts.  To do this it uses marked
+and labelled sections such as the following:
+
+'''
+    # User supplied information            <-- start of document element \"label1\"
+    CFLAGS on TARGET1 += B ;
+    ## START: label1                       <-- start of system content
+    # System supplied information
+    SRC1 = a.c b.c
+    exe TARGET1 : $(SRC1) ;
+    ## END: label1                         <-- end of document element \"label1\"
+    # More user supplied information       <-- start of document element \"label2\"
+    CFLAGS on TARGET2 += D ;
+    ## START: label2
+    # System supplied information
+    SRC2 = a.c b.c
+    exe TARGET2 : $(SRC2) ;
+    ## END: label2                          <-- end of document element \"label2\"
+    # Last user supplied information        <-- start of postscript
+    clean : d.a ;
+'''
+
+When reading such a build file the system creates a list of
+document *elements*. Such elements are made of the user supplied
+text preceding a marked section, the label of the marked section
+and contents of the marged section.  The last user supplied text is
+stored as a *postscript*.  The ordering of elements is maintained
+so that a knowledgable user could reorder the build sequence by
+cut-n-paste reordering of the elements.
 "
     end
   end
