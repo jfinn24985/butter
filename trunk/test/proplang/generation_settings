@@ -1,9 +1,10 @@
 
   cpp_default_defs 
-  cpp_h_extension "hpp" cpp_src_extension "cpp" java_extension "java" php_extension "php" python_extension "py" idl_extension "idl"
+  cpp_h_extension "hpp" cpp_src_extension "cpp" cpp_h_add_extensions "" cpp_src_add_extensions "" java_extension "java" php_extension "php" python_extension "py" idl_extension "idl"
   cpp_include_with_path
   cpp_root_relative_path
   cpp_force_namespace_gen
+  cpp_type_by_value_force_its_incl_in_header
   cpp_javadoc_comment
 
   type_forms 15 // uml cpp java idl cpp_in cpp_out cpp_inout cpp_return
@@ -30,15 +31,18 @@
     "set" "set" "Set" "set" "sequence"
     "map" "map" "Map" "dict" "sequence"
   
-  classes_stereotypes 14 // uml cpp java php python idl
+  classes_stereotypes 17 // uml cpp java php python idl
     "class" "class" "class" "class" "class" "valuetype"
+    "trait" "class" "class" "trait" "class" "valuetype"
     "interface" "class" "interface" "interface" "class" "interface"
     "exception" "class" "class" "class" "class" "exception"
     "enum" "enum" "enum" "enum" "enum" "enum"
+    "enum_class" "enum_class" "enum" "enum" "enum" "enum"
     "enum_pattern" "enum" "enum_pattern" "enum" "enum" "enum"
     "struct" "struct" "class" "class" "class" "struct"
     "union" "union" "class" "class" "class" "union"
     "typedef" "typedef" "ignored" "ignored" "ignored" "typedef"
+    "template_typedef" "template_typedef" "ignored" "ignored" "ignored" "typedef"
     "boundary" "class" "class" "class" "class" "interface"
     "control" "class" "class" "class" "class" "valuetype"
     "entity" "class" "class" "class" "class" "valuetype"
@@ -84,7 +88,11 @@ ${inlines}
 ${items}
 };
 "
+  cpp_default_enumclass_decl "${comment}enum class ${name} {
+${items}};
+"
   cpp_default_typedef_decl "${comment}typedef ${type} ${name};
+"cpp_default_template_typedef_decl "${comment}${template}using ${name} = ${inherit};
 "
   cpp_default_attribute_declaration "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 " // multiplicity 1
@@ -114,22 +122,23 @@ ${items}
   cpp_default_operation_definition "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
+  cpp_indent_visibility "  " cpp_indent_friendclass "  " cpp_indent_subclass "    "
   java_default_src_content "${comment}
 ${package}
 ${imports}
 ${definition}"
-  java_default_class_decl "${comment}${@}${visibility}${final}${abstract}class ${name}${extends}${implements} {
+  java_default_class_decl "${comment}${@}${visibility}${static}${final}${abstract}class ${name}${extends}${implements} {
 ${members}}
 "
   java_default_external_class_decl "${name}"
-  java_default_interface_decl "${comment}${@}${visibility}interface ${name}${extends} {
+  java_default_interface_decl "${comment}${@}${visibility}${static}interface ${name}${extends} {
 ${members}}
 "
-  java5_default_enum_decl "${comment}${@}${visibility}${final}${abstract}enum ${name}${implements} {
+  java5_default_enum_decl "${comment}${@}${visibility}${static}${final}${abstract}enum ${name}${implements} {
 ${items};
 ${members}}
 "
-  java_default_enum_decl "${comment}${@}${visibility}final class ${name} {
+  java_default_enum_decl "${comment}${@}${visibility}${static}final class ${name} {
 ${members}
   private final int value;
 
@@ -183,6 +192,9 @@ ${items}}
 "
   php_default_external_class_decl "${name}"
   php_default_interface_decl "${comment}${visibility}interface ${name} {
+${members}}
+"
+  php_default_trait_decl "${comment}trait ${name} {
 ${members}}
 "
   php_default_attribute_declaration "  ${comment}${visibility}${const}${static}${var}${name}${value};
@@ -309,5 +321,14 @@ ${items}};
   idl_set "set_${name}"  twoways
   idl_default_operation_declaration "  ${comment}${oneway}${type} ${name}${(}${)}${raisesnl}${raises};
 "
+  mysqldefault_src_content "${comment}CREATE DATABASE IF NOT EXISTS ${name};
+use ${name};
+
+${definition}"
+  mysql_default_table_decl "DROP TABLE IF EXISTS ${name};
+CREATE TABLE ${name} ${definition}${comment};
+"
+  mysql_default_column_decl "  ${name} ${type}${notnull}${default}${autoincr}${comment}"
+  mysql_default_key_decl "  ${constraint}${modifier}KEY${name}${type} (${columns})${ref}${comment}"
   uml_get_name uml uml_set_name uml
 end

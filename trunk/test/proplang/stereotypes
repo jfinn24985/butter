@@ -3,7 +3,7 @@
     -_-> 3 "access" "import" "from"
   end
   
-  class_stereotypes  19 "actor" "auxiliary" "boundary" "control" "entity" "enum" "enum_pattern" "exception" "focus" "implementationClass" "interface" "@interface" "metaclass" "stereotype" "struct" "type" "typedef" "union" "utility"
+  class_stereotypes  23 "actor" "auxiliary" "boundary" "control" "entity" "enum" "enum_pattern" "exception" "focus" "implementationClass" "interface" "@interface" "metaclass" "stereotype" "struct" "type" "typedef" "union" "utility" "enum_class" "template_typedef" "table" "trait"
     ---- 4 "list" "set" "vector" "map"
     ---> 4 "list" "set" "vector" "map"
     ---|> 4 "{complete,disjoint}" "{incomplete,disjoint}" "{complete,overlapping}" "{incomplete,overlapping}"
@@ -15,13 +15,14 @@
     -_-|> 1 "bind"
   end
   
+  rolepart_stereotypes  0
   use_case_stereotypes 2 "realization" "realization"
   
     ---|> 4 "{complete,disjoint}" "{incomplete,disjoint}" "{complete,overlapping}" "{incomplete,overlapping}"
     -_-> 2 "include" "extend"
   end
   
-  artifact_stereotypes  7 "document" "file" "script" "source" "text" "library" "executable"
+  artifact_stereotypes  8 "document" "file" "script" "source" "text" "library" "executable" "database"
     -_-> 4 "deploy" "manifest" "import" "from"
   end
   
@@ -34,6 +35,7 @@
   pseudostate_stereotypes  0
   stateaction_stereotypes  2 "send-signal" "receive-signal"
   parameter_stereotypes  0
+  activityvariable_stereotypes  0
   parameterset_stereotypes  0
   activitynode_stereotypes  0
   activityaction_stereotypes  0
@@ -41,6 +43,7 @@
   expansionregion_stereotypes  0
   activitypartition_stereotypes  0
   pin_stereotypes  0
+  port_stereotypes  0
   component_stereotypes  6 "buildComponent" "entity" "implement" "process" "service" "subsystem"
   deploymentnode_stereotypes  3 "cpu" "device" "executionEnvironment"
   classview_stereotypes  0
@@ -48,7 +51,9 @@
   componentview_stereotypes  0
   deploymentview_stereotypes  0
   classdiagram_stereotypes  0
+  classcompositediagram_stereotypes  0
   seqdiagram_stereotypes  0
+  msg_stereotypes  0
   coldiagram_stereotypes  0
   usecasediagram_stereotypes  0
   statediagram_stereotypes  0

@@ -2,10 +2,10 @@ Index: proplang.prj
 ===================================================================
 --- proplang.prj	(revision 108)
 +++ proplang.prj	(working copy)
-@@ -43,7 +43,7 @@
+@@ -49,7 +49,7 @@
    key "butter ldflags" value "$(OPENMP)"
    key "butter build-dir" value "build"
-   key "butter include" value "include/exe"
+   key "butter includes" value "include/exe"
 -  key "butter style" value "unknown"
 +  key "butter style" value "make"
    key "PROJECT" value "PROPLANG"
