@@ -35,15 +35,43 @@ UmlArtifact * root_build_file = nullptr;
     const QByteArray package_name_{ UmlPackage::getProject()->name() };
     UmlPackage::getProject()->in_scope(projectbook, false, log);
     projectbook["name"] = package_name_;
-    projectbook["NAME"] = package_name_.toUpper();
+    projectbook["NAME"] = make_var_name(package_name_);
     projectbook["root-dir"] = this->root_->base_path();
     projectbook["path"] = ".";
     projectbook["source-extension"] = CppSettings::sourceExtension();
     projectbook["header-extension"] = CppSettings::headerExtension();
-    projectbook["includes"] = enumerate_path(this->root_->base_path()).create_relative( UmlPackage::getProject()->hdr_path());
-    if( "" == projectbook["includes"] )
     {
-      projectbook["includes"] = ".";
+      auto pack_inc = enumerate_path(this->root_->base_path()).create_relative( UmlPackage::getProject()->hdr_path());
+      if( pack_inc.isEmpty() )
+      {
+        pack_inc = ".";
+      }
+      {
+        UmlItem::string_map book;
+        book["text"] = pack_inc;
+        pack_inc = this->style_->make_element("includes-relative", book);
+      }
+      log.trace(base_log::warn, "Start project includes: ["+projectbook["includes"]+"]" ); 
+      if ( ! projectbook["includes"].isEmpty() )
+      {
+        auto incs = projectbook["includes"].split(" ");
+        for ( auto & inc : incs )
+        {
+          if( QDir( inc ).isRelative() )
+          {
+            UmlItem::string_map book;
+            book["text"] = inc;
+            inc = this->style_->make_element("includes-relative", book);
+          }
+        }
+        incs.push_back(pack_inc);
+        projectbook["includes"] = incs.join(" ");
+      }
+      else
+      {
+        projectbook["includes"] = pack_inc;
+      }
+      log.trace(base_log::warn, "End of merge: ["+projectbook["includes"]+"]" ); 
     }
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
     root_build_file->document().preamble().value = this->style_->make_element(preamble_root(), projectbook);
@@ -99,12 +127,40 @@ while( ! location_stack_.isEmpty() )
       I_->in_scope(packbook, false, log);
       const QByteArray package_name_{ I_->name() };
       packbook["package"] = package_name_;
-      packbook["PACKAGE"] = package_name_.toUpper();
+      packbook["PACKAGE"] = make_var_name(package_name_);
       packbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
-      packbook["includes"] = enumerate_path(this->root_->base_path()).create_relative(I_->hdr_path());
-      if( "" == packbook["includes"] )
       {
-        packbook["includes"] = ".";
+        auto pack_inc = enumerate_path(this->root_->base_path()).create_relative( UmlPackage::getProject()->hdr_path());
+        if( pack_inc.isEmpty() )
+        {
+          pack_inc = ".";
+        }
+        {
+          UmlItem::string_map book;
+          book["text"] = pack_inc;
+          pack_inc = this->style_->make_element("includes-relative", book);
+        }
+        log.trace(base_log::warn, "Start package includes: ["+packbook["includes"]+"]" ); 
+        if ( ! packbook["includes"].isEmpty() )
+        {
+          auto incs = packbook["includes"].split(" ");
+          for ( auto & inc : incs )
+          {
+            if( QDir( inc ).isRelative() )
+            {
+              UmlItem::string_map book;
+              book["text"] = inc;
+              inc = this->style_->make_element("includes-relative", book);
+            }
+          }
+          incs.push_back(pack_inc);
+          packbook["includes"] = incs.join(" ");
+        }
+        else
+        {
+          packbook["includes"] = pack_inc;
+        }
+        log.trace(base_log::warn, "End package includes: ["+packbook["includes"]+"]" ); 
       }
       build_file->document()["package-" + I_->name()].value = this->style_->make_element("package", packbook);
     }
@@ -125,9 +181,25 @@ while( ! location_stack_.isEmpty() )
             UmlItem::string_map targetbook;
             item_->in_scope( targetbook, true, log );
             targetbook["package"] = package_name_;
-            targetbook["PACKAGE"] = package_name_.toUpper();
+            targetbook["PACKAGE"] = make_var_name(package_name_);
             targetbook["name"] = target_name_;
-            targetbook["NAME"] = target_name_.toUpper();
+            targetbook["NAME"] = make_var_name(target_name_);
+            log.trace(base_log::warn, "Start target includes: ["+targetbook["includes"]+"]" ); 
+            if ( ! targetbook["includes"].isEmpty() )
+            {
+              auto incs = targetbook["includes"].split(" ");
+              for ( auto & inc : incs )
+              {
+                if( QDir( inc ).isRelative() )
+                {
+                  UmlItem::string_map book;
+                  book["text"] = inc;
+                  inc = this->style_->make_element("includes-relative", book);
+                }
+              }
+              targetbook["includes"] = incs.join(" ");
+            }
+            log.trace(base_log::warn, "End target includes: ["+targetbook["includes"]+"]" ); 
             if( top_ == this->root_->root() )
             {
               targetbook["path"] = ".";
@@ -141,7 +213,7 @@ while( ! location_stack_.isEmpty() )
             {
               UmlItem::string_map fullbook;
               item_->in_scope( fullbook, false, log );
-              if( targetbook.end() != targetbook.find( UmlItem::project_label() ) )
+              if( targetbook.end() != targetbook.find( UmlItem::external_label() ) )
               {
                 //////////////////////////////////////////////////
                 // Is an external target for project.
@@ -199,10 +271,16 @@ do {
       book2[label] = (value.isEmpty() ? itr.value() : value + " " + itr.value());
     }
   };
+  auto append_str_if_present = [](QString const& label, QString value, UmlItem::string_map & book2)
+  {
+      QString orig_value = book2[label];
+      book2[label] = (orig_value.isEmpty() ? value : orig_value + " " + value);
+  };
+  const QString target_flags{ targetbook[UmlItem::flags_label()] }; 
+  const QString target_includes{ targetbook[UmlItem::include_label()] }; 
 
   ///////////////////////
-  // PROCESS DEPENDENCIES
-  ///////////////////////
+  // Process dependencies
   for( unsigned int i_ = 0; i_ < target->associatedArtifacts().size(); ++i_ )
   {
     UmlArtifact * const current_art_ = target->associatedArtifacts().at( i_ );
@@ -210,9 +288,25 @@ do {
     UmlItem::string_map currentbook;
     current_art_->in_scope( currentbook, false, log );
     currentbook["name"] = current_art_->name();
-    currentbook["NAME"] = current_art_->name().toUpper();
+    currentbook["NAME"] = make_var_name(current_art_->name());
     currentbook["project"] = current_art_->package()->name();
-    currentbook["PROJECT"] = current_art_->package()->name().toUpper();
+    currentbook["PROJECT"] = make_var_name(current_art_->package()->name());
+    log.trace(base_log::warn, "Start dependent includes: ["+currentbook["includes"]+"]" ); 
+    if ( ! currentbook["includes"].isEmpty() )
+    {
+      auto incs = currentbook["includes"].split(" ");
+      for ( auto & inc : incs )
+      {
+        if( QDir( inc ).isRelative() )
+        {
+          UmlItem::string_map book;
+          book["text"] = inc;
+          inc = this->style_->make_element("includes-relative", book);
+        }
+      }
+      currentbook["includes"] = incs.join(" ");
+    }
+    log.trace(base_log::warn, "End dependent includes: ["+currentbook["includes"]+"]" ); 
     if( "." == this->find_path(current_art_) )
     {
       currentbook["path"] = ".";
@@ -252,8 +346,10 @@ do {
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
       if( need_object )
       {
+        append_str_if_present(UmlItem::flags_label(), target_flags, currentbook);
+        append_str_if_present(UmlItem::include_label(), target_includes, currentbook);
         currentbook["basename"] = current_art_->name();
-        currentbook["BASENAME"] = currentbook["basename"].toUpper();
+        currentbook["BASENAME"] = make_var_name(currentbook["basename"]);
         build_file->document()[current_art_->name()].value = this->style_->make_element("object", currentbook);
         targetbook["source"] += this->style_->make_element( "dependency-object", currentbook, current_art_->name());
       }
@@ -266,7 +362,7 @@ do {
     {
       // Name will have file extension, need version without
       currentbook["basename"] = current_art_->name().left(current_art_->name().lastIndexOf("."));
-      currentbook["BASENAME"] = currentbook["basename"].toUpper();
+      currentbook["BASENAME"] = make_var_name(currentbook["basename"]);
       // For "document" is "other" type and need to pass ldflags and create object
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
       build_file->document()[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
@@ -279,19 +375,52 @@ do {
   {
     if ( targetbook.end() != targetbook.find( UmlItem::other_label() ) )
     {
+      //////////////
+      // Other type (not a standard library or executable)
       log.trace(base_log::debug, "- library is other type");
       if( targetbook.end() != targetbook.find( "build-file" ) )
       {
         eos << this->style_->make_element(include_build_file_tmpl(), targetbook);
       }
       targetbook["basename"] = target_name_.left(target_name_.lastIndexOf("."));
-      targetbook["BASENAME"] = targetbook["basename"].toUpper();
-      targetbook["OTHER"] = targetbook["other"].toUpper();
+      targetbook["BASENAME"] = make_var_name(targetbook["basename"]);
+      targetbook["OTHER"] = make_var_name(targetbook["other"]);
       eos << this->style_->make_element("target-other", targetbook);
-      if( ! targetbook.contains(UmlItem::install_label()) )
+      if( targetbook.contains(UmlItem::install_label()) )
       {
-        // Other targets are only installed if install property is set
-        break;
+        // Other targets are only installed if they have the install property set
+        if(no_install_value() == targetbook[UmlItem::install_label()].toUpper())
+        {
+          log.trace(base_log::debug, "- target has install property set to not install");
+          break;
+        }
+        else if(standard_install_value() == targetbook[UmlItem::install_label()].toUpper())
+        {
+          log.trace(base_log::debug, "- target has install property set to the standard location");
+          if( this->style_->get_properties().contains( "other-install-location" ) )
+          {
+            targetbook[ UmlItem::install_label() ] = this->style_->get_properties()["other-install-location"];
+          }
+          else
+          {
+            log.trace(base_log::warn, "Install set up failed: unable to determine install location for target " + target_name_);
+            break;
+          }
+        }
+        if( ! targetbook.contains(UmlItem::install_mode_label()) || standard_install_value() == targetbook[UmlItem::install_mode_label()].toUpper() )
+        {
+          if( this->style_->get_properties().contains( "other-install-mode" ) )
+          {
+            targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["other_install_mode"];
+          }
+          else
+          {
+            log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+            break;
+          }
+        }
+        log.trace(base_log::debug, "- adding install section");
+        eos << this->style_->make_element("install-other", targetbook);
       }
     }
     else
@@ -301,146 +430,129 @@ do {
       auto itr = fullbook.find( UmlItem::lib_type_label() );
       if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
       {
+        ///////////////////////////////////////////
         // Default library type is a static library
         eos << this->style_->make_element("target-library", targetbook);
-        if( ! targetbook.contains(UmlItem::install_label()) )
+        if( targetbook.contains(UmlItem::install_label()) )
         {
           // static libraries are only installed if install property is set
-          break;
+          if(no_install_value() == targetbook[UmlItem::install_label()].toUpper())
+          {
+            log.trace(base_log::debug, "- target has install property set to not install");
+            break;
+          }
+          else if(standard_install_value() == targetbook[UmlItem::install_label()].toUpper())
+          {
+            log.trace(base_log::debug, "- target has install property set to the standard location");
+            if( this->style_->get_properties().contains( "library-install-location" ) )
+            {
+              targetbook[ UmlItem::install_label() ] = this->style_->get_properties()["library-install-location"];
+            }
+            else
+            {
+              log.trace(base_log::warn, "Install set up failed: unable to determine install location for target " + target_name_);
+              break;
+            }
+          }
+          if( ! targetbook.contains(UmlItem::install_mode_label()) || standard_install_value() == targetbook[UmlItem::install_mode_label()].toUpper() )
+          {
+            if( this->style_->get_properties().contains( "library-install-mode" ) )
+            {
+              targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["library-install-mode"];
+            }
+            else
+            {
+              log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+              break;
+            }
+          }
+          log.trace(base_log::debug, "- adding install section");
+          eos << this->style_->make_element("install-library", targetbook);
         }
       }
       else
       {
-        eos << this->style_->make_element("target-dso", targetbook);
+        ////////////////////////
+        // Shared library target
+        eos << this->style_->make_element("target-shared", targetbook);
+        if( ! targetbook.contains(UmlItem::install_label()) || standard_install_value() == targetbook[UmlItem::install_label()].toUpper() )
+        {
+          log.trace(base_log::debug, "- target has no install property or install property set to the standard location");
+          if( this->style_->get_properties().contains( "shared-install-location" ) )
+          {
+            targetbook[ UmlItem::install_label() ] = this->style_->get_properties()["shared-install-location"];
+          }
+          else
+          {
+            log.trace(base_log::warn, "Install set up failed: unable to determine install location for target " + target_name_);
+            break;
+          }
+        }
+        else
+        {
+          if(no_install_value() == targetbook[UmlItem::install_label()].toUpper())
+          {
+            log.trace(base_log::debug, "- target has install property set to not install");
+            break;
+          }
+        }
+        if( ! targetbook.contains(UmlItem::install_mode_label()) || standard_install_value() == targetbook[UmlItem::install_mode_label()].toUpper() )
+        {
+          if( this->style_->get_properties().contains( "shared-install-mode" ) )
+          {
+            targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["shared-install-mode"];
+          }
+          else
+          {
+            log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
+            break;
+          }
+        }
+        log.trace(base_log::debug, "- adding install section");
+        eos << this->style_->make_element("install-shared", targetbook);
       }
     }
   }
   else
   {
-    eos << this->style_->make_element("target", targetbook);
-  }
-
-  // INSTALL
-  // The target's type, set to exe then change if library etc
-  log.trace(base_log::debug, "- target assumed executable");
-  if( targetbook.contains(UmlItem::install_label()) )
-  {
-    log.trace(base_log::debug, "- target has install target property, do install regardless of type");
-    if(constants::no_install_value != targetbook[UmlItem::install_label()])
+    ////////////////////
+    // Executable target
+    eos << this->style_->make_element("target-executable", targetbook);
+    if( ! targetbook.contains(UmlItem::install_label()) || standard_install_value() == targetbook[UmlItem::install_label()].toUpper() )
     {
-      log.trace(base_log::debug, "- except target has install target property to not install");
-      break;
-    }
-    if( ! targetbook.contains(UmlItem::install_mode_label()) )
-    {
-      if ( stereotype_label_ == UmlItem::library_stereotype() )
+      log.trace(base_log::debug, "- target has no install property or install property set to the standard location");
+      if( this->style_->get_properties().contains( "executable-install-location" ) )
       {
-        if( this->style_->get_properties().contains( "library_install_mode" ) )
-        {
-          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["library_install_mode"];
-          // something like "$(LIBIFLAGS)";
-        }
-        else
-        {
-          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          break;
-        }
-      }
-      else if ( stereotype_label_ == UmlItem::executable_stereotype() )
-      {
-        if( this->style_->get_properties().contains( "binary_install_mode" ) )
-        {
-          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["binary_install_mode"];
-          // something like "$(BINIFLAGS)";
-        }
-        else
-        {
-          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          break;
-        }
-      }
-      else
-      {
-        if( this->style_->get_properties().contains( "other_install_mode" ) )
-        {
-          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["other_install_mode"];
-          // something like "$(FILEIFLAGS)";
-        }
-        else
-        {
-          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          break;
-        }
-      }
-    }
-  }
-  else
-  {
-    // NO predefined install label
-    if ( stereotype_label_ == UmlItem::library_stereotype() )
-    {
-      UmlItem::string_map fullbook;
-      target->in_scope( fullbook, true, log );
-      auto itr = fullbook.find( UmlItem::lib_type_label() );
-      if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
-      {
-        // do not install static libraries without install property
-        break;
-      }
-      if( this->style_->get_properties().contains( "library_install_location" ) )
-      {
-        targetbook[ UmlItem::install_label() ] = this->style_->get_properties()["library_install_location"];
-        // something like "$(LIBDIR)";
+        targetbook[ UmlItem::install_label() ] = this->style_->get_properties()["executable-install-location"];
       }
       else
       {
         log.trace(base_log::warn, "Install set up failed: unable to determine install location for target " + target_name_);
         break;
       }
-      if( ! targetbook.contains( UmlItem::install_mode_label() ) )
+    }
+    else
+    {
+      if(no_install_value() == targetbook[UmlItem::install_label()].toUpper())
       {
-        if( this->style_->get_properties().contains( "library_install_mode" ) )
-        {
-          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["library_install_mode"];
-        }
-        else
-        {
-          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          break;
-        }
+        log.trace(base_log::debug, "- target has install property set to not install");
+        break;
       }
     }
-    else if ( stereotype_label_ == UmlItem::executable_stereotype() )
+    if( ! targetbook.contains(UmlItem::install_mode_label()) || standard_install_value() == targetbook[UmlItem::install_mode_label()].toUpper() )
     {
-      if( this->style_->get_properties().contains( "binary_install_location" ) )
+      if( this->style_->get_properties().contains( "executable-install-mode" ) )
       {
-        targetbook[ UmlItem::install_label() ] = this->style_->get_properties()["binary_install_location"];
-        // something like "$(BINDIR)";
+        targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["executable-install-mode"];
       }
       else
       {
         log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
         break;
       }
-      if( ! targetbook.contains( UmlItem::install_mode_label() ) )
-      {
-        if( this->style_->get_properties().contains( "binary_install_mode" ) )
-        {
-          targetbook[ UmlItem::install_mode_label() ] = this->style_->get_properties()["binary_install_mode"];
-        }
-        else
-        {
-          log.trace(base_log::warn, "Install set up failed: unable to determine install flags for target " + target_name_);
-          break;
-        }
-      }
-    }
-    else
-    {
-      break; // other types require specific install instructions
     }
     log.trace(base_log::debug, "- adding install section");
-    eos << this->style_->make_element("target-install", targetbook);
+    eos << this->style_->make_element("install-executable", targetbook);
   }
 } while(false);
 if(! entry.isEmpty())
@@ -449,7 +561,7 @@ if(! entry.isEmpty())
 }
 
 !!!445872.cpp!!!	generate_external_target(in target : UmlArtifact, inout build_file : UmlArtifact, inout targetbook : build_style::map_type, inout log : base_log) : void
-QString extern_project_name{ targetbook[ UmlItem::project_label() ] };
+QString extern_project_name{ targetbook[ UmlItem::external_label() ] };
 //////////////////////////////////////////////////
 // Is an external target for project.
 log.trace(base_log::warn, "Generate external target : "+const_cast<UmlArtifact*>(target)->name()+"." );

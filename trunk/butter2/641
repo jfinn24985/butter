@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 126
+  revision 128
   modified_by 42 "finnerty"
   // class settings
   
@@ -1291,6 +1291,28 @@ on all build platforms.)
 * indicates the name of a compiler tag/variable to use with this artifact."
       end
 
+      operation 397232 "external_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"external\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates the artifact represents an object from an external project. The property value is the name
+  of the external project.
+* only used if present on artifacts with the library stereotype
+
+\\see buildfile_label"
+      end
+
       operation 396336 "flags_label"
 	class_operation public explicit_return_type "unistr"
 	nparams 0
@@ -1308,6 +1330,26 @@ on all build platforms.)
 	comment "User property name:
 * indicates c++flags to use for the current target artifact. This property is automatically 
   inherited from parent objects if not overriden
+* only used on target artifacts (library or executable artifacts)"
+      end
+
+      operation 397104 "include_label"
+	class_operation public explicit_return_type "unistr"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} t{ \"includes\" };
+  return t;
+}
+"
+	
+	
+	
+	
+	comment "User property name:
+* indicates extra include directories for the current target artifact. The value should be 
+  a a list of directory names (\\see header_label)
 * only used on target artifacts (library or executable artifacts)"
       end
 
@@ -1410,26 +1452,6 @@ on all build platforms.)
 "
       end
 
-      operation 397104 "include_label"
-	class_operation public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} t{ \"include\" };
-  return t;
-}
-"
-	
-	
-	
-	
-	comment "User property name:
-* indicates extra include directories for the current target artifact. The value should be 
-  a a list of directory names (\\see header_label)
-* only used on target artifacts (library or executable artifacts)"
-      end
-
       operation 404784 "other_label"
 	class_operation public explicit_return_type "unistr"
 	nparams 0
@@ -1452,28 +1474,6 @@ on all build platforms.)
 * For document artifacts if the property value is 'nowrite' then the document is not written
   to the filesystem.
 * This property only used on library artifact targets."
-      end
-
-      operation 397232 "project_label"
-	class_operation public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} t{ \"project\" };
-  return t;
-}
-"
-	
-	
-	
-	
-	comment "User property name:
-* indicates the artifact represents an object from an external project. The property value is the name
-  of the external project.
-* only used if present on artifacts with the library stereotype
-
-\\see buildfile_label"
       end
 
       operation 395696 "property_label_prefix"
@@ -1529,24 +1529,6 @@ build system"
 	
 	comment "User property name:
 * The path to the XML file containing the style definitions"
-      end
-
-      operation 397488 "version_label"
-	class_operation public explicit_return_type "unistr"
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} t{ \"version\" };
-  return t;
-}
-"
-	
-	
-	
-	
-	comment "user property name:
-* Use to indicate the project version."
       end
 
       extra_member 203824 "DESCRIPTION LABELS"

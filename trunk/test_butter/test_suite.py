@@ -16,7 +16,7 @@
 import xml.sax, threading, os.path
 import xml.sax.saxutils as saxutils
 
-_DEBUG = True
+_DEBUG = False
 if _DEBUG:
   print """<html encoding='UTF-8'><body><style type="text/css">pre.debug{color:red}</style>"""
 

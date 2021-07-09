@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 79
+  revision 82
   modified_by 42 "finnerty"
   // class settings
   
@@ -298,7 +298,7 @@ ${inlines}
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"build-file\"); return label;
+  static ${type} label(\"run-file\"); return label;
 }
 "
 	
@@ -1088,22 +1088,6 @@ string are considered to be templates
 	mysql_decl ""
 	MysqlColumn
 	comment "The label of the install target library directory var.
-"
-      end
-
-      attribute 134576 "no_install_value"
-	class_attribute const_attribute public explicit_type "unistr"
-	init_value "(\"NONE\")"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-	mysql_decl ""
-	MysqlColumn
-	comment "Value of he \"butter install\" property to indicate that the target 
-should not be installed.
 "
       end
 
@@ -4339,6 +4323,28 @@ ${inlines}
       explicit_switch_type ""
       mysql_decl ""
       
+      extra_member 128042 "upper_case"
+	
+	cpp "" "
+static QByteArray make_var_name(QByteArray s)
+{
+  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_');
+}
+
+static QString make_var_name(QString s)
+{
+  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_');
+}
+"
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+	comment "Make string into an upper case version suitable for a variable name.
+This means translating some characters into an underscore."
+      end
+
       extra_member 210352 "DEFAULT STYLE"
 	
 	cpp "" ""
@@ -4589,6 +4595,50 @@ ${inlines}
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   static ${type} text{ \"target\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "The default location of the XML file containing style definitions"
+      end
+
+      extra_member 134570 "SPECIAL VALUES"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 141482 "no_install_value"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"NONE\" };
+  return text;
+}
+"
+	
+	
+	
+	
+	comment "Value indicating that the target should not be installed"
+      end
+
+      operation 141610 "standard_install_value"
+	class_operation public explicit_return_type "string"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  static ${type} text{ \"STANDARD\" };
   return text;
 }
 "
@@ -5315,7 +5365,7 @@ Makefile, CMake, Boost Jam and plain Jam.
 ## TODO
 
 * What to do with an unknown style (error message and default?)
-* Support user ''build-dir''
+* Includes that are relative paths (relative to original base)
 
 ## Completed
 
@@ -5323,6 +5373,7 @@ Makefile, CMake, Boost Jam and plain Jam.
 * <replace> can @split/@join string and add @prefix/@suffix text
 * 2021 July: Runs single, multi-dir and multi-lang (auto-detect compiler)
 * Draft document of current templates and properties
+* Support user ''build-dir''
 
 # Developer documentation
 
@@ -5417,6 +5468,10 @@ The following table lists the required templates and their purpose.
 | descendent-link | How to connect to build files in subdirectories
 | extern-library | Set up an external library for use by other targets
 | include-buildfile | How to directly include a build file in another build file
+| install-executable | How to install an executable target
+| install-library | How to install a static library target
+| install-other | How to install a generic/other target
+| install-shared | How to install a shared library target
 | link-shared-library | How to link a source library into a target (*ldflag* property)
 | object-other | Used when a *document* artifact is a dependent in a known non-c++ language.
 | object | Used when a dependent source artifact has local compilation properties. 
@@ -5424,11 +5479,10 @@ The following table lists the required templates and their purpose.
 | package | Add any properties defined on a package before its targets are defined.
 | preamble-root | The first generated content in the root build file.
 | preamble | The first generated content in non-root build files.
-| target-dso | How to build a shared library
-| target | How to build an executable
-| target-install | How to install a target
+| target-executable | How to build an executable
 | target-library | How to build a static library
 | target-other | How to build a non-standard target
+| target-shared | How to build a shared library
 
 #### The build templates
 
@@ -5519,19 +5573,29 @@ The following table lists the *explicit* properties with default values in the s
 | install | Location to install target
 | install-mode | File-system access mode for installed target
 
-The following table lists the *explicit* properties that can be set by the users at for each scope.  For where
-these are derived from see **User defined properties**
+The following table lists the *explicit* properties that can be
+set by the users at for each scope.  For where these are derived
+from see **User defined properties**.  Scope is **R** = root package,
+**P** = non-root package, **T** = target artifact, **S** = source
+artifact. 
 
-| Property | Value  |
-| :--- | :--- |
-| flags | Extra compilation flags
-| includes | Space separated list of header directories 
-| install | Location to install target (has style specific default)
-| install-mode | File-system access mode for installed target (has style specific default)
-| ldflags | Extra linker flags
-| compiler | Set explicit compiler for a source file
-| other | Set alternate build rule for a target
-| build-dir | Set directory to build object files in (if supported)
+| Property | Scope | Value  |
+| :--- | :--- | :--- |
+| base         X | R--- | A suggested root directory for the build system
+| build-dir    X | R--- | Set directory to build object files in (if supported)
+| build-file   O | RPTS | An extra file to include in build system
+| compiler     O | --TS | Set explicit compiler for a source file
+| external     X | --T- | Indicate that library is an external library identified by the give project name
+| flags        - | RPTS | Extra compilation flags
+| includes     - | RPTS | Space separated list of header directories 
+| install      O | --TS | Location to install target (has style specific default)
+| install-mode O | --TS | File-system access mode for installed target (has style specific default)
+| ldflags      - | RPTS | Extra linker flags
+| log-level    X | R--- | How much information should plugout report
+| other        O | --TS | Set alternate build rule for a target
+| style        - | R--- | The build system style (defaults to \"make\")
+| style-path   - | R--- | Path to an XML file containing the style definitions
+| type         O | RPT- | Whether the current or contained library targets are *shared* or *static*
 
 ## Compound documents
 
