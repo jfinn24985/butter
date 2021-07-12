@@ -1,36 +1,40 @@
-format 66
+format 224
 "Build" // Build
-  revision 22
-  modified_by 41 "finnerty"
+  revision 25
+  modified_by 42 "finnerty"
   // class settings
-  //class diagram settings
-  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_infonote default shadow default show_stereotype_properties default
-  //use case diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default class_drawing_mode default shadow default show_stereotype_properties default
-  //sequence diagram settings
-  show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default
-  //collaboration diagram settings
-  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default draw_all_relations default shadow default show_stereotype_properties default
-  //object diagram settings
-   write_horizontally default package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default show_stereotype_properties default
-  //component diagram settings
-  package_name_in_tab default show_context default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
-  //deployment diagram settings
-  package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-  draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
-  //state diagram settings
-  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default draw_all_relations default shadow default
-  show_activities default region_horizontally default drawing_language default show_stereotype_properties default
-  //activity diagram settings
-  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
-  show_infonote default drawing_language default show_stereotype_properties default
+  
+  classdiagramsettings member_max_width 0 end
+  
+  classcompositediagramsettings end
+  
+  usecasediagramsettings end
+  
+  sequencediagramsettings end
+  
+  collaborationdiagramsettings end
+  
+  objectdiagramsettings end
+  
+  objectcompositediagramsettings end
+  
+  componentdiagramsettings
+   end
+  
+  deploymentdiagramsettings
+   end
+  
+  statediagramsettings
+   end
+  
+  activitydiagramsettings
+   end
   
   cpp_src_dir ".."
   deploymentview 129321 "Build"
     //deployment diagram settings
-    package_name_in_tab default show_context default write_horizontally default auto_label_position default draw_all_relations default shadow default
-    draw_component_as_icon default show_component_req_prov default show_component_rea default show_stereotype_properties default
+    deploymentdiagramsettings
+     end
     artifact 131753 "t2t.jam"
       stereotype "document"
       associated_artifacts
@@ -49,7 +53,7 @@ rule t2t
 
 actions ignore run_t2t
 {
-  txt2tags  $(T2TFLAGS) -o $(1) -i $(2)
+  pandoc $(T2T_FLAGS) -o $(1) $(2)
 }
 "
     end
@@ -67,7 +71,7 @@ actions ignore run_t2t
     import toolset : flags ;
     # Set up ability to use \"t2tflags\" as options
     feature t2tflags : : free ;
-    flags t2t OPTIONS <t2tflags> ;
+    flags t2t OPTIONS <t2t_flags> ;
 
     import type ;
     type.register T2T : t2t ;
@@ -93,7 +97,7 @@ actions ignore run_t2t
     
     actions dot2t
     {
-      txt2tags $(OPTIONS) -o $(<) $(>)
+      pandoc $(OPTIONS) -o $(<) $(>)
     }
 
     import generators ;
@@ -116,17 +120,19 @@ actions ignore run_t2t
 "
     end
 
-    artifact 132009 "t2t.make"
+    artifact 132009 "t2t.mk"
       stereotype "document"
       associated_artifacts
       end
       comment "ifndef T2T_MAK
+MANDIR=$(PREFIX)/share/man
+HTMLDIR=$(PREFIX)/share/html
 T2T_MAK:=1
-T2T=txt2tags
+T2T=pandoc
 %.man : %.t2t
-	$(T2T) $(T2TFLAGS) -o $@ $<
+	$(T2T) $(T2T_FLAGS) -o $@ $<
 %.html : %.t2t
-	$(T2T) $(T2TFLAGS) -o $@ $<
+	$(T2T) $(T2T_FLAGS) -o $@ $<
 endif"
     end
 
@@ -167,8 +173,8 @@ FORTRAN = gfortran ;
       stereotype "document"
       associated_artifacts
       end
-      comment "set (T2T txt2tags)
-set (T2TFLAGS -o)
+      comment "set (T2T pandoc)
+set (T2T_FLAGS -o)
 "
     end
 

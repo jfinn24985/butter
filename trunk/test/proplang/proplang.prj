@@ -1,6 +1,6 @@
 format 224
 "proplang"
-  revision 19
+  revision 20
   modified_by 42 "finnerty"
   cpp_root_dir "./output/include/"
 
@@ -47,7 +47,7 @@ format 224
   
   ncouples 6
   key "butter flags" value "-DPROJ_FLAG"
-  key "butter ldflags" value "$(OPENMP)"
+  key "butter ldflags" value "OPENMP"
   key "butter build-dir" value "build"
   key "butter includes" value "include/exe"
   key "butter style" value "unknown"
