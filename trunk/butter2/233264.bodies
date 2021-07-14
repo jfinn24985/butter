@@ -33,46 +33,16 @@ UmlArtifact * root_build_file = nullptr;
   {
     UmlItem::string_map projectbook;
     const QByteArray package_name_{ UmlPackage::getProject()->name() };
-    UmlPackage::getProject()->in_scope(projectbook, false, log);
+    UmlPackage::getProject()->in_scope(projectbook, true, log);
     projectbook["name"] = package_name_;
     projectbook["NAME"] = make_var_name(package_name_);
     projectbook["root-dir"] = this->root_->base_path();
     projectbook["path"] = ".";
     projectbook["source-extension"] = CppSettings::sourceExtension();
     projectbook["header-extension"] = CppSettings::headerExtension();
-    {
-      auto pack_inc = enumerate_path(this->root_->base_path()).create_relative( UmlPackage::getProject()->hdr_path());
-      if( pack_inc.isEmpty() )
-      {
-        pack_inc = ".";
-      }
-      {
-        UmlItem::string_map book;
-        book["text"] = pack_inc;
-        pack_inc = this->style_->make_element("includes-relative", book);
-      }
-      log.trace(base_log::warn, "Start project includes: ["+projectbook["includes"]+"]" ); 
-      if ( ! projectbook["includes"].isEmpty() )
-      {
-        auto incs = projectbook["includes"].split(" ");
-        for ( auto & inc : incs )
-        {
-          if( QDir( inc ).isRelative() )
-          {
-            UmlItem::string_map book;
-            book["text"] = inc;
-            inc = this->style_->make_element("includes-relative", book);
-          }
-        }
-        incs.push_back(pack_inc);
-        projectbook["includes"] = incs.join(" ");
-      }
-      else
-      {
-        projectbook["includes"] = pack_inc;
-      }
-      log.trace(base_log::warn, "End of merge: ["+projectbook["includes"]+"]" ); 
-    }
+    this->process_includes(projectbook, UmlPackage::getProject()->hdr_path().path());
+    this->process_flags(projectbook, UmlItem::flags_label());
+    this->process_flags(projectbook, UmlItem::ldflags_label());
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
     root_build_file->document().preamble().value = this->style_->make_element(preamble_root(), projectbook);
   }
@@ -112,7 +82,7 @@ while( ! location_stack_.isEmpty() )
       packbook["dir"] = enumerate_path(this->root_->base_path()).create_relative(top_->path());
       for( int i_ = 0; i_ < state->packages().count(); ++i_ )
       {
-        state->packages().at(i_)->in_scope(packbook, false, log);
+        state->packages().at(i_)->in_scope(packbook, true, log);
       }
       build_file->document().preamble().value = this->style_->make_element(preamble(), packbook);
     }
@@ -124,44 +94,14 @@ while( ! location_stack_.isEmpty() )
     const QByteArray package_name_{ I_->name() };
     {
       UmlItem::string_map packbook;
-      I_->in_scope(packbook, false, log);
+      I_->in_scope(packbook, false, log); // Get properties from parent packages
       const QByteArray package_name_{ I_->name() };
-      packbook["package"] = package_name_;
-      packbook["PACKAGE"] = make_var_name(package_name_);
+      packbook["name"] = package_name_;
+      packbook["NAME"] = make_var_name(package_name_);
       packbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
-      {
-        auto pack_inc = enumerate_path(this->root_->base_path()).create_relative( UmlPackage::getProject()->hdr_path());
-        if( pack_inc.isEmpty() )
-        {
-          pack_inc = ".";
-        }
-        {
-          UmlItem::string_map book;
-          book["text"] = pack_inc;
-          pack_inc = this->style_->make_element("includes-relative", book);
-        }
-        log.trace(base_log::warn, "Start package includes: ["+packbook["includes"]+"]" ); 
-        if ( ! packbook["includes"].isEmpty() )
-        {
-          auto incs = packbook["includes"].split(" ");
-          for ( auto & inc : incs )
-          {
-            if( QDir( inc ).isRelative() )
-            {
-              UmlItem::string_map book;
-              book["text"] = inc;
-              inc = this->style_->make_element("includes-relative", book);
-            }
-          }
-          incs.push_back(pack_inc);
-          packbook["includes"] = incs.join(" ");
-        }
-        else
-        {
-          packbook["includes"] = pack_inc;
-        }
-        log.trace(base_log::warn, "End package includes: ["+packbook["includes"]+"]" ); 
-      }
+      this->process_includes(packbook, I_->hdr_path().path());
+      this->process_flags(packbook, UmlItem::flags_label());
+      this->process_flags(packbook, UmlItem::ldflags_label());
       build_file->document()["package-" + I_->name()].value = this->style_->make_element("package", packbook);
     }
     for( unsigned int j_ = 0; j_ < I_->children().count(); ++j_ )
@@ -184,22 +124,11 @@ while( ! location_stack_.isEmpty() )
             targetbook["PACKAGE"] = make_var_name(package_name_);
             targetbook["name"] = target_name_;
             targetbook["NAME"] = make_var_name(target_name_);
-            log.trace(base_log::warn, "Start target includes: ["+targetbook["includes"]+"]" ); 
-            if ( ! targetbook["includes"].isEmpty() )
-            {
-              auto incs = targetbook["includes"].split(" ");
-              for ( auto & inc : incs )
-              {
-                if( QDir( inc ).isRelative() )
-                {
-                  UmlItem::string_map book;
-                  book["text"] = inc;
-                  inc = this->style_->make_element("includes-relative", book);
-                }
-              }
-              targetbook["includes"] = incs.join(" ");
-            }
-            log.trace(base_log::warn, "End target includes: ["+targetbook["includes"]+"]" ); 
+            this->process_includes(targetbook, "");
+            this->process_flags(targetbook, UmlItem::flags_label());
+            this->process_flags(targetbook, UmlItem::ldflags_label());
+            this->process_flags(targetbook, UmlItem::install_label());
+            this->process_flags(targetbook, UmlItem::install_mode_label());
             if( top_ == this->root_->root() )
             {
               targetbook["path"] = ".";
@@ -211,8 +140,6 @@ while( ! location_stack_.isEmpty() )
             if( stereotype_label_.contains( UmlItem::executable_stereotype() )
                 || stereotype_label_.contains( UmlItem::library_stereotype() ) )
             {
-              UmlItem::string_map fullbook;
-              item_->in_scope( fullbook, false, log );
               if( targetbook.end() != targetbook.find( UmlItem::external_label() ) )
               {
                 //////////////////////////////////////////////////
@@ -271,13 +198,6 @@ do {
       book2[label] = (value.isEmpty() ? itr.value() : value + " " + itr.value());
     }
   };
-  auto append_str_if_present = [](QString const& label, QString value, UmlItem::string_map & book2)
-  {
-      QString orig_value = book2[label];
-      book2[label] = (orig_value.isEmpty() ? value : orig_value + " " + value);
-  };
-  const QString target_flags{ targetbook[UmlItem::flags_label()] }; 
-  const QString target_includes{ targetbook[UmlItem::include_label()] }; 
 
   ///////////////////////
   // Process dependencies
@@ -286,27 +206,18 @@ do {
     UmlArtifact * const current_art_ = target->associatedArtifacts().at( i_ );
     const QByteArray stereotype_( current_art_->stereotype().data() );
     UmlItem::string_map currentbook;
-    current_art_->in_scope( currentbook, false, log );
+    current_art_->in_scope( currentbook, true, log );
     currentbook["name"] = current_art_->name();
     currentbook["NAME"] = make_var_name(current_art_->name());
+    currentbook["target"] = targetbook["name"];
+    currentbook["TARGET"] = targetbook["NAME"];
     currentbook["project"] = current_art_->package()->name();
     currentbook["PROJECT"] = make_var_name(current_art_->package()->name());
-    log.trace(base_log::warn, "Start dependent includes: ["+currentbook["includes"]+"]" ); 
-    if ( ! currentbook["includes"].isEmpty() )
-    {
-      auto incs = currentbook["includes"].split(" ");
-      for ( auto & inc : incs )
-      {
-        if( QDir( inc ).isRelative() )
-        {
-          UmlItem::string_map book;
-          book["text"] = inc;
-          inc = this->style_->make_element("includes-relative", book);
-        }
-      }
-      currentbook["includes"] = incs.join(" ");
-    }
-    log.trace(base_log::warn, "End dependent includes: ["+currentbook["includes"]+"]" ); 
+    this->process_includes(currentbook, "");
+    this->process_flags(currentbook, UmlItem::flags_label());
+    this->process_flags(currentbook, UmlItem::ldflags_label());
+    this->process_flags(currentbook, UmlItem::install_label());
+    this->process_flags(currentbook, UmlItem::install_mode_label());
     if( "." == this->find_path(current_art_) )
     {
       currentbook["path"] = ".";
@@ -317,23 +228,26 @@ do {
     }
     if( stereotype_ == UmlItem::library_stereotype() )
     {
-      // For associated libraries, need to pass include, flags and ldflags to target
-      append_if_present(UmlItem::include_label(), currentbook, targetbook);
-      append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
-      append_if_present(UmlItem::flags_label(), currentbook, targetbook);
       UmlItem::string_map fullbook;
-      current_art_->in_scope( fullbook, true, log );
+      current_art_->in_scope( fullbook, false, log );
       auto itr = fullbook.find( UmlItem::lib_type_label() );
-      if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
+      if( fullbook.end() == itr || itr.value().split(" ")[0] != UmlItem::shared_value() )
       {
         // Default library type is a static library
+        // For associated static libraries, need to pass include, flags and ldflags to target
+        append_if_present(UmlItem::include_label(), currentbook, targetbook);
+        append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
+        append_if_present(UmlItem::flags_label(), currentbook, targetbook);
         QString lib{ this->style_->make_element("dependency-static-library", currentbook, current_art_->name()) };
         targetbook["dependency"] += lib;
       }
       else
       {
+        // For associated libraries, need to pass include and ldflags to target
+        append_if_present(UmlItem::include_label(), currentbook, targetbook);
+        append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
         targetbook[UmlItem::ldflags_label()] += this->style_->make_element("link-shared-library", currentbook, current_art_->name());
-        targetbook["dependency"] += this->style_->make_element("dependency-shared-library", currentbook, current_art_->name());
+        targetbook["build-dependency"] += this->style_->make_element("dependency-shared-library", currentbook, current_art_->name());
       }
     }
     else if( stereotype_ == UmlItem::source_stereotype() )
@@ -346,8 +260,6 @@ do {
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
       if( need_object )
       {
-        append_str_if_present(UmlItem::flags_label(), target_flags, currentbook);
-        append_str_if_present(UmlItem::include_label(), target_includes, currentbook);
         currentbook["basename"] = current_art_->name();
         currentbook["BASENAME"] = make_var_name(currentbook["basename"]);
         build_file->document()[current_art_->name()].value = this->style_->make_element("object", currentbook);
@@ -371,6 +283,13 @@ do {
   }
   ////////////////////
   // End of dependencies, create target
+  {
+    if( targetbook.end() != targetbook.find( "build-file" ) )
+    {
+      eos << this->style_->make_element(include_build_file_tmpl(), targetbook);
+    }
+  }
+  // 
   if( stereotype_label_ == UmlItem::library_stereotype() )
   {
     if ( targetbook.end() != targetbook.find( UmlItem::other_label() ) )
@@ -378,10 +297,6 @@ do {
       //////////////
       // Other type (not a standard library or executable)
       log.trace(base_log::debug, "- library is other type");
-      if( targetbook.end() != targetbook.find( "build-file" ) )
-      {
-        eos << this->style_->make_element(include_build_file_tmpl(), targetbook);
-      }
       targetbook["basename"] = target_name_.left(target_name_.lastIndexOf("."));
       targetbook["BASENAME"] = make_var_name(targetbook["basename"]);
       targetbook["OTHER"] = make_var_name(targetbook["other"]);
@@ -426,7 +341,7 @@ do {
     else
     {
       UmlItem::string_map fullbook;
-      target->in_scope( fullbook, true, log );
+      target->in_scope( fullbook, false, log );
       auto itr = fullbook.find( UmlItem::lib_type_label() );
       if( fullbook.end() == itr || itr.value() != UmlItem::shared_value() )
       {
@@ -886,3 +801,61 @@ for( auto * l : this->root_->topdown() )
 }
 BUTTER_ALWAYS(false, "package not found in location set.");
 return QString();
+!!!148138.cpp!!!	process_includes(inout tbook : UmlItem::string_map, in hdr_path : unistr) : void
+QString pack_inc;
+if( ! hdr_path.isEmpty() )
+{
+  pack_inc = enumerate_path(this->root_->base_path()).create_relative( hdr_path );
+  if( pack_inc.isEmpty() )
+  {
+    pack_inc = ".";
+  }
+  {
+    UmlItem::string_map book;
+    book["text"] = pack_inc;
+    pack_inc = this->style_->make_element("includes-relative", book);
+  }
+}
+auto itr = tbook.find(UmlItem::include_label());
+if ( itr != tbook.end() && ! tbook[UmlItem::include_label()].isEmpty() )
+{
+  auto incs = tbook[UmlItem::include_label()].split(" ");
+  for ( auto & inc : incs )
+  {
+    if( QDir( inc ).isRelative() )
+    {
+      UmlItem::string_map book;
+      book["text"] = inc;
+      inc = this->style_->make_element("includes-relative", book);
+    }
+  }
+  if( ! pack_inc.isEmpty() && ! incs.contains(pack_inc) )
+  {
+    incs.push_back(pack_inc);
+  }
+  tbook[UmlItem::include_label()] = incs.join(" ");
+}
+else
+{
+  if( ! pack_inc.isEmpty() )
+  {
+    tbook[UmlItem::include_label()] = pack_inc;
+  }
+}
+!!!148266.cpp!!!	process_flags(inout tbook : UmlItem::string_map, in label : unistr) : void
+auto itr = tbook.find(label);
+if ( itr != tbook.end() && ! tbook[label].isEmpty() )
+{
+  auto incs = tbook[label].split(" ");
+  for ( auto & inc : incs )
+  {
+    static const QRegExp re("[A-Z_][A-Z_]*");
+    if( re.exactMatch(inc) )
+    {
+      UmlItem::string_map book;
+      book["text"] = inc;
+      inc = this->style_->make_element("make-variable", book);
+    }
+  }
+  tbook[label] = incs.join(" ");
+}

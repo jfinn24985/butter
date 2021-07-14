@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 128
+  revision 130
   modified_by 42 "finnerty"
   // class settings
   
@@ -1258,7 +1258,7 @@ on all build platforms.)
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} t{ \"buildfile\" };
+  static ${type} t{ \"build-file\" };
   return t;
 }
 "

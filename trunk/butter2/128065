@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 82
+  revision 84
   modified_by 42 "finnerty"
   // class settings
   
@@ -4328,12 +4328,12 @@ ${inlines}
 	cpp "" "
 static QByteArray make_var_name(QByteArray s)
 {
-  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_');
+  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_').replace(':','_');
 }
 
 static QString make_var_name(QString s)
 {
-  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_');
+  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_').replace(':','_');
 }
 "
 	java ""
@@ -4954,6 +4954,40 @@ This means translating some characters into an underscore."
 	comment "Search location set for the package that owns this artifact
 and return the location's path."
       end
+
+      operation 148138 "process_includes"
+	private explicit_return_type "void"
+	nparams 2
+	  param inout name "tbook" type class_ref 246320 // string_map
+	  param in name "hdr_path" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Check includes, converting any relative paths to fully specified paths"
+      end
+
+      operation 148266 "process_flags"
+	private explicit_return_type "void"
+	nparams 2
+	  param inout name "tbook" type class_ref 246320 // string_map
+	  param in name "label" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Process flags, converting any UPPER_CASE_ONLY entries into variables"
+      end
     end
   end
 
@@ -5266,6 +5300,7 @@ ${includes}
 
 // #include <qapplication.h>
 #include <qmessagebox.h>
+#include <qregexp.h>
 #include <qstack.h>
 
 // #include <iostream>

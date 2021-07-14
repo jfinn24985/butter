@@ -42,12 +42,12 @@ TOPINC = X
 TOPCXX = -x
 TOPLNK = -a
 
-SUBINC = $(TOPINC) + Y
-SUBCXX = $(TOPCXX) + -y
-SUBLNK = $(TOPLNK) + -b
+SUBINC = [topinc] + Y
+SUBCXX = [topcxx] + -y
+SUBLNK = [toplnk] + -b
 
 TARINC = $(SUBINC) + Z + $(EXTINC)
-TARCXX = $(SUBC++) + -z + $(EXTCXX)
+TARCXX = $(SUBCXX) + -z + $(EXTCXX)
 TARLNK = $(SUBLNK) + -c + $(EXTLNK) + $(INTLNK) + $(OBJLNK)
 
 OBJINC = $(TARINC) + M

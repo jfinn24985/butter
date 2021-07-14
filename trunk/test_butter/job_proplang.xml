@@ -37,7 +37,7 @@
 
       </verb-list>
       <verb-list category="execute">Generate the build system and the source code
-        <!-- verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb -->
+        <!--verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out1)s -exit</verb -->
         <verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out1)s -test:ok -exit</verb>
         <verb type="system" >%(bouml)s PATH{%(deploy-base)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
       </verb-list>
@@ -128,6 +128,7 @@
           <property name="base" >%(local-base)s/%(stage-man-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
+          <property name="error" >nonfatal</property>
           <property name="location" >program.man</property>
           <property name="test-phrase">2.3.1 Non-standard target</property>
         </verb>
@@ -135,6 +136,7 @@
           <property name="base" >%(local-base)s/%(stage-html-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
+          <property name="error" >nonfatal</property>
           <property name="location" >program.html</property>
           <property name="test-phrase">2.3.1 Non-standard target</property>
         </verb>
@@ -142,7 +144,7 @@
     </stage>
     <stage>Test run the first executable.
       <verb-list category="execute" >Run &quot;program&quot;
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/source_test%(exe-suf)s} > output1 %(cmdsep)s %(cat)s output1 %(cmdsep)s popd</verb>
+	<verb type="system" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/source_test%(exe-suf)s} > output1 %(cmdsep)s %(cat)s output1 %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="verify" >
       Verify that the correct files have been produced
@@ -155,17 +157,18 @@
         <verb type="compare" >
           <property name="base" >%(local-base)s</property>
           <property name="location" >output1</property>
+          <property name="error" >nonfatal</property>
           <property name="test-phrase">1.2.1 Output of compiled program verified</property>
         </verb>
       </verb-list>
     </stage>
      <stage>Test run the fortran executable.
       <verb-list category="execute" >Run &quot;program&quot;
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/fortprog%(exe-suf)s} > output2 %(cmdsep)s %(cat)s output2 %(cmdsep)s popd</verb>
+	<verb type="system" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/fortprog%(exe-suf)s} > output2 %(cmdsep)s %(cat)s output2 %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="verify" >
       Verify that the correct files have been produced
-      <property name="base" >%(local-base)s/doc</property>
+      <property name="base" >%(local-base)s</property>
         <verb type="file-list" >
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
@@ -181,11 +184,11 @@
     </stage>
      <stage>Test run the library-linked executables.
       <verb-list category="execute" >Run &quot;program&quot;
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/static_sqr%(exe-suf)s} 12.0 1 > output3 %(cmdsep)s %(cat)s output3 %(cmdsep)s  popd</verb>
+	<verb type="system" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/static_sqr%(exe-suf)s} 12.0 1 > output3 %(cmdsep)s %(cat)s output3 %(cmdsep)s  popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="execute" >Run &quot;program&quot;
-	<property name="library-path">%(base)s/%(stage-lib-dir)s</property>
-	<verb type="system" >pushd PATH{%(base)s} %(cmdsep)s %(set-library-path)s PATH{%(stage-bin-dir)s/shared_sqr%(exe-suf)s} 12.0 1 > output4 %(cmdsep)s %(cat)s output4 %(cmdsep)s popd</verb>
+	<property name="library-path">%(local-base)s/%(stage-lib-dir)s</property>
+	<verb type="system" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s export %(set-library-path)s PATH{%(stage-bin-dir)s/shared_sqr%(exe-suf)s} 12.0 1 > output4 %(cmdsep)s %(cat)s output4 %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>
        <verb-list category="verify" >
       Verify that the correct files have been produced
