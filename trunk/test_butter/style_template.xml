@@ -393,7 +393,7 @@ if( NOT DEFINED SUFHDR)
   set (SUFHDR .hh)
 endif()
 if( NOT DEFINED SUFOBJ)
-  set (SUFOBJ .hh)
+  set (SUFOBJ .o)
 endif()
 if( NOT DEFINED SUFEXE)
   set (SUFEXE "")
@@ -404,6 +404,9 @@ endif()
 if( NOT DEFINED SUFSHR)
   set (SUFSHR .so)
 endif()
+if( NOT DEFINED SUFMAK)
+  set (SUFMAK .cmake)
+endif()
 add_compile_options($&lt;$&lt;CONFIG:Debug&gt;:-DDEBUG=1&gt; $&lt;$&lt;CONFIG:Release&gt;:-DDEBUG=0&gt;)
 #############################
 ##  Default install locations
@@ -412,25 +415,17 @@ set (CMAKE_INSTALL_PREFIX stage)
 set (BINDIR bin)
 set (LIBDIR bin)
 set (DATADIR share)
-set (BINIFLAGS 0755)
-set (LIBIFLAGS 0644)
-set (FILEIFLAGS 0644)
+set (BINIFLAGS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_WRITE WORLD_EXECUTE)
+set (LIBIFLAGS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ WORLD_WRITE)
+set (FILEIFLAGS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ WORLD_WRITE)
 </file>
  <!-- name of the top-most generated buildfile -->
  <property label="root-file">CMakeLists.txt</property>
 
  <!-- name of build file in any sub-directories -->
  <property label="run-file">CMakeLists.txt</property>
- <!-- default for install flags -->
- <property label="binary_install_location">${BINDIR}</property>
- <property label="binary_install_mode">${BINIFLAGS}</property>
- <property label="library_install_location">${LIBDIR}</property>
- <property label="library_install_mode">${LIBIFLAGS}</property>
- <property label="other_install_location">${DATADIR}</property>
- <property label="other_install_mode">${FILEIFLAGS}</property>
  <property label="start-phrase">## START:</property>
  <property label="end-phrase">## END:</property>
-
   <!-- how to make comments -->
  <template label="comment">## <replace label="text"/></template>
 
@@ -438,36 +433,8 @@ set (FILEIFLAGS 0644)
  <template label="descendent-link">include (<replace label="path"/>/CMakeLists.txt)
 </template>
 
- <!-- Actual content for external libraries -->
- <template label="extern-library">set (<replace label="NAME"/>FLAGS <replace label="flags"/>)
-set (<replace label="NAME"/>LDFLAGS <replace label="ldflags"/>)
-set (<replace label="NAME"/>INC <replace label="includes"/>)
-</template>
-
  <!-- how to include an additional buildfile -->
- <template label="include-build-file">-include (${CMAKE_SOURCE_DIR}/<replace label="build-file"/>.${SUFMAK}
-</template>
-
- <!-- how to build an object file -->
- <template label="object"><option label="flags" target="flags">
- set_property( SOURCE <replace label="name"/>${SUFSRC} PROPERTY APPEND CMAKE_C++_FLAGS <replace label="flags"/> )</option><option label="includes" target="includes">
- set_property( SOURCE <replace label="name"/>${SUFSRC} PROPERTY APPEND INCLUDE_DIRECTORIES <replace label="includes"/>)</option>
-</template>
-
- <!-- Other target type -->
- <template label="object-other"><option label="flags" target="flags">
- set_property( SOURCE <replace label="name"/> PROPERTY APPEND CMAKE_C_FLAGS <replace label="flags"/> )
- set_property( SOURCE <replace label="name"/> PROPERTY APPEND CMAKE_FORTRAN_FLAGS <replace label="flags"/> )</option><option label="includes" target="includes">
- set_property( SOURCE <replace label="name"/> PROPERTY APPEND INCLUDE_DIRECTORIES <replace label="includes"/>)</option>
-</template>
-
- <!-- template for start of (internal) package -->
- <template label="package">
- project (<replace label="PACKAGE"/>)
-<option label="SYSINCLUDE">include_directories(<replace label="includes" split=" " join=" ${CMAKE_SOURCE_DIR}" prefix="${CMAKE_SOURCE_DIR}"/>)
-</option><option label="SYSCXXFLAGS">set (SYSCFLAGS <replace label="flags"/>)
-</option><option label="SYSLDFLAGS">set (SYSLDFLAGS <replace label="ldflags"/>)
-</option>
+ <template label="include-build-file">include ( ${CMAKE_SOURCE_DIR}/<replace label="build-file"/>${SUFMAK} )
 </template>
 
  <!-- template for start of root makefile -->
@@ -483,52 +450,124 @@ cmake_minimum_required(VERSION 2.6)
 include (${CMAKE_SOURCE_DIR}/local.cmake)
 </template>
 
+ <!-- template for a sub components -->
+ <template label="make-variable">${<replace label="text"/>}</template>
+ <template label="includes-relative">${CMAKE_SOURCE_DIR}/<replace label="text"/></template>
+ <template label="dependency-source"> ${CMAKE_CURRENT_LIST_DIR}/<replace label="name"/>${SUFSRC}</template>
+ <template label="dependency-object"> $&lt;TARGET_OBJECTS:<replace label="basename"/>&gt;</template>
+ <template label="dependency-static-library"> <replace label="name"/></template>
+ <template label="link-shared-library"> -L${CMAKE_CURRENT_LIST_DIR} -l<replace label="name"/></template>
+ <template label="dependency-shared-library"> ${CMAKE_CURRENT_LIST_DIR}/<replace label="name"/></template>
+
+ <!-- template for start of (internal) package -->
+ <template label="package">
+ project ( <replace label="NAME"/> )
+<option label="include" target="includes">include_directories( <replace label="includes"/> )
+</option><option label="flags" target="flags">set ( <replace label="NAME"/>_CXXFLAGS <replace label="flags"/> )
+</option><option label="ldflags" target="ldflags">set ( <replace label="NAME"/>_LDFLAGS <replace label="ldflags"/> )
+</option>
+</template>
+
+ <!-- Actual content for external libraries -->
+ <template label="extern-library">set (<replace label="NAME"/>_CXXFLAGS <replace label="flags"/>)
+set (<replace label="NAME"/>_LDFLAGS <replace label="ldflags"/>)
+set (<replace label="NAME"/>_INC <replace label="includes"/>)
+</template>
+
+ <!-- how to build an object file -->
+ <template label="object"><option label="flags" target="flags">
+ set_property( SOURCE <replace label="name"/>${SUFSRC} PROPERTY APPEND CMAKE_C++_FLAGS <replace label="flags"/> )</option><option label="includes" target="includes">
+ set_property( SOURCE <replace label="name"/>${SUFSRC} PROPERTY APPEND INCLUDE_DIRECTORIES <replace label="includes"/>)</option>
+</template>
+
+ <!-- Other target type -->
+ <template label="object-other">
+ add_library( <replace label="basename"/> OBJECT ${CMAKE_CURRENT_LIST_DIR}/<replace label="name"/> )
+ <option label="flags" target="flags"> target_compile_options( <replace label="basename"/>${SUFOBJ} PUBLIC <replace label="flags"/> )
+ set_property( SOURCE <replace label="name"/> PROPERTY APPEND CMAKE_FORTRAN_FLAGS <replace label="flags"/> )
+ </option><option label="includes" target="includes"> set_property( SOURCE <replace label="name"/> PROPERTY APPEND INCLUDE_DIRECTORIES <replace label="includes"/>)
+ </option>
+</template>
+
  <!-- template for a target -->
  <template label="target-library">
  # STATIC
- set ( <replace label="PACKAGE"/>_<replace label="NAME"/> <replace label="name"/>)
- 
+ set ( <replace label="PACKAGE"/>_<replace label="NAME"/> <replace label="name"/> )
  set ( <replace label="PACKAGE"/>_<replace label="NAME"/>_SRC
   <replace label="source"/> )
  add_library ( ${<replace label="PACKAGE"/>_<replace label="NAME"/>} STATIC
     ${<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC} )
-</template>
+ target_compile_options( ${<replace label="PACKAGE"/>_<replace label="NAME"/>} PUBLIC <replace label="flags"/> ${<replace label="PACKAGE"/>_CXXFLAGS} )
+ set_property( TARGET ${<replace label="PACKAGE"/>_<replace label="NAME"/>} APPEND_STRING PROPERTY STATIC_LIBRARY_OPTIONS <replace label="ldflags"/>  ${<replace label="PACKAGE"/>_LDFLAGS} )
+ <option label="includes" target="includes"> set_property( TARGET ${<replace label="PACKAGE"/>_<replace label="NAME"/>} PROPERTY APPEND INCLUDE_DIRECTORIES <replace label="includes"/>)
+ </option></template>
 
  <!-- template for a target -->
- <template label="target-dso">
+ <template label="target-shared">
  ## DSO
  set ( <replace label="PACKAGE"/>_<replace label="NAME"/>  <replace label="name"/>)
- 
  set ( <replace label="PACKAGE"/>_<replace label="NAME"/>_SRC
   <replace label="source"/> )
  add_library ( ${<replace label="PACKAGE"/>_<replace label="NAME"/>} SHARED
     ${<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC} )
-</template>
+ target_compile_options( ${<replace label="PACKAGE"/>_<replace label="NAME"/>} PUBLIC <replace label="flags"/> ${<replace label="PACKAGE"/>_CXXFLAGS} )
+ set_property( TARGET ${<replace label="PACKAGE"/>_<replace label="NAME"/>} APPEND_STRING PROPERTY LIBRARY_OPTIONS <replace label="ldflags"/> ${<replace label="PACKAGE"/>_LDFLAGS} )
+ <option label="includes" target="includes"> set_property( TARGET ${<replace label="PACKAGE"/>_<replace label="NAME"/>} PROPERTY APPEND INCLUDE_DIRECTORIES <replace label="includes"/>)
+ </option></template>
 
  <!-- template for a target -->
- <template label="target">
- # EXE
+ <template label="target-executable">
  set ( <replace label="PACKAGE"/>_<replace label="NAME"/>  <replace label="name"/>)
- 
  set ( <replace label="PACKAGE"/>_<replace label="NAME"/>_SRC
   <replace label="source"/> )
  add_executable ( ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
     ${<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC} )
-<option label="depends"> target_link_libraries( ${<replace label="PACKAGE"/>_<replace label="NAME"/>} <replace label="dependency"/> )
+ target_compile_options( ${<replace label="PACKAGE"/>_<replace label="NAME"/>} PUBLIC <replace label="flags"/> ${<replace label="PACKAGE"/>_CXXFLAGS} )
+ set_property( TARGET ${<replace label="PACKAGE"/>_<replace label="NAME"/>} APPEND_STRING PROPERTY LINK_OPTIONS <replace label="ldflags"/> ${<replace label="PACKAGE"/>_LDFLAGS} )
+ <option label="includes" target="includes"> set_property( TARGET ${<replace label="PACKAGE"/>_<replace label="NAME"/>} PROPERTY APPEND INCLUDE_DIRECTORIES <replace label="includes"/>)
+</option><option label="depends" target="dependency"> target_link_libraries( ${<replace label="PACKAGE"/>_<replace label="NAME"/>} <replace label="dependency"/> )
 </option></template>
 
- <!-- template for a target source -->
- <template label="dependency-source"> ${CMAKE_CURRENT_LIST_DIR}/<replace label="name"/>${SUFSRC}</template>
- <template label="dependency-object"> ${CMAKE_CURRENT_LIST_DIR}/<replace label="name"/></template>
- <template label="dependency-static-library"> <replace label="name"/></template>
- <template label="link-shared-library"> -l<replace label="name"/></template>
- <template label="dependency-shared-library"> <replace label="name"/></template>
+ <template label="target-other"/>
+
+ <!-- default for install flags -->
+ <property label="executable-install-location">${BINDIR}</property>
+ <property label="executable-install-mode">${BINIFLAGS}</property>
+ <property label="shared-install-location">${BINDIR}</property>
+ <property label="shared-install-mode">${BINIFLAGS}</property>
+ <property label="library-install-location">${LIBDIR}</property>
+ <property label="library-install-mode">${LIBIFLAGS}</property>
+ <property label="other-install-location">${DATADIR}</property>
+ <property label="other-install-mode">${FILEIFLAGS}</property>
 
  <!-- template for a target -->
- <template label="target-install">
+ <template label="install-library">
 <option label="where">
 install (TARGETS ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
   RUNTIME DESTINATION <replace label="install"/>
+  PERMISSIONS  <replace label="install-mode"/>
+  CONFIGURATIONS Release Debug )</option>
+</template>
+
+ <template label="install-executable">
+<option label="where">
+install (TARGETS ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
+  RUNTIME DESTINATION <replace label="install"/>
+  PERMISSIONS  <replace label="install-mode"/>
+  CONFIGURATIONS Release Debug )</option>
+</template>
+ <template label="install-shared">
+<option label="where">
+install (TARGETS ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
+  RUNTIME DESTINATION <replace label="install"/>
+  PERMISSIONS  <replace label="install-mode"/>
+  CONFIGURATIONS Release Debug )</option>
+</template>
+ <template label="install-other">
+<option label="where">
+install (TARGETS ${<replace label="PACKAGE"/>_<replace label="NAME"/>}
+  RUNTIME DESTINATION <replace label="install"/>
+  PERMISSIONS  <replace label="install-mode"/>
   CONFIGURATIONS Release Debug )</option>
 </template>
  <!-- template name="buildfile">content</template>
