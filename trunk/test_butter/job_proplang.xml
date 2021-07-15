@@ -13,6 +13,7 @@
     <property name="sysfile"  if="build-style=cmake" >local.cmake</property>
     <property name="mainfile" if="build-style=cmake" >CMakeLists.txt</property>
     <property name="lib-prefix" if="build-style=boost" >lib</property>
+    <property name="lib-prefix" if="build-style=make" >lib</property>
     <property name="deploy-base" >%(base-dir)s/%(project)s/trunk/test/%(project)s</property>
     <property name="local-base" >%(deploy-base)s/output</property>
     <stage>Test generating source and build system from a single level project with 2 targets
@@ -43,7 +44,7 @@
       </verb-list>
       <verb-list category="verify" >
         Verify that the correct files have been produced
-        <property name="test-phrase">3.9.1 style-dependent build files exist</property>
+        <property name="test-phrase">1.0 style-dependent build files exist</property>
         <verb type="file-list" >
           <property name="base" >%(local-base)s/src</property>
           <property name="file-type" >file</property>
@@ -55,21 +56,21 @@
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >fortran.f</property>
-          <property name="test-phrase">2.3.2 Document as non-C++ (is Fortran) source file</property>
+          <property name="test-phrase">1.1 Document as non-C++ (is Fortran) source file</property>
         </verb>
         <verb type="file-list" >
           <property name="base" >%(local-base)s/doc</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >%(mainfile)s</property>
-          <property name="test-phrase">X.X.X Library (other) build file</property>
+          <property name="test-phrase">1.2 Library (other) build file</property>
         </verb> 
         <verb type="file-list" >
           <property name="base" >%(local-base)s/doc</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="location" >program.t2t</property>
-          <property name="test-phrase">2.3.2 Document as non-C++ (t2t) source file</property>
+          <property name="test-phrase">1.3 Document as non-C++ (t2t) source file</property>
         </verb>
         <verb type="file-list" >
           <property name="base" >%(local-base)s</property>
@@ -99,14 +100,14 @@
           <property name="file-type" >executable</property>
           <property name="verify" >exist</property>
           <property name="location" >source_test%(exe-suf)s shared_sqr%(exe-suf)s static_sqr%(exe-suf)s</property>
-          <property name="test-phrase">2.1.1 Built executables using build system</property>
+          <property name="test-phrase">2.1 Built executables using build system</property>
         </verb>
         <verb type="file-list" >
           <property name="base" >%(local-base)s/%(stage-bin-dir)s</property>
           <property name="file-type" >executable</property>
           <property name="verify" >exist</property>
           <property name="location" >fortprog%(exe-suf)s</property>
-          <property name="test-phrase">X.X.X Built executable with Fortran source</property>
+          <property name="test-phrase">2.2 Built executable with Fortran source</property>
         </verb>
         <verb type="file-list" >
           <property name="base" >%(local-base)s/%(stage-lib-dir)s</property>
@@ -114,15 +115,16 @@
           <property name="verify" >exist</property>
           <property name="error" >nonfatal</property>
           <property name="location">%(lib-prefix)ssquareshare%(shr-suf)s</property>
-           <property name="test-phrase">2.1.2 built shared library using build system</property>
+           <property name="test-phrase">2.3 built shared library using build system</property>
         </verb>
         <verb type="file-list" >
-          <property name="base" >%(local-base)s/src/Library</property>
+          <property name="base" >%(local-base)s/src</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="error" >nonfatal</property>
-          <property name="location" >%(lib-prefix)ssquarestatic%(ark-suf)s</property>
-          <property name="test-phrase">2.1.2 built static library using build system</property>
+          <property name="location" if="build-style=boost">%(lib-prefix)ssquarestatic%(ark-suf)s</property>
+          <property name="location" >squarestatic%(ark-suf)s</property>
+          <property name="test-phrase">2.4 built static library using build system</property>
         </verb>
          <verb type="file-list" >
           <property name="base" >%(local-base)s/%(stage-man-dir)s</property>
@@ -130,7 +132,7 @@
           <property name="verify" >exist</property>
           <property name="error" >nonfatal</property>
           <property name="location" >program.man</property>
-          <property name="test-phrase">2.3.1 Non-standard target</property>
+          <property name="test-phrase">2.5 Non-standard target</property>
         </verb>
          <verb type="file-list" >
           <property name="base" >%(local-base)s/%(stage-html-dir)s</property>
@@ -138,7 +140,7 @@
           <property name="verify" >exist</property>
           <property name="error" >nonfatal</property>
           <property name="location" >program.html</property>
-          <property name="test-phrase">2.3.1 Non-standard target</property>
+          <property name="test-phrase">2.6 Non-standard target</property>
         </verb>
       </verb-list>
     </stage>
@@ -156,9 +158,10 @@
         </verb>
         <verb type="compare" >
           <property name="base" >%(local-base)s</property>
+          <property name="compare-base" >%(deploy-base)s/canon</property>
           <property name="location" >output1</property>
           <property name="error" >nonfatal</property>
-          <property name="test-phrase">1.2.1 Output of compiled program verified</property>
+          <property name="test-phrase">3.1 Output of compiled program verified</property>
         </verb>
       </verb-list>
     </stage>
@@ -176,9 +179,10 @@
         </verb>
         <verb type="compare" >
           <property name="location" >output2</property>
-	      <property name="type" >search</property>
+          <property name="compare-base" >%(deploy-base)s/canon</property>
+	        <property name="type" >search</property>
           <property name="search-regex" >Precision is  *16</property>
-          <property name="test-phrase">1.2.1 Output of compiled program verified</property>
+          <property name="test-phrase">4.1 Output of compiled program verified</property>
         </verb>
       </verb-list>
     </stage>
@@ -199,10 +203,11 @@
           <property name="location" >output3 output4</property>
         </verb>
         <verb type="compare" >
-	  <property name="type" >search</property>
+          <property name="compare-base" >%(deploy-base)s/canon</property>
+	        <property name="type" >search</property>
           <property name="search-regex" >Halley algorithm</property>
           <property name="location" >output3 output4</property>
-          <property name="test-phrase">1.2.1 Output of compiled program verified</property>
+          <property name="test-phrase">5.1 Output of compiled program verified</property>
         </verb>
       </verb-list>
     </stage>

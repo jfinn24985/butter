@@ -228,12 +228,10 @@ include $(ROOTDIR)/system.mk
  <!-- how to build an object file -->
  <template label="object">
 <option label="build-file" target="build-file">-include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK)
-</option><replace label="NAME"/>_FLAGS = $(<replace label="TARGET"/>_CXXFLAGS) 
-<option label="inc" target="includes"><replace label="NAME"/>_FLAGS += $(patsubst %,-I%,<replace label="includes"/>)
-</option><option label="flags" target="flags"><replace label="NAME"/>_FLAGS += <replace label="flags"/>
-</option><replace label="basename"/>$(SUFOBJ) :: CXXFLAGS=$(<replace label="NAME"/>_FLAGS)
-<replace label="basename"/>$(SUFOBJ) :: <replace label="name"/>$(SUFSRC)
-<option label="build" target="compiler">	<replace label="compiler"/> $(<replace label="NAME"/>_FLAGS) $(CFLAG) $(OFLAG) <replace label="basename"/>$(SUFOBJ) <replace label="name"/></option>
+</option><replace label="NAME"/>_FLAGS = $(<replace label="TARGET"/>_CXXFLAGS)<option label="inc" target="includes"> $(patsubst %,-I%,<replace label="includes"/>)</option><option label="flags" target="flags"> <replace label="flags"/></option>
+<replace label="name"/>$(SUFOBJ) :: CXXFLAGS=$(<replace label="NAME"/>_FLAGS)
+<replace label="name"/>$(SUFOBJ) :: <replace label="name"/>$(SUFSRC)
+<option label="build" target="compiler">	<replace label="compiler"/> $(<replace label="NAME"/>_FLAGS) $(CFLAG) $(OFLAG) <replace label="name"/>$(SUFOBJ) <replace label="name"/>$(SUFSRC)</option>
 </template>
 
  <!-- Other target type -->
@@ -250,7 +248,7 @@ include $(ROOTDIR)/system.mk
  <!-- template for a target static library -->
  <template label="target-library">
 <replace label="NAME"/>_SRC:=<replace label="source"/>
-<replace label="NAME"/>_CXXFLAGS:=$(CXXFLAGS) $(<replace label="PACKAGE"/>_CXXFLAGS) $(patsubst %,-I%,<replace label="includes"/> $(<replace label="PACKAGE"/>_INCLUDE)) <replace label="flags"/>
+<replace label="NAME"/>_CXXFLAGS:=$(CXXFLAGS) $(<replace label="PACKAGE"/>_CXXFLAGS) $(patsubst %,-I%,<replace label="includes"/> $(<replace label="PACKAGE"/>_INCLUDE)) <replace label="flags"/> $(<replace label="PACKAGE"/>_CXXFLAGS)
 <replace label="NAME"/>_DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>_SRC:$(SUFSRC)=$(SUFDEP)))
 $(<replace label="NAME"/>_DINC) :: CXXFLAGS:=$(<replace label="NAME"/>_CXXFLAGS)
 include $(<replace label="NAME"/>_DINC)
@@ -270,8 +268,8 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) <replace label="name"/>$(SUFLIB)  $(<replace lab
  <!-- template for a target DLL/shared library -->
  <template label="target-shared">
 <replace label="NAME"/>_SRC:=<replace label="source"/>
-<replace label="NAME"/>_CXXFLAGS:=$(STD_SHRFLAGS) $(CXXFLAGS) $(patsubst %,-I%,<replace label="includes"/> $(<replace label="PACKAGE"/>_INCLUDE)) <replace label="flags"/>
-<replace label="NAME"/>_LDFLAGS:=$(LDFLAGS) <replace label="ldflags"/>
+<replace label="NAME"/>_CXXFLAGS:=$(STD_SHRFLAGS) $(CXXFLAGS) $(patsubst %,-I%,<replace label="includes"/> $(<replace label="PACKAGE"/>_INCLUDE)) <replace label="flags"/> $(<replace label="PACKAGE"/>_CXXFLAGS)
+<replace label="NAME"/>_LDFLAGS:=$(LDFLAGS) <replace label="ldflags"/> $(<replace label="PACKAGE"/>_LDFLAGS)
 <replace label="NAME"/>_DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>_SRC:$(SUFSRC)=$(SUFDEP)))
 $(<replace label="NAME"/>_DINC) :: CXXFLAGS:=$(<replace label="NAME"/>_CXXFLAGS)
 include $(<replace label="NAME"/>_DINC)
@@ -291,8 +289,8 @@ CLEAN_TARGETS:=$(CLEAN_TARGETS) lib<replace label="name"/>$(SUFSHR)
  <!-- template for a target -->
  <template label="target-executable">
 <replace label="NAME"/>_SRC:=<replace label="source"/>
-<replace label="NAME"/>_CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="includes"/> $(<replace label="PACKAGE"/>_INCLUDE)) <replace label="flags"/>
-<replace label="NAME"/>_LDFLAGS:=$(LDFLAGS) $(<replace label="PACKAGE"/>_LDFLAGS) <replace label="ldflags"/>
+<replace label="NAME"/>_CXXFLAGS:=$(CXXFLAGS) $(patsubst %,-I%,<replace label="includes"/> $(<replace label="PACKAGE"/>_INCLUDE)) <replace label="flags"/> $(<replace label="PACKAGE"/>_CXXFLAGS)
+<replace label="NAME"/>_LDFLAGS:=$(LDFLAGS) $(<replace label="PACKAGE"/>_LDFLAGS) <replace label="ldflags"/> $(<replace label="PACKAGE"/>_LDFLAGS)
 <replace label="NAME"/>_DINC:=$(filter %$(SUFDEP), $(<replace label="NAME"/>_SRC:$(SUFSRC)=$(SUFDEP)))
 $(<replace label="NAME"/>_DINC) :: CXXFLAGS:=$(<replace label="NAME"/>_CXXFLAGS)
 include $(<replace label="NAME"/>DINC)
