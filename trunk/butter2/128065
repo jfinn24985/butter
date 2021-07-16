@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 84
+  revision 85
   modified_by 42 "finnerty"
   // class settings
   
@@ -4957,12 +4957,13 @@ and return the location's path."
 
       operation 148138 "process_includes"
 	private explicit_return_type "void"
-	nparams 2
+	nparams 3
 	  param inout name "tbook" type class_ref 246320 // string_map
 	  param in name "hdr_path" explicit_type "unistr"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+	  param in name "have_hdr" explicit_type "bool"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}, ${t2} ${p2}${v2}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	

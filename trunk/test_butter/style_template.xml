@@ -604,7 +604,7 @@ FC = gfortran ;
 CC = gcc ;
 C++ = g++ ;
 LINK = $(C++) ;
-FFLAGS += -Wall -std=c08 ;
+FORTRANFLAGS += -Wall -std=c08 ;
 CCFLAGS += -Wall -std=c11 ;
 C++FLAGS += -Wall -std=c++11 ;
 SHRFLAGS = -fpic ;
@@ -620,6 +620,7 @@ case * :
 LINKFLAGS += $(OPTIM) ;
 CCFLAGS += $(OPTIM) ;
 C++FLAGS += $(OPTIM) ;
+FORTRANFLAGS += $(OPTIM) ;
 OPENMP = -fopenmp ;
 </file>
  <file label="Jamrules">#
@@ -628,6 +629,7 @@ OPENMP = -fopenmp ;
 
 SUFSRC ?= .cc ;
 SUFHDR ?= .hh ;
+SUFMAK ?= .jam ;
 if $(UNIX)  {
 SUFOBJ ?= .o ; 
 SUFLIB ?= .a ; 
@@ -677,13 +679,6 @@ ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
 
  <!-- name of build file in any sub-directories -->
  <property label="run-file">Jamfile</property>
- <!-- default for install flags -->
- <property label="binary_install_location">$(BINDIR)</property>
- <property label="binary_install_mode">$(BINIFLAGS)</property>
- <property label="library_install_location">$(LIBDIR)</property>
- <property label="library_install_mode">$(LIBIFLAGS)</property>
- <property label="other_install_location">$(DATADIR)</property>
- <property label="other_install_mode">$(FILEIFLAGS)</property>
  <property label="start-phrase">## START:</property>
  <property label="end-phrase">## END:</property>
 
@@ -694,86 +689,96 @@ ALL_LOCATE_TARGET = $(BASE_LOCATE_TARGET) ;
  <template label="descendent-link">SubInclude TOP  <replace label="path" split="/" join =" " /> ;
 </template>
 
- <!-- Actual content for external libraries -->
- <template label="extern-library"><replace label="NAME"/>_FLAGS = <replace label="flags"/> ;
-<replace label="NAME"/>_LDFLAGS = <replace label="ldflags"/> ;
-<replace label="NAME"/>_INC = <replace label="includes"/> ;
+ <!-- how to include an additional buildfile -->
+ <template label="include-build-file">include $(TOP)/<replace label="build-file"/>$(SUFMAK) ;
 </template>
 
+ <!-- template for start of root makefile -->
+ <template label="preamble-root"><option label="sufsrc">SUFSRC = .<replace label="source-extension"/> ;
+</option><option label="sufhdr">SUFHDR = .<replace label="header-extension"/> ;
+</option>SubDir TOP ;
+<option label="build-dir">BUILDDIR = <replace label="build-dir"/> ;
+OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
+</option><option label="includes" target="includes">Sys_INC = <replace label="includes"/> ;
+CXXFLAGS += -I$(Sys_INC) ;
+</option><option label="flags" target="flags">CXXFLAGS += <replace label="flags"/> ;
+</option><option label="link" target="ldflags">LINKFLAGS += <replace label="ldflags"/> ;
+</option></template>
 
+ <!-- template for start of subdirectory makefiles -->
+ <template label="preamble">
+ALL_LOCAL_TARGET = $(BASE_LOCAL_TARGET)/<replace label="path"/> ;
+SubDir TOP <replace label="path" split="/" join =" " /> ;
+</template>
+
+  <!-- how to reference a variable -->
+ <template label="make-variable">$(<replace label="text"/>)</template>
+  <!-- how to make relative include into absolute -->
+ <template label="includes-relative">$(TOP)/<replace label="text"/></template>
  <template label="dependency-source"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSRC)</template>
  <template label="dependency-object"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/></template>
  <template label="dependency-static-library"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB)</template>
  <template label="link-shared-library"> -l<replace label="name"/></template>
  <template label="dependency-shared-library"> <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR)</template>
  
- <!-- how to include an additional buildfile -->
- <template label="include-build-file">include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
+ <!-- template for start of (internal) package -->
+ <template label="package"># Package data
+<replace label="NAME"/>_CXXFLAGS = $(CXXFLAGS) ;
+<replace label="NAME"/>_LINKFLAGS = $(LINKFLAGS) ;
+<option label="INC" target="includes"><replace label="NAME"/>_INCLUDES = <replace label="includes"/> ;
+<replace label="NAME"/>_CXXFLAGS += -I$(<replace label="NAME"/>_INCLUDES) ;
+</option><option label="FLAGS" target="flags"><replace label="NAME"/>_CXXFLAGS += <replace label="flags"/> ;
+</option><option label="LDFLAGS" target="ldflags"><replace label="NAME"/>_LINKFLAGS += <replace label="ldflags"/> ;
+</option>
 </template>
+
+ <!-- Actual content for external libraries -->
+ <template label="extern-library"><replace label="NAME"/>_FLAGS = <replace label="flags"/> ;
+<replace label="NAME"/>_LINKFLAGS = <replace label="ldflags"/> ;
+<replace label="NAME"/>_INCLUDE = <replace label="includes"/> ;
+</template>
+
 
  <!-- how to build an object file -->
  <template label="object">
-<option label="flags">ObjectC++Flags <replace label="name"/>$(SUFSRC) : $(CXXFLAGS) <replace label="flags"/></option>
-Object <replace label="name"/>$(SUFOBJ) : <option label="flags">CXXFLAGS:=$(CXXFLAGS) <replace label="flags"/></option>\
-                                    <option label="inc">CXXFLAGS:=$(CXXFLAGS) -I"<replace label="includes"/>" $(SYSINCLUDES) $(INC)</option>
+<option label="build-file" target="build-file">include $(TOP)/<replace label="build-file"/>$(SUFMAK) ;
+</option><replace label="NAME"/>_CXXFLAGS = $(<replace label="PACKAGE"/>_<replace label="TARGET"/>_CXXFLAGS) <replace label="flags"/> ;
+<option label="INC" target="includes"><replace label="NAME"/>_INCLUDES = <replace label="includes"/> ;
+<replace label="NAME"/>_CXXFLAGS += -I$(<replace label="NAME"/>_INCLUDES) ;
+</option>CXXFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFOBJ) = $(<replace label="NAME"/>_CXXFLAGS) ;
+Object <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC) ;
 </template>
 
  <!-- Other target type -->
  <template label="object-other">
-<replace label="PROJECT"/>_<replace label="BASENAME"/>_INC = <replace label="includes"/> $(<replace label="PROJECT"/>_INC) ;
-ObjectCcFlags <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="basename"/>$(SUFOBJ) : $(CFLAGS) <replace label="flags"/> -I$(<replace label="PROJECT"/>_<replace label="BASENAME"/>_INC) ; 
-FORTRANFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="basename"/>$(SUFOBJ) = $(FFLAGS) <replace label="flags"/> -I$(<replace label="PROJECT"/>_<replace label="BASENAME"/>_INC) ;
+<option label="build-file" target="build-file">include $(TOP)/<replace label="build-file"/>$(SUFMAK) ;
+</option><replace label="PROJECT"/>_<replace label="BASENAME"/>_INCLUDE = <replace label="includes"/> ;
+CFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="basename"/>$(SUFOBJ) : $(CFLAGS) $(<replace label="TARGET"/>_CXXFLAGS) <replace label="flags"/> -I$(<replace label="PROJECT"/>_<replace label="BASENAME"/>_INCLUDE) ; 
+FORTRANFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="basename"/>$(SUFOBJ) = $(FORTRANFLAGS) <replace label="flags"/> ;
 </template>
 
- <!-- template for start of (internal) package -->
- <template label="package">
-# Package data
-<option label="SYSINC" target="includes"><replace label="PACKAGE"/>_INC = <replace label="includes"/> $(SYSINC) ;
-</option><option label="SYSCFLAGS" target="flags"><replace label="PACKAGE"/>_C++FLAGS = <replace label="flags"/> ;
-</option><option label="SYSLDFLAGS" target="ldflags"><replace label="PACKAGE"/>_LDFLAGS = <replace label="ldflags"/> ;
-</option>
-</template>
-
- <!-- template for start of root makefile -->
- <template label="preamble-root">
-<option label="sufsrc">SUFSRC = .<replace label="source-extension"/> ;
-</option><option label="sufhdr">SUFHDR = .<replace label="header-extension"/> ;
-</option>SubDir TOP ;
-<option label="build-dir">BUILDDIR = <replace label="build-dir"/> ;
-OUTPUTDIR = $(BUILDDIR)$(SLASH)$(VARIANT) ;
-</option><option label="includes" target="includes">Sys_INC = <replace label="includes"/> ;
-C++FLAGS += -I$(Sys_INC) ;
-</option><option label="flags" target="flags">C++FLAGS += <replace label="flags"/> ;
-</option><option label="link" target="ldflags">LINKFLAGS += <replace label="ldflags"/> ;
-</option></template>
-
- <!-- template for start of subdirectory makefiles -->
- <template label="preamble">
-ALL_LOCAL_TARGET = $(BASE_LOCAL_TARGET)<replace label="path"/> ;
-SubDir TOP <replace label="path" split="/" join =" " /> ;
-</template>
 
  <!-- template for a target static library-->
- <template label="target-library"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
+ <template label="target-library">
+<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
      <replace label="source"/> ;
-<replace label="PACKAGE"/>_<replace label="NAME"/>_INC = <replace label="includes"/> $(<replace label="PACKAGE"/>_INC) ;
-ObjectC++Flags $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) : 
-     $(C++FLAGS) <replace label="flags"/> -I$(<replace label="PACKAGE"/>_<replace label="NAME"/>_INC) ;
-
+<replace label="PACKAGE"/>_<replace label="NAME"/>_INCLUDE = <replace label="includes"/> ;
+<replace label="PACKAGE"/>_<replace label="NAME"/>_CXXFLAGS = $(<replace label="PACKAGE"/>_CXXFLAGS) <replace label="flags"/> -I$(<replace label="PACKAGE"/>_<replace label="NAME"/>_INCLUDE) ;
+ObjectC++Flags $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) : $(<replace label="PACKAGE"/>_<replace label="NAME"/>_CXXFLAGS) ;
+ 
 Library <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFLIB) :
-  $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
+     $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
 </template>
 	
  <!-- template for a target -->
- <template label="target-dso"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
-     <replace label="source"/> $(<replace label="PACKAGE"/>INC) ;
-<replace label="NAME"/>INC on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) =
-    <replace label="includes" split=" " join=" -I"/> -I$(<replace label="NAME"/>INC) ;
-C++FLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
-     $(C++FLAGS) <replace label="flags"/> ;
-<option label="libs" target="ldflags"> LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
-  $(LINKLIBS) <replace label="ldflags"/> ;
-</option>
+ <template label="target-shared">
+<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
+     <replace label="source"/> ;
+<replace label="PACKAGE"/>_<replace label="NAME"/>_INCLUDE = <replace label="includes"/> ;
+<replace label="PACKAGE"/>_<replace label="NAME"/>_CXXFLAGS = $(<replace label="PACKAGE"/>_CXXFLAGS) <replace label="flags"/> -I$(<replace label="PACKAGE"/>_<replace label="NAME"/>_INCLUDE) ;
+ObjectC++Flags $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) : $(<replace label="PACKAGE"/>_<replace label="NAME"/>_CXXFLAGS) ;
+LINKFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) = 
+  $(<replace label="PACKAGE"/>_LINKFLAGS) <replace label="ldflags"/> ;
 Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) :
   $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
 <option label="libs" target="dependency">LinkLibraries <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFSHR) :
@@ -781,22 +786,52 @@ Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><re
 	; </option></template>
 	
  <!-- template for a target -->
- <template label="target"><replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
+ <template label="target-executable">
+<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
      <replace label="source"/> ;
-<replace label="PACKAGE"/>_<replace label="NAME"/>_INC = <replace label="includes"/> $(<replace label="PACKAGE"/>_INC) ;
-ObjectC++Flags $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) :
-     $(C++FLAGS) <replace label="flags"/> -I$(<replace label="PACKAGE"/>_<replace label="NAME"/>_INC) ;
-<option label="libs" target="ldflags">LINKLIBS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = 
-  $(LINKLIBS) <replace label="ldflags"/> ;
-</option>
+<replace label="PACKAGE"/>_<replace label="NAME"/>_INCLUDE = <replace label="includes"/> ;
+<replace label="PACKAGE"/>_<replace label="NAME"/>_CXXFLAGS = $(<replace label="PACKAGE"/>_CXXFLAGS) <replace label="flags"/> -I$(<replace label="PACKAGE"/>_<replace label="NAME"/>_INCLUDE) ;
+ObjectC++Flags $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) : $(<replace label="PACKAGE"/>_<replace label="NAME"/>_CXXFLAGS) ;
+LINKFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = $(<replace label="PACKAGE"/>_LINKFLAGS) <replace label="ldflags"/> ;
+
 Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) :
   $(<replace label="PACKAGE"/>_<replace label="NAME"/>_SRC) ;
 <option label="libs" target="dependency">LinkLibraries <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) :
 	 <replace label="dependency"/>
 	; </option></template>
 
- <!-- template for a target -->
- <template label="target-install"><option label="where" target="install">InstallBin <replace label="install"/> : <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) ;
+ <template label="target-other"/>
+ 
+ <!-- default for install flags -->
+ <property label="executable-install-location">$(BINDIR)</property>
+ <property label="executable-install-mode">$(BINIFLAGS)</property>
+ <property label="shared-install-location">$(LIBDIR)</property>
+ <property label="shared-install-mode">$(LIBIFLAGS)</property>
+ <property label="library-install-location">$(DATADIR)</property>
+ <property label="library-install-mode">$(FILEIFLAGS)</property>
+ <property label="other-install-location">$(DATADIR)</property>
+ <property label="other-install-mode">$(FILEIFLAGS)</property>
+ <!-- templates for installing targets -->
+ <template label="install-library">
+<option label="where" target="install">InstallBin <replace label="install"/> : <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) ;
+</option><option label="install" target="install-mode">IFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = <replace label="install-mode"/> ;
+</option>
+</template>
+
+ <template label="install-shared">
+<option label="where" target="install">InstallBin <replace label="install"/> : <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) ;
+</option><option label="install" target="install-mode">IFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = <replace label="install-mode"/> ;
+</option>
+</template>
+
+ <template label="install-executable">
+<option label="install" target="install-mode">IFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = <replace label="install-mode"/> ;
+</option><option label="where" target="install">InstallBin <replace label="install"/> : <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) ;
+</option>
+</template>
+
+ <template label="install-other">
+<option label="where" target="install">InstallBin <replace label="install"/> : <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) ;
 </option><option label="install" target="install-mode">IFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="name"/>$(SUFEXE) = <replace label="install-mode"/> ;
 </option>
 </template>

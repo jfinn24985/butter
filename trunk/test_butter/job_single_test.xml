@@ -89,6 +89,7 @@
           <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
           <property name="location" >build.log</property>
 	        <property name="type" >search</property>
+          <property name="error" >nonfatal</property>
 	        <property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[d123]).*single_test.[co]</property>
 	        <property name="search-regex" if="build-style=boost">(debug|release).*single_test\.</property>
         </verb>

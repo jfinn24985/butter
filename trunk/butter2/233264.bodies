@@ -40,7 +40,25 @@ UmlArtifact * root_build_file = nullptr;
     projectbook["path"] = ".";
     projectbook["source-extension"] = CppSettings::sourceExtension();
     projectbook["header-extension"] = CppSettings::headerExtension();
-    this->process_includes(projectbook, UmlPackage::getProject()->hdr_path().path());
+//XX    {
+//XX      butter::enumerate_path root_dir_( CppSettings::rootDir() ); // Project root dir.
+//XX      if ( root_dir_.isRelative() )
+//XX      {
+//XX        QFileInfo f_( UmlPackage::getProject()->supportFile() );
+//XX        root_dir_.setPath( f_.dir().filePath( root_dir_.path () ) );
+//XX      }
+//XX      QString base_ = enumerate_path(this->root_->base_path()).create_relative( root_dir_ );
+//XX      base_ = (base_.isEmpty() ? "." : base_);
+//XX      if (projectbook["includes"].isEmpty())
+//XX      {
+//XX        projectbook["includes"] = base_;
+//XX      }
+//XX      else
+//XX      {
+//XX        projectbook["includes"] += " " + base_;
+//XX      }
+//XX    }
+    this->process_includes(projectbook, UmlPackage::getProject()->hdr_path().path(), true);
     this->process_flags(projectbook, UmlItem::flags_label());
     this->process_flags(projectbook, UmlItem::ldflags_label());
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
@@ -99,7 +117,7 @@ while( ! location_stack_.isEmpty() )
       packbook["name"] = package_name_;
       packbook["NAME"] = make_var_name(package_name_);
       packbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
-      this->process_includes(packbook, I_->hdr_path().path());
+      this->process_includes(packbook, I_->hdr_path().path(), true);
       this->process_flags(packbook, UmlItem::flags_label());
       this->process_flags(packbook, UmlItem::ldflags_label());
       build_file->document()["package-" + I_->name()].value = this->style_->make_element("package", packbook);
@@ -124,7 +142,7 @@ while( ! location_stack_.isEmpty() )
             targetbook["PACKAGE"] = make_var_name(package_name_);
             targetbook["name"] = target_name_;
             targetbook["NAME"] = make_var_name(target_name_);
-            this->process_includes(targetbook, "");
+            this->process_includes(targetbook, "", false);
             this->process_flags(targetbook, UmlItem::flags_label());
             this->process_flags(targetbook, UmlItem::ldflags_label());
             this->process_flags(targetbook, UmlItem::install_label());
@@ -213,7 +231,7 @@ do {
     currentbook["TARGET"] = targetbook["NAME"];
     currentbook["project"] = current_art_->package()->name();
     currentbook["PROJECT"] = make_var_name(current_art_->package()->name());
-    this->process_includes(currentbook, "");
+    this->process_includes(currentbook, "", false);
     this->process_flags(currentbook, UmlItem::flags_label());
     this->process_flags(currentbook, UmlItem::ldflags_label());
     this->process_flags(currentbook, UmlItem::install_label());
@@ -558,7 +576,7 @@ project->in_scope(project_addrbook, true, log);
 }
 /////////////////////
 // Initialisation
-butter::enumerate_path root_dir_( CppSettings::rootDir () ); // Project root dir.
+butter::enumerate_path root_dir_( CppSettings::rootDir() ); // Project root dir.
 log.trace( base_log::warn, "<p><b>Please wait:</b> building target list for project <i>"
   + a_item.name() + "</i>.</p>" );
 BUTTER_ALWAYS( ! root_dir_.path ().isEmpty (), "<p><b>Error</b>Project C++ root directory is not set, please set it in the C++ generation dialog.</p>" );
@@ -801,9 +819,9 @@ for( auto * l : this->root_->topdown() )
 }
 BUTTER_ALWAYS(false, "package not found in location set.");
 return QString();
-!!!148138.cpp!!!	process_includes(inout tbook : UmlItem::string_map, in hdr_path : unistr) : void
+!!!148138.cpp!!!	process_includes(inout tbook : UmlItem::string_map, in hdr_path : unistr, in have_hdr : bool) : void
 QString pack_inc;
-if( ! hdr_path.isEmpty() )
+if( have_hdr )
 {
   pack_inc = enumerate_path(this->root_->base_path()).create_relative( hdr_path );
   if( pack_inc.isEmpty() )
@@ -829,7 +847,7 @@ if ( itr != tbook.end() && ! tbook[UmlItem::include_label()].isEmpty() )
       inc = this->style_->make_element("includes-relative", book);
     }
   }
-  if( ! pack_inc.isEmpty() && ! incs.contains(pack_inc) )
+  if( have_hdr && ! incs.contains(pack_inc) )
   {
     incs.push_back(pack_inc);
   }
@@ -837,7 +855,7 @@ if ( itr != tbook.end() && ! tbook[UmlItem::include_label()].isEmpty() )
 }
 else
 {
-  if( ! pack_inc.isEmpty() )
+  if( have_hdr )
   {
     tbook[UmlItem::include_label()] = pack_inc;
   }
