@@ -1,8 +1,11 @@
 ﻿<?xml version = '1.0'?>
 <job>
-    <property name="basefile" if="build-style=standard" >Jamfile</property>
-    <property name="sysfile"  if="build-style=standard" >Jamrules</property>
-    <property name="mainfile" if="build-style=standard" >Jamfile</property>
+    <property name="basefile" if="build-style=standard" >makefile</property>
+    <property name="sysfile"  if="build-style=standard" >%(make-sys)s</property>
+    <property name="mainfile" if="build-style=standard" >makefile</property>
+    <property name="basefile" if="build-style=jam" >Jamfile</property>
+    <property name="sysfile"  if="build-style=jam" >Jamrules</property>
+    <property name="mainfile" if="build-style=jam" >Jamfile</property>
     <property name="basefile" if="build-style=make" >makefile</property>
     <property name="sysfile"  if="build-style=make" >%(make-sys)s</property>
     <property name="mainfile" if="build-style=make" >makefile</property>

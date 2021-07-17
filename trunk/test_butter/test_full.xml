@@ -352,15 +352,15 @@ default (make) build tool + debug + non-C++ + property usage + multidirectory
 
    <job src="job_proplang.xml">
 
-jam build tool + debug + non-C++ + property usage + multidirectory
+standard build tool + debug + non-C++ + property usage + multidirectory
 * shared lib not available for jam yet
 
     <property name="project" >proplang</property>
-    <property name="build-tool" >%(jam)s</property>
-    <property name="build-style" >standard</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >make</property>
     <property name="patch-file" >jam.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
-    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
+    <property name="build-arg" >%(make-arg)s -k VARIANT=DEBUG install</property>
   </job>
 
    <job src="job_proplang.xml">

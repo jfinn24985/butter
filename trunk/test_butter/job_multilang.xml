@@ -103,7 +103,6 @@
         Verify that the correct files have been produced
         <verb type="file-list">
           <property name="base" if="build-style=cmake">%(local-base)s</property>
-          <property name="base" if="build-style=jam">%(local-base)s/DEBUG</property>
           <property name="base">%(local-base)s/src/Library</property>
           <property name="file-type">file</property>
           <property name="verify">exist</property>

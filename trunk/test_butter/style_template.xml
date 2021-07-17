@@ -192,7 +192,9 @@ VARIANT ?= DEBUG
  <template label="preamble-root"><option label="root-dir">export ROOTDIR:=<replace label="root-dir"/></option>
 <option label="sufsrc">export SUFSRC:=.<replace label="source-extension"/></option>
 <option label="sufhdr">export SUFHDR:=.<replace label="header-extension"/></option>
-<option label="SYSINCLUDE">export SYS_INCLUDE:= <replace label="includes"/>
+<option label="includes">export SYS_INCLUDE:= <replace label="includes"/>
+</option><option label="flags">export SYS_CXXFLAGS:= <replace label="flags"/>
+</option><option label="link">export SYS_LDFLAGS:= <replace label="ldflags"/>
 </option>
 include $(ROOTDIR)/system.mk
 </template>
@@ -213,10 +215,9 @@ include $(ROOTDIR)/system.mk
 
  <!-- template for start of (internal) package -->
  <template label="package">
-<option label="includes" target="includes"><replace label="NAME"/>_INCLUDE := <replace label="includes"/>
-</option><option label="flags" target="flags"><replace label="NAME"/>_CXXFLAGS := <replace label="flags"/>
-</option><option label="link" target="ldflags"><replace label="NAME"/>_LDFLAGS := <replace label="ldflags"/>
-</option>
+<replace label="NAME"/>_INCLUDE := <replace label="includes"/> $(SYS_INCLUDE)
+<replace label="NAME"/>_CXXFLAGS := <replace label="flags"/> $(SYS_CXXFLAGS)
+<replace label="NAME"/>_LDFLAGS := <replace label="ldflags"/> $(SYS_LDFLAGS)
 </template>
 
  <!-- Actual content for external libraries -->
@@ -753,7 +754,7 @@ Object <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC) ;
  <template label="object-other">
 <option label="build-file" target="build-file">include $(TOP)/<replace label="build-file"/>$(SUFMAK) ;
 </option><replace label="PROJECT"/>_<replace label="BASENAME"/>_INCLUDE = <replace label="includes"/> ;
-CFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="basename"/>$(SUFOBJ) : $(CFLAGS) $(<replace label="TARGET"/>_CXXFLAGS) <replace label="flags"/> -I$(<replace label="PROJECT"/>_<replace label="BASENAME"/>_INCLUDE) ; 
+CFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="basename"/>$(SUFOBJ) = $(CFLAGS) $(<replace label="TARGET"/>_CXXFLAGS) <replace label="flags"/> -I$(<replace label="PROJECT"/>_<replace label="BASENAME"/>_INCLUDE) ; 
 FORTRANFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="basename"/>$(SUFOBJ) = $(FORTRANFLAGS) <replace label="flags"/> ;
 </template>
 
@@ -932,9 +933,9 @@ include local.jam ;
  <template label="includes-relative">$(topdir)/<replace label="text"/></template>
  <template label="dependency-source"> <replace label="name"/>$(SUFSRC)</template>
  <template label="dependency-object"> <replace label="name"/></template>
- <template label="dependency-static-library"> <option label="path">/<replace label="project"/>//</option><replace label="name"/></template>
+ <template label="dependency-static-library"> <option label="path">/<replace label="PROJECT"/>//</option><replace label="name"/></template>
  <template label="link-shared-library"> -l<replace label="name"/></template>
- <template label="dependency-shared-library"> <option label="path">/<replace label="project"/>//</option><replace label="name"/></template>
+ <template label="dependency-shared-library"> <option label="path">/<replace label="PROJECT"/>//</option><replace label="name"/></template>
 
  <!-- template for start of (internal) package -->
  <template label="package">
