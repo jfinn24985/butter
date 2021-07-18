@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 85
+  revision 86
   modified_by 42 "finnerty"
   // class settings
   
@@ -266,6 +266,47 @@ ${items}
 	
 	
 	comment "Is it possible to use stream()?"
+      end
+    end
+
+    class 128042 "unknown_style_error"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name} : public std::runtime_error {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "Error type for the build_style class to indicate that no style definition for
+a given style was found in build_style::read_class."
+      operation 154922 "~unknown_style_error"
+	cpp_virtual public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${virtual}${name}${(}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      extra_member 141098 ""
+	
+	cpp "using std::runtime_error::runtime_error;
+using std::runtime_error::what;" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
       end
     end
 
@@ -5078,6 +5119,7 @@ ${namespace_start}
 ${members}
 ${namespace_end}"
       associated_elems
+	class_ref 128042 // unknown_style_error
 	class_ref 220080 // build_style
       end
     end

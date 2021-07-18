@@ -31,39 +31,21 @@ UmlArtifact * root_build_file = nullptr;
   root_build_file = this->get_build_file( root_state, this->style_->get_root_file_name().utf8() );
   if( nullptr == root_build_file )
   {
-    UmlItem::string_map projectbook;
-    const QByteArray package_name_{ UmlPackage::getProject()->name() };
-    UmlPackage::getProject()->in_scope(projectbook, true, log);
-    projectbook["name"] = package_name_;
-    projectbook["NAME"] = make_var_name(package_name_);
-    projectbook["root-dir"] = this->root_->base_path();
-    projectbook["path"] = ".";
-    projectbook["source-extension"] = CppSettings::sourceExtension();
-    projectbook["header-extension"] = CppSettings::headerExtension();
-//XX    {
-//XX      butter::enumerate_path root_dir_( CppSettings::rootDir() ); // Project root dir.
-//XX      if ( root_dir_.isRelative() )
-//XX      {
-//XX        QFileInfo f_( UmlPackage::getProject()->supportFile() );
-//XX        root_dir_.setPath( f_.dir().filePath( root_dir_.path () ) );
-//XX      }
-//XX      QString base_ = enumerate_path(this->root_->base_path()).create_relative( root_dir_ );
-//XX      base_ = (base_.isEmpty() ? "." : base_);
-//XX      if (projectbook["includes"].isEmpty())
-//XX      {
-//XX        projectbook["includes"] = base_;
-//XX      }
-//XX      else
-//XX      {
-//XX        projectbook["includes"] += " " + base_;
-//XX      }
-//XX    }
-    this->process_includes(projectbook, UmlPackage::getProject()->hdr_path().path(), true);
-    this->process_flags(projectbook, UmlItem::flags_label());
-    this->process_flags(projectbook, UmlItem::ldflags_label());
     root_build_file = root_state->add_uml_document(this->style_->get_root_file_name(), log);
-    root_build_file->document().preamble().value = this->style_->make_element(preamble_root(), projectbook);
   }
+  UmlItem::string_map projectbook;
+  const QByteArray package_name_{ UmlPackage::getProject()->name() };
+  UmlPackage::getProject()->in_scope(projectbook, true, log);
+  projectbook["name"] = package_name_;
+  projectbook["NAME"] = make_var_name(package_name_);
+  projectbook["root-dir"] = this->root_->base_path();
+  projectbook["path"] = ".";
+  projectbook["source-extension"] = CppSettings::sourceExtension();
+  projectbook["header-extension"] = CppSettings::headerExtension();
+  this->process_includes(projectbook, UmlPackage::getProject()->hdr_path().path(), true);
+  this->process_flags(projectbook, UmlItem::flags_label());
+  this->process_flags(projectbook, UmlItem::ldflags_label());
+  root_build_file->document().preamble().value = this->style_->make_element(preamble_root(), projectbook);
 }
 
 //////////////
@@ -95,15 +77,15 @@ while( ! location_stack_.isEmpty() )
     if( nullptr == build_file )
     {
       build_file = state->add_uml_document(this->style_->get_build_file_name(), log);
-      UmlItem::string_map packbook;
-      packbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
-      packbook["dir"] = enumerate_path(this->root_->base_path()).create_relative(top_->path());
-      for( int i_ = 0; i_ < state->packages().count(); ++i_ )
-      {
-        state->packages().at(i_)->in_scope(packbook, true, log);
-      }
-      build_file->document().preamble().value = this->style_->make_element(preamble(), packbook);
     }
+    UmlItem::string_map packbook;
+    packbook["path"] = enumerate_path(this->root_->base_path()).create_relative(top_->full_path());
+    packbook["dir"] = enumerate_path(this->root_->base_path()).create_relative(top_->path());
+    for( int i_ = 0; i_ < state->packages().count(); ++i_ )
+    {
+      state->packages().at(i_)->in_scope(packbook, true, log);
+    }
+    build_file->document().preamble().value = this->style_->make_element(preamble(), packbook);
   }
   // Get deployment views from current location's packages
   for( int i_ = 0; i_ < state->packages().count(); ++i_ )
@@ -278,7 +260,7 @@ do {
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
       if( need_object )
       {
-        currentbook["basename"] = current_art_->name();
+        currentbook["basename"] = "-error-";
         currentbook["BASENAME"] = make_var_name(currentbook["basename"]);
         build_file->document()[current_art_->name()].value = this->style_->make_element("object", currentbook);
         targetbook["source"] += this->style_->make_element( "dependency-object", currentbook, current_art_->name());
@@ -296,7 +278,7 @@ do {
       // For "document" is "other" type and need to pass ldflags and create object
       append_if_present(UmlItem::ldflags_label(), currentbook, targetbook);
       build_file->document()[current_art_->name()].value = this->style_->make_element("object-other", currentbook);
-      targetbook["source"] += this->style_->make_element( "dependency-object", currentbook, current_art_->name());
+      targetbook["source"] += this->style_->make_element( "dependency-object-other", currentbook, current_art_->name());
     }
   }
   ////////////////////
@@ -535,14 +517,15 @@ return build_file;
 !!!337968.cpp!!!	parse_project(inout a_item : UmlItem, inout log : base_log) : void
 ///////////////////////
 // Test preconditions
-BUTTER_REQUIRE( aPackage == a_item.kind(), "Argument is not a UmlPackage item." );
+BUTTER_REQUIRE( aPackage == a_item.kind(),
+                "Argument is not a UmlPackage item." );
 // Use pointer cast to avoid bad_cast throw, even though
 // we may throw in the next step..
-UmlPackage * project = dynamic_cast < UmlPackage * >( &a_item );
-BUTTER_REQUIRE( NULL != project && NULL == a_item.parent ()
-  , "<p><b>Program error:</b> Item is not a package or is not the top-level package.</p>" );
+UmlPackage* project = dynamic_cast < UmlPackage* >( &a_item );
+BUTTER_REQUIRE( NULL != project&& NULL == a_item.parent ()
+                , "<p><b>Program error:</b> Item is not a package or is not the top-level package.</p>" );
 UmlItem::string_map project_addrbook;
-project->in_scope(project_addrbook, true, log);
+project->in_scope( project_addrbook, true, log );
 /////////////////////
 // Set logging level
 {
@@ -556,7 +539,8 @@ project->in_scope(project_addrbook, true, log);
 // Set output build style
 {
   QByteArray style_, xml_filename_;
-  if ( ! project->propertyValue( "butter " + UmlItem::style_label(), style_ ) )
+  if ( ! project->propertyValue( "butter " +
+                                 UmlItem::style_label(), style_ ) )
   {
     log.trace( base_log::info, "Using default style" );
     style_ = default_style_value();
@@ -567,27 +551,82 @@ project->in_scope(project_addrbook, true, log);
     style_ = default_style_value();
   }
   log.trace( base_log::info, "Style: " + style_ );
-  if ( ! project->propertyValue( "butter " + UmlItem::style_path_label(), xml_filename_ ) )
+  if ( ! project->propertyValue( "butter " +
+                                 UmlItem::style_path_label(), xml_filename_ ) )
   {
     xml_filename_ = default_style_path_value();
   }
-  this->style_->read_style( style_, xml_filename_ );
-  log.trace( base_log::info, "Build file name set to: " + this->style_->get_build_file_name() );
+  do
+  {
+    try
+    {
+      this->style_->read_style( style_, xml_filename_ );
+      break;
+    }
+    catch ( const unknown_style_error& e )
+    {
+      if ( style_ == default_style_value() )
+      {
+        throw e;
+      }
+      {
+        QString msg_;
+        QTextOStream mos_( &msg_ );
+        mos_ << "Cannot find a build style definition for style '" <<
+             style_ <<
+             "'.";
+        mos_ << "<ul><li>Press 'Okay' to continue with the standard '" <<
+             default_style_value() << "' style\n";
+        mos_ << "</li><li>Press 'Abort' to stop. Then fix the style property before rerunning the plug-out.</li></ul>\n";
+        if ( 1 == this->interaction_ or ( 0 == this->interaction_
+                                          and QMessageBox::Ok ==
+#if QT_VERSION < 300L
+                                          QMessageBox::warning
+#else
+                                          QMessageBox::question
+#endif
+                                          ( 0
+                                            , "Butter: Unknown style."
+                                            , msg_
+                                            , QMessageBox::Ok
+                                            , QMessageBox::Abort ) ) )
+        {
+          style_ = default_style_value();
+        }
+        else
+        {
+          throw e;
+        }
+      }
+    }
+    catch ( const std::exception& e )
+    {
+      throw e;
+    }
+  }
+  while ( true );
+  log.trace( base_log::info,
+             "Build file name set to: " +
+             this->style_->get_build_file_name() );
 }
 /////////////////////
 // Initialisation
-butter::enumerate_path root_dir_( CppSettings::rootDir() ); // Project root dir.
-log.trace( base_log::warn, "<p><b>Please wait:</b> building target list for project <i>"
-  + a_item.name() + "</i>.</p>" );
-BUTTER_ALWAYS( ! root_dir_.path ().isEmpty (), "<p><b>Error</b>Project C++ root directory is not set, please set it in the C++ generation dialog.</p>" );
+butter::enumerate_path root_dir_
+( CppSettings::rootDir() ); // Project root dir.
+log.trace( base_log::warn,
+           "<p><b>Please wait:</b> building target list for project <i>"
+           + a_item.name() + "</i>.</p>" );
+BUTTER_ALWAYS( ! root_dir_.path ().isEmpty (),
+               "<p><b>Error</b>Project C++ root directory is not set, please set it in the C++ generation dialog.</p>" );
 // Ensure root directory exists.
 if ( root_dir_.isRelative() )
 {
   QFileInfo f_( project->supportFile() );
   root_dir_.setPath( f_.dir().filePath( root_dir_.path () ) );
 }
-log.trace( base_log::debug, "<p>Relative C++ root path expanded to: ["
-  + root_dir_.path () + "].</p>" );
+log.trace( base_log::debug,
+           "<p>Relative C++ root path expanded to: ["
+           + root_dir_.path () + "].</p>" );
 if ( ! root_dir_.exists() )
 {
   if ( ! root_dir_.mkpath() )
@@ -626,49 +665,57 @@ if ( ! root_dir_.exists() )
 
 if ( DEBUG )
 {
-  if(! log.have_stream())
+  if ( ! log.have_stream() )
   {
-    log.debug_log( ( root_dir_ / butter::enumerate_path( "butter.log" ) ).path() );
+    log.debug_log( ( root_dir_ /
+                     butter::enumerate_path( "butter.log" ) ).path() );
   }
-  if( log.have_stream() )
+  if ( log.have_stream() )
   {
-    log.stream() << "##\n## BEGIN LOG FOR " << constants::BUTTER_VERSION << "\n##\n";
+    log.stream() << "##\n## BEGIN LOG FOR " <<
+                 constants::BUTTER_VERSION << "\n##\n";
   }
 }
 ///////////////////////////////////
 // Walk through the UmlItems.
-QVector< UmlItem * > item_stack_; // in-order project descent stack
+QVector< UmlItem* >
+item_stack_;  // in-order project descent stack
 // Push items onto stack
 item_stack_.push_back( &a_item );
 while ( ! item_stack_.isEmpty () )
 {
-  UmlItem * const top_ = item_stack_.back();
+  UmlItem* const top_ = item_stack_.back();
   item_stack_.pop_back();
   // Cache location pointer used when adding UmlPackages->
-  butter::location * cache_ = NULL;
+  butter::location* cache_ = NULL;
 
   // Assign any packages to a location object
   if ( aPackage == top_->kind () )
   {
-    UmlPackage * pack_item_ = dynamic_cast< UmlPackage * >( top_ );
-    BUTTER_CHECK( nullptr != pack_item_, "<p>Item type and class type do not match.</p>" );
+    UmlPackage* pack_item_ = dynamic_cast< UmlPackage* >( top_ );
+    BUTTER_CHECK( nullptr != pack_item_,
+                  "<p>Item type and class type do not match.</p>" );
     // Create the simplest absolute path to package without reference to filesystem
     const enumerate_path pack_path_( pack_item_->cppSrcDir() );
-    BUTTER_CHECK( ! pack_path_.path().isEmpty (), "<p><b>Programming error:</b> Directory path for a package was found empty</p>" );
+    BUTTER_CHECK( ! pack_path_.path().isEmpty (),
+                  "<p><b>Programming error:</b> Directory path for a package was found empty</p>" );
     // Ensure directory exists.
     if ( ! pack_path_.exists() )
     {
       if ( ! pack_path_.mkpath() )
       {
-        const QString msg_( "<p><b>A package directory <pre>[" + pack_path_.path () + "]</pre> does not exist and could not be created</b>, please ensure that all packages have usable locations. Running the code generator first may avoid this error.</p>" );
+        const QString msg_( "<p><b>A package directory <pre>[" +
+                            pack_path_.path () +
+                            "]</pre> does not exist and could not be created</b>, please ensure that all packages have usable locations. Running the code generator first may avoid this error.</p>" );
         throw std::runtime_error( msg_.utf8 ().data () );
       }
     }
     // Find/Create location, reparenting tree if necessary, and add package.
     if ( DEBUG )
     {
-      log.stream() << "## Finding/creating location for Package [" << pack_item_->name()
-        << "] at path [" << pack_path_.path() << "]\n";
+      log.stream() << "## Finding/creating location for Package [" <<
+                   pack_item_->name()
+                   << "] at path [" << pack_path_.path() << "]\n";
     }
     cache_ = this->root_->insert( pack_path_.path() );
     cache_->value().add_package( *pack_item_ );
@@ -677,7 +724,7 @@ while ( ! item_stack_.isEmpty () )
   {
     {
       unsigned int depth_( 0 );
-      UmlItem * print_tmp_ = top_;
+      UmlItem* print_tmp_ = top_;
       for ( ; NULL != print_tmp_; ++depth_ )
       {
         print_tmp_ = print_tmp_->parent();
@@ -686,10 +733,11 @@ while ( ! item_stack_.isEmpty () )
     }
   }
   // Push any children onto the stack
-  auto const & kids_ = top_->children();
+  auto const& kids_ = top_->children();
   for ( unsigned int i_ = 0; i_ < kids_.size(); ++i_ )
   {
-    BUTTER_CHECK( NULL != kids_.at ( i_ ), "<p><b>Program error</b> Nul objects were children of an UmlItem.</p>" );
+    BUTTER_CHECK( NULL != kids_.at ( i_ ),
+                  "<p><b>Program error</b> Nul objects were children of an UmlItem.</p>" );
     item_stack_.push_back( kids_.at( i_ ) );
   }
 }
@@ -706,7 +754,8 @@ if ( DEBUG )
     const enumerate_path base_path_( root_dir_ / itr.value() );
     if ( ! base_path_.equality( this->root_->base_path() ) )
     {
-      log.trace( base_log::warn, "<p><b>Warning:</b> User set root directory is not the parent of all project directories and has been ignored.</p>" );
+      log.trace( base_log::warn,
+                 "<p><b>Warning:</b> User set root directory is not the parent of all project directories and has been ignored.</p>" );
     }
   }
 }
@@ -719,14 +768,17 @@ if ( this->root_->root()->value().empty() )
   bool top_package_is_writable_( a_item.isWritable () );
   QString msg_;
   QTextOStream mos_( &msg_ );
-  mos_ << "<p><pre>[" << this->root_->base_path() << "]</pre> found as parent directory";
+  mos_ << "<p><pre>[" << this->root_->base_path() <<
+       "]</pre> found as parent directory";
   if ( top_package_is_writable_ )
   {
     bool name_not_found_( true );
-    for ( unsigned int i_ = 0; name_not_found_ && i_ < a_item.children().count (); ++i_ )
+    for ( unsigned int i_ = 0; name_not_found_
+          && i_ < a_item.children().count (); ++i_ )
     {
-      name_not_found_ = ( new_name_ != a_item.children().at ( i_ )->name().data ()
-          || aPackage != a_item.children().at ( i_ )->kind() );
+      name_not_found_ = ( new_name_ != a_item.children().at (
+                            i_ )->name().data ()
+                          || aPackage != a_item.children().at ( i_ )->kind() );
     }
     if ( ! name_not_found_ )
     {
@@ -736,10 +788,12 @@ if ( this->root_->root()->value().empty() )
         cmpd_name_.setNum( j_ );
         cmpd_name_.prepend( new_name_ );
         name_not_found_ = true;
-        for ( unsigned int i_ = 0; name_not_found_ && i_ < a_item.children().count (); ++i_ )
+        for ( unsigned int i_ = 0; name_not_found_
+              && i_ < a_item.children().count (); ++i_ )
         {
-          name_not_found_ = ( cmpd_name_ != a_item.children().at( i_ )->name ().data ()
-              || aPackage != a_item.children().at( i_ )->kind() );
+          name_not_found_ = ( cmpd_name_ != a_item.children().at(
+                                i_ )->name ().data ()
+                              || aPackage != a_item.children().at( i_ )->kind() );
         }
         if ( name_not_found_ )
         {
@@ -757,25 +811,29 @@ if ( this->root_->root()->value().empty() )
     }
     else
     {
-      mos_ << ". 'Ok' to create a package '" << new_name_ << "' with this directory ";
+      mos_ << ". 'Ok' to create a package '" << new_name_ <<
+           "' with this directory ";
       mos_ << "or 'Cancel' and do one of:<p>\n";
       mos_ << "<ul><li>Create/modify a package with this directory.</li>\n";
       mos_ << "<li>Change existing directories to change parent directory.</li></ul>\n";
-      if ( 1 == this->interaction_ or ( 0 == this->interaction_ and QMessageBox::Ok ==
+      if ( 1 == this->interaction_ or ( 0 == this->interaction_
+                                        and QMessageBox::Ok ==
 #if QT_VERSION < 300L
-        QMessageBox::warning
+                                        QMessageBox::warning
 #else
-        QMessageBox::question
+                                        QMessageBox::question
 #endif
-        ( 0
-          , "Butter: Parent directory is outside project."
-          , msg_
-          , QMessageBox::Ok
-          , QMessageBox::Abort ) ) )
+                                        ( 0
+                                          , "Butter: Parent directory is outside project."
+                                          , msg_
+                                          , QMessageBox::Ok
+                                          , QMessageBox::Abort ) ) )
       {
-        UmlPackage * build_ = UmlPackage::create( dynamic_cast< UmlPackage * >( &a_item ), new_name_ );
+        UmlPackage* build_ = UmlPackage::create(
+                               dynamic_cast< UmlPackage* >( &a_item ), new_name_ );
         butter::enumerate_path helper_( CppSettings::rootDir() );
-        build_->set_CppSrcDir( helper_.create_relative( this->root_->base_path() ).utf8 () );
+        build_->set_CppSrcDir( helper_.create_relative(
+                                 this->root_->base_path() ).utf8 () );
         this->root_->root()->value().add_package( *build_ );
       }
       else
@@ -789,9 +847,9 @@ if ( this->root_->root()->value().empty() )
     mos_ << " and project is not writable.<p>\n";
     throw std::runtime_error( msg_.utf8().data() );
   }
-  if( DEBUG && this->root_ )
+  if ( DEBUG && this->root_ )
   {
-    this->root_->serialize(log.stream());
+    this->root_->serialize( log.stream() );
   }
 }
 

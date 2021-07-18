@@ -55,7 +55,7 @@ if(! this->templates_.empty())
   }
   if( xml.atEnd() )
   {
-    throw std::runtime_error(("No definition for style \"" + style + "\" found in xml stream").toStdString());
+    throw unknown_style_error(("No definition for style \"" + style + "\" found in xml stream").toStdString());
   }
   while (!xml.atEnd())
   {

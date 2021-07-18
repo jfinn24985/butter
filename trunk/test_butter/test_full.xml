@@ -339,7 +339,7 @@ Multiple Directory, non-C++ source and property usage test cases
 
    <job src="job_proplang.xml">
 
-default (make) build tool + debug + non-C++ + property usage + multidirectory
+"unknown" build tool + debug + non-C++ + property usage + multidirectory
 * shared lib not available for jam yet
 
     <property name="project" >proplang</property>
@@ -350,17 +350,30 @@ default (make) build tool + debug + non-C++ + property usage + multidirectory
     <property name="build-arg" >%(make-arg)s -k VARIANT=DEBUG install</property>
   </job>
 
-   <job src="job_proplang.xml">
+  <job src="job_proplang.xml">
 
-standard build tool + debug + non-C++ + property usage + multidirectory
+standard (make) build tool + debug + non-C++ + property usage + multidirectory
 * shared lib not available for jam yet
 
     <property name="project" >proplang</property>
     <property name="build-tool" >%(make)s</property>
     <property name="build-style" >make</property>
-    <property name="patch-file" >jam.patch</property>
+    <property name="patch-file" >standard.patch</property>
     <property name="library-name" >library%(ark-suf)s</property>
     <property name="build-arg" >%(make-arg)s -k VARIANT=DEBUG install</property>
+  </job>
+
+  <job src="job_proplang.xml">
+
+jam build tool + debug + non-C++ + property usage + multidirectory
+* shared lib not available for jam yet
+
+    <property name="project" >proplang</property>
+    <property name="build-tool" >%(jam)s</property>
+    <property name="build-style" >jam</property>
+    <property name="patch-file" >jam.patch</property>
+    <property name="library-name" >library%(ark-suf)s</property>
+    <property name="build-arg" >%(jam-arg)s -sVARIANT=DEBUG install</property>
   </job>
 
    <job src="job_proplang.xml">
