@@ -1,6 +1,6 @@
 format 224
 "Build" // Build
-  revision 25
+  revision 26
   modified_by 42 "finnerty"
   // class settings
   
@@ -173,7 +173,9 @@ FORTRAN = gfortran ;
       stereotype "document"
       associated_artifacts
       end
-      comment "set (T2T pandoc)
+      comment "set (MANDIR ${DATADIR}/man)
+set (HTMLDIR ${DATADIR}/html)
+set (T2T pandoc)
 set (T2T_FLAGS -o)
 "
     end
