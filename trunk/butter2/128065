@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 86
+  revision 87
   modified_by 42 "finnerty"
   // class settings
   
@@ -4369,12 +4369,12 @@ ${inlines}
 	cpp "" "
 static QByteArray make_var_name(QByteArray s)
 {
-  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_').replace(':','_');
+  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_').replace(':','_').replace('.','_');
 }
 
 static QString make_var_name(QString s)
 {
-  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_').replace(':','_');
+  return s.toUpper().replace(' ','_').replace('/','_').replace('-','_').replace(':','_').replace('.','_');
 }
 "
 	java ""

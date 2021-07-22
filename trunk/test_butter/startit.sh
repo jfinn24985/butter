@@ -8,10 +8,10 @@ for dir_ in . /tmp/test_suite ; do
     break
   fi
 done
-DATESTAMP=`date +%m%d%H%M`
-ln -sf out${DATESTAMP}$$.html output.html
+DATESTAMP=`date +%y%m%d-%H%M`
+ln -sf out-${DATESTAMP}-$$.html output.html
 if [ "X--file" = "X$1" ] ; then
-python ${SCRIPT} $* > out${DATESTAMP}$$.html
+python ${SCRIPT} $* > out-${DATESTAMP}-$$.html
 else
 python ${SCRIPT} --file test.xml $* > out${DATESTAMP}$$.html
 fi

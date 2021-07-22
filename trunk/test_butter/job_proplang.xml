@@ -15,9 +15,7 @@
     <property name="basefile" if="build-style=cmake" >CMakeLists.txt</property>
     <property name="sysfile"  if="build-style=cmake" >local.cmake</property>
     <property name="mainfile" if="build-style=cmake" >CMakeLists.txt</property>
-    <property name="lib-prefix" if="build-style=boost" >lib</property>
-    <property name="lib-prefix" if="build-style=make" >lib</property>
-    <property name="lib-prefix" if="build-style=jam" >lib</property>
+    <property name="lib-prefix">lib</property>
     <property name="deploy-base" >%(base-dir)s/%(project)s/trunk/test/%(project)s</property>
     <property name="local-base" >%(deploy-base)s/output</property>
     <stage>Test generating source and build system from a single level project with 2 targets
@@ -90,7 +88,7 @@
        <property name="compile-command"  if="build-style=cmake" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s
            { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
            PATH{%(build-tool)s} %(build-arg)s &gt;&gt; build.log %(cmdsep)s
-           PATH{%(make)s} -k VERBOSE=1 %(make-arg)s install &gt;&gt; build.log %(cmdsep)s
+           PATH{%(make)s} %(local-make-arg)s &gt;&gt; build.log %(cmdsep)s
            %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
        <property name="compile-command">/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s
            { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
@@ -122,11 +120,13 @@
            <property name="test-phrase">2.3 built shared library using build system</property>
         </verb>
         <verb type="file-list" >
+          <property name="base" if="build-style=cmake">%(local-base)s</property>
           <property name="base" >%(local-base)s/src</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
           <property name="error" >nonfatal</property>
           <property name="location" if="build-style=boost">%(lib-prefix)ssquarestatic%(ark-suf)s</property>
+          <property name="location" if="build-style=cmake">%(lib-prefix)ssquarestatic%(ark-suf)s</property>
           <property name="location" >squarestatic%(ark-suf)s</property>
           <property name="test-phrase">2.4 built static library using build system</property>
         </verb>
@@ -215,7 +215,7 @@
         </verb>
       </verb-list>
     </stage>
-    <stage>
+    <!--stage>
       Clean-up stage
       <verb-list category="cleanup">
         Clean up operations
@@ -226,5 +226,5 @@
           <property name="location" >%(project)s</property>
         </verb>
       </verb-list>
-    </stage>
+    </stage -->
 </job>
