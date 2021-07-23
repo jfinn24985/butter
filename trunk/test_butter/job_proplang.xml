@@ -112,6 +112,7 @@
           <property name="test-phrase">2.2 Built executable with Fortran source</property>
         </verb>
         <verb type="file-list" >
+          <property name="base" if="build-style=boost">%(local-base)s/%(stage-lib-dir)s64</property>
           <property name="base" >%(local-base)s/%(stage-lib-dir)s</property>
           <property name="file-type" >file</property>
           <property name="verify" >exist</property>
@@ -195,6 +196,7 @@
 	<verb type="system" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s PATH{%(stage-bin-dir)s/static_sqr%(exe-suf)s} 12.0 1 > output3 %(cmdsep)s %(cat)s output3 %(cmdsep)s  popd %(cmdsep)s }" </verb>
       </verb-list>
       <verb-list category="execute" >Run &quot;program&quot;
+	<property name="library-path" if="build-style=boost">%(local-base)s/%(stage-lib-dir)s64</property>
 	<property name="library-path">%(local-base)s/%(stage-lib-dir)s</property>
 	<verb type="system" >/bin/bash -c "{ pushd PATH{%(local-base)s} %(cmdsep)s export %(set-library-path)s PATH{%(stage-bin-dir)s/shared_sqr%(exe-suf)s} 12.0 1 > output4 %(cmdsep)s %(cat)s output4 %(cmdsep)s popd %(cmdsep)s }" </verb>
       </verb-list>

@@ -762,7 +762,6 @@ CCFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;"
 FORTRANFLAGS on <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><replace label="basename"/>$(SUFOBJ) += $(FORTRANFLAGS) <replace label="flags"/> -I$(<replace label="PROJECT"/>_<replace label="BASENAME"/>_INCLUDES) ;
 </template>
 
-
  <!-- template for a target static library-->
  <template label="target-library">
 <replace label="PACKAGE"/>_<replace label="NAME"/>_SRC =
@@ -870,7 +869,7 @@ Main <replace label="path" split="/" join ="!" prefix="&lt;" suffix="&gt;" /><re
 <style label="boost">
 
  <file label="local.jam">#
-# local.jam
+# local.bjam
 #
 
 using gcc : : : &lt;cflags&gt;"-ansi -std=c11" ;
@@ -894,7 +893,7 @@ constant SUFHDR : .hh ;
 }
 if ! $(SUFMAK)
 {
-constant SUFMAK : .jam ;
+constant SUFMAK : .bjam ;
 }
 if $(UNIX)  {
 constant SUFOBJ : .o ; 
@@ -940,17 +939,17 @@ include local.jam ;
  <template label="make-variable">$(<replace label="text"/>)</template>
  <template label="includes-relative">$(topdir)/<replace label="text"/></template>
  <template label="dependency-source"> <replace label="name"/>$(SUFSRC)</template>
- <template label="dependency-object"> <replace label="name"/>$(SUFSRC)</template>
+ <template label="dependency-object"> <replace label="name"/></template>
  <template label="dependency-object-other"> <replace label="name"/></template>
  <template label="dependency-static-library"> <option label="path">/<replace label="PROJECT"/>//</option><replace label="name"/></template>
- <template label="link-shared-library"> -l<replace label="name"/></template>
+ <template label="link-shared-library"></template>
  <template label="dependency-shared-library"> <option label="path">/<replace label="PROJECT"/>//</option><replace label="name"/></template>
 
  <!-- template for start of (internal) package -->
  <template label="package">
 project <replace label="NAME"/>
   : requirements &lt;debug-symbols&gt;on:&lt;define&gt;"DEBUG=1"
-    &lt;debug-symbols&gt;off:&lt;define&gt;"DEBUG=0"<option label="includes" target="includes"> &lt;include&gt;"<replace label="includes"/>"
+    &lt;debug-symbols&gt;off:&lt;define&gt;"DEBUG=0"<option label="includes" target="includes"> <replace label="includes" split=" " join=" &lt;include&gt;" prefix="&lt;include&gt;"/>
 </option><option label="FLAGS"> &lt;cxxflags&gt;"<replace label="flags"/>"
 </option><option label="LDFLAGS"> &lt;linkflags&gt;"<replace label="ldflags"/>"
 </option> <option label="build-dir"> : build-dir <replace label="build-dir"/></option> ;
@@ -959,18 +958,21 @@ project <replace label="NAME"/>
  <!-- how to build an object file -->
  <template label="object">
 <option label="build-file" target="build-file">include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
-</option><option label="flags">C++FLAGS on <replace label="name"/>$(SUFOBJ) = $(C++FLAGS) <replace label="flags"/> ;
+</option><!-- option label="flags"><replace label="PROJECT"/>_<replace label="NAME"/>_INCLUDES = <replace label="includes"/> ;
+C++FLAGS on /<replace label="PROJECT"/>//<replace label="name"/>$(SUFOBJ) += <replace label="flags"/> -I$(<replace label="PROJECT"/>_<replace label="NAME"/>_INCLUDES) ;
 </option>
-<!-- obj <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC) 
-            : <option label="flags">&lt;CXXFLAGS&gt;"<replace label="flags"/>"</option><option label="inc" target="includes">
-            &lt;include&gt;"<replace label="includes"/>"</option>
-            ; -->
+<option label="flags"> <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC) :  <replace label="includes" split=" " join=" &lt;include&gt;" prefix="&lt;include&gt;"/> ;
+</option -->
+obj <replace label="name"/> : <replace label="name"/>$(SUFSRC) 
+            : &lt;cflags&gt;"<replace label="flags"/> $(<replace label="PROJECT"/>_<replace label="TARGET"/>_FLAGS)<option label="inc" target="includes">"
+              <replace label="includes" split=" " join=" &lt;include&gt;" prefix="&lt;include&gt;"/></option>
+            ;
 </template>
 
  <!-- Other target type -->
  <template label="object-other">
 <option label="build-file" target="build-file">include $(ROOTDIR)/<replace label="build-file"/>$(SUFMAK) ;
-</option><option label="flags">CFLAGS on <replace label="basename"/>$(SUFOBJ) += <replace label="flags"/> ;
+</option><option label="flags" target="flags">CFLAGS on <replace label="basename"/>$(SUFOBJ) += <replace label="flags"/> ;
 FORTRANFLAGS on <replace label="basename"/>$(SUFOBJ) += <replace label="flags"/> ;
 </option>
 <!-- obj <replace label="name"/>$(SUFOBJ) : <replace label="name"/>$(SUFSRC) 
@@ -980,40 +982,47 @@ FORTRANFLAGS on <replace label="basename"/>$(SUFOBJ) += <replace label="flags"/>
 </template>
 
  <!-- Actual content for external libraries -->
- <template label="extern-library">constant <replace label="NAME"/>FLAGS : <replace label="flags"/> ;
-constant <replace label="NAME"/>LDFLAGS : <replace label="ldflags"/> ;
-constant <replace label="NAME"/>INC : <replace label="includes"/> ;
-</template>
+ <template label="extern-library"><option label="flags" target="flags">constant <replace label="NAME"/>_FLAGS : <replace label="flags"/> ;
+</option><option label="linkflags" target="ldflags">constant <replace label="NAME"/>LDFLAGS : <replace label="ldflags"/> ;
+</option><option label="includes" target="includes">constant <replace label="NAME"/>INC : <replace label="includes"/> ;
+</option></template>
   
+<template label="target-start"><option label="includes" target="includes">constant <replace label="PACKAGE"/>_<replace label="NAME"/>_INC : <replace label="includes"/> ;
+</option><option label="flags" target="flags">constant <replace label="PACKAGE"/>_<replace label="NAME"/>_FLAGS : <replace label="flags"/> -I$(<replace label="PACKAGE"/>_<replace label="NAME"/>_INC)  ;
+</option></template>
+
  <!-- template for a static library target -->
  <template label="target-library">
 lib <replace label="name"/> :
                      <replace label="source"/>
-                     : &lt;link&gt;static
+                     : &lt;link&gt;static <option label="includes" target="includes"> <replace label="includes" split=" " join=" &lt;include&gt;" prefix="&lt;include&gt;"/></option><option label="FLAGS"> &lt;<replace label="other"/>flags&gt;"<replace label="flags"/>"</option><option label="LDFLAGS"> &lt;linkflags&gt;"<replace label="ldflags"/>"
+</option>
                      ;
 </template>
 
  <!-- template for a shared library target -->
  <template label="target-shared">
 lib <replace label="name"/> :
-                     <replace label="source"/>
-                     : &lt;link&gt;share
+                     <replace label="source"/> <replace label="dependency"/> <replace label="build-dependency"/>
+                     : &lt;link&gt;shared <option label="includes" target="includes"> <replace label="includes" split=" " join=" &lt;include&gt;" prefix="&lt;include&gt;"/></option><option label="FLAGS"> &lt;<replace label="other"/>flags&gt;"<replace label="flags"/>"</option><option label="LDFLAGS"> &lt;linkflags&gt;"<replace label="ldflags"/>"
+</option>
                      ;
 </template> 
 
  <!-- template for a executable target -->
  <template label="target-executable">
 exe <replace label="name"/> :
-                     <replace label="source"/> <replace label="dependency"/>
-                     :
+                     <replace label="source"/> <replace label="dependency"/> <replace label="build-dependency"/>
+                     :<option label="includes" target="includes"> <replace label="includes" split=" " join=" &lt;include&gt;" prefix="&lt;include&gt;"/></option><option label="FLAGS"> &lt;<replace label="other"/>flags&gt;"<replace label="flags"/>"</option><option label="LDFLAGS"> &lt;linkflags&gt;"<replace label="ldflags"/>"
+</option>
                      ;
 </template>
 
  <!-- template for a other target -->
  <template label="target-other">
 <replace label="other"/> <replace label="name"/> :
-                     <replace label="source"/> <replace label="dependency"/>
-                     :<option label="includes" target="includes"> &lt;include&gt;"<replace label="includes"/>"</option><option label="FLAGS"> &lt;<replace label="other"/>flags&gt;"<replace label="flags"/>"</option><option label="LDFLAGS"> &lt;linkflags&gt;"<replace label="ldflags"/>"
+                     <replace label="source"/> <replace label="dependency"/> <replace label="build-dependency"/>
+                     :<option label="includes" target="includes"> <replace label="includes" split=" " join=" &lt;include&gt;" prefix="&lt;include&gt;"/></option><option label="FLAGS"> &lt;<replace label="other"/>flags&gt;"<replace label="flags"/>"</option><option label="LDFLAGS"> &lt;linkflags&gt;"<replace label="ldflags"/>"
 </option>                ;
 </template>
 
@@ -1035,19 +1044,23 @@ constant <replace label="NAME"/>INC : <replace label="includes"/> ;
  
  <!-- template for a target -->
  <template label="install-library">
-<option label="where" target="install">install $(INSTALL_PREFIX) : <replace label="name"/> : &lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
+<option label="where" target="install">install $(INSTALL_PREFIX)/<replace label="name"/> : <replace label="name"/>
+ : &lt;variant&gt;debug:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> &lt;variant&gt;release:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
 </option></template>
 
  <template label="install-shared">
-<option label="where" target="install">install $(INSTALL_PREFIX) : <replace label="name"/> : &lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
+<option label="where" target="install">install $(INSTALL_PREFIX)/<replace label="name"/> : <replace label="name"/>
+ : &lt;variant&gt;debug:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> &lt;variant&gt;release:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
 </option></template>
 
  <template label="install-executable">
-<option label="where" target="install">install $(INSTALL_PREFIX) : <replace label="name"/> : &lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
+<option label="where" target="install">install $(INSTALL_PREFIX)/<replace label="name"/> : <replace label="name"/>
+ : &lt;variant&gt;debug:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> &lt;variant&gt;release:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
 </option></template>
 
  <template label="install-other">
-<option label="where" target="install">install $(INSTALL_PREFIX) : <replace label="name"/> : &lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
+<option label="where" target="install">install $(INSTALL_PREFIX)/<replace label="name"/> : <replace label="name"/>
+ : &lt;variant&gt;debug:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> &lt;variant&gt;release:&lt;location&gt;$(INSTALL_PREFIX)/<replace label="install"/> ;
 </option></template>
  <!-- template name="buildfile">content</template>
  <template name="internal-project">content</template>

@@ -184,7 +184,17 @@ if( target->associatedArtifacts().isEmpty() )
 }
 
 ///////////////////
-// Start the target entry.
+// Start of the target entry.
+do {
+  QString entry{ this->style_->make_element("target-start", targetbook) };
+  if(! entry.isEmpty())
+  {
+    std::swap(build_file->document()["start-" + target_name_].value, entry);
+  }
+}
+
+///////////////////
+// Main part of target entry.
 QString entry;
 do {
   QTextOStream eos{ &entry };
