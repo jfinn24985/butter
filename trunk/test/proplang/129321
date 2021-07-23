@@ -1,6 +1,6 @@
 format 224
 "Build" // Build
-  revision 26
+  revision 28
   modified_by 42 "finnerty"
   // class settings
   
@@ -146,8 +146,10 @@ else if $(UNIX)
 {
 constant OPENMP : -fopenmp ;
 }
-using gfortran ;
-constant FORTRANLIBS : -lgfortran ;"
+# using gfortran ;
+constant FORTRANLIBS : -lgfortran ;
+constant MANDIR : man ;
+constant HTMLDIR : html ;"
     end
 
     artifact 150057 "Jamfile"
