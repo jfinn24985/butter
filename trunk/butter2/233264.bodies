@@ -185,7 +185,7 @@ if( target->associatedArtifacts().isEmpty() )
 
 ///////////////////
 // Start of the target entry.
-do {
+{
   QString entry{ this->style_->make_element("target-start", targetbook) };
   if(! entry.isEmpty())
   {
