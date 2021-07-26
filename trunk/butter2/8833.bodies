@@ -10,8 +10,8 @@ if ( ! prop_.isEmpty() )
   {
     if ( current_prop_.currentKey().contains( property_label_prefix() ) )
     {
-      const QStringList parts_{ current_prop_.currentKey().split(" ", QString::SkipEmptyParts) };
-      if(parts_.size() > 1 && parts_[0] == property_label_prefix())
+      const QStringList parts_{ current_prop_.currentKey().split( " ", QString::SkipEmptyParts ) };
+      if ( parts_.size() > 1 && parts_[0] == property_label_prefix() )
       {
         if ( parts_[1] != base_label()
              && parts_[1] != build_dir_label()
@@ -29,92 +29,68 @@ if ( ! prop_.isEmpty() )
              && parts_[1] != style_label()
              && parts_[1] != style_path_label() )
         {
-          log.trace( butter::base_log::warn, ("<p><b>Warning:</b> Item \"" + this->name() + "\" has property name \"" + current_prop_.currentKey() + "\" which contains 'butter' but is not a known property name</p>") );
+          log.trace( butter::base_log::warn,
+                     ( "<p><b>Warning:</b> Item \"" + this->name() +
+                       "\" has property name \"" + current_prop_.currentKey() +
+                       "\" which contains 'butter' but is not a known property name</p>" ) );
         }
         else
         {
-          auto itr = addrbook.find(parts_[1]);
-          if( itr != addrbook.end() )
-          {
-            itr.value() += " " + *(current_prop_.current());
-          }
-          else
-          {
-            addrbook.insert( parts_[1], *(current_prop_.current()) );
-          }
+          butter::const_token_iterator::merge_string_list( addrbook[ parts_[1] ],
+              *( current_prop_.current() ) );
         }
       }
     }
   }
 }
 // For non-documents also check for any data in the description.
-if( ! this->stereotype().contains(document_stereotype()))
+if ( ! this->stereotype().contains( document_stereotype() ) )
 {
   QByteArray desc_{ this->description() };
-  if( ! desc_.isEmpty() )
+  if ( ! desc_.isEmpty() )
   {
     QString section_;
-    const QByteArray marker_phrase_{ "${" + section_prefix() + "}" };
-    const int start_{ desc_.find(marker_phrase_) };
-    if (-1 != start_)
+    const QByteArray marker_phrase_{ "${" + section_prefix() };
+    const int start_{ desc_.find( marker_phrase_ ) };
+    if ( -1 != start_ )
     {
       // Found a_section start, search from here to end for next section
-      int end_{ desc_.find(marker_phrase_, start_ + marker_phrase_.length()) };
-      if (-1 != end_)
+      int end_{ desc_.find( marker_phrase_, start_ + marker_phrase_.length() ) };
+      if ( -1 != end_ )
       {
-        section_ = desc_.mid(start_ + marker_phrase_.length(), end_ - (start_ + marker_phrase_.length()));
+        section_ = desc_.mid( start_ + marker_phrase_.length(),
+                              end_ - ( start_ + marker_phrase_.length() ) );
       }
       else
       {
-        section_ = desc_.mid(start_ + marker_phrase_.length());
+        section_ = desc_.mid( start_ + marker_phrase_.length() );
       }
-      if (! section_.isEmpty ())
+      if ( ! section_.isEmpty () )
       {
-        QRegExp hdr_re_("^ *" + header_label() + " *= *");
-        QRegExp link_re_("^ *" + link_label() + " *= *");
-        QRegExp flag_re_("^ *" + flag_label() + " *= *");
-        if (! section_.isEmpty())
+        QRegExp hdr_re_( "^ *" + header_label() + " *= *" );
+        QRegExp link_re_( "^ *" + link_label() + " *= *" );
+        QRegExp flag_re_( "^ *" + flag_label() + " *= *" );
+        if ( ! section_.isEmpty() )
         {
-          QTextIStream section_is_(&section_);
-          while (! section_is_.atEnd())
+          QTextIStream section_is_( &section_ );
+          while ( ! section_is_.atEnd() )
           {
-            const QString line_(section_is_.readLine());
+            const QString line_( section_is_.readLine() );
             int length_;
-            if (-1 != (length_ = hdr_re_.indexIn(line_, 0)))
+            if ( -1 != ( length_ = hdr_re_.indexIn( line_, 0 ) ) )
             {
-              auto itr = addrbook.find(include_label());
-              if( itr != addrbook.end() )
-              {
-                itr.value() += " " + line_.mid(length_);
-              }
-              else
-              {
-                addrbook.insert( include_label(), line_.mid(length_) );
-              }
+              butter::const_token_iterator::merge_string_list(
+                addrbook[include_label()], line_.mid( length_ + hdr_re_.matchedLength() ) );
             }
-            else if (-1 != (length_ = link_re_.indexIn(line_, 0)))
+            else if ( -1 != ( length_ = link_re_.indexIn( line_, 0 ) ) )
             {
-              auto itr = addrbook.find(ldflags_label());
-              if( itr != addrbook.end() )
-              {
-                itr.value() += " " + line_.mid(length_);
-              }
-              else
-              {
-                addrbook.insert( ldflags_label(), line_.mid(length_) );
-              }
+              butter::const_token_iterator::merge_string_list(
+                addrbook[ldflags_label()], line_.mid( length_ + link_re_.matchedLength() ) );
             }
-            else if (-1 != (length_ = flag_re_.indexIn(line_, 0)))
+            else if ( -1 != ( length_ = flag_re_.indexIn( line_, 0 ) ) )
             {
-              auto itr = addrbook.find(flags_label());
-              if( itr != addrbook.end() )
-              {
-                itr.value() += " " + line_.mid(length_);
-              }
-              else
-              {
-                addrbook.insert( flags_label(), line_.mid(length_) );
-              }
+              butter::const_token_iterator::merge_string_list( 
+                addrbook[flags_label()], line_.mid( length_ + flag_re_.matchedLength() ) );
             }
           }
         }
@@ -122,9 +98,9 @@ if( ! this->stereotype().contains(document_stereotype()))
     }
   }
 }
-if(! only_direct && nullptr != this->parent())
+if ( ! only_direct && nullptr != this->parent() )
 {
-  this->parent()->in_scope(addrbook, only_direct, log);
+  this->parent()->in_scope( addrbook, only_direct, log );
 }
 !!!359856.cpp!!!	debug_print(in depth : int, inout os : stream) : void
 if (DEBUG)

@@ -1,6 +1,6 @@
 format 224
 "API USER" // API USER
-  revision 131
+  revision 133
   modified_by 42 "finnerty"
   // class settings
   
@@ -1674,7 +1674,7 @@ build system"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  static ${type} label(\"butter_\");
+  static ${type} label(\"butter_generic\");
   return label;
 }
 "
@@ -6371,6 +6371,7 @@ ${definition}"
 	artifact_ref 9857 // UmlUseCaseDiagram
 	artifact_ref 9985 // UmlUseCaseView
 	artifact_ref 128002 // UmlComponent
+	artifact_ref 128042 // const_token_iterator
 	artifact_ref 128130 // UmlStateItem
 	artifact_ref 128256 // UmlBaseState
 	artifact_ref 128386 // UmlState
@@ -7225,6 +7226,8 @@ ${namespace_end}
 ${includes}
 
 #include \"constants.h\"
+#include \"const_token_iterator.h\"
+
 
 #include <qregexp.h>
 #include <qstringlist.h>

@@ -1,0 +1,86 @@
+class const_token_iterator
+!!!163242.cpp!!!	operator *() : const_token_iterator::string_type
+if (this->tmp_.isEmpty ())
+{
+  if (this->s_ != this->e_)
+  {
+    this->tmp_ = this->orig_.mid(this->s_, this->e_ - this->s_);
+  }
+}
+return this->tmp_;
+!!!163498.cpp!!!	increment() : void
+if ( ! this->tmp_.isEmpty () ) { this->tmp_.clear (); }
+if ( this->e_ >= this->orig_.size() ) { this->s_ = this->e_; return; }
+if ( this->sep_ == this->orig_[this->e_] ) { this->e_++; }
+this->s_ = this->e_;
+std::stack< char_type > quotes_;
+while ( this->e_ < this->orig_.size() )
+{
+  const char_type c_ ( this->orig_[this->e_] );
+  if ( this->esc_ == c_ )
+  {
+    this->e_++;
+  }
+  else if ( this->is_quote( c_ ) )
+  {
+    if ( quotes_.empty () || quotes_.top () != c_ )
+    {
+      quotes_.push ( c_ );
+    }
+    else
+    {
+      quotes_.pop ();
+    }
+  }
+  else if ( this->sep_ == c_ )
+  {
+    if ( quotes_.empty () ) { return; }
+  }
+  this->e_++;
+}
+if ( ! quotes_.empty () )
+{
+  throw std::runtime_error ( "Unmatched quotes in string: " + this->orig_ );
+}
+return;
+
+!!!161578.cpp!!!	merge_string_list(inout list_string : unistr, in addition : unistr) : void
+if ( addition.simplifyWhiteSpace().isEmpty() )
+{
+  return;
+}
+if ( list_string.isEmpty() )
+{
+  list_string = addition.simplifyWhiteSpace();
+}
+else
+{
+  QStringList to_add;
+  for ( const_token_iterator e1_, b1_( addition.simplifyWhiteSpace(), ' ' ); b1_ != e1_; ++b1_ )
+  {
+    // skip any empty strings
+    if( ! b1_->isEmpty() )
+    {
+      // skip duplicates in addition string
+      if( ! to_add.contains( *b1_ ) )
+      {
+        to_add.push_back( *b1_ );
+      }
+    }
+  }
+  for ( const_token_iterator e2_, b2_( list_string, ' ' ); b2_ != e2_; ++b2_ )
+  {
+    // ignore empty string
+    if( ! b2_->isEmpty() )
+    {
+      // Remove any new items that are already in the list
+      to_add.removeAll( *b2_ );
+    }
+  }
+  // Add any elements that remain
+  for( auto & new_item : to_add )
+  {
+    list_string.append( ' ' );
+    list_string.append( new_item );
+  }
+}

@@ -1,6 +1,6 @@
 format 224
 "butter" // API USER::butter
-  revision 88
+  revision 89
   modified_by 42 "finnerty"
   // class settings
   
@@ -298,7 +298,7 @@ a given style was found in build_style::read_class."
 	
       end
 
-      extra_member 141098 ""
+      extra_member 141098 "USING from PARENT"
 	
 	cpp "using std::runtime_error::runtime_error;
 using std::runtime_error::what;" ""
@@ -1233,6 +1233,433 @@ library targets will be static.
 	mysql_decl ""
 	MysqlColumn
 	comment "Build file section label for a target section.
+"
+      end
+    end
+
+    class 134698 "forward_string_iterator_type"
+      visibility package stereotype "typedef" explicit_base_type "std::iterator< std::forward_iterator_tag, std::string >"
+      cpp_decl "${comment}typedef ${type} ${name};
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+    end
+
+    class 134570 "const_token_iterator"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      comment "Provide an iterator over the tokens in a string
+
+This class will break a string into tokens on the given separator
+character.  It will ignore separators that are in quotation marks
+or escaped.  An error is thrown if the end of the string is reached
+and no matching closing quote was found.
+"
+      classrelation 128042 // <generalisation>
+	relation 128042 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128042 // <generalisation>
+	  b parent class_ref 134698 // forward_string_iterator_type
+      end
+
+      class 134826 "char_type"
+	visibility package stereotype "typedef" explicit_base_type "QChar"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      class 134954 "string_type"
+	visibility package stereotype "typedef" explicit_base_type "unistr"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      class 135082 "size_type"
+	visibility package stereotype "typedef" explicit_base_type "int"
+	cpp_decl "${comment}typedef ${type} ${name};
+"
+	java_decl ""
+	php_decl ""
+	python_2_2 python_decl ""
+	idl_decl ""
+	explicit_switch_type ""
+	mysql_decl ""
+	
+      end
+
+      operation 161706 "const_token_iterator"
+	cpp_inline public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${inline}${name}${(}${)}${volatile}${abstract} : orig_()
+    , tmp_()
+    , s_(0)
+    , e_(0)
+    , esc_(0)
+    , sep_(0)
+    {};"
+	
+	
+	
+	
+      end
+
+      operation 161834 "const_token_iterator"
+	cpp_inline public explicit_return_type ""
+	nparams 2
+	  param in name "orig" explicit_type "string"
+	  param in name "sep" type class_ref 134826 // char_type
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${abstract} : orig_(orig)
+, tmp_()
+, s_(0)
+, e_(0)
+, esc_('\\\\')
+, sep_(sep)
+{ this->increment(); };"
+	
+	
+	
+	
+      end
+
+      operation 161962 "const_token_iterator"
+	cpp_inline public explicit_return_type ""
+	nparams 2
+	  param in name "orig" type class_ref 134954 // string_type
+	  param in name "sep" type class_ref 134826 // char_type
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} ${p0}${v0}, ${t1} ${p1}${v1}${)}${volatile}${abstract} : orig_(orig)
+    , tmp_()
+    , s_(0)
+    , e_(0)
+    , esc_('\\\\')
+    , sep_(sep)
+    { this->increment(); };"
+	
+	
+	
+	
+      end
+
+      operation 162090 "const_token_iterator"
+	stereotype "copy"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param in name "orig" type class_ref 134570 // const_token_iterator
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${v0}${)}${volatile}${abstract} : orig_(orig.orig_)
+    , tmp_(orig.tmp_)
+    , s_(orig.s_)
+    , e_(orig.e_)
+    , esc_(orig.esc_)
+    , sep_(orig.sep_)
+    {};"
+	
+	
+	
+	
+      end
+
+      operation 162218 "const_token_iterator"
+	stereotype "move"
+	cpp_inline public explicit_return_type ""
+	nparams 1
+	  param inout name "orig" type class_ref 134570 // const_token_iterator
+	cpp_decl "    ${comment}${inline}${name}${(}${t0} && ${p0}${v0}${)}${volatile}${abstract} : orig_( std::move( orig.orig_ ) )
+    , tmp_( std::move( orig.tmp_ ) )
+    , s_( std::move( orig.s_ ) )
+    , e_( std::move( orig.e_ ) )
+    , esc_( std::move( orig.esc_ ) )
+    , sep_( std::move( orig.sep_ ) )
+    {};"
+	
+	
+	
+	
+      end
+
+      operation 162346 "operator ="
+	cpp_inline public return_type class_ref 134570 // const_token_iterator
+	nparams 1
+	  param in name "orig" type class_ref 134570 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
+      this->swap( orig );
+      return *this;
+    };"
+	
+	
+	
+	
+      end
+
+      operation 162474 "swap"
+	cpp_inline public explicit_return_type "void"
+	nparams 1
+	  param inout name "rhs" type class_ref 134570 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} & ${p0}${v0}${)}${const}${volatile}${abstract} {
+      std::swap(const_cast< string_type& >(this->orig_), const_cast< string_type& >(rhs.orig_));
+      std::swap(this->tmp_, rhs.tmp_);
+      std::swap(this->s_, rhs.s_);
+      std::swap(this->e_, rhs.e_);
+      std::swap(const_cast< char_type& >(this->esc_), const_cast< char_type& >(rhs.esc_));
+      std::swap(const_cast< char_type& >(this->sep_), const_cast< char_type& >(rhs.sep_));
+    };"
+	
+	
+	
+	
+      end
+
+      operation 162602 "operator ++"
+	cpp_inline public return_type class_ref 134570 // const_token_iterator
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} & ${name}${(}${)}${const}${volatile}${abstract} {
+      this->increment();
+      return *this;
+    };"
+	
+	
+	
+	
+      end
+
+      operation 162730 "operator ++"
+	cpp_inline public return_type class_ref 134570 // const_token_iterator
+	nparams 1
+	  param in name "" explicit_type "int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
+      const_token_iterator tmp(*this);
+      this->increment();
+      return tmp;
+    };"
+	
+	
+	
+	
+      end
+
+      operation 162858 "operator =="
+	friend cpp_inline public explicit_return_type "bool"
+	nparams 2
+	  param in name "lhs" type class_ref 134570 // const_token_iterator
+	  param in name "rhs" type class_ref 134570 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract} {
+         return lhs.at_end ()
+    		? rhs.at_end ()
+    		: rhs.at_end ()
+    			? false
+    			: (lhs.s_ == rhs.s_) & (lhs.e_ == rhs.e_)
+    				? lhs.orig_ == rhs.orig_
+    				: false;
+    };"
+	
+	
+	
+	
+      end
+
+      operation 162986 "operator !="
+	friend cpp_inline public explicit_return_type "bool"
+	nparams 2
+	  param in name "lhs" type class_ref 134570 // const_token_iterator
+	  param in name "rhs" type class_ref 134570 // const_token_iterator
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} & ${p0}${v0}, const ${t1} & ${p1}${v1}${)}${const}${volatile}${abstract} {
+      return !(lhs == rhs);
+    };"
+	
+	
+	
+	
+      end
+
+      operation 163114 "operator ->"
+	const constvalue cpp_inline public return_type class_ref 134954 // string_type
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} * const ${name}${(}${)}${const}${volatile}${abstract} {
+      return &(this->operator*());
+    };"
+	
+	
+	
+	
+      end
+
+      operation 163242 "operator *"
+	const constvalue public return_type class_ref 134954 // string_type
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}const ${type} & ${name}${(}${)}${const}${volatile}${abstract};
+"
+	cpp_def "${comment}${inline}const ${type} & ${class}::${name}${(}${)}${const}${volatile}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 163370 "at_end"
+	const cpp_inline private explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+          return this->orig_.isEmpty()
+                ? true
+                : this->s_ >= this->orig_.size(); 
+    };"
+	
+	
+	
+	
+      end
+
+      operation 163498 "increment"
+	preserve_cpp_body_indent private explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract};"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 163626 "is_quote"
+	class_operation cpp_inline private explicit_return_type "bool"
+	nparams 1
+	  param in name "c" type class_ref 134826 // char_type
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}const ${t0} ${p0}${v0}${)}${const}${volatile}${abstract} {
+      return (c == '\\'') | (c == '\"') | (c == '`');
+    };"
+	
+	
+	
+	
+      end
+
+      operation 163754 "reset"
+	cpp_inline private explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${typeprefix}${type} ${name}${(}${)}${const}${volatile}${abstract} {
+      this->s_ = 0; this->e_ = 0;
+    };"
+	
+	
+	
+	
+	comment "Reset iterator to the beginning of the contained string
+"
+      end
+
+      classrelation 128170 // orig_ (<directional composition>)
+	relation 128170 *-->
+	  a role_name "orig_" const_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128170 // orig_ (<directional composition>)
+	  b parent class_ref 134954 // string_type
+      end
+
+      classrelation 128298 // tmp_ (<directional composition>)
+	relation 128298 *-->
+	  a role_name "tmp_" private
+	    cpp mutable default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128298 // tmp_ (<directional composition>)
+	  b parent class_ref 134954 // string_type
+      end
+
+      classrelation 128426 // s_ (<directional composition>)
+	relation 128426 *-->
+	  a role_name "s_" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128426 // s_ (<directional composition>)
+	  b parent class_ref 135082 // size_type
+      end
+
+      classrelation 128554 // e_ (<directional composition>)
+	relation 128554 *-->
+	  a role_name "e_" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128554 // e_ (<directional composition>)
+	  b parent class_ref 135082 // size_type
+      end
+
+      classrelation 128682 // esc_ (<directional composition>)
+	relation 128682 *-->
+	  a role_name "esc_" const_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128682 // esc_ (<directional composition>)
+	  b parent class_ref 134826 // char_type
+      end
+
+      classrelation 128810 // sep_ (<directional composition>)
+	relation 128810 *-->
+	  a role_name "sep_" const_relation private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128810 // sep_ (<directional composition>)
+	  b parent class_ref 134826 // char_type
+      end
+
+      extra_member 147626 "UTILITY FUNCTIONS"
+	
+	cpp "" ""
+	java ""
+	php ""
+	python ""
+	idl ""
+	mysql ""
+      end
+
+      operation 161578 "merge_string_list"
+	class_operation public explicit_return_type "void"
+	nparams 2
+	  param inout name "list_string" explicit_type "unistr"
+	  param in name "addition" explicit_type "unistr"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${t0} & ${p0}${v0}, ${t1} ${p1}${v1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "The effect of this method is to convert the contents of list_string and addition
+into a list of tokens.  These lists are merged, removing duplicate items, and
+the new list is assigned back to list_string. Either list may be empty.
 "
       end
     end
@@ -5212,6 +5639,36 @@ ${members}
 ${namespace_end}"
       associated_elems
 	class_ref 129328 // constants
+      end
+    end
+
+    artifact 128042 "const_token_iterator"
+      stereotype "source"
+      cpp_h "#ifndef ${NAMESPACE}_${NAME}_H
+#define ${NAMESPACE}_${NAME}_H
+
+${comment}
+${includes}
+${declarations}
+${namespace_start}
+${definition}
+${namespace_end}
+#endif
+"
+      cpp_src "${comment}
+${includes}
+
+#include <stack>
+#include <stdexcept>
+
+#include <qstringlist.h>
+
+${namespace_start}
+${members}
+${namespace_end}"
+      associated_elems
+	class_ref 134698 // forward_string_iterator_type
+	class_ref 134570 // const_token_iterator
       end
     end
 
