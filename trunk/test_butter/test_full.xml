@@ -416,5 +416,15 @@ cmake build tool + debug + non-C++ + property usage + multidirectory + shared li
     <property name="build-arg" if="os=WIN32" >. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug</property>
     <property name="local-make-arg" >%(make-arg)s -k VERBOSE=1 install</property>
   </job>
+  
+  <job src="job_extern_lib.xml">
 
+make build tool + debug + target that uses an external library
+
+    <property name="project" >extern_lib</property>
+    <property name="build-tool" >%(make)s</property>
+    <property name="build-style" >standard</property>
+    <property name="patch-file" >make.patch</property>
+    <property name="build-arg" >%(make-arg)s VARIANT=DEBUG install</property>
+  </job>
 </test-suite>

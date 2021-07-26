@@ -1,0 +1,129 @@
+﻿<?xml version = '1.0'?>
+<job>
+    <property name="basefile" if="build-style=standard" >makefile</property>
+    <property name="sysfile"  if="build-style=standard" >%(make-sys)s</property>
+    <property name="mainfile" if="build-style=standard" >makefile</property>
+    <property name="basefile" if="build-style=jam" >Jamfile</property>
+    <property name="sysfile"  if="build-style=jam" >Jamrules</property>
+    <property name="mainfile" if="build-style=jam" >Jamfile</property>
+    <property name="basefile" if="build-style=make" >makefile</property>
+    <property name="sysfile"  if="build-style=make" >%(make-sys)s</property>
+    <property name="mainfile" if="build-style=make" >makefile</property>
+    <property name="basefile" if="build-style=boost" >Jamroot</property>
+    <property name="sysfile"  if="build-style=boost" >local.jam</property>
+    <property name="mainfile" if="build-style=boost" >Jamfile</property>
+    <property name="basefile" if="build-style=cmake" >CMakeLists.txt</property>
+    <property name="sysfile"  if="build-style=cmake" >local.cmake</property>
+    <property name="mainfile" if="build-style=cmake" >CMakeLists.txt</property>
+    <property name="local-base" >%(base-dir)s/%(project)s/%(test-dir)s</property>
+    <property name="base" >%(local-base)s</property>
+    <stage>Test generating source and build system from a single level project 
+      <verb-list category="setup" >
+        Initialise the test location with latest copy of test.
+        <property name="base" >%(base-dir)s/%(project)s</property>
+        <verb type="file-list" >
+          <property name="base" >%(base-dir)s</property>
+          <property name="file-type" >directory</property>
+          <property name="verify" >recreate</property>
+          <property name="location" >%(project)s</property>
+        </verb>
+        <verb type="check-out" >
+          <property name="type" >%(checkout-tool)s</property>
+          <property name="branch" >%(project)s%(checkout-suf)s</property>
+          <property name="location" >%(checkout-url)s</property>
+        </verb>
+        <verb type="patch" >
+          <property name="patch-dir" >%(base-dir)s/%(project)s/trunk/test/%(project)s/patch</property>
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s</property>
+          <property name="location" >%(patch-file)s</property>
+        </verb>
+
+      </verb-list>
+      <verb-list category="execute" >
+        Generate the build system and the source code
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/%(project)s.prj} -exec %(plug-out1)s -test:ok -exit</verb>
+        <verb type="system" >%(bouml)s PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/%(project)s.prj} -exec %(plug-out2)s -exit</verb>
+      </verb-list>
+      <verb-list category="verify" >
+        Verify that the correct files have been produced
+        <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >example_exe.hh example_exe.cc</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >%(basefile)s %(sysfile)s</property>
+        </verb>
+        <property name="test-phrase">1.1.1 Create single directory, single target build system</property>
+      </verb-list>
+   </stage>
+    <stage>Perform compilation and test compilation success
+      <verb-list category="execute" >
+       <property name="compile-command"  if="build-style=cmake" >/bin/bash -c "{ pushd PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/output} %(cmdsep)s
+           { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
+           PATH{%(build-tool)s} %(build-arg)s &gt;&gt; build.log %(cmdsep)s
+           PATH{%(make)s} -k VERBOSE=1 %(make-arg)s install &gt;&gt; build.log %(cmdsep)s
+           %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
+       <property name="compile-command">/bin/bash -c "{ pushd PATH{%(base-dir)s/%(project)s/trunk/test/%(project)s/output} %(cmdsep)s
+           { PATH{%(build-tool)s} %(build-arg)s &gt; build.log %(cmdsep)s
+           %(cat)s build.log %(cmdsep)s } %(cmdsep)s popd %(cmdsep)s }" </property>
+        <verb type="system" >%(compile-command)s</verb>
+	     </verb-list>
+      <verb-list category="verify" >Verify that the correct file has been produced
+        <verb type="file-list" >
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output/%(stage-bin-dir)s</property>
+          <property name="file-type" >executable</property>
+          <property name="verify" >exist</property>
+          <property name="location" >test%(exe-suf)s</property>
+        </verb>
+        <verb type="file-list" >
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
+          <property name="file-type" >file</property>
+          <property name="verify" >exist</property>
+          <property name="location" >build.log</property>
+        </verb>
+        <verb type="compare" >
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
+          <property name="location" >build.log</property>
+	        <property name="type" >search</property>
+          <property name="error" >nonfatal</property>
+	        <property name="search-regex" if="build-style=!boost">(DEBUG|RELEASE|[-/]O[d123]).*single_test.[co]</property>
+	        <property name="search-regex" if="build-style=boost">(debug|release).*single_test\.</property>
+        </verb>
+        <property name="test-phrase">2.1.1 Single directory, single target compiled</property>
+      </verb-list>
+    </stage>
+    <stage>Test run the executable.
+      <verb-list category="execute" >Run &quot;test&quot;
+        <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
+	      <verb type="system">/bin/bash -c "{ pushd PATH{%(base)s} %(cmdsep)s
+	          PATH{%(stage-bin-dir)s/test%(exe-suf)s} &gt; output %(cmdsep)s popd %(cmdsep)s }" </verb>
+      </verb-list>
+      <verb-list category="verify" >Verify that the correct files have been produced
+        <verb type="file-list" >
+          <property name="file-type" >file</property>
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
+          <property name="verify" >exist</property>
+          <property name="location" >output</property>
+        </verb>
+        <verb type="compare" >
+          <property name="base" >%(base-dir)s/%(project)s/trunk/test/%(project)s/output</property>
+          <property name="location" >output</property>
+        </verb>
+        <property name="test-phrase">2.1.1 Program output matchs canon</property>
+      </verb-list>
+    </stage>
+    <stage>Clean-up stage
+      <verb-list category="cleanup">Clean up operations
+        <verb type="file-list" >
+          <property name="base" >%(base-dir)s/%(project)s</property>
+          <property name="file-type" >directory</property>
+          <property name="verify" >remove</property>
+          <property name="location" >.</property>
+        </verb>
+      </verb-list>
+    </stage>
+</job>

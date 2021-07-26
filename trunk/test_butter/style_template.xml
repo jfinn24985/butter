@@ -222,10 +222,10 @@ include $(ROOTDIR)/system.mk
 </template>
 
  <!-- Actual content for external libraries -->
- <template label="extern-library"><replace label="NAME"/>_FLAGS:=<replace label="flags"/>
-<replace label="NAME"/>_LDFLAGS:=<replace label="ldflags"/>
-<replace label="NAME"/>_INC:=<replace label="includes"/>
-</template>
+ <template label="extern-library"><option label="flags" target="flags"><replace label="NAME"/>_FLAGS:=<replace label="flags"/>
+</option><option label="link" target="ldflags"><replace label="NAME"/>_LDFLAGS:=<replace label="ldflags"/>
+</option><option label="inc" target="includes"><replace label="NAME"/>_INC:=<replace label="includes"/>
+</option></template>
 
  <!-- how to build an object file -->
  <template label="object">
