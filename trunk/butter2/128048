@@ -1,6 +1,6 @@
 format 224
 "butter version 1" // butter version 1
-  revision 11
+  revision 12
   modified_by 48 "finnerty"
   // class settings
   
@@ -30,7 +30,9 @@ format 224
   activitydiagramsettings
    end
   
-  cpp_namespace "butter"
+  cpp_h_dir "butter1"
+  cpp_src_dir "butter1"
+  cpp_namespace "butter1"
   classview 128048 "finnerty"
     
     classdiagramsettings member_max_width 0 end
